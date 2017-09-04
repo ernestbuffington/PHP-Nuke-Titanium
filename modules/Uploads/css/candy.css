@@ -1,0 +1,101 @@
+
+body, td, select, input, .ibutton
+{
+ font: 11px verdana;
+ color: #800080;
+}
+
+body
+{
+ background-color: #ffffff;	
+}
+
+body, td
+{
+ padding: 2px 2px 2px 2px;
+}
+
+h2
+{
+ font: 16px verdana;
+ color: #8822ff;
+ font-weight: bold;
+}
+
+table
+{
+ border: 2px outset #aaaaaa;
+ background-color: #FFDDFF;
+}
+
+form, span
+{
+ padding: 0px 0px 0px 0px;
+ margin:  0px 0px 0px 0px;
+}
+
+A:link, A:visited, A:active, A:hover
+{
+ text-decoration: none;
+ color: red;
+}
+
+pre
+{
+ font: 14px verdana;
+}
+
+input, select
+{
+ background-color: #FFEEFF;
+ border-top:    1px solid #aaaaaa;
+ border-bottom: 1px solid black;
+ border-left:   1px solid #aaaaaa;
+ border-right:  1px solid black;
+}
+
+.error
+{
+ color: red ! important;
+}
+
+.selector
+{
+ border: none;
+ font: 12px courier new;
+ background-image: url(./bgrd_candy.gif);
+ background-repeat: repeat;
+ background-color: #FFF3FF ! important;
+}
+
+.ibutton
+{
+ background-color: #FFEEFF;	
+ width: 170px;
+ border: 2px solid #d0d0d0 ! important;
+}
+
+.header
+{
+ background-color: black;
+ color: gold;
+ font-weight: bold;
+}
+
+.dir_sel
+{
+ border: none;
+ width: 255px;
+ background-color: black;
+ color: white;
+}
+
+.sitemsg
+{
+ text-align: right; 
+ width: 250px; 
+ border: none; 
+ margin-top: 2px; 
+ background-color: transparent; 
+ color: #004382;
+}
