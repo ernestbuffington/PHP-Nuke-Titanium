@@ -19,7 +19,7 @@ Public License (GPL) and is free to use, modify and redistribute.**
 
 **7.** _PHP-Nuke Titanium uses a network advertising block that you position anywhere on your portal to pay for your private commercial web hosting. A feature saving people hundreds of dollars every year._
 
-**8.** _PHP-Nuke Titanium comes with a full blown commercial web hosting account and cPanel Licence valued at 32 dollars per month and is FREE to network users that currently have the network advertising block installed. You can see what the advertising block looks like by holding your CTRL key down and clicking the following link http://theghost.86it.us  where you will find the advertising block running in the upper right hand corner._
+**8.** _PHP-Nuke Titanium comes with a full blown commercial web hosting account and cPanel Licence valued at 32 dollars per month and is FREE to network users that currently have the network advertising block installed. You can see what the advertising block looks like by holding your CTRL key down and clicking the following link http://theghost.86it.us where in the following tab you will find the advertising block running in the upper right hand corner of Ernest Allen Buffington's website._
 
 **9.** _PHP-Nuke Titanium has Google Analytics built in and gives you the option and ability to plugin your personal analytics account information. This will allow you to analyze all of your portal visitor traffic on the fly in real time._
 
