@@ -4,8 +4,8 @@
  ========================================================================
  PHP-Nuke Titanium                     :   v1.0.1z
  PHP-Nuke Titanium Build               :   6205
- PHP-Nuke Titanium Filename            :   rss.php
- PHP-Nuke Titanium File Release Date   :   September 4th, 2017  
+ PHP-Nuke Titanium Filename            :   function_img.php
+ PHP-Nuke Titanium File Release Date   :   September 16th, 2017  
  PHP-Nuke Tianium File Author          :   Ernest Allen Buffington
 
  PHP-Nuke Titanium web address         :   https://titanium.86it.network
