@@ -21,11 +21,21 @@ Options +FollowSymlinks
 <IfModule mod_rewrite.c> 
 RewriteEngine on
 
+
+
 # ---------------------------------------------------------------
 # Force SSL - no insecure data connections!
 # ---------------------------------------------------------------
 RewriteCond %{HTTPS} off
 RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+# ---------------------------------------------------------------
+# CLEAN URL FORCE - CHOP OFF THE .php when u load the file
+# and we will load it like it wass the full filename.php!
+# ---------------------------------------------------------------
+RewriteCond %{SCRIPT_FILENAME} !-d
+RewriteRule ^([^.]+)$ $1.php [NC,L] 
+
 
 # ---------------------------------------------------------------
 # Security Rewrites
@@ -41,6 +51,7 @@ RewriteCond %{THE_REQUEST} (file=http:\/\/) [OR]
 RewriteCond %{THE_REQUEST} (name=http:\/\/) [OR]
 RewriteCond %{THE_REQUEST} (phpbb_root_path)
 RewriteRule ^.*$ http://127.0.0.1/ [R=301,L]
+
 
 # -------------------------------------------------------------------------------------------------------------------------------------------------
 # Lazy Google Tap
