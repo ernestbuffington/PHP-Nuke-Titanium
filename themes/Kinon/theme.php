@@ -21,7 +21,7 @@
 /*----------------------------------------------------------------*/
 /* CMS INFO                                                       */
 /* PHP-Nuke Copyright (c) 2005 by Francisco Burzi phpnuke.org     */
-/* PHP-Nuke Titanium (c) 2008                                     */
+/* PHP-Nuke Titanium (c) 2008 by Ernest Allen Buffington          */
 /*----------------------------------------------------------------*/
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) { exit('Access Denied'); }
 
