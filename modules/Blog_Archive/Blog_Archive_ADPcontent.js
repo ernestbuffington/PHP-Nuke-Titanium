@@ -1,1 +1,0 @@
-ADPcontent1="<iframe src=\"modules/Blog_Archive/copyright.php\" name=\"adpiframe\" id=\"adpiframe\" width=100% height=100% align=\"center\" Frameborder=\"0\" Scrolling=\"no\" marginheight=\"0\" marginwidth=\"0\"></iframe>" 
