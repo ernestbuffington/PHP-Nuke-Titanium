@@ -1,4 +1,4 @@
-## Welcome to PHP-Nuke Titanium v1.0.1z
+## Welcome to PHP-Nuke Titanium v3.0.0
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium?ref=badge_shield)
 
 
