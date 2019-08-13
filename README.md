@@ -2,8 +2,8 @@
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium?ref=badge_shield)
 
 
-**PHP-Nuke Titanium is a free open source network content management system (CMS) designed to run on The 86it Social Network and The 
-Scorpion Network, written in PHP, MySQL. It uses modular programming architecture that allows users to customize, update and theme 
+**PHP-Nuke Titanium is a free open source network content management system (CMS) designed to run on The 86it Developers Network and The 
+Scorpion Network, written in PHP. It uses modular programming architecture that allows users to customize, update and theme 
 their websites. It uses a centralized user database chained to both networks and It is released under the terms of the GNU General 
 Public License (GPL) and is free to use, modify and redistribute.**
 
@@ -13,7 +13,7 @@ Public License (GPL) and is free to use, modify and redistribute.**
 
 **3.** _PHP-Nuke Titanium uses personal modules and network modules that can be installed, uninstalled, activated, and deactivated using the module administration system._
 
-**4.** _PHP-Nuke Titanium has FREE centralized file uploads and storage chained to The 86it Social Network and The Scorpion Network._
+**4.** _PHP-Nuke Titanium has FREE centralized file uploads and storage chained to The 86it Developers Network and The Scorpion Network._
 
 **5.** _PHP-Nuke Titanium gives you the ability to grant specific network groups of network users specific access rights to content and features on your portal, such as view, edit, delete, upload, add attachments, publish content, and so on._
 
@@ -21,7 +21,7 @@ Public License (GPL) and is free to use, modify and redistribute.**
 
 **7.** _PHP-Nuke Titanium uses a network advertising block that you position anywhere on your portal to pay for your private commercial web hosting. A feature saving people hundreds of dollars every year._
 
-**8.** _PHP-Nuke Titanium comes with a full blown commercial web hosting account and cPanel Licence valued at 32 dollars per month and is FREE to network users that currently have the network advertising block installed. You can see what the advertising block looks like by holding your CTRL key down and clicking the following link https://theghost.86it.us where in the following tab you will find the advertising block running in the upper right hand corner of Ernest Allen Buffington's website._
+**8.** _PHP-Nuke Titanium comes with a full blown commercial web hosting account and cPanel Licence valued at 32 dollars per month and is FREE to network users that currently have the network advertising block installed. You can see what the advertising block looks like by holding your CTRL key down and clicking the following link https://hub.86it.us where in the following tab you will find the advertising block running in the upper right hand corner of The 86it Developers Network._
 
 **9.** _PHP-Nuke Titanium has Google Analytics built in and gives you the option and ability to plugin your personal analytics account information. This will allow you to analyze all of your portal visitor traffic on the fly in real time._
 
@@ -31,9 +31,9 @@ Public License (GPL) and is free to use, modify and redistribute.**
 
 **12.** _PHP-Nuke Titanium allows you the ease of database access and use by using your cPanel where you will find phpMyAdmin v4.7.0_
 
-**13.** _PHP-Nuke Titanium requires PHP v5.6.31_
+**13.** _PHP-Nuke Titanium requires PHP v5.6.31 or v7.3.6_
 
-**14.** _PHP-Nuke Titanium requires MySQL v5.6.37 and we are embarking on the use of MariaDB 10.02_
+**14.** _PHP-Nuke Titanium requires the use of MariaDB 10.02_
 
 **15.** _PHP-Nuke Titanium requires ImageMagick_
 
