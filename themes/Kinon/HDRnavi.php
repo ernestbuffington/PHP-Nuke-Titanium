@@ -3,7 +3,7 @@
 /* THEME INFO                                                                            */
 /* Kinon Theme v1.0 (Fixed & Full Width)                                                 */
 /*                                                                                       */
-/* A Very Nice Kinon Thee Template.                                                      */
+/* A Very Nice Kinon Theme Template.                                                     */
 /* Copyright © 2019 By: TheGhost AKA Ernest Allen Bffington                              */
 /* e-Mail : ernest.buffington@gmail.com                                                  */
 /*---------------------------------------------------------------------------------------*/
