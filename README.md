@@ -3,13 +3,13 @@
 
 
 **PHP-Nuke Titanium is a free open source network content management system (CMS) designed to run on The 86it Developers Network and The 
-Scorpion Network, written in PHP. It uses modular programming architecture that allows users to customize, update and theme 
+Scorpion Network, written for PHP v7.3.6. It uses modular programming architecture that allows users to customize, update and theme 
 their websites. It uses a centralized user database chained to both networks and It is released under the terms of the GNU General 
 Public License (GPL) and is free to use, modify and redistribute.**
 
-**1.** _PHP-Nuke Titanium uses 3 relational databases (currently MySQL) to store data required for running a web-based content management sstem._
+**1.** _PHP-Nuke Titanium uses 3 relational databases (currently MySQLi) to store data required for running a web-based content management sstem._
 
-**2.** _PHP-Nuke Titanium uses a separate centralized network database for user accounts chained to The 86it Social Network for programmers and -The Scorpion Network for Musicians, Personal Websites or anything other than programming._
+**2.** _PHP-Nuke Titanium uses a separate centralized network database for user accounts chained to The 86it Developers Network for programmers and -The Scorpion Network for Musicians, Personal Websites or anything other than programming._
 
 **3.** _PHP-Nuke Titanium uses personal modules and network modules that can be installed, uninstalled, activated, and deactivated using the module administration system._
 
@@ -31,7 +31,7 @@ Public License (GPL) and is free to use, modify and redistribute.**
 
 **12.** _PHP-Nuke Titanium allows you the ease of database access and use by using your cPanel where you will find phpMyAdmin v4.7.0_
 
-**13.** _PHP-Nuke Titanium requires PHP v5.6.31 or v7.3.6_
+**13.** _PHP-Nuke Titanium requires PHP v5.6.31 / v7.3.6_
 
 **14.** _PHP-Nuke Titanium requires the use of MariaDB 10.02_
 
