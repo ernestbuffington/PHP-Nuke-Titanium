@@ -16,8 +16,7 @@
                                                                         
    Notes         : Simple block to allow theme selection from homepage
 ************************************************************************/
-if(!defined('NUKE_TITANIUM')) 
-exit;
+if(!defined('NUKE_TITANIUM')) exit;
 
 global $module_name;
 
