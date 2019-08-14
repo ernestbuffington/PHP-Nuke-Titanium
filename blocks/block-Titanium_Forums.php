@@ -25,7 +25,7 @@ global $db, $user_prefix, $prefix, $cache, $blockslang, $images, $board_config, 
 define('forum_board_icon_path','themes/'.get_theme().'/forums');
 
 $last_new_topics     = 10;
-$show_started_by	 = true;
+$show_started_by     = true;
 $alternate_row_class = true;
 
 $table  = '<table border="0" cellpadding="4" cellspacing="1" class="forumline" style="width:100%">'.PHP_EOL;
@@ -45,24 +45,24 @@ $count_topics = 0;
 
 	while ( list( $topic_id, $topic_type, $topic_attachment, $forum_name, $forum_color, $forum_id, $topic_last_post_id, $topic_first_post_id, $topic_title, $topic_poster, $topic_views, $topic_replies, $topic_status, $post_time, $poster_id, $poster_name, $username, $user_id ) = $db->sql_fetchrow( $result)) 
 	{
-	        $topic_data[$topic_id]['topic_id'] 			  = $topic_id;
+	        $topic_data[$topic_id]['topic_id']		  = $topic_id;
 	        $topic_data[$topic_id]['topic_type'] 		  = $topic_type;
-			$topic_data[$topic_id]['topic_attachment'] 	  = $topic_attachment;
+		$topic_data[$topic_id]['topic_attachment'] 	  = $topic_attachment;
 	        $topic_data[$topic_id]['forum_name'] 		  = $forum_name;
-			$topic_data[$topic_id]['forum_color'] 		  = $forum_color;
-	        $topic_data[$topic_id]['forum_id'] 			  = $forum_id;
-	        $topic_data[$topic_id]['topic_last_post_id']  = $topic_last_post_id;
-	        $topic_data[$topic_id]['topic_first_post_id'] = $topic_first_post_id;
+		$topic_data[$topic_id]['forum_color'] 		  = $forum_color;
+	        $topic_data[$topic_id]['forum_id']		  = $forum_id;
+	        $topic_data[$topic_id]['topic_last_post_id']      = $topic_last_post_id;
+	        $topic_data[$topic_id]['topic_first_post_id']     = $topic_first_post_id;
 	        $topic_data[$topic_id]['topic_title'] 		  = $topic_title;
 	        $topic_data[$topic_id]['topic_poster'] 		  = $topic_poster;
 	        $topic_data[$topic_id]['topic_views'] 		  = $topic_views;
 	        $topic_data[$topic_id]['topic_replies'] 	  = $topic_replies;
-			$topic_data[$topic_id]['topic_status'] 		  = $topic_status;
+		$topic_data[$topic_id]['topic_status'] 		  = $topic_status;
 	        $topic_data[$topic_id]['post_time'] 		  = $post_time;
 	        $topic_data[$topic_id]['poster_id'] 		  = $poster_id;
 	        $topic_data[$topic_id]['poster_name'] 		  = $poster_name;
-	        $topic_data[$topic_id]['username'] 			  = $username;
-	        $topic_data[$topic_id]['user_id'] 			  = $user_id;
+	        $topic_data[$topic_id]['username'] 		  = $username;
+	        $topic_data[$topic_id]['user_id'] 		  = $user_id;
 	}
 	$db->sql_freeresult($result);
 
