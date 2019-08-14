@@ -9,8 +9,8 @@
    Copyright (c) 2005 by The Nuke-Evolution Team
   
    Filename      : block-Titanium_Themes.php
-   Author        : Ernest Buffington /  JeFFb68CAM 
-   Websites      : (hub.86it,us)     /  (www.Evo-Mods.com)
+   Author        : Ernest Buffington / JeFFb68CAM 
+   Websites      :(hub.86it,us)      /(www.Evo-Mods.com)
    Version       : 3.0.0
    Date          : 08.13.2019 (mm.dd.yyyy)
                                                                         
@@ -38,3 +38,4 @@ if (is_user()) {
     $content .= "</div><br />\n";
 }
 ?>
+
