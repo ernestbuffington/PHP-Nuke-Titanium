@@ -1,0 +1,194 @@
+<pre>Query:	SELECT COUNT(user_id) AS total
+	FROM nuke_users
+	WHERE user_id &lt;&gt; 1
+
+Time before:  0.0090677738189697
+Time after:   0.0091707706451416
+Elapsed time: <strong>0.00010299682617188</strong>
+</pre><pre>Query:	SELECT SUM(forum_topics) AS topic_total, SUM(forum_posts) AS post_total
+	FROM nuke_bbforums
+
+Time before:  0.009227991104126
+Time after:   0.0093269348144531
+Elapsed time: <strong>9.8943710327148E-5</strong>
+</pre><pre>Query:	SELECT user_id, user_color_gc, username
+	FROM nuke_users
+	WHERE user_id &lt;&gt; 1
+	ORDER BY user_id DESC
+	LIMIT 1
+
+Time before:  0.0093398094177246
+Time after:   0.0094368457794189
+Elapsed time: <strong>9.7036361694336E-5</strong>
+</pre><pre>Query:	SELECT user_regdate
+	FROM nuke_users
+	WHERE user_id = 6
+	LIMIT 1
+
+Time before:  0.009922981262207
+Time after:   0.0099968910217285
+Elapsed time: <strong>7.3909759521484E-5</strong>
+</pre><pre>Query:	SELECT *
+	FROM nuke_bbconfig
+	WHERE config_name = 'record_online_users' OR config_name = 'record_online_date'
+
+Time before:  0.010008811950684
+Time after:   0.010125875473022
+Elapsed time: <strong>0.00011706352233887</strong>
+</pre><pre>Query:	SELECT SUM(user_posts) as total_posts FROM nuke_users WHERE user_id &lt;&gt; 1
+
+Time before:  0.012817859649658
+Time after:   0.01292085647583
+Elapsed time: <strong>0.00010299682617188</strong>
+</pre><pre>Query:	SELECT user_id, user_color_gc, username, user_posts
+	FROM nuke_users
+	WHERE (user_id &lt;&gt; 1 ) AND (user_posts &gt; 0)
+	ORDER BY user_posts DESC
+	LIMIT 10
+
+Time before:  0.01293683052063
+Time after:   0.013049840927124
+Elapsed time: <strong>0.00011301040649414</strong>
+</pre><pre>Query:	SELECT COUNT(topic_id) as total_topics FROM nuke_bbtopics WHERE topic_status &lt;&gt; 2
+
+Time before:  0.015151977539062
+Time after:   0.015247821807861
+Elapsed time: <strong>9.5844268798828E-5</strong>
+</pre><pre>Query:	SELECT u.user_id, u.user_color_gc, u.username, COUNT(t.topic_poster) num_topics
+	FROM nuke_users u, nuke_bbtopics t
+	WHERE (t.topic_poster &lt;&gt; 1) AND (u.user_posts &gt; 0) AND (u.user_id = t.topic_poster)
+	GROUP BY t.topic_poster ORDER BY num_topics DESC
+	LIMIT 10
+
+Time before:  0.015262842178345
+Time after:   0.015489816665649
+Elapsed time: <strong>0.00022697448730469</strong>
+</pre><pre>Query:	SELECT u.user_id, u.user_color_gc, u.username, count(u.user_id) as user_posts
+	FROM nuke_users u, nuke_bbposts p
+	WHERE (u.user_id = p.poster_id) AND (p.post_time &gt; '1541977200') AND (u.user_id &lt;&gt; 1)
+	GROUP BY user_id, username
+	ORDER BY user_posts DESC
+	LIMIT 10
+
+Time before:  0.01752495765686
+Time after:   0.017744779586792
+Elapsed time: <strong>0.00021982192993164</strong>
+</pre><pre>Query:	SELECT u.user_id, u.user_color_gc, u.username, count(u.user_id) as user_posts
+	FROM nuke_users u, nuke_bbposts p
+	WHERE (u.user_id = p.poster_id) AND (p.post_time &gt; '1541026800') AND (u.user_id &lt;&gt; 1)
+	GROUP BY user_id, username
+	ORDER BY user_posts DESC
+	LIMIT 10
+
+Time before:  0.019766807556152
+Time after:   0.019979000091553
+Elapsed time: <strong>0.00021219253540039</strong>
+</pre><pre>Query:	SELECT topic_id, forum_id, topic_title, topic_replies
+	FROM nuke_bbtopics
+	WHERE (topic_status &lt;&gt; 2) AND (topic_replies &gt; 0)
+	ORDER BY topic_replies DESC
+	LIMIT 10
+
+Time before:  0.021991968154907
+Time after:   0.022121906280518
+Elapsed time: <strong>0.00012993812561035</strong>
+</pre><pre>Query:	SELECT forum_id, topic_id, topic_title, topic_views
+	FROM nuke_bbtopics
+	WHERE (topic_status &lt;&gt; 2) AND (topic_views &gt; 0)
+	ORDER BY topic_views DESC
+	LIMIT 10
+
+Time before:  0.024701833724976
+Time after:   0.024864912033081
+Elapsed time: <strong>0.00016307830810547</strong>
+</pre><pre>Query:	SELECT COUNT( word_id ) total_words FROM nuke_bbsearch_wordmatch
+
+Time before:  0.027324914932251
+Time after:   0.027392864227295
+Elapsed time: <strong>6.7949295043945E-5</strong>
+</pre><pre>Query:	SELECT COUNT( swm.word_id ) word_count, swm.word_id word_id, swl.word_text word_text
+	FROM nuke_bbsearch_wordmatch swm, nuke_bbsearch_wordlist swl
+	WHERE swm.word_id = swl.word_id AND swl.word_text != 'nbsp'
+	GROUP BY swm.word_id ORDER BY word_count DESC
+	LIMIT 10
+
+Time before:  0.027409791946411
+Time after:   0.027789831161499
+Elapsed time: <strong>0.00038003921508789</strong>
+</pre><pre>Query:	SELECT YEAR(FROM_UNIXTIME(topic_time)) as year_topic, MONTH(FROM_UNIXTIME(topic_time)) as month_topic, COUNT(*) AS num_topics
+	FROM nuke_bbtopics
+	GROUP BY YEAR(FROM_UNIXTIME(topic_time)), MONTH(FROM_UNIXTIME(topic_time))
+	ORDER BY topic_time
+
+Time before:  0.030149936676025
+Time after:   0.030341863632202
+Elapsed time: <strong>0.00019192695617676</strong>
+</pre><pre>Query:	SELECT * FROM nuke_bbstats_smilies_info
+
+Time before:  0.03243088722229
+Time after:   0.032516956329346
+Elapsed time: <strong>8.6069107055664E-5</strong>
+</pre><pre>Query:	SELECT * FROM nuke_bbstats_smilies_index
+
+Time before:  0.032532930374146
+Time after:   0.032617807388306
+Elapsed time: <strong>8.4877014160156E-5</strong>
+</pre><pre>Query:	SELECT max(post_id) as total FROM nuke_bbposts
+
+Time before:  0.032641887664795
+Time after:   0.032707929611206
+Elapsed time: <strong>6.6041946411133E-5</strong>
+</pre><pre>Query:	SELECT COUNT(post_id) as total FROM nuke_bbposts
+
+Time before:  0.032716989517212
+Time after:   0.032762765884399
+Elapsed time: <strong>4.57763671875E-5</strong>
+</pre><pre>Query:	SELECT smile_url FROM nuke_bbsmilies GROUP BY smile_url
+
+Time before:  0.032770872116089
+Time after:   0.032900810241699
+Elapsed time: <strong>0.00012993812561035</strong>
+</pre><pre>Query:	SELECT topic_id, forum_id, topic_title, topic_replies, topic_views, topic_views/(topic_replies + 1) AS k
+	FROM nuke_bbtopics
+	WHERE (topic_status &lt;&gt; 2) AND (topic_replies &gt; 0)
+	ORDER BY k DESC
+	LIMIT 10
+
+Time before:  0.034637928009033
+Time after:   0.034773826599121
+Elapsed time: <strong>0.00013589859008789</strong>
+</pre><pre>Query:	SELECT topic_id, forum_id, topic_title, topic_replies, topic_views, topic_views/(topic_replies + 1) AS k
+	FROM nuke_bbtopics
+	WHERE (topic_status &lt;&gt; 2) AND (topic_replies &gt; 0)
+	ORDER BY k ASC
+	LIMIT 10
+
+Time before:  0.036781787872314
+Time after:   0.036910772323608
+Elapsed time: <strong>0.00012898445129395</strong>
+</pre><pre>Query:	SELECT SUBSTRING_INDEX(user_regdate,' ',-1) as year_regdate, SUBSTRING_INDEX(user_regdate,' ',1) as month_regdate, COUNT(*) AS num_user
+	FROM nuke_users
+	WHERE (user_id &lt;&gt; 1 )
+	AND SUBSTRING_INDEX(user_regdate, ' ',1) &lt;&gt; 'Non'
+	GROUP BY SUBSTRING_INDEX(user_regdate,' ',-1), SUBSTRING_INDEX(user_regdate,' ',1)
+
+Time before:  0.038988828659058
+Time after:   0.039182901382446
+Elapsed time: <strong>0.00019407272338867</strong>
+</pre><pre>Query:	SELECT YEAR(FROM_UNIXTIME(post_time)) as year_post, MONTH(FROM_UNIXTIME(post_time)) as month_post, COUNT(*) AS num_posts
+	FROM nuke_bbposts
+	GROUP BY YEAR(FROM_UNIXTIME(post_time)), MONTH(FROM_UNIXTIME(post_time))
+	ORDER BY post_time
+
+Time before:  0.041154861450195
+Time after:   0.041335821151733
+Elapsed time: <strong>0.00018095970153809</strong>
+</pre><pre>Query:	SELECT a.post_id, p.forum_id as post_forum_id, t.topic_title, d.*
+	FROM nuke_bbattachments a, nuke_bbattachments_desc d, nuke_bbposts p, nuke_bbtopics t
+	WHERE (a.post_id = p.post_id) AND (p.topic_id = t.topic_id) AND (a.attach_id = d.attach_id) ORDER BY download_count DESC LIMIT 10
+
+Time before:  0.04415488243103
+Time after:   0.044295787811279
+Elapsed time: <strong>0.00014090538024902</strong>
+</pre><pre><strong>The Statistics Mod generated 26 queries,
+spending 0.0035872459411621 doing MySQL queries and 0.042309522628784 doing PHP things.</strong></pre>
