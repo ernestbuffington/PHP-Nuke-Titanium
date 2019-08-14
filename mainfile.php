@@ -51,6 +51,7 @@
 	  NSN Center Blocks                        v2.2.1       05/26/2009
 	  Titanium Defines                         v1.0.0       01/01/2012
 	  Charcter Set Defines                     v1.0.0       01/01/2012
+	  Titanium Custom Functions                v1.0.0       08/14/2019
  ************************************************************************/
 
 if(defined('NUKE_EVO')) return;
@@ -440,6 +441,7 @@ require_once(NUKE_CLASSES_DIR.'class.cache.php');
 #original EVO functions
 require_once(NUKE_INCLUDE_DIR.'functions_evo.php');
 require_once(NUKE_INCLUDE_DIR.'functions_evo_custom.php');
+require_once(NUKE_INCLUDE_DIR.'functions_titanium_custom.php'); 
 
 # validation
 include_once(NUKE_INCLUDE_DIR.'validation.php');
