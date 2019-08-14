@@ -36,19 +36,13 @@ while($whosbeen = $db->sql_fetchrow($result)):
 	$whosbeen['user_from_flag'] = 'unknown';
 	endif;
 
-	if($whosbeen['user_avatar']):
-	$whosbeen['user_avatar'] = str_replace('.png','',$whosbeen['user_avatar']);
-	else:
-	$whosbeen['user_avatar'] = 'blank.png';
-	endif;
-
 	if($whosbeen['user_avatar_type']):
 	$whosbeen['user_avatar_type'] = str_replace('.png','',$whosbeen['user_avatar_type']);
 	else:
 	$whosbeen['user_avatar_type'] = '3';
 	endif;
 
-        $content .= '<td></td>';
+    $content .= '<td></td>';
 	$content .= '<tr>';
 	//$content .= '<td><span class="countries '.$whosbeen['user_from_flag'].'"></span>&nbsp;<a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.UsernameColor($whosbeen['username']).'</a></td>';
 	$content .= '</tr>';
@@ -74,7 +68,7 @@ while($whosbeen = $db->sql_fetchrow($result)):
 	   }
 	}
 	$content .= '<td width="45px"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
-        $content .= '<td><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'"><strong>'.UsernameColor($whosbeen['username']).'</strong></a></td>';
+    $content .= '<td><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'"><strong>'.UsernameColor($whosbeen['username']).'</strong></a></td>';
 	$content .= '<td><div align="top" style="padding-left:10px;"><br />'.get_timeago($whosbeen['last_visit']).'</div></td>';
 	$content .= '</tr>'; 
 
