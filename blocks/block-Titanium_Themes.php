@@ -5,8 +5,8 @@
  
 /************************************************************************
    PHP-Nuke Titanium v3.0.0
-   ============================================
-   Copyright (c) 2005 by The Nuke-Evolution Team
+   ======================================================================
+   Copyright (c) 2019 by The PHP-Nuke Titanium Team
   
    Filename      : block-Titanium_Themes.php
    Author        : Ernest Buffington / JeFFb68CAM 
@@ -38,4 +38,5 @@ if (is_user()) {
     $content .= "</div><br />\n";
 }
 ?>
+
 
