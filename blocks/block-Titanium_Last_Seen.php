@@ -68,7 +68,7 @@ while($whosbeen = $db->sql_fetchrow($result)):
 	   }
 	}
 	$content .= '<td width="45px"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
-        $content .= '<td><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'"><strong>'.UsernameColor($whosbeen['username']).'</strong></a></td>';
+    $content .= '<td><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'"><strong>'.UsernameColor($whosbeen['username']).'</strong></a></td>';
 	$content .= '<td><div align="top" style="padding-left:10px;"><br />'.get_titanium_timeago($whosbeen['last_visit']).'</div></td>';
 	$content .= '</tr>'; 
 

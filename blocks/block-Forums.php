@@ -1,22 +1,4 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
- =======================================================================*/
- 
-/************************************************************************
-   PHP-Nuke Titanium v3.0.0
-   ======================================================================
-   Copyright (c) 2019 by The PHP-Nuke Titanium Team
-  
-   Filename      : block-Titanium_Forums.php
-   Author        : Ernest Buffington / Lonestar 
-   Websites      : (hub.86it.us)     / (lonestar-modules.com)
-   Version       : 3.0.0
-   Date          : 08.13.2019 (mm.dd.yyyy)
-                                                                        
-   Notes         : Simple forums block to allow the display of the last
-                   10 Forum posts.
-************************************************************************/
 if(!defined('NUKE_TITANIUM')) 
 exit;
 
