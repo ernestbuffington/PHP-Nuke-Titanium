@@ -49,8 +49,11 @@ class cache
     var $ttl = 0;
     var $zend;
 
-    // constructor
-    function cache($use_cache) {
+    # constructor fixed 08/16/2019 by Ernest Buffington
+    # function cache($use_cache) { <---- BAD
+	# Deprecated: Methods with the same name as their class will not be constructors 
+	# cache had a deprecated constructor
+	function __construct($use_cache) {	
         $this->type = $use_cache;
         $this->valid = ($this->type == CACHE_OFF || ($this->type == FILE_CACHE && (!is_writable(NUKE_CACHE_DIR) || ini_get('safe_mode')))) ? false : (($this->type == FILE_CACHE || $this->type == SQL_CACHE || $this->type == XCACHE || $this->type == APC_CACHE || $this->type == MEMCACHED) ? true : false);
         if($this->type == FILE_CACHE) {
