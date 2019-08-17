@@ -2,7 +2,7 @@
 /*=======================================================================
  PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
-
+// LOri's Phone Number 229-300-1845
 /************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                         */
 /* ============================================                         */
@@ -397,6 +397,32 @@ require_once(NUKE_DB_DIR.'db.php');
 # Include Error Logger and identify class
 require_once(NUKE_CLASSES_DIR.'class.identify.php');
 
+require_once(NUKE_CLASSES_DIR.'class.compatibility.php');
+require_once(NUKE_CLASSES_DIR.'class.filelogger.php');
+require_once(NUKE_CLASSES_DIR.'class.packageInfo.php');
+
+use titanium\fileLogger\Compatibility;
+use titanium\fileLogger\CompatibilityException;
+use titanium\fileLogger\FileLogger;
+use titanium\fileLogger\PackageInfo as FLPackageInfo;
+
+try {
+    $compat = Compatibility::check();
+} 
+catch(CompatibilityException $e)
+{
+    die($e->getMessage());
+}
+
+$log = new FileLogger(NUKE_INCLUDE_DIR . '/log/error.log');
+
+
+//log examples
+//$log->log('Example Notice', FileLogger::NOTICE);
+//$log->log('Example Warning', FileLogger::WARNING);
+//$log->log('Example Error', FileLogger::ERROR);
+//$log->log('Example Fatal', FileLogger::FATAL);
+
 global $agent;
 
 $identify = new identify();
@@ -441,6 +467,7 @@ require_once(NUKE_CLASSES_DIR.'class.cache.php');
 #original EVO functions
 require_once(NUKE_INCLUDE_DIR.'functions_evo.php');
 require_once(NUKE_INCLUDE_DIR.'functions_evo_custom.php');
+require_once(NUKE_INCLUDE_DIR.'functions_titanium.php');
 require_once(NUKE_INCLUDE_DIR.'functions_titanium_custom.php'); 
 
 # validation
@@ -891,7 +918,7 @@ function blockfileinc($blockfiletitle, $blockfile, $side=1, $bid) {
 }
 
 function rss_content($url) {
-    if (!evo_site_up($url)) return false;
+    if (!titanium_site_up($url)) return false;
     require_once(NUKE_CLASSES_DIR.'class.rss.php');
     if ($rss = RSS::read($url)) {
         $items =& $rss['items'];
