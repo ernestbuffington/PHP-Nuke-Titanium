@@ -26,7 +26,9 @@ if ($img_resize)
 		$JStoBody .= '  var reimg_maxWidth          = '.$board_config['image_resize_width'].', reimg_maxHeight = '.$board_config['image_resize_height'].', reimg_relWidth = 0;'.PHP_EOL;
 	$JStoBody .= '  var reimg_swapPortrait      = true;'.PHP_EOL;
 	$JStoBody .= '  var reimg_loadingImg        = "images/spacer.gif";'.PHP_EOL;
-	$JStoBody .= '  var reimg_loadingStyle      = "width: 126px; height: 22px; background: url(./includes/css/images/reimg-image-resizer/loading.gif) top left no-repeat;";'.PHP_EOL;
+	
+	$JStoBody .= '  var reimg_loadingStyle      = "width: 126px; height: 22px; background: url(./includes/css/images/reimg-image-resizer/loading.gif) top middle no-repeat;";'.PHP_EOL;
+	
 	$JStoBody .= '  var reimg_loadingAlt        = "Loading...";'.PHP_EOL;
 	$JStoBody .= '  var reimg_borderBackground  = true;'.PHP_EOL;
 	$JStoBody .= '  var reimg_autoLink          = true;'.PHP_EOL;
