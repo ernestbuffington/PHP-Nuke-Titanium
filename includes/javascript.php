@@ -282,8 +282,8 @@ include(NUKE_JQUERY_INCLUDE_DIR.'jquery.tooltipster.php');
  [ Mod:     jQuery                             v1.5.0 ]
  ******************************************************/
 
-addJSToBody(NUKE_JQUERY_SCRIPTS_DIR.'Evo.EE.js','file');
-addJSToBody(NUKE_JQUERY_SCRIPTS_DIR.'Evo.EE.CMD.js','file');
+//addJSToBody(NUKE_JQUERY_SCRIPTS_DIR.'Evo.EE.js','file');
+//addJSToBody(NUKE_JQUERY_SCRIPTS_DIR.'Evo.EE.CMD.js','file');
 
 global  $analytics;
 if (!empty($analytics)) {
