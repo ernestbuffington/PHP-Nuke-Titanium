@@ -1,32 +1,54 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
-    <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" />
-        <title>Access Denied</title>
-        <style type="text/css">
-            h1.myclass {font-size: 11pt; font-style: normal; text-align: center}
-            h1.myclass2 {font-size: 20pt; font-style: normal; color: red; text-align: center}
-        </style>
-    </head>
-    <body>
-        <table border="1" width="100%">
-            <tr><td align="center">
-                <h1 class="myclass2">
-                Access Denied
-                </h1>
-            </td></tr>
+<!DOCTYPE html>
+<html>
+    <title>Access Denied</title>
+    <style type="text/css">
+    	body {
+    		background-color: #f1f1f1;
+    		font-family:Helvetica, sans-serif;
+    	}
 
-            <tr><td align="center">
-                <h1 class="myclass">
-                This is a restricted area which you should not be trying to access!<br />
-                Please <a href="/index.php">return</a> to the mainsite.
-                </h1>
-                <br />
-                <img src="/images/logo.gif" alt="" />
-            </td></tr>
-        </table>
-        <p>
-            <a href="http://validator.w3.org/check?uri=referer"><img src="http://www.w3.org/Icons/valid-xhtml10" alt="Valid XHTML 1.0 Strict" height="31" width="88" /></a>
-        </p>
-    </body>
+    	a {
+    		text-decoration: none;
+    	}
+
+    	h1 
+		{
+			color: red;
+			
+			font-size: 24pt;
+			font-style:italic;
+		}
+		
+    	.access-denied-panel {
+    		width: 50%;
+		    position: relative;
+		    overflow: auto;
+		    margin: 16px 0;
+		    padding: 10px 0 10px;
+		    border: 1px solid #e5e5e5;
+		    box-shadow: 0 1px 1px rgba(0,0,0,.04);
+		    background: #fff;
+		    font-size: 13px;
+		    line-height: 2.1em;
+		    margin: auto;
+		    margin-top:10%;
+		}
+
+		.access-denied-text {
+			text-align: center;
+			white-space: nowrap;
+		}
+
+		.access-denied-message {
+			text-align: center;
+		}
+
+	</style>
+  </head>
+  <body>
+    <div id="access-denied-panel" class="access-denied-panel">
+    	<div class="access-denied-text"><h1>Access Denied</h1></div>
+    	<div class="access-denied-message">This is a restricted area which you should not be trying to access!<br />Please <a href="/index.php">return</a> to the mainsite.</div>
+    </div>
+  </body>
 </html>
