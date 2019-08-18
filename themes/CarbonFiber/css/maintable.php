@@ -273,6 +273,42 @@ define('CENTER_CONTAIN', 'background-repeat: no-repeat;
 					  z-index: 20;
 					  background-size: auto;');
 					  
+$blow_it_out_your_ass = 'dark.png';  
+define('TABLE3_MIDDLEHEADER_BACKGROUND', '"themes/'.$theme_name.'/images/backgrounds/'.$blow_it_out_your_ass.'"'); 
+define('TABLE3_MIDDLEHEADER_CONTAIN', 'background-repeat: repeat-y | repeat-x;
+                                      background-position: CENTER CENTER; 
+					                                          width 100%;
+					                                         height 100%;
+					                                        opacity: 100;
+					                                blow-it-out: yourass;
+												     visibility: inherit;
+					                                         z-index: 20;
+					                               background-size: auto;');
+########################################################################################################
+$blow_it_out_your_ass = 'block_repeat_y_fix.png';  
+define('THEME_ARTICLE_BACKGROUND', '"themes/'.$theme_name.'/images/backgrounds/'.$blow_it_out_your_ass.'"'); 
+define('THEME_ARTICLE_CONTAIN', 'background-repeat: repeat-y | repeat-x;
+                                      background-position: CENTER CENTER; 
+					                                          width 100%;
+					                                         height 100%;
+					                                        opacity: 100;
+					                                blow-it-out: yourass;
+												     visibility: inherit;
+					                                         z-index: 20;
+					                               background-size: auto;');
+########################################################################################################
+$lori_is_a_sadist_sociapath = 'block_repeat_y_fix.png';  
+define('THEME_INDEX_BACKGROUND', '"themes/'.$theme_name.'/images/backgrounds/'.$lori_is_a_sadist_sociapath.'"'); 
+define('THEME_INDEX_CONTAIN', 'background-repeat: repeat-y | repeat-x;
+                                      background-position: CENTER CENTER; 
+					                                          width 100%;
+					                                         height 100%;
+					                                        opacity: 100;
+					                                blow-it-out: yourass;
+												     visibility: inherit;
+					                                         z-index: 20;
+					                               background-size: auto;');
+########################################################################################################
 ?>
 <?
 echo 'greatminds {'."\n";
@@ -353,6 +389,48 @@ background-image:
 }
 
 table.emiddleblock {
+    background: url(<?php echo SIDEBLOCK_BACKGROUND; ?>);
+	<?php echo SIDEBLOCK_CONTAIN; ?>
+}
+.topics_middleflames {
+    background: url(<?php echo TABLE3_MIDDLEHEADER_BACKGROUND; ?>); /* CarbinFiber background - TheGhost add 08/04/2019 */
+	<?php echo TABLE3_MIDDLEHEADER_CONTAIN; ?>
+}
+
+.themearticleflames
+{
+background-color: black;	
+background-image: 
+    url(themes/<?=$theme_name?>/images/backgrounds/topright.png), /* top black glass - TheGhost add 08/04/2019 */
+    url(themes/<?=$theme_name?>/images/backgrounds/sidebox_bottom.png); /* bottom flames - TheGhost add 08/04/2019 */
+  background-position:
+    top right, 
+    bottom left; 
+  background-repeat: 
+    repeat-x; /* this makes the top glass block and the bottom flame block repaete from left to right and vice vs - TheGhost add 08/04/2019 */ 
+	
+}
+
+table.themearticleblock {
+    background: url(<?php echo SIDEBLOCK_BACKGROUND; ?>);
+	<?php echo SIDEBLOCK_CONTAIN; ?>
+}
+
+.themeindexflames
+{
+background-color: black;	
+background-image: 
+    url(themes/<?=$theme_name?>/images/backgrounds/topright.png), /* top black glass - TheGhost add 08/04/2019 */
+    url(themes/<?=$theme_name?>/images/backgrounds/sidebox_bottom.png); /* bottom flames - TheGhost add 08/04/2019 */
+  background-position:
+    top right, 
+    bottom left; 
+  background-repeat: 
+    repeat-x; /* this makes the top glass block and the bottom flame block repaete from left to right and vice vs - TheGhost add 08/04/2019 */ 
+	
+}
+
+table.themeindexblock {
     background: url(<?php echo SIDEBLOCK_BACKGROUND; ?>);
 	<?php echo SIDEBLOCK_CONTAIN; ?>
 }
