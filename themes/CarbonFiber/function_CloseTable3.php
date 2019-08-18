@@ -40,18 +40,18 @@ function CloseTable3()
 	
 echo '';
 echo '</td>';
-echo '<td background="themes/CarbinFiber/tables/CloseTable/rightside.gif"><img name="rightside" src="themes/CarbinFiber/tables/CloseTable/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
+echo '<td background="themes/'.$theme_name.'/center/right_side.gif"><img name="rightside" src="themes/'.$theme_name.'/center/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
 echo '</tr>';
 echo '<tr>';
-echo '<td><img name="blc" src="themes/CarbinFiber/tables/CloseTable/blc.gif" width="20" height="25" border="0" alt=""></td>';
+echo '<td><img name="blc" src="themes/'.$theme_name.'/center/blc.gif" width="20" height="25" border="0" alt=""></td>';
 echo '';
-echo '<td background="themes/CarbinFiber/tables/CloseTable/tbm.gif"><img name="tbm" src="themes/CarbinFiber/tables/CloseTable/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
-echo '<td><img name="brc" src="themes/CarbinFiber/tables/CloseTable/brc.gif" width="20" height="25" border="0" alt=""></td>';
+echo '<td background="themes/'.$theme_name.'/center/tbm.gif"><img name="tbm" src="themes/'.$theme_name.'/center/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
+echo '<td><img name="brc" src="themes/'.$theme_name.'/center/brc.gif" width="20" height="25" border="0" alt=""></td>';
 echo '</tr></table>';
 
 echo '<table>';
 echo '<tr>';
-echo " <td style=\"width: 1px;\" valign =\"top\"><img src=\"themes/CarbinFiber/images/invisible_pixel.gif\" alt=\"\" width=\"1\" height=\"1\" border=\"0\" /></td>\n";
+echo '<td style="width: 1px;" valign ="top"><img src="themes/'.$theme_name.'/images/invisible_pixel.gif" alt="" width="1" height="1" border="0" /></td>';
 echo '</tr>';
 echo '</table>';
 echo '</middle>';
