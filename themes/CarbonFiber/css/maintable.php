@@ -262,6 +262,16 @@ define('CENTER_CONTAIN', 'background-repeat: no-repeat;
 					                       z-index: 20;
 					            background-size: cover;');
 ########################################################################################################
+   //USE background-position: CENTER CENTER; to squuze top to bottom 
+   define('E_MIDDLEHEADER_BACKGROUND', '"../../../themes/'.$theme_name.'/images/backgrounds/block_repeat_y_fix.png"'); 
+   define('E_MIDDLEHEADER_CONTAIN', 'background-repeat: repeat-y | repeat-x;
+                      background-position: CENTER CENTER; 
+					  width 100%;
+					  height 100%;
+					  opacity: 100;
+					  visibility: inherit;
+					  z-index: 20;
+					  background-size: auto;');
 					  
 ?>
 <?
@@ -328,4 +338,22 @@ table.center {
 	<?php echo CENTER_CONTAIN; ?>
 }
 
+.emiddleflames
+{
+background-color: black;	
+background-image: 
+    url(themes/<?=$theme_name?>/images/backgrounds/topright.png),       /* top black glass - TheGhost add 08/04/2019 */
+    url(themes/<?=$theme_name?>/images/backgrounds/sidebox_bottom.png); /* bottom flames - TheGhost add 08/04/2019 */
+  background-position:
+    top right, 
+    bottom left; 
+  background-repeat: 
+    repeat-x; /* this makes the top glass block and the bottom flame block repaete from left to right and vice vs - TheGhost add 08/04/2019 */ 
+	
+}
+
+table.emiddleblock {
+    background: url(<?php echo SIDEBLOCK_BACKGROUND; ?>);
+	<?php echo SIDEBLOCK_CONTAIN; ?>
+}
 <?
