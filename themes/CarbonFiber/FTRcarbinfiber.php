@@ -195,14 +195,12 @@ echo '</td>';
 echo '</tr>';
 
 echo '</table>';
-
 echo '</div>';
 
 echo '</footer>';
-
 echo '</div>';
 
-    if (!empty($banners)):
+if (!empty($banners)):
         echo '<div class="center">'.ads(2).'</div>';
 endif;
 ?>
