@@ -36,14 +36,7 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME']))
 /*--------------------------*/
 function OpenTable4() 
 {
-echo '<section id="flex-container">'
-    .'<div class="tb1"></div>'
-    .'<div class="tb2"></div>'
-    .'<div class="tb3"></div>'
-    .'</section>'
 
-    .'<section id="flex-container" class="body-background2">'
-    .'<div class="tb4"></div>'
-    .'<div class="tb5">';
+
 }
 ?>

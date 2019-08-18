@@ -78,57 +78,19 @@ $posted = _POSTEDON.' '.$datetime.' '._BY.' ';
 $posted .= get_author($aid);
 $reads = '( <span style="color: yellow;">Reads</span>: <span style="color: red;">'.$counter.'</span> )';
 
-$blow_it_out_your_ass = 'block_repeat_y_fix.png';  
-define('THEME_ARTICLE_BACKGROUND', '"themes/'.$theme_name.'/images/backgrounds/'.$blow_it_out_your_ass.'"'); 
-define('THEME_ARTICLE_CONTAIN', 'background-repeat: repeat-y | repeat-x;
-                                      background-position: CENTER CENTER; 
-					                                          width 100%;
-					                                         height 100%;
-					                                        opacity: 100;
-					                                blow-it-out: yourass;
-												     visibility: inherit;
-					                                         z-index: 20;
-					                               background-size: auto;');
-
-?>
-<style type="text/css">
-/*
- * function_themearticle.php - Center Content - TheGhost 08/04/2019
- *-------------------------------------------------------------------
-*/
-.themearticleflames
-{
-background-color: black;	
-background-image: 
-    url(themes/<?=$theme_name?>/images/backgrounds/topright.png), /* top black glass - TheGhost add 08/04/2019 */
-    url(themes/<?=$theme_name?>/images/backgrounds/sidebox_bottom.png); /* bottom flames - TheGhost add 08/04/2019 */
-  background-position:
-    top right, 
-    bottom left; 
-  background-repeat: 
-    repeat-x; /* this makes the top glass block and the bottom flame block repaete from left to right and vice vs - TheGhost add 08/04/2019 */ 
-	
-}
-
-table.themearticleblock {
-    background: url(<?php echo THEME_ARTICLE_BACKGROUND; ?>); /* CarbinFiber background - TheGhost add 08/04/2019 */
-	<?php echo THEME_ARTICLE_CONTAIN; ?>
-}
-</style> 
-<?
 //top of first table	
 echo '<table class="themearticleblock" border="0" width="100%" cellspacing="0" cellpadding="0">';
 echo '';
 echo '<tr>';
-echo '<td align="left" width="38" height="62"><img border="0" src="themes/CarbinFiber/tables/OpenTable/top_left_block.png" /></td>';
-echo '<td background="themes/CarbinFiber/tables/OpenTable/top_middle_block.png" ></td>';
-echo '<td height="62" background="themes/CarbinFiber/tables/OpenTable/top_middle_block.png" align="center" valign="bottom"></td>';
-echo '<td background="themes/CarbinFiber/tables/OpenTable/top_middle_block.png" align="center" ></td>';
-echo '<td align="right" width="38"><img border="0" src="themes/CarbinFiber/tables/OpenTable/top_right_block.png" width="38" height="62" /></td>';
+echo '<td align="left" width="38" height="62"><img border="0" src="themes/'.$theme_name.'/center/top_left_corner.png" /></td>';
+echo '<td background="themes/'.$theme_name.'/center/top_middle.png" ></td>';
+echo '<td height="62" background="themes/'.$theme_name.'/center/top_middle.png" align="center" valign="bottom"></td>';
+echo '<td background="themes/'.$theme_name.'/center/top_middle.png" align="center" ></td>';
+echo '<td align="right" width="38"><img border="0" src="themes/'.$theme_name.'/center/top_right_corner.png" width="38" height="62" /></td>';
 echo '</tr>';
 echo '';
 echo '<tr>';
-echo '<td background="themes/CarbinFiber/tables/OpenTable/left_middle_block.png" width="38"></td>';
+echo '<td background="themes/'.$theme_name.'/center/left_side.png" width="38"></td>';
 echo '<td ></td>';
 echo '<td >';
 echo '';
@@ -137,31 +99,31 @@ echo '';
 //top of second table	
 echo '<table class="" border="0" align=center cellpadding="0" cellspacing="0" width="100%">';
 echo '<tr>';
-echo '<td><img name="tlc" src="themes/CarbinFiber/tables/OpenTable/tlc.gif" width="20" height="25" border="0" alt=""></td>';
-echo '<td width="100%" background="themes/CarbinFiber/tables/OpenTable/tm.gif"><img name="tm" src="themes/CarbinFiber/tables/OpenTable/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
-echo '<td><img name="trc" src="themes/CarbinFiber/tables/OpenTable/trc.gif" width="20" height="25" border="0" alt=""></td>';
+echo '<td><img name="tlc" src="themes/'.$theme_name.'/center/tlc.gif" width="20" height="25" border="0" alt=""></td>';
+echo '<td width="100%" background="themes/'.$theme_name.'/center/tm.gif"><img name="tm" src="themes/'.$theme_name.'/center/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
+echo '<td><img name="trc" src="themes/'.$theme_name.'/center/trc.gif" width="20" height="25" border="0" alt=""></td>';
 echo '</tr>';
 echo '<tr>';
-echo '<td background="themes/CarbinFiber/tables/OpenTable/leftside.gif"><img name="leftside" src="themes/CarbinFiber/tables/OpenTable/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
+echo '<td background="themes/'.$theme_name.'/center/left_side.gif"><img name="leftside" src="themes/'.$theme_name.'/center/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
 
 //this is where we add the class name for the innermost cell of the 2 tables - top glass and bottom flame repeat-x
 echo '<td id="middlebg" class="themearticleflames" height"0" valign="top" >';
 //title
-echo '<div align="left" id="locator" class="title"><img src="themes/CarbinFiber/images/invisible_pixel.gif" alt="" width="4" height="1" border="0" /><strong>'.$title.'</strong><br /></div>';
+echo '<div align="left" id="locator" class="title"><img src="themes/'.$theme_name.'/images/invisible_pixel.gif" alt="" width="4" height="1" border="0" /><strong>'.$title.'</strong><br /></div>';
 
 //content
 echo '<div align="left" id="text">';
 echo ''.$content.'</div>';	
-echo '<div align="right">'.$posted.'<img src="themes/CarbinFiber/images/invisible_pixel.gif" alt="" width="4" height="1" border="0" /><br />'.$reads.'<img src="themes/CarbinFiber/images/invisible_pixel.gif" alt="" width="4" height="1" border="0" /></div>';
+echo '<div align="right">'.$posted.'<img src="themes/'.$theme_name.'/images/invisible_pixel.gif" alt="" width="4" height="1" border="0" /><br />'.$reads.'<img src="themes/'.$theme_name.'/images/invisible_pixel.gif" alt="" width="4" height="1" border="0" /></div>';
 echo '';
 echo '</td>';
-echo '<td background="themes/CarbinFiber/tables/CloseTable/rightside.gif"><img name="rightside" src="themes/CarbinFiber/tables/CloseTable/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
+echo '<td background="themes/'.$theme_name.'/center/right_side.gif"><img name="rightside" src="themes/'.$theme_name.'/center/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
 echo '</tr>';
 echo '<tr>';
-echo '<td><img name="blc" src="themes/CarbinFiber/tables/CloseTable/blc.gif" width="20" height="25" border="0" alt=""></td>';
+echo '<td><img name="blc" src="themes/'.$theme_name.'/center/blc.gif" width="20" height="25" border="0" alt=""></td>';
 echo '';
-echo '<td background="themes/CarbinFiber/tables/CloseTable/tbm.gif"><img name="tbm" src="themes/CarbinFiber/tables/CloseTable/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
-echo '<td><img name="brc" src="themes/CarbinFiber/tables/CloseTable/brc.gif" width="20" height="25" border="0" alt=""></td>';
+echo '<td background="themes/'.$theme_name.'/center/tbm.gif"><img name="tbm" src="themes/'.$theme_name.'/center/invisible_pixel.gif" width="1" height="1" border="0" alt=""></td>';
+echo '<td><img name="brc" src="themes/'.$theme_name.'/center/brc.gif" width="20" height="25" border="0" alt=""></td>';
 echo '</tr>';
 echo '</table>';
 
@@ -169,24 +131,24 @@ echo '</table>';
 echo '';
 echo '</td>';
 echo '<td ></td>';
-echo '<td class="turdball" background="themes/CarbinFiber/tables/CloseTable/right_middle_block.png" width="38"></td>';
+echo '<td background="themes/'.$theme_name.'/center/right_side.png" width="38"></td>';
 echo '</tr>';
 echo '';
 echo '<tr>';
-echo '<td align="left" width="38" height="62"><img border="0" src="themes/CarbinFiber/tables/CloseTable/blc.png" /></td>';
+echo '<td align="left" width="38" height="62"><img border="0" src="themes/'.$theme_name.'/center/bottom_left_corner.png" /></td>';
 echo '';
-echo '<td background="themes/CarbinFiber/tables/CloseTable/bottom_middle1.png" ></td>';
-echo '<td height="62" background="themes/CarbinFiber/tables/CloseTable/bottom_middle1.png" align="center" valign="top"><h1></h1></td>';
-echo '<td height="62" background="themes/CarbinFiber/tables/CloseTable/bottom_middle1.png" align="center" ></td>';
+echo '<td background="themes/'.$theme_name.'/center/bottom_middle.png" ></td>';
+echo '<td height="62" background="themes/'.$theme_name.'/center/bottom_middle.png" align="center" valign="top"><h1></h1></td>';
+echo '<td height="62" background="themes/'.$theme_name.'/center/bottom_middle.png" align="center" ></td>';
 echo '';
-echo '<td align="right" width="38"><img border="0" src="themes/CarbinFiber/tables/CloseTable/brc.png" width="38" height="62" /></td>';
+echo '<td align="right" width="38"><img border="0" src="themes/'.$theme_name.'/center/bottom_right_corner.png" width="38" height="62" /></td>';
 echo '</tr>';
 echo '</table>';
 
 //invisible spacer for tables instead of <br/>
 echo '<table>';
 echo '<tr>';
-echo " <td style=\"width: 1px;\" valign =\"top\"><img src=\"themes/CarbinFiber/images/invisible_pixel.gif\" alt=\"\" width=\"1\" height=\"1\" border=\"0\" /></td>\n";
+echo '<td style="width: 1px;" valign ="top"><img src="themes/'.$theme_name.'/images/invisible_pixel.gif" alt="" width="1" height="1" border="0" /></td>';
 echo '</tr>';
 echo '</table>';
 echo '</middle>';
