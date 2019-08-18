@@ -79,6 +79,10 @@ include_once(carbinfiber_theme_dir.'function_OpenTable.php');
 include_once(carbinfiber_theme_dir.'function_CloseTable.php');
 include_once(carbinfiber_theme_dir.'function_OpenTable2.php');
 include_once(carbinfiber_theme_dir.'function_OpenTable2.php');
+include_once(carbinfiber_theme_dir.'function_OpenTable3.php');
+include_once(carbinfiber_theme_dir.'function_OpenTable3.php');
+include_once(carbinfiber_theme_dir.'function_OpenTable4.php');
+include_once(carbinfiber_theme_dir.'function_OpenTable4.php');
 
 #---------------------#
 # FormatStory Section #
