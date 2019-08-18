@@ -37,8 +37,8 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) exit('Access De
 
 global $customlang, 
         $ThemeInfo, 
-		  $banners, 
-	   $theme_name;
+	  $banners, 
+       $theme_name;
 
 //if(blocks_visible('right') && !defined('ADMIN_FILE')):
 
@@ -48,21 +48,21 @@ global
 	    $user, 
 	 $banners, 
 	  $cookie, 
-         $dbi, 
-		  $db, 
+             $dbi, 
+	      $db, 
 	   $admin, 
-   $adminmail, 
-  $total_time, 
-  $start_time, 
-       $foot1, 
+       $adminmail, 
+      $total_time, 
+      $start_time, 
+           $foot1, 
 	   $foot2, 
 	   $foot3, 
 	   $foot4, 
 	 $nukeurl, 
 	      $ip, 
-  $theme_name, 
-   $ThemeInfo,
-      $prefix;
+      $theme_name, 
+       $ThemeInfo,
+          $prefix;
 
 
 if(blocks_visible('right')) 
