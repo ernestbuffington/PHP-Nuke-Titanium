@@ -813,10 +813,10 @@ $cache->save('sommaire_row3', 'block', $row3);
                     if ($incategories==0) {
                         $flagmenu = $flagmenu+1;
                         if ($flagmenu==1) {
-                            $content .="<hr><div align=\"center\">"._SOMMAIREADMINVIEWALLMODULES."</div><br />";   // si il y a des modules affichés en rubrique 99, on affiche avant une ligne horizontale
+                            $content .="<hr><div align=\"center\">"._SOMMAIREADMINVIEWALLMODULES."<br />";   // si il y a des modules affichés en rubrique 99, on affiche avant une ligne horizontale
         $content.="<form action=\"modules.php\" method=\"get\" name=\"sommaireformlistboxvisibles\">"
                         ."<select width=\"100%\" name=\"somlistboxvisibles\" onchange=\"sommaire_envoielistbox(this.options[this.selectedIndex].value)\">"
-                        ."<option value=\"select\">"._SOMSELECTALINK."";
+                        ."<option value=\"select\">"._SOMSELECTALINK."</div>";
                         }
                             $content .= "<option value=\"modules.php?name=$module[$z]\">$customtitle2</option>\n";
                     }
@@ -842,13 +842,15 @@ if ($is_admin===1) {
 
     $key=count($module); // $key va permettre de se positionner dans $module[] pour rajouter des modules à la fin
 
-    $content .= "<br /><center><strong>"._INVISIBLEMODULES."</strong><br />";
-    $content .= "<span class=\"tiny\">"._ACTIVEBUTNOTSEE."</span></center>";
-    if (!($a == 1 AND $dummy != 1)) {
+    $content .= '<br /><div align="center"><strong>'._INVISIBLEMODULES.'</strong><br />';
+    $content .= '<span class="tiny">'._ACTIVEBUTNOTSEE.'</span>';
+    if (!($a == 1 AND $dummy != 1)) 
+	{
         $content.="<form action=\"modules.php\" method=\"get\" name=\"sommaireformlistboxinvisibles\">"
                         ."<select name=\"somlistboxinvisibles\" onchange=\"sommaire_envoielistbox(this.options[this.selectedIndex].value)\">"
-                        ."<option value=\"select\">"._SOMSELECTALINK."";
-        $sql = "SELECT title, custom_title FROM ".$prefix."_modules WHERE active='1' AND inmenu='0' AND `title` NOT LIKE '~l~%' ORDER BY title ASC";
+                        ."<option value=\"select\">"._SOMSELECTALINK."</div>";
+    
+	    $sql = "SELECT title, custom_title FROM ".$prefix."_modules WHERE active='1' AND inmenu='0' AND `title` NOT LIKE '~l~%' ORDER BY title ASC";
         $result = $db->sql_query($sql);
         while ($row = $db->sql_fetchrow($result)) {
             $module[$key]=$row['title'];
@@ -872,12 +874,12 @@ if ($is_admin===1) {
         $content .= "<br /><strong><big>&middot;</big></strong>&nbsp;<i>"._NONE."</i><br />\n";
     }
 
-    $content .= "<br /><center><strong>"._NOACTIVEMODULES."</strong><br />";
-    $content .= "<span class=\"tiny\">"._FORADMINTESTS."</span></center>";
+    $content .= '<br /><div align="center"><strong>'._NOACTIVEMODULES.'</strong><br />';
+    $content .= '<span class="tiny">'._FORADMINTESTS.'</span>';
     if (!($a == 1 AND $dummy != 1)) {
         $content.="<form action=\"modules.php\" method=\"get\" name=\"sommaireformlistboxinactifs\">"
                 ."<select name=\"somlistboxinactifs\" onchange=\"sommaire_envoielistbox(this.options[this.selectedIndex].value)\">"
-                ."<option value=\"select\">"._SOMSELECTALINK."";
+                ."<option value=\"select\">"._SOMSELECTALINK."</div>";
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
