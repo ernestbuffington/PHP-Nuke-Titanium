@@ -2,7 +2,7 @@
 /*=======================================================================
  PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
-
+// LOri's Phone Number 229-300-1845
 /************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                         */
 /* ============================================                         */
@@ -68,8 +68,7 @@ define("_LANGCODE","en");
 define("_MIME", "text/html"); 
 
 # Define Titanium Engine Information
-define_once('NUKE_TITANIUM', '3.0.0');
-define('TITANIUM_BUILD', 2034); 
+define_once('NUKE_TITANIUM', '3.0.0'); 
 define_once('TITANIUM_EDITION', 'Network');
 define_once('TITANIUM_VERSION', NUKE_TITANIUM . ' ' . TITANIUM_EDITION);
 

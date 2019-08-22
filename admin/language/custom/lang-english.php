@@ -97,7 +97,7 @@ define("_POLLRANDOM", "Show a random Survey");
 // define("_TRACKER_HEAD_MSG","Message");
 
 // define("_TRACKER_UP","UPDATED");
-// define("_TRACKER_BACK","Back");
+define("_TRACKER_BACK","Back");
 // define("_TRACKER_CLEAR", "Clear Log");
 
 // define("_TRACKER_ERR_OPEN","Failed to open admin.log");
@@ -111,25 +111,25 @@ define("_POLLRANDOM", "Show a random Survey");
 /*****[BEGIN]******************************************
  [ Mod:     Evolution Version Checker          v1.0.0 ]
  ******************************************************/
-// define("_ADMIN_VER_TITLE","Nuke-Evolution Xtreme Version Checker");
-// define("_ADMIN_VER_ERRCON","Could not connect to www.evolution-xtreme.com");
-// define("_ADMIN_VER_ERRSQL","Could not retrieve version from Database");
-// define("_ADMIN_VER_CHG","There is a new version of Evolution-Xtreme");
-// define("_ADMIN_VER_VIEW","View New Version");
-// define("_ADMIN_VER_CUR","Your version is current");
-// define("_CHECKVER", "Click Here to check version");
-// define("_VER_ERR_CON","Could not connect to <a href='http://www.evolution-xtreme.com'>Evolution-Xtreme</a>");
-// define("_VER_ERR_CHG","There was a problem with accessing the Changed Log");
-// define("_VER_TITLE","Nuke-Evolution Xtreme Version");
-// define("_VER_VER","The current version is:");
-// define("_VER_YOURVER","Your version is:");
-// define("_VER_CHGLOG","Evolution-Xtreme Version Changed Log");
-// define('_VERSIONUP2DATE', 'Your installation is up to date, no updates are available for your version of Evolution-Xtreme.');
-// define('_VERSIONOUTOFDATE', 'Your installation does <strong>not</strong> seem to be up to date. Updates are available for your version of Evolution-Xtreme, please visit <a href="http://www.evolution-xtreme.com/modules.php?name=Downloads" target="_new">http://www.evolution-xtreme.com/modules.php?name=Downloads</a> to obtain the latest version.');
-// define('_VERSIONLATESTINFO', 'The latest available version is <strong>Evolution-Xtreme %s</strong>.');
-// define('_VERSIONCURRENTINFO', 'You are running <strong>Evolution-Xtreme %s</strong>.');
-// define('_VERSIONSOCKETERROR', 'Unable to open connection to Evolution-Xtreme Server, reported error is:<br />%s');
-// define('_VERSIONFUNCTIONSDISABLED', 'Unable to use socket functions.');
+define("_ADMIN_VER_TITLE","PHP-Nuke Titanium Version Checker");
+define("_ADMIN_VER_ERRCON","Could not connect to hub.86it.us");
+define("_ADMIN_VER_ERRSQL","Could not retrieve version from Database");
+define("_ADMIN_VER_CHG","There is a new version of PHP-Nuke Titanium");
+define("_ADMIN_VER_VIEW","View New Version");
+define("_ADMIN_VER_CUR","Your version is current");
+define("_CHECKVER", "Click Here to check version");
+define("_VER_ERR_CON","Could not connect to <a href='http://hub.86it.us'>PHP-Nuke Titanium</a>");
+define("_VER_ERR_CHG","There was a problem with accessing the Changed Log");
+define("_VER_TITLE","PHP-Nuke Titanium Version");
+define("_VER_VER","The current version is:");
+define("_VER_YOURVER","Your version is:");
+define("_VER_CHGLOG","PHP-Nuke Titanium Version Change Log");
+define('_VERSIONUP2DATE', 'Your installation is up to date, no updates are available for your version of PHP-Nuke Titanium.');
+define('_VERSIONOUTOFDATE', 'Your installation does <strong>not</strong> seem to be up to date. Updates are available for your version of PHP-Nuke Titanium, please visit <a href="http://hub.86it.us/modules.php?name=Downloads" target="_new">http://hub.86it.us/modules.php?name=Downloads</a> to obtain the latest version.');
+define('_VERSIONLATESTINFO', 'The latest available version is <strong>Evolution-Xtreme %s</strong>.');
+define('_VERSIONCURRENTINFO', 'You are running <strong>PHP-Nuke Titanium %s</strong>.');
+define('_VERSIONSOCKETERROR', 'Unable to open connection to PHP-Nuke Titanium Server, reported error is:<br />%s');
+define('_VERSIONFUNCTIONSDISABLED', 'Unable to use socket functions.');
 /*****[END]********************************************
  [ Mod:     Evolution Version Checker          v1.0.0 ]
  ******************************************************/
@@ -186,7 +186,7 @@ define("_CACHE_NO", "No");
 define("_CACHE_YES", "Yes");
 define("_CACHE_GOOD", "Good");
 define("_CACHE_BAD", "Your cache is NOT chmodded!");
-define("_CACHE_HEADER", "Nuke-Evolution Cache :: Admin Panel");
+define("_CACHE_HEADER", "PHP-Nuke Titanium Cache :: Admin Panel");
 define("_CACHE_STATUS", "Cache Status:");
 define("_CACHE_DIR_STATUS", "Cache Directory Status:");
 define("_CACHE_NUM_FILES", "Number of cached items:");
@@ -345,7 +345,7 @@ define('_THEMES_USER_SELECT', 'Select User Theme');
 /*****[BEGIN]******************************************
  [ Other:    Database Manager                  v2.0.0 ]
  ******************************************************/
-define("_DATABASE_ADMIN_HEADER", "Nuke-Evolution Backup :: Admin Panel");
+define("_DATABASE_ADMIN_HEADER", "PHP-Nuke Titanium Backup :: Admin Panel");
 define("_DATABASE_RETURNMAIN", "Return to Main Administration");
 define("_DATABASE", "Database");
 define("_ACTIONRESULTS", "Here are the results of your");
@@ -385,7 +385,7 @@ define("_PHP_QUICKS", "Quick Stats:");
 define("_PHP_EXT_STATUS", "Extended Status:");
 define("_PHP_SPACER", "&nbsp;");
 define("_INFO_GENERAL", "General");
-define("_INFO_ADMIN_HEADER", "Nuke-Evolution System Info :: Admin Panel");
+define("_INFO_ADMIN_HEADER", "PHP-Nuke Titanium System Info :: Admin Panel");
 define("_INFO_RETURNMAIN", "Return to Main Administration");
 define("_INFO_SERVER_V", "Server Version");
 define("_INFO_CLIENT_V", "Client Version");
@@ -429,7 +429,7 @@ define('_EVO_USERINFO','Evo UserInfo Block');
 /*****[BEGIN]******************************************
  [ Base:    Blocks                             v.1.0.0]
  ******************************************************/
-define('_BLOCK_ADMIN_HEADER', 'Nuke-Evolution Blocks :: Admin Panel');
+define('_BLOCK_ADMIN_HEADER', 'PHP-Nuke Titanium Blocks :: Admin Panel');
 define('_BLOCK_RETURNMAIN', 'Return to Main Administration');
 define('_BLOCK_ADMIN_NOTE', 'Please note that when you activate or deactivate a block here<br />that it will be instant to users but not to you, until you refresh your screen!');
 define('_BLOCK_INACTIVE','Block is not active<br />(Double click to activate/deactivate)');

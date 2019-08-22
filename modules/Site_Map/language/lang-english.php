@@ -11,7 +11,7 @@
 
 define("_NJMAP","Sitemap of");
 define("_SITEMAPADMIN","Sitemap Administration");
-define("_SITEMAP_ADMIN_HEADER", "Nuke-Evolution NukeJMap [Site Map] :: Admin Panel");
+define("_SITEMAP_ADMIN_HEADER", "PHP-Nuke Titanium NukeJMap [Site Map] :: Admin Panel");
 define("_SITEMAP_RETURNMAIN", "Return to Main Administration");
 define("_XMLCREATE","XML Creation:");
 define("_YES","Yes:");

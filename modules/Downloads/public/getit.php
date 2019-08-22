@@ -185,25 +185,24 @@ if ($userAllowed || $dl_config['show_download'] == '1')
 {
 	if ($lidinfo['lid'] == '' OR $lidinfo['active'] == 0) 
 	{
-		OpenTableModule();
-		title(_DL_DOWNLOADPROFILE.': '._DL_INVALIDDOWNLOAD);
+		OpenTable();
+		//title(_DL_DOWNLOADPROFILE.': '._DL_INVALIDDOWNLOAD);
 		echo '<p align="center"><strong>'._DL_INVALIDDOWNLOAD.'</strong></p>';
-        OpenTable4();
+        //OpenTable4();
 	} 
 	else 
 	{
 		$fetchid = base64_encode($lidinfo['url']);
 		$title = htmlspecialchars($lidinfo['title'], ENT_QUOTES, _CHARSET);  
 	    global $theme_name;
-		OpenTableModule();
-		title('<h1><img height="13" src='.img('invisible_pixel.gif','Downloads').'><br />'._DL_DOWNLOADPROFILE.': '. $title.'</h1>'); 
-		OpenTable4();
+		OpenTable();
+		//title('<h1><img height="13" src='.img('invisible_pixel.gif','Downloads').'><br />'._DL_DOWNLOADPROFILE.': '. $title.'</h1>'); 
+		//OpenTable4();
 		echo '<p class="title">';
 		
-		echo "<table width=\"500\" align=\"center\"><td>";
+		echo "<table style = \"width: 500px; margin:  0px auto;\"><td>";
 		if (is_mod_admin('Super')) 
 		echo '<a class="rn_csrf" href="'.$admin_file.'.php?op=DownloadModify&amp;lid='.$lid.'" target="_tab"><img align="middle" src="'.img('edit.png','Downloads').'" alt="'._DL_EDIT.'" /> </a>';
-		 
 		echo '<img align="middle" src="'.img('show.png','Downloads').'" alt="" />';
 		echo "<td></table>";
 		
@@ -278,7 +277,7 @@ if ($userAllowed || $dl_config['show_download'] == '1')
 			restricted($lidinfo['sid']);
 		}
 	}
-	CloseTable4();
+	//CloseTable4();
 	CloseTable();
 } else {
 	OpenTable();

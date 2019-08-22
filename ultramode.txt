@@ -1,3 +1,25 @@
 General purpose self-explanatory file with news headlines
+%%
+Why Did We Switch to XHTML?
+/modules.php?name=News&file=article&sid=2
+Sunday, August 04
+TheGhost
+PHP-Nuke Titanium
+0
 
+%%
+Welcome to The 86it Developers Network!
+/modules.php?name=News&file=article&sid=1
+Saturday, November 03
+admin
+86it Staff
+1
+
+%%
+PHP-Nuke Titanium v3.0.0
+/modules.php?name=News&file=article&sid=5
+Monday, September 04
+TheGhost
+86it Staff
+0
 

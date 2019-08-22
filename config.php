@@ -1,5 +1,4 @@
 <?php
-
 /*=======================================================================
  PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
@@ -20,13 +19,17 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
     exit('Access Denied');
 }
 
-global $portaladmin;
-
-$portaladmin = 2;
 /*----[ Welcome! ] ---------------------------------------
-| Welcome to Nuke-Evolution, an advanced content          |
+| Welcome to PHP-Nuke Titanium, an advanced content       |
 | management system based on PHP-Nuke                     |
 ---------------------------------------------------------*/
+
+global $portaladmin;
+/*----[ $portaladmin ] ----------------------------------------
+| The current portal admin - user_id of the portal owner      |
+| Default: owner user_id                                      |
+--------------------------------------------------------------*/
+$portaladmin = 2;
 
 /*----[ $dbhost ] ----------------------------------------
 | Your database host, normally 'localhost'                |
@@ -34,6 +37,7 @@ $portaladmin = 2;
 | Default: localhost                                      |
 ---------------------------------------------------------*/
 $dbhost = 'localhost';
+
 /*----[ $dbname ] ----------------------------------------
 | The name of your database that will hold Evo's tables   |
 |                                                         |
@@ -63,7 +67,7 @@ $dbpass = '';
 |    - mysql (4.x or later)                               |
 |    - mysqli (PHP must be compiled with "System Mysql")  |
 |                                                         |
-| Default: mysql                                          |
+| Default: mysqli                                         |
 ---------------------------------------------------------*/
 $dbtype = 'mysqli';
 
@@ -73,7 +77,14 @@ $dbtype = 'mysqli';
 | Default: nuke                                           |
 ---------------------------------------------------------*/
 $prefix = 'nuke';
+
+/*----[ $network_prefix ] --------------------------------
+| The prefix for your Network tables                      |
+|                                                         |
+| Default: network                                        |
+---------------------------------------------------------*/
 $network_prefix = 'network';
+
 /*----[ $user_prefix ] -----------------------------------
 | The prefix for your Nuke-Evolution user-related tables  |
 | Do not change this unless it is really needed           |
@@ -161,5 +172,4 @@ $persistency = false;
 /* Congratulations! Now you have the webs best portal installed!     */
 /* Thanks for choosing Nuke- Evolution: The Future of the Web!       */
 /*********************************************************************/
-
 ?>

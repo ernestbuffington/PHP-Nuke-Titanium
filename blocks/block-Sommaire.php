@@ -794,27 +794,41 @@ $cache->save('sommaire_row3', 'block', $row3);
         $content.="<tr height=\"4\" bgcolor=\"$som_bgcolor\"><td></td></tr>";
         }//end if somgroupmenu<>99
 
-    if ($som_groupmenu == 99 && $is_admin==1) { // si on est à la catégorie 99, on affiche tous les modules installés/activés/visibles qui n'ont pas été affichés dans les catégories.
+    if ($som_groupmenu == 99 && $is_admin==1) 
+	{ 
         $content.="<tr><td>";
-        for ($z=0;$z<count($module);$z++) {
+    
+	    for ($z=0;$z<count($module);$z++) 
+		{
             $customtitle2 = str_replace ("_"," ", $module[$z]);
-            if (!empty($customtitle[$z])) {
+        
+		    if (!empty($customtitle[$z])) 
+			{
                 $customtitle2 = $customtitle[$z];
             }
-            if ($module[$z] != $main_module) {
+            
+			if ($module[$z] != $main_module) 
+			{
                  if (($is_admin===1 AND $view[$z] == 2) OR $view[$z] != 2) {
 
                     $incategories=0;
-                    for ($i=0;$i<count($totalcategorymodules);$i++) {
-                        if ($module[$z]==$totalcategorymodules[$i]) {
+            
+			        for ($i=0;$i<count($totalcategorymodules);$i++) 
+					{
+                        if ($module[$z]==$totalcategorymodules[$i]) 
+						{
                             $incategories=1;
                         }
                     }
-                    if ($incategories==0) {
+                    
+					if ($incategories==0) 
+					{
                         $flagmenu = $flagmenu+1;
-                        if ($flagmenu==1) {
-                            $content .="<hr><div align=\"center\">"._SOMMAIREADMINVIEWALLMODULES."<br />";   // si il y a des modules affichés en rubrique 99, on affiche avant une ligne horizontale
-        $content.="<form action=\"modules.php\" method=\"get\" name=\"sommaireformlistboxvisibles\">"
+                    
+					    if ($flagmenu==1) 
+						{
+                            $content .="<hr><div align=\"center\">"._SOMMAIREADMINVIEWALLMODULES."<br />";   
+                            $content.="<form action=\"modules.php\" method=\"get\" name=\"sommaireformlistboxvisibles\">"
                         ."<select width=\"100%\" name=\"somlistboxvisibles\" onchange=\"sommaire_envoielistbox(this.options[this.selectedIndex].value)\">"
                         ."<option value=\"select\">"._SOMSELECTALINK."</div>";
                         }
@@ -822,28 +836,33 @@ $cache->save('sommaire_row3', 'block', $row3);
                     }
                 }
             }
-        }//end for groupmenu=99
+        }
+		
         $content.="</select></form>";
         $content.="</td></tr>";
-    }//end if groupmenu=99
+      }
     }
     $content.="</table>";
-    if ($dynamic==1 && $detectMozilla!=1) { // on va réenrouler toutes les catégories, sauf celle contenant le module affiché sur la page
+    
+	
+	if ($dynamic==1 && $detectMozilla!=1) 
+	{ 
         $aenlever="sommaire_showhide\('sommaire-".$categorieouverte."','nok','sommaireupdown-".$categorieouverte."'\);";
         $total_actions = str_replace("$aenlever", "" , $total_actions);
         $content.="<script type=\"text/javascript\" language=\"JavaScript\">$total_actions;</script>";
     }
 
 
-    /* If you're Admin you and only you can see Inactive modules and test it */
-    /* If you copied a new module is the /modules/ directory, it will be added to the database */
-
-if ($is_admin===1) {
+/* If you're Admin you and only you can see Inactive modules and test it */
+/* If you copied a new module is the /modules/ directory, it will be added to the database */
+if ($is_admin===1) 
+{
 
     $key=count($module); // $key va permettre de se positionner dans $module[] pour rajouter des modules à la fin
 
     $content .= '<br /><div align="center"><strong>'._INVISIBLEMODULES.'</strong><br />';
     $content .= '<span class="tiny">'._ACTIVEBUTNOTSEE.'</span>';
+
     if (!($a == 1 AND $dummy != 1)) 
 	{
         $content.="<form action=\"modules.php\" method=\"get\" name=\"sommaireformlistboxinvisibles\">"

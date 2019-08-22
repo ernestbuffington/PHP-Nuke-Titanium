@@ -28,7 +28,7 @@ if($numrows > 0) {
         $image_atts = array();
         while(list($site_id, $site_name, $site_url, $site_image, $site_date, $site_description, $site_hits) = $db->sql_fetchrow($result)) {
             if (substr($site_image, 0, 5) == 'http:') {
-                if (evo_site_up($site_image)) {
+                if (titanium_site_up($site_image)) {
                     list($width, $height, $type, $attr) = @getimagesize($site_image);
                 } else {
                     $width = $sp_config['max_width'];

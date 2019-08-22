@@ -3,7 +3,7 @@
  PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
-define("_SOM_ADMIN_HEADER","Nuke-Evolution Sommaire Menu :: Admin Panel");
+define("_SOM_ADMIN_HEADER","Sommaire Menu :: Admin Panel");
 define("_SOM_RETURNMAIN","Return to Main Administration");
 define("_SOMMAIRE","Sommaire Menu");
 define("_SOMADMINTITLE","<strong>Administration Menu</strong>");

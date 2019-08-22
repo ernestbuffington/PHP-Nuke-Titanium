@@ -25,7 +25,6 @@
 -=[Mod]=-
       Lock Modules                             v1.0.0       08/04/2005
  ************************************************************************/
-
 define('MODULE_FILE', true);
 
 if (isset($_GET['file']) && $_GET['file'] == 'posting') 
@@ -60,8 +59,12 @@ if($name)
 		$view = $module['view'];
 	}
 	
-	if ($name == 'Technocrat') 
-	    die('Sleep alittle, Drink alot');
+	if ($name == 'Technocrat'): 
+	  die('This version is PHP-Nuke Titanium');
+		endif;
+	if ($name == 'TheGhost'):
+	    die('Eat alot, Masterbate alot, Sleep alittle, Drink alot lot lot!');
+		 endif;
 	
 	if ($module['active'] || is_mod_admin($module_name)) 
 	{

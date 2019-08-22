@@ -63,17 +63,24 @@ function footmsg()
         # IF YOU REALLY NEED TO REMOVE IT AND HAVE MY WRITTEN AUTHORIZATION CHECK:
         # http://phpnuke.org/modules.php?name=Commercial_License
         # PLAY FAIR AND SUPPORT THE DEVELOPMENT, PLEASE!
-        $footmsg .= '<br />'.$copyright.'<br />';
-        $footmsg = (preg_match(HEX_PREG,$footmsg)) ? $footmsg : $footmsg."<br />".ord_crypt_decode(HEX_CACHED)."<br />";
-        if($use_cache && $usrclearcache) {
+        $nuke_copyrights = '<strong>PHP-Nuke Copyright © 2006 by Francisco Burzi.<br />
+             PHP-Nuke Titanium © 2017 by The 86it Developers Network.</strong>';
+		
+		$footmsg .= ''.$nuke_copyrights.'<br />';
+ 
+        if($use_cache && $usrclearcache) 
+		{
             $footmsg .= "<form method='post' name='clear_cache' action='".$_SERVER['REQUEST_URI']."'>";
             $footmsg .= "<input type='hidden' name='clear_cache' value='1'><span style='font-size: 11px'>";
-            $footmsg .= _SITECACHED . "</span> <a href=\"javascript:clear_cache.submit()\">" . _UPDATECACHE . "</a>";
+            $footmsg .= "</span> This site is cached <a href=\"javascript:clear_cache.submit()\">" . _UPDATECACHE . "</a>";
             $footmsg .= "</form>";
         }
-        $total_time = (get_microtime() - $start_time);
+        
+		$total_time = (get_microtime() - $start_time);
         $total_time = '<span class="copyright">[ '._PAGEGENERATION." ".substr($total_time,0,4)." "._SECONDS;
-        if ($start_mem > 0) {
+        
+		if ($start_mem > 0) 
+		{
             $total_mem = memory_get_usage()-$start_mem;
             $total_time .= ' | Memory Usage: '.(($total_mem >= 1048576) ? round((round($total_mem / 1048576 * 100) / 100), 2).' MB' : (($total_mem >= 1024) ? round((round($total_mem / 1024 * 100) / 100), 2).' KB' : $total_mem.' Bytes'));
         }
@@ -202,7 +209,7 @@ if(defined('HOME_FILE'))
 	# If you want either of the following on all pages simply
 	# move the include to before if (defined('HOME_FILE'))
 	#
-	# Visit www.evolution-xtreme.com for support if your stuck
+	# Visit hub.86it.us for support if your stuck
 	include(NUKE_INCLUDE_DIR.'cblocks3.php');
 	include(NUKE_INCLUDE_DIR.'cblocks4.php');
 }
