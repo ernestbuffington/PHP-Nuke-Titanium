@@ -1,6 +1,5 @@
 ## Welcome to PHP-Nuke Titanium v3.0.0
-[![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium.svg?type=shield)](https://app.fossa.io/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium?ref=badge_shield)
-
+[![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium?ref=badge_shield)
 
 **PHP-Nuke Titanium is a free open source network content management system (CMS) designed to run on The 86it Developers Network and The 
 Scorpion Network, written for PHP v7.3.6. It uses modular programming architecture that allows users to customize, update and theme 
