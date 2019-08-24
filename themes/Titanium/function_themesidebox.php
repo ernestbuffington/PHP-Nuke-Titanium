@@ -17,7 +17,7 @@
 /*                                                                */
 /* Designed By: TheGhost                                          */
 /* Web Site: https://theghost.86it.us                             */
-/* Purpose: PHP-Nuke Evolution | Titanium Edition                 */
+/* Purpose: PHP-Nuke Titanium v3.0.0                              */
 /*----------------------------------------------------------------*/
 /* CMS INFO                                                       */
 /* PHP-Nuke Copyright (c) 2005 by Francisco Burzi phpnuke.org     */

@@ -163,7 +163,6 @@ $lidinfo = $db->sql_fetchrow($result);
 $priv = $lidinfo['sid'] - 2;
 $pagetitle = '- '._DL_DOWNLOADPROFILE.': '.htmlspecialchars($lidinfo['title'],ENT_QUOTES, _CHARSET);
 include_once 'header.php';
-echo '<div class="content">';
 /*
  * Make sure the download is allowed for this user.  Enhanced in 1.1.0 at the request of Palbin to allow an admin to always be able to download
  */
@@ -186,9 +185,7 @@ if ($userAllowed || $dl_config['show_download'] == '1')
 	if ($lidinfo['lid'] == '' OR $lidinfo['active'] == 0) 
 	{
 		OpenTable();
-		//title(_DL_DOWNLOADPROFILE.': '._DL_INVALIDDOWNLOAD);
 		echo '<p align="center"><strong>'._DL_INVALIDDOWNLOAD.'</strong></p>';
-        //OpenTable4();
 	} 
 	else 
 	{
@@ -196,10 +193,11 @@ if ($userAllowed || $dl_config['show_download'] == '1')
 		$title = htmlspecialchars($lidinfo['title'], ENT_QUOTES, _CHARSET);  
 	    global $theme_name;
 		OpenTable();
-		//title('<h1><img height="13" src='.img('invisible_pixel.gif','Downloads').'><br />'._DL_DOWNLOADPROFILE.': '. $title.'</h1>'); 
-		//OpenTable4();
-		echo '<p class="title">';
+		echo '<div align="center"><h1><img height="13" src='.img('invisible_pixel.gif','Downloads').'><br />'._DL_DOWNLOADPROFILE.': '. $title.'</h1></div>'; 
+	    echo "<div align=\"center\"><strong>[ <a href=\"modules.php?name=Downloads\">"._DLMAIN."</a> ] </strong></div>";
+
 		
+		echo '<p class="title">';
 		echo "<table style = \"width: 500px; margin:  0px auto;\"><td>";
 		if (is_mod_admin('Super')) 
 		echo '<a class="rn_csrf" href="'.$admin_file.'.php?op=DownloadModify&amp;lid='.$lid.'" target="_tab"><img align="middle" src="'.img('edit.png','Downloads').'" alt="'._DL_EDIT.'" /> </a>';
@@ -233,40 +231,9 @@ if ($userAllowed || $dl_config['show_download'] == '1')
 			 * If so, then we use it.  If not, then we use the base NSN GR Download version
 			 * coded by its original author.
 			 */
-			echo '<div align="center">';
-		    
-			if ($dl_config['usegfxcheck'] == 1) 
-			{
-			      echo '<br /><div align="center"><strong>DIRECTIONS : </strong><font color='.$textcolor2.'>Enter the key To download <strong>"'.$title.'</strong>'._DL_DLNOTES3.'</font></div>';
-			
-					// Not using RavenNuke(tm) so will produce original captcha
-					mt_srand((double)microtime() * 1000000);
-					$maxran = 1000000;
-					$random_num = mt_rand(0, $maxran);
-					
-					if (extension_loaded('gd')) 
-					{
-						echo '<p><strong>Download Key:</strong>&nbsp;<img src="modules.php?name='. $module_name
-						. '&amp;op=gfx&amp;random_num='.$random_num.'" height="20" width="80" border="0" alt="'._DL_YOURPASS
-						. '" title="'._DL_YOURPASS.'" /></p><p><strong>Enter Key:</strong>&nbsp;<input type="text" name="passcode" size="10" maxlength="10" />'
-						. '<input type="hidden" name="checkpass" value="'.$random_num.'" /></p>'; 
-					
-					} 
-					else 
-					{
-					  echo "<h1>YOU DO NOT APPEAR TO HAVE THE GD LIBRARY INSTALLED ON YOR SERVER</h1>";
-					  echo "The GD library is a graphics drawing library that provides tools for manipulating image data.";
-					  echo "In PHP-Nuke Evolution | Tianum Edition, <br />the GD library is used to process images for generating gallery preview and thumbnail";
-					  echo " size images automatically.<br /><br />";
-					  echo "<h2>To find out how to resolve this <a target=\"_tab\" href=\"https://shopplugin.net/kb/installing-the-gd-library-for-php/\">CLICK HERE</a></h2>";
-					}
-			    
-			     
-			}
-			else
-			{ 
-			  echo '<br /><div align="center"><strong>DIRECTIONS : </strong><font color='.$textcolor2.'> To download <strong>"'.$title.'</strong>'._DL_DLNOTES3.'</font>'._DL_DLNOTES4.'</div>';
-			}
+			  echo '<div align="center">';
+	
+	 	      echo "<br /><table>".security_code(array(0,1,2,3,4,5,6,7), 'normal')."</table><br />";
 			  echo '<p><div align="center"><input class="download" type="submit" name="DOWNLOAD" value="DOWNLOAD" /></p></div>'; 
 			  echo '</form>';
 			  echo '<p align="center"><a class="myButton" href="modules.php?name='.$module_name.'&amp;op=modifydownloadrequest&amp;lid='.$lid.'" ><font color="#000000">'. _DL_MODIFY. '<color></a> <a class="myButton" href="modules.php?name='.$module_name.'&amp;op=brokendownload&amp;lid='.$lid.'" ><font color="#000000">'. _DL_REPORTBROKEN. '<color></a></p>';
@@ -284,6 +251,5 @@ if ($userAllowed || $dl_config['show_download'] == '1')
 	restricted($lidinfo['sid']);
 	CloseTable();
 }
-echo '</div>';
 include_once 'footer.php';
 

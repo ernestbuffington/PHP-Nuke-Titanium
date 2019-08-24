@@ -2,8 +2,8 @@
 /*=======================================================================
             PHP-Nuke Titanium (CMS) Enhanced And Advanced
  ========================================================================
- PHP-Nuke Titanium                     :   v1.0.1z
- PHP-Nuke Titanium Build               :   6205
+ PHP-Nuke Titanium                     :   v3.0.0
+ PHP-Nuke Titanium Build               :   2036
  PHP-Nuke Titanium Filename            :   includes/mimetype.php
  PHP-Nuke Titanium File Release Date   :   September 5th, 2017  
  PHP-Nuke Tianium File Author          :   Ernest Allen Buffington
@@ -76,17 +76,20 @@
  * the Free Software Foundation; either version 2 of the License.       *
  ************************************************************************/
 global $doctype;
+
 $charset = defined('_CHARSET') ? _CHARSET : 'utf-8';
-//$mime = 'application/xhtml+xml';
-$mime = defined('_MIME') ? _MIME : 'text/html'; //'application/xhtml+xml';
+$mime = defined('_MIME') ? _MIME : 'text/html';
 $is304 = false;
 
 $output = '<?xml version="1.0" encoding="' . $mime . '"?>';
-if (empty($doctype)) {
+
+if (empty($doctype)) 
+{
     $doctype = 'transitional';
 }
 
-switch ($doctype) {
+switch ($doctype) 
+{
     case 'strict':
         $output =  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
         define('DOCTYPE', 'strict');

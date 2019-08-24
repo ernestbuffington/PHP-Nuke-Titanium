@@ -1,23 +1,11 @@
 <?php
+if(!defined('ADMIN_FILE')) { die ("Illegal File Access"); }
 
-
-if(!defined('ADMIN_FILE')) {
-   die ("Illegal File Access");
-}
-
-if(!is_mod_admin()) {
-   die ("Access Denied");
-}
+if(!is_mod_admin()) { die ("Access Denied"); }
 
 function modadmin_title() 
 {
-    global $admin_file, $admlang;
-    OpenTable();
-    echo '<div align="center"><a href="'.$admin_file.'.php?op=modules">'.$admlang['modules']['header'].'</a></div>';
-    echo '<br /><br />';
-    echo '<div align="center">[ <a href="'.$admin_file.'.php">'.$admlang['global']['header_return'].'</a> ]</div>';
-    CloseTable();
-    echo "<br />";
+
 }
 
 function modadmin_get_modules ($mid='') 
@@ -88,11 +76,10 @@ function modadmin_dispaly_modules($modadmin_modules)
    $main_module = main_module();
 
    OpenTable();
-   // OpenTable();
-   // echo '<div align="center">'._MODULEHOMENOTE.'<br /><br />'._NOTINMENU.'</div>';
-   // echo '<br /><br />';
-   // echo '<div align="center">[ <a href="'.$admin_file.'.php?op=modules&amp;area=block"><strong>'._MODULES_BLOCK.'</strong></a> ]</div>';
-   // CloseTable();   
+    global $admin_file, $admlang;
+    echo '<div align="center"><a href="'.$admin_file.'.php?op=modules"><strong>PHP-Nuke Titanium :: Modules Admin</strong></a></div>';
+    echo '<div align="center">[ <a href="'.$admin_file.'.php">'.$admlang['global']['header_return'].'</a> ]</div>';
+    echo "<br />";
 
    echo '<table style="width: 100%;" cellpadding="4" cellspacing="1" border="1" class="forumline acenter">';
    echo '  <tr>';
@@ -683,8 +670,12 @@ function modadmin_edit_cat($cat) {
     $image = $row[1];
 
     include_once(NUKE_BASE_DIR.'header.php');
-    modadmin_title();
     OpenTable();
+    global $admin_file, $admlang;
+    echo '<div align="center"><a href="'.$admin_file.'.php?op=modules"><strong>PHP-Nuke Titanium :: Modules Admin</strong></a></div>';
+    echo '<div align="center">[ <a href="'.$admin_file.'.php">'.$admlang['global']['header_return'].'</a> ]</div>';
+    echo "<br />";
+
     echo "<fieldset><legend>".$admlang['modblock']['edit']."</legend>";
     echo "<form method=\"post\" action=\"".$admin_file.".php?op=modules\">\n";
     echo $admlang['global']['title'].":&nbsp;<input type=\"text\" name=\"cattitle\" id=\"title\" value=\"".$name."\" size=\"30\" maxlength=\"30\" />\n<br />";
@@ -864,13 +855,11 @@ switch ($area)
       global $modadmin_module_cats;
       modadmin_get_module_cats();
       modadmin_ajax_header();
-      modadmin_title();
       modadmin_block();
       break;
 
    default:
       include_once(NUKE_BASE_DIR.'header.php');
-      modadmin_title();
       $modadmin_modules = modadmin_get_modules(intval($_GET['edit']));
       (!isset($_GET['edit'])) ? modadmin_dispaly_modules($modadmin_modules) : modadmin_edit_module($modadmin_modules[0]);
       break;

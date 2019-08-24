@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Evolution | Xtreme | Titanium Edition
+ PHP-Nuke titanium v3.0.0
  =======================================================================*/
 
 /************************************************************************/
@@ -75,7 +75,7 @@ for($i=0,$j=count($metatags);$i<$j;$i++) {
 
 // IF YOU REALLY NEED TO REMOVE IT AND HAVE MY WRITTEN AUTHORIZATION CHECK: http://phpnuke.org/modules.php?name=Commercial_License
 // PLAY FAIR AND SUPPORT THE DEVELOPMENT, PLEASE!
-//$metastring .= '<meta name="generator" content="PHP-Nuke Copyright (c) 2006 by Francisco Burzi. This is free software, and you may redistribute it under the GPL (http://phpnuke.org/files/gpl.txt). PHP-Nuke comes with absolutely no warranty, for details, see the license (http://phpnuke.org/files/gpl.txt). Powered by Nuke-Evolution | Extreme | Titanium Edition (https://hub.86it.us).">';
+//$metastring .= '<meta name="generator" content="PHP-Nuke Copyright (c) 2006 by Francisco Burzi. This is free software, and you may redistribute it under the GPL (http://phpnuke.org/files/gpl.txt). PHP-Nuke comes with absolutely no warranty, for details, see the license (http://phpnuke.org/files/gpl.txt). Powered by PHP-Nuke Titanium v3.0.0 (https://hub.86it.us).">';
 
 echo $metastring;
 ?>

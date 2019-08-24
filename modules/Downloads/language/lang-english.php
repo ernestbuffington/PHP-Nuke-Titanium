@@ -43,7 +43,7 @@ define('_DL_LANG_MODULE', true);
  * End of key language file define.  You may modify any text in the below
  * lines, but do not change the name of the constant that is being defined!
  */
-
+define('_DLMAIN', 'Main Downloads');
 define('_DL_1WEEK', '1 Week');
 define('_DL_2WEEKS', '2 Weeks');
 define('_DL_30DAYS', '30 Days');

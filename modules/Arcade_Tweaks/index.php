@@ -53,15 +53,15 @@
       Nuke Patched                             v3.1.0       09/20/2005
  ************************************************************************/
 
-if (!defined('MODULE_FILE')) {
-    die('You can\'t access this file directly...');
-}
+if (!defined('MODULE_FILE')) { die('You can\'t access this file directly...'); }
 
 define('NUKE_BASE_MODULES', preg_replace('/modules/i', '', dirname(dirname(__FILE__))));
 
 require_once(NUKE_BASE_MODULES.'mainfile.php');
 
-$ArcadeTweaksVersion = "1.0 RC2";
+global $ArcadeTweaksVersion;
+
+$ArcadeTweaksVersion = 'Arcade Tweaks v2.0';
 
 $module_name = basename(dirname(__FILE__));
 // First security check... Module allowed only to administrator.
@@ -80,24 +80,24 @@ $picturebyline = 5; // Number of pictures by line on the View Pictures Page
 // --------------------------------------------
 // Careful with edition above this line......
 // --------------------------------------------
-
 if (!is_admin()) {
     include_once(NUKE_BASE_DIR.'header.php');
-
     title("Arcade Tweaks $ArcadeTweaksVersion");
-
     echo "This module is for Administrator only.";
     include_once(NUKE_BASE_DIR.'footer.php');
     exit;
 } 
-// Menu at the top of each page
-function menu()
-{
-    global $module_name, $ArcadeTweaksVersion;
 
-    OpenTable2();
-    title("Arcade Tweaks $ArcadeTweaksVersion");
-    echo "<center><span class=\"content\">[&nbsp;";
+// Tools: Few "solos" function .. Where could I put them... hmm here !!! :)
+function Tools()
+{
+    global $module_name;
+    include_once(NUKE_BASE_DIR.'header.php');
+
+    OpenTable();
+
+    echo '<div align="center"><strong>Arcade Tweaks Tools</strong></div><br />'; 
+    echo "<div align=\"center\"><span class=\"content\">[&nbsp;";
     echo "<a href=\"modules.php?name=$module_name\">Main Page</a>"
      . "&nbsp;|&nbsp;<a href=\"modules/Forums/admin/admin_arcade_games.php\"><i>Arcade Admin</i></a>";
     echo "&nbsp;]<br />\n";
@@ -107,19 +107,8 @@ function menu()
      . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkDB\">Check DB</a>"; 
     echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=category\">Category</a>";
     echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=tools\">Tools</a>";
-    echo "&nbsp;]</span></center>";
-    CloseTable2();
-    echo "<br />";
-} 
+    echo "&nbsp;]</span></div><br />";
 
-// Tools: Few "solos" function .. Where could I put them... hmm here !!! :)
-function Tools()
-{
-    global $module_name;
-    include_once(NUKE_BASE_DIR.'header.php');
-    menu();
-    title("Arcade Tweaks Tools");
-    OpenTable();
     echo "<ol>";
     echo "<li> <a href='modules.php?name=$module_name&amp;m_op=checkDB&amp;type012=1'> Select Games of type 0,1 and 2 for processing </a>";
     echo "<li> <a href='modules.php?name=$module_name&amp;m_op=viewpictures'> View pictures in 'games/pics'</a>";
@@ -152,10 +141,22 @@ function ViewPictures()
 {
     global $picdirectory, $picturebyline;
     include_once(NUKE_BASE_DIR.'header.php');
-    menu();
-    title("Pictures in <strong>$picdirectory</strong>");
     OpenTable();
 
+    echo '<div align="center"><strong>View Pictures</strong></div><br />'; 
+    echo "<div align=\"center\"><span class=\"content\">[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name\">Main Page</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules/Forums/admin/admin_arcade_games.php\"><i>Arcade Admin</i></a>";
+    echo "&nbsp;]<br />\n";
+    echo "[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name&amp;m_op=checkswf\">All SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced\">Unreferenced SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkDB\">Check DB</a>"; 
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=category\">Category</a>";
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=tools\">Tools</a>";
+    echo "&nbsp;]</span></div><br />";
+
+    echo '<div align="center">Pictures in <strong>'.$picdirectory.'</strong></div>';
     $result = Array();
     if (is_dir($picdirectory)) {
         if ($dh = opendir($picdirectory)) {
@@ -327,8 +328,21 @@ function checkSwfDir()
         $cstart = 0;
     } 
     include_once(NUKE_BASE_DIR.'header.php');
-    menu();
+
     OpenTable();
+
+    echo '<div align="center"><strong>Check SWF Directory</strong></div><br />'; 
+    echo "<div align=\"center\"><span class=\"content\">[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name\">Main Page</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules/Forums/admin/admin_arcade_games.php\"><i>Arcade Admin</i></a>";
+    echo "&nbsp;]<br />\n";
+    echo "[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name&amp;m_op=checkswf\">All SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced\">Unreferenced SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkDB\">Check DB</a>"; 
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=category\">Category</a>";
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=tools\">Tools</a>";
+    echo "&nbsp;]</span></div><br />";
 
     echo MakePageLinks(0, count($swf_array) , $filesbypage, $cstart);
     echo "<br /><br /><table width=\"100%\" border=\"1\" cellpadding=\"2\">\n";
@@ -342,7 +356,7 @@ function checkSwfDir()
     // I use this $content variable here , because I prefer to have the "count"
     // at the top of the page... if we just use echo , the count will be at
     // the end of the page... :/
-    // BTW, I don\'t really understand why it's a problem PhantomK :?
+    // BTW, I don't really understand why it's a problem PhantomK :?
     $content = " <tr>\n"
      . "    <th colspan=1>SWF Name</th><th width=32>&nbsp</th><th>Size</th><th>Status</th><th colspan=2>Adm</th>"
      . "</tr>\n"; 
@@ -486,11 +500,23 @@ function SearchDB()
 {
     global $module_name, $srchstring, $searchin, $prefix, $db, $user_prefix, $picdirectory;
     include_once(NUKE_BASE_DIR.'header.php');
-    menu();
-    title("Game's database search");
-    echo SearchDBForm();
+    
     OpenTable();
+    //echo SearchDBForm();
+    echo '<div align="center"><strong>Search Game Database</strong></div><br />'; 
+    echo "<div align=\"center\"><span class=\"content\">[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name\">Main Page</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules/Forums/admin/admin_arcade_games.php\"><i>Arcade Admin</i></a>";
+    echo "&nbsp;]<br />\n";
+    echo "[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name&amp;m_op=checkswf\">All SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced\">Unreferenced SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkDB\">Check DB</a>"; 
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=category\">Category</a>";
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=tools\">Tools</a>";
+    echo "&nbsp;]</span></div><br />";
 
+	echo '<div align="center">Game\'s database search</div>';
     if (trim($srchstring) <> "") {
         // replace wildcards */? to use with mysql "LIKE"
         $search = str_replace("_", "\\_", $srchstring);
@@ -582,10 +608,25 @@ function ChangeComment()
 function EditComment()
 {
     include_once(NUKE_BASE_DIR.'header.php');
-    menu();
-    title("Comment Edition");
+
+	global $db, $gameid,$prefix,$user_prefix,$module_name;
+
     OpenTable();
-    global $db, $gameid,$prefix,$user_prefix,$module_name;
+
+    echo '<div align="center"><strong>Comment Edition</strong></div><br />'; 
+    echo "<div align=\"center\"><span class=\"content\">[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name\">Main Page</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules/Forums/admin/admin_arcade_games.php\"><i>Arcade Admin</i></a>";
+    echo "&nbsp;]<br />\n";
+    echo "[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name&amp;m_op=checkswf\">All SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced\">Unreferenced SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkDB\">Check DB</a>"; 
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=category\">Category</a>";
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=tools\">Tools</a>";
+    echo "&nbsp;]</span></div><br />";
+    
+	
     if (!isset($gameid)) {
         die("Error : No valid game id. Unable to edit comment.");
     } 
@@ -708,8 +749,21 @@ function setCheckboxes(do_check)
 /*=======================================================================
  PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
-    menu();
     OpenTable();
+    echo '<div align="center"><strong>Check Database</strong></div><br />'; 
+    echo "<div align=\"center\"><span class=\"content\">[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name\">Main Page</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules/Forums/admin/admin_arcade_games.php\"><i>Arcade Admin</i></a>";
+    echo "&nbsp;]<br />\n";
+    echo "[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name&amp;m_op=checkswf\">All SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced\">Unreferenced SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkDB\">Check DB</a>"; 
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=category\">Category</a>";
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=tools\">Tools</a>";
+    echo "&nbsp;]</span></div><br />";
+
+
     MakePageDBLinks(0, count($gamesdata), $filesbypage, $cstart);
 
     echo "<table width='100%' border=1>";
@@ -1063,11 +1117,22 @@ function ShowCategory()
 {
     global $db, $prefix, $module_name, $_categoryArray, $catid;
     include_once(NUKE_BASE_DIR.'header.php');
-    menu();
-    echo "<br />";
     OpenTable();
-    CategoryTable(0); // read the category table;
-    title("Games Categories");
+    
+    echo '<div align="center"><strong>Games Categories</strong></div><br />'; 
+    echo "<div align=\"center\"><span class=\"content\">[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name\">Main Page</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules/Forums/admin/admin_arcade_games.php\"><i>Arcade Admin</i></a>";
+    echo "&nbsp;]<br />\n";
+    echo "[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name&amp;m_op=checkswf\">All SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced\">Unreferenced SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkDB\">Check DB</a>"; 
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=category\">Category</a>";
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=tools\">Tools</a>";
+    echo "&nbsp;]</span></div><br />";
+		
+	CategoryTable(0); // read the category table;
     echo "<table width=\"100%\" border=1>\n";
     echo "<tr><th>Title</th><th>id</th><th>elements</th><th>count</th></tr>\n";
     foreach($_categoryArray AS $row) {
@@ -1150,9 +1215,25 @@ function setCheckboxes(do_check)
 function FixDB()
 {
     global $db, $prefix, $module_name;
-    include_once(NUKE_BASE_DIR.'header.php');
-    menu();
+    global $ArcadeTweaksVersion;
+    
+	include_once(NUKE_BASE_DIR.'header.php');
+
     OpenTable();
+
+    echo '<div align="center"><strong>'.$ArcadeTweaksVersion.'</strong></div><br />'; 
+    echo "<div align=\"center\"><span class=\"content\">[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name\">Main Page</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules/Forums/admin/admin_arcade_games.php\"><i>Arcade Admin</i></a>";
+    echo "&nbsp;]<br />\n";
+    echo "[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name&amp;m_op=checkswf\">All SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced\">Unreferenced SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkDB\">Check DB</a>"; 
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=category\">Category</a>";
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=tools\">Tools</a>";
+    echo "&nbsp;]</span></div><br />";
+	   
     if ($fix = 'commentstable') {
         $commenttableexist = $db->sql_query("SELECT * FROM `" . $prefix . "_bbarcade_comments` LIMIT 0,1");
 
@@ -1185,11 +1266,25 @@ function FixDB()
 function DBCoherence()
 {
     global $db, $prefix, $module_name;
+    global $ArcadeTweaksVersion;
+    
+	include_once(NUKE_BASE_DIR.'header.php');
 
-    include_once(NUKE_BASE_DIR.'header.php');
-    menu();
-    title("Checking Game database Coherence");
     OpenTable();
+
+    echo '<div align="center"><strong>'.$ArcadeTweaksVersion.'</strong></div><br />';
+    echo "<div align=\"center\"><span class=\"content\">[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name\">Main Page</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules/Forums/admin/admin_arcade_games.php\"><i>Arcade Admin</i></a>";
+    echo "&nbsp;]<br />\n";
+    echo "[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name&amp;m_op=checkswf\">All SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced\">Unreferenced SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkDB\">Check DB</a>"; 
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=category\">Category</a>";
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=tools\">Tools</a>";
+    echo "&nbsp;]</span></div><br />";
+	
     echo "<ul>"; 
     // Checking of number of games in categories compared to the number stored in category table
     echo "<li> <strong>Category Checking</strong><br /><img src='modules/$module_name/images/icon_query.gif' border=0 width=16 height=16> Check if the number of games in category table match the count of games<br /><br />";
@@ -1243,31 +1338,42 @@ function DBCoherence()
 function ShowDefault()
 {
     global $module_name;
+	global $ArcadeTweaksVersion;
+	
     include_once(NUKE_BASE_DIR.'header.php');
-    menu();
-    echo "<br />";
+
     OpenTable();
-    title("Arcade Tweaks Description :");
-    echo "<strong>Thanks to test Arcade Tweaks RC2.</strong><br />";
-    echo "Note that this module is <u>still</u> on Test Mode."
-         ."<br />It has been tested succesfully on Nuke 6.8 and 7.6 with Arcade Mod V3."
-         ."<br /> If you did installed the ATRC1 ,have already installed the Comments Mod and added some Games with it, check the <a href='modules.php?name=$module_name&amp;m_op=tools'>Tools functions</a> "
-         ." (in particular the 'Database Coherence checking').<br /> ";
-    echo "<br /><br />";
-    echo "Please , Come to <a href=\"http://www.nukearcade.com/\">http://www.nukearcade.com</a> or <a href=\"http://www.thehorde.be/modules.php?name=Downloads&amp;d_op=viewdownload&amp;cid=5\">http://www.thehorde.be</a> for update and comments.";
-    echo "<br />Rica<br /><span class='content'><ul>\n";
-    echo "<li><a href='modules.php?name=$module_name&amp;m_op=checkswf'><strong>All SWF</strong></a>:<br />\n";
+
+    echo '<div align="center"><strong>'.$ArcadeTweaksVersion.'</strong></div><br />'; 
+    echo "<center><span class=\"content\">[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name\">Main Page</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules/Forums/admin/admin_arcade_games.php\"><i>Arcade Admin</i></a>";
+    echo "&nbsp;]<br />\n";
+    echo "[&nbsp;";
+    echo "<a href=\"modules.php?name=$module_name&amp;m_op=checkswf\">All SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced\">Unreferenced SWF</a>"
+     . "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=checkDB\">Check DB</a>"; 
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=category\">Category</a>";
+    echo "&nbsp;|&nbsp;<a href=\"modules.php?name=$module_name&amp;m_op=tools\">Tools</a>";
+    echo "&nbsp;]</span></center>";
+
+    echo "<span class='content'><ul>\n";
+    echo "<li>[ <a href='modules.php?name=$module_name&amp;m_op=checkswf'><strong>All SWF</strong></a> ]<br />\n";
     echo "Browse your game directory and search unreferenced flash games.<br />Allow you to add them with a single click.(NB: Type 3 by default)" . "<br />Search for a picture with a similar base name in the picture directory.";
-    echo "<br /><li><a href='modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced'><strong>Unreferenced SWF</strong></a>:<br />\n";
-    echo "Same than above but only show unreferenced SWF";
-    echo "<br /><li><a href='modules.php?name=$module_name&amp;m_op=checkDB'><strong>Check DB</strong></a>:<br />\n";
+    
+	echo "<li>[ <a href='modules.php?name=$module_name&amp;m_op=checkswf&amp;filefilter=unreferenced'><strong>Unreferenced SWF</strong></a> ]<br />\n";
+    echo "Same as above but only show unreferenced SWF.";
+    
+	echo "<li>[ <a href='modules.php?name=$module_name&amp;m_op=checkDB'><strong>Check DB</strong></a> ]<br />\n";
     echo "Analyse your games database.<br />Search for missing swf and pictures files.<br />Search for games without pics.<br />";
-    echo "Change category, Flash Window Size, Reset Score";
-    echo "<br /><li><a href='modules.php?name=$module_name&amp;m_op=category'><strong>Category</strong></a>:<br />\n";
-    echo "Add , resync and check games categories";
-    echo "<br /><li><a href='modules.php?name=$module_name&amp;m_op=tools'><strong>Tools</strong></a>:<br />\n";
+    echo "Change category, Flash Window Size, Reset Score.";
+    
+	echo "<li>[ <a href='modules.php?name=$module_name&amp;m_op=category'><strong>Category</strong></a> ]<br />\n";
+    echo "Add , resync and check games categories.";
+    
+	echo "<li>[ <a href='modules.php?name=$module_name&amp;m_op=tools'><strong>Tools</strong></a> ]<br />\n";
     echo "Function added to process (remove , edit , etc) type 0,1,2 for the new arcade mod coming up.<br />";
-    echo "Browser your pictures directory<br />";
+    echo "Browser your pictures directory.<br />";
     echo "</ul></span>\n";
     CloseTable();
     include_once(NUKE_BASE_DIR.'footer.php');
@@ -1330,5 +1436,4 @@ switch ($m_op) {
         ShowDefault();
         break;
 } 
-
 ?>

@@ -1,12 +1,11 @@
-﻿
-{
+﻿{
     "1": 
 	{
         "feedid": 2,
         "color": "#ffa500",
         "timestamp": "Aug 16th, 2019",
         "title": "New Default theme Completed",
-        "message": "The new default theme has been completed, Thanks to Ernest Buffington of <a href=\"https:\/\/hub.86it.us\/index.php\" target=\"_tab\">The 86it Developers Network<\/a>. The theme is available in many variations, Default is [CarbonFiber].\n\n",
+        "message": "The new default theme has been completed, Thanks to Ernest Buffington of <a href=\"https:\/\/hub.86it.us\/index.php\" target=\"_tab\">The 86it Developers Network<\/a>. The theme is available in many variations, Default is [CarbonFiber Red Flames].\n\n",
         "author": 
 		{
             "username": "TheGhost",
@@ -25,8 +24,46 @@
             "username": "TheGhost",
             "user_id": "2"
         }
+    },
+    "3": 
+	{
+        "feedid": 4,
+        "color": "#ffa500",
+        "timestamp": "Sept 23rd, 2019",
+        "title": "Arcade Tweaks v2.0 Released",
+        "message": "It cleaned up nicely for PHP-Nuke Titanium v3.0.0.\n\n",
+        "author": 
+		{
+            "username": "TheGhost",
+            "user_id": "2"
+        }
+    },
+    "4": 
+	{
+        "feedid": 5,
+        "color": "#ffa500",
+        "timestamp": "Aug 24th, 2019",
+        "title": "CarbinFiber Blue Skulls theme Completed",
+        "message": "The new CarbinFiber Blue Skulls theme has been completed, Thanks to Ernest Buffington of <a href=\"https:\/\/hub.86it.us\/index.php\" target=\"_tab\">The 86it Developers Network<\/a>. The theme is available in many variations, Default is [CarbonFiber Red Flames].\n\n",
+        "author": 
+		{
+            "username": "TheGhost",
+            "user_id": "2"
+        }
+    },
+    "5": 
+	{
+        "feedid": 6,
+        "color": "#ffa500",
+        "timestamp": "Aug 24th, 2019",
+        "title": "Titanium Theme Completed",
+        "message": "The new Titanium theme has been completed, Thanks to Ernest Buffington of <a href=\"https:\/\/hub.86it.us\/index.php\" target=\"_tab\">The 86it Developers Network<\/a>. The theme has been around for some 10 years and was recenty ported over to PHP-Nuke-Titanium v3.0.0\n\n",
+        "author": 
+		{
+            "username": "TheGhost",
+            "user_id": "2"
+        }
     }
-
 
 
 

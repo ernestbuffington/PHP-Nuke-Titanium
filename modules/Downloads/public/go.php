@@ -154,11 +154,10 @@ if (!defined('IN_NSN_GD')) { echo 'Access Denied'; die(); }
 }
 </style>
 <?
-
 $lid = isset($lid) ? intval($lid) : 0;
-$checkpass = isset($checkpass) ? $checkpass : '';
 $lidinfo = $db->sql_fetchrow($db->sql_query('SELECT * FROM `' . $prefix . '_nsngd_downloads` WHERE `lid` = ' . $lid));
 $priv = $lidinfo['sid'] - 2;
+
 /*
  * First make sure that anonymous or logged in user is allowed to download the file.  If not, do
  * not let them do it and give them a message.
@@ -171,42 +170,18 @@ if (($lidinfo['sid'] == 0) || ($lidinfo['sid'] == 1 AND is_user($user))
 {
 	if (!empty($lidinfo['url'])) 
 	{
-		$datekey = date('F j');
-		$rcode = hexdec(md5($_SERVER['HTTP_USER_AGENT'] . $sitekey . $checkpass . $datekey));
-		$code = substr($rcode, 2, 8);
-	
-		global $modGFXChk, $module_name;
-	
-		if (isset($_POST['gfx_check'])) $gfx_check = $_POST['gfx_check'];
-		else 
-		$gfx_check = '';
-		
-		
 		/*
 		 * Perform the appropriate security check code depending upon what CMS and graphical capabilities we are running
 		 */
 		$passedSecurityCheck = false;
 		
-		if ($dl_config['usegfxcheck'] == 1) 
-		{ // Check if Captcha is in use
-		
-			if (defined('RAVENNUKE_VERSION')) 
-			{ // Check if using RavenNuke(tm) in order to use its Captcha
-				if (security_code_check($gfx_check, $modGFXChk[$module_name])) $passedSecurityCheck = true;
-			} 
-			else
-			if (extension_loaded('gd')) 
-			{ // Not using RavenNuke(tm), but am using the GD extension
-				if ($code == $passcode) $passedSecurityCheck = true;
-			} 
-			else 
-			{
-				if ($checkpass == $passcode) $passedSecurityCheck = true;
-			}
-		} 
-		else 
+		if (!security_code_check($_POST['g-recaptcha-response'], array(0,1,2,3,4,5,6,7)))
 		{
-			$passedSecurityCheck = true;
+		  $error_message[] = $lang_new[$module_name]['reCaptcha'];
+		}
+        else
+		{
+		  $passedSecurityCheck = true;
 		}
 		
 		if ($passedSecurityCheck) 
@@ -379,8 +354,8 @@ if (($lidinfo['sid'] == 0) || ($lidinfo['sid'] == 1 AND is_user($user))
 				$db->sql_query($sql);
 				include_once 'header.php';
 				$lidinfo['title'] = htmlspecialchars($lidinfo['title'], ENT_QUOTES, _CHARSET);
-				title(_DL_FNF . ' ' . $lidinfo['title']);
 				OpenTable();
+				echo '<div align="center"><font color="#FF0000"><h1>'._DL_FNF . ' ' . $lidinfo['title'].'</h1></font></div>';
 				echo '<div align="center"><p>' . _DL_SORRY . ' ' . $username . ', <strong>' . $lidinfo['title'] . '</strong> '
 					. _DL_NOTFOUND . '</p><p>' . _DL_FNFREASON . '</p><p>';
 				echo _DL_FLAGGED . '</p>';
@@ -392,21 +367,18 @@ if (($lidinfo['sid'] == 0) || ($lidinfo['sid'] == 1 AND is_user($user))
 			}
 		} else {
 			include_once 'header.php';
-			
 			OpenTable();
-			title('<h1>Invalid Download Key</h1>');
-			OpenTable4();
-			echo '<div align="center"><p><h1>You have entered the download key wrong!!</h1></p>';
+			echo '<div align="center"><font color="#FF0000"><h1>reCAPTCHA fAIL</h1></font></div>';
+			echo '<div align="center"><p><h1>You have failed the reCAPTCHA Security Check!!</h1></p>';
 			echo '<p><a class="carbonfiber" href="javascript:history.go(-1)">Go Back</a></p></div>';
-			CloseTable4();
 			CloseTable();
 			include_once 'footer.php';
 			die();
 		}
 	} else {
 		include_once 'header.php';
-		title(_DL_URLERR);
 		OpenTable();
+		echo '<div align="center"><font color="#FF0000"><h1>'._DL_URLERR.'</h1></font></div>';
 		echo '<div align="center"><p>' . _DL_INVALIDURL . '</p>';
 		echo '<p>a class="carbonfiber" href="javascript:history.go(-1)">Go Back</a></p></div>';
 		CloseTable();
@@ -414,8 +386,8 @@ if (($lidinfo['sid'] == 0) || ($lidinfo['sid'] == 1 AND is_user($user))
 	}
 } else {
 	include_once 'header.php';
-	title(_DL_RESTRICTED);
 	OpenTable();
+	echo '<div align="center"><font color="#FF0000"><h1>'._DL_RESTRICTED.'</h1></font></div>';
 	restricted($lidinfo['sid']);
 	CloseTable();
 	include_once 'footer.php';

@@ -11,24 +11,24 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
 
-if ( !defined('ADMIN_FILE') )
-{
-	die ("Access Denied");
-}
+if ( !defined('ADMIN_FILE') ){ die ("Access Denied"); }
 
 global $admin_file, $currentlang;
+	
 	if (is_mod_admin('admin'))
+	{
+		if (file_exists(NUKE_ADMIN_DIR.'language/Honeypot/lang-'.$currentlang.'.php')) 
 		{
-			if (file_exists(NUKE_ADMIN_DIR.'language/Honeypot/lang-'.$currentlang.'.php')) 
-			{
-				include_once(NUKE_ADMIN_DIR.'language/Honeypot/lang-'.$currentlang.'.php');
-			} else {
-				include_once(NUKE_ADMIN_DIR.'language/Honeypot/lang-english.php');
-			}
+			include_once(NUKE_ADMIN_DIR.'language/Honeypot/lang-'.$currentlang.'.php');
+		} 
+		else 
+		{
+			include_once(NUKE_ADMIN_DIR.'language/Honeypot/lang-english.php');
+		}
 		
 		
 function abget_country($tempip)
-	{
+{
 		global $prefix, $db;
 		$tempip = str_replace(".*", ".0", $tempip);
 		$tempip = sprintf("%u", ip2long($tempip));
@@ -38,12 +38,8 @@ function abget_country($tempip)
 		return $countryinfo;
 	}
 
-
-
-//*************************************************************************
 //*************************************************************************
 //  Start of stats section
-//*************************************************************************
 //*************************************************************************
 function honeypotstats()
 	{	
@@ -52,7 +48,7 @@ function honeypotstats()
 		$result = $db->sql_query("SELECT check1, check2, check3, check4, check5, check6, c8opt1, c8opt2, fs9opt1, fs9opt2, headcolor, rowcolor1, rowcolor2, pagebgcolor, pagebordercolor, fontcolor, fontcolor2 FROM ".$prefix."_honeypot_config");
 		list($check1, $check2, $check3, $check4, $check5, $check6, $c8opt1, $c8opt2, $fs9opt1, $fs9opt2, $headcolor, $rowcolor1, $rowcolor2, $pagebgcolor, $pagebordercolor, $fontcolor, $fontcolor2) = $db->sql_fetchrow($result);
 		
-		addCSSToHead('./includes/honeypot/css/honeypot_stats.css','file');
+	addCSSToHead('./includes/honeypot/css/honeypot_stats.css','file');
     $hpcss2head .='<style type="text/css">';
 	$hpcss2head .='.maincontent {';
 	$hpcss2head .='border:1px solid '.$pagebordercolor.';';

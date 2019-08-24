@@ -19,6 +19,7 @@
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
+	  Titanium Update                          v3.0.0       08/24/2019
  ************************************************************************/
 
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
@@ -97,7 +98,6 @@ while (list($mid, $title, $content, $date, $expire, $view, $groups) = $db->sql_f
 			}
 			echo '</div>';
 			CloseTable();
-			echo '<br />';
 		}
 		if ($expire != 0) {
 			if ($date+$expire < time()) {
@@ -107,5 +107,4 @@ while (list($mid, $title, $content, $date, $expire, $view, $groups) = $db->sql_f
 	}
 }
 $db->sql_freeresult($result);
-
 ?>

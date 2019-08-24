@@ -30,39 +30,10 @@ if (!defined('ADMIN_FILE')) {
 global $prefix, $db, $admdata;
 
 //Clear log is fine you have to be an admin to gain access to it
-
 $log = ($_GET['log']) ? $_GET['log'] : die("Invalid Operation");
 
 if (is_mod_admin()) 
 {
-    // @include_once(NUKE_ADMIN_DIR.'language/custom/lang-'.$currentlang.'.php');
-
-    // function view_log($file) 
-    // {
-    //     global $admin_file;
-    //     echo "<strong><center><font size='3'>"._ADMIN_LOG."</font></strong></center><br /><br />";
-    //     $filename = NUKE_INCLUDE_DIR."log/" . $file . ".log";
-    //     if(!is_file($filename)) {
-    //         echo "<center><strong><span style='color:red'>"._ADMIN_LOG_ERRFND."</span></strong></center>";
-    //         return;
-    //     }
-    //     if(filesize($filename) == 0) {
-    //         echo "<strong>"._TRACKER_HEAD_DATE."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"._TRACKER_HEAD_TIME."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"._TRACKER_HEAD_IP."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"._TRACKER_HEAD_MSG."</strong><br />";
-    //         echo "<br /><br /><strong><a href='".$admin_file.".php'>Back</a></strong>";
-    //         echo "<br /><strong><a href='".$admin_file.".php?op=adminlog_clear&log=" . $file . "'><span style=\"color:red\">"._TRACKER_CLEAR."</span></a></strong>";
-    //         return;
-    //     }
-    //     if($handle = @fopen($filename,"r")) {
-    //         $content = @fread($handle, filesize($filename));
-    //         @fclose($handle);
-    //     }
-    //     $content = nl2br($content);
-    //     echo "<strong>"._TRACKER_HEAD_DATE."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"._TRACKER_HEAD_TIME."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"._TRACKER_HEAD_IP."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"._TRACKER_HEAD_MSG."</strong><br />";
-    //     echo $content;
-    //     echo "<br /><br /><strong><a href='".$admin_file.".php'>Back</a></strong>";
-    //     echo "<br /><strong><a href='".$admin_file.".php?op=adminlog_clear&log=" . $file . "'><span style=\"color:red\">"._TRACKER_CLEAR."</span></a></strong>";
-    // }
-
     function view_log($file) 
     {
         global $admin_file, $admlang;
@@ -166,5 +137,4 @@ if (is_mod_admin())
 } else {
     echo 'Access Denied';
 }
-
 ?>

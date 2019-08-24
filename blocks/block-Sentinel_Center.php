@@ -123,5 +123,5 @@ folks got togethor and added a security layer, covering every security case you 
 $content .= '<strong>75.</strong> Added global for SERVER_ADDR as $nsnst_const[\'server_ip\']. Can be useful in<br />';
 $content .= "       other scripts to check if the request comes from your server or from a client.<br />";
   
-$content .= '<br /><br /><br /><br /><br /><br /><br /><br /><br />';
+$content .= '<br /><br /><br /><br /><br />';
 ?>

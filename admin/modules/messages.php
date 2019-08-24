@@ -27,6 +27,7 @@
       phpBB User Groups Integration            v1.0.0       08/26/2005
       Messages BBCodes                         v1.0.1       11/14/2005
       Custom Text Area                         v1.0.0       11/23/2005
+	  Titanium Updated                         v3.0.0       08/24/2019
  ************************************************************************/
 
 if (!defined('ADMIN_FILE')) {
@@ -50,21 +51,18 @@ function MsgDeactive($mid) {
 function messages() {
     global $admin, $admlanguage, $language, $prefix, $db, $multilingual, $admin_file, $admlang;
     include(NUKE_BASE_DIR.'header.php');
-    OpenTable();
-    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\">" . $admlang['messages']['header'] . "</a></div>\n";
-    echo "<br /><br />";
-    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . $admlang['global']['header_return'] . "</a> ]</div>\n";
-    CloseTable();
-    echo "<br />";
     if (empty($admlanguage)) {
         $admlanguage = $language; /* This to make sure some language is pre-selected */
     }
     OpenTable();
-    echo "<center><span class=\"title\"><strong>" . $admlang['messages']['all'] . "</strong></span><br /><br /><table border=\"1\" width=\"100%\">"
+    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\"><strong>" . $admlang['messages']['header'] . "</strong></a></div>\n";
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . $admlang['global']['header_return'] . "</a> ]</div>\n";
+    echo "<br />";
+    echo "<div align=\"center\"><span class=\"title\"><strong>" . $admlang['messages']['all'] . "</strong></span></div><br /><br /><table border=\"1\" width=\"100%\">"
     ."<tr><td align=\"center\"><strong>" . $admlang['global']['ID'] . "</strong></td>"
     ."<td align=\"center\"><strong>" . $admlang['global']['title'] . "</strong></td>"
     ."<td align=\"center\">&nbsp;<strong>" . $admlang['global']['language'] . "</strong>&nbsp;</td>"
-    ."<td  align=\"center\" nowrap>&nbsp;<strong>" . $admlang['messages']['view'] . "</strong>&nbsp;</td>"
+    ."<td align=\"center\" nowrap>&nbsp;<strong>" . $admlang['messages']['view'] . "</strong>&nbsp;</td>"
     ."<td align=\"center\">&nbsp;<strong>" . $admlang['global']['active'] . "</strong>&nbsp;</td>"
     ."<td align=\"center\">&nbsp;<strong>" . $admlang['global']['functions'] . "</strong>&nbsp;</td></tr>";
 /*****[BEGIN]******************************************
@@ -120,7 +118,6 @@ function messages() {
     }
     echo "</table></center><br />";
     CloseTable();
-    echo "<br />";
     OpenTable();
     echo "<center><span class=\"title\"><strong>" . $admlang['messages']['add'] . "</strong></span></center><br />";
     echo "<form action=\"".$admin_file.".php\" method=\"post\" name=\"message\">"
@@ -198,12 +195,6 @@ function editmsg($mid) {
     global $admin, $prefix, $db, $multilingual, $admin_file, $admlang;
     include(NUKE_BASE_DIR.'header.php');
     $mid = intval($mid);
-    OpenTable();
-    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\">" . $admlang['messages']['header'] . "</a></div>\n";
-    echo "<br /><br />";
-    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . $admlang['global']['header_return'] . "</a> ]</div>\n";
-    CloseTable();
-    echo "<br />";
 /*****[BEGIN]******************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
@@ -220,7 +211,10 @@ function editmsg($mid) {
     $view = intval($row['view']);
     $mlanguage = $row['mlanguage'];
     OpenTable();
-    echo "<center><span class=\"title\"><strong>" . $admlang['messages']['edit'] . "</strong></span></center>";
+    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\"><strong>" . $admlang['messages']['header'] . "</strong></a></div>\n";
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . $admlang['global']['header_return'] . "</a> ]</div>\n";
+    echo '<br />';
+    echo "<div align=\"center\"><span class=\"title\"><strong>" . $admlang['messages']['edit'] . "</strong></span></div>";
     if ($active == 1) {
     $asel1 = "checked";
     $asel2 = "";
@@ -328,7 +322,7 @@ function editmsg($mid) {
     ."<option name=\"view\" value=\"2\" $sel2>" . $admlang['global']['guests_only'] . "</option>"
     ."<option name=\"view\" value=\"3\" $sel3>" . $admlang['global']['users_only'] . "</option>"
     ."<option name=\"view\" value=\"4\" $sel4>" . $admlang['global']['admins_only'] . "</option>"
-        ."<option name=\"view\" value=\"6\" $sel6>".$admlang['global']['groups_only']."</option>"
+    ."<option name=\"view\" value=\"6\" $sel6>".$admlang['global']['groups_only']."</option>"
     ."</select><br /><br />"
         ."<span class='tiny'>"._WHATGRDESC."</span><br /><strong>"._WHATGROUPS."</strong> <select name='groups[]' multiple size='5'>";
     $ingroups = explode("-",$groups);
@@ -408,12 +402,11 @@ function deletemsg($mid, $ok=0) {
     } else {
     include(NUKE_BASE_DIR.'header.php');
     OpenTable();
-    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\">" . $admlang['messages']['header'] . "</a></div>\n";
-    echo "<br /><br />";
+    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\"><strong>" . $admlang['messages']['header'] . "</strong></a></div>\n";
     echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . $admlang['global']['header_return'] . "</a> ]</div>\n";
-    CloseTable();
     echo "<br />";
-    OpenTable();
+
+
     echo "<center>" . $admlang['messages']['remove'] . "";
     echo "<br /><br />[ <a href=\"".$admin_file.".php?op=messages\">" . $admlang['global']['no'] . "</a> | <a href=\"".$admin_file.".php?op=deletemsg&amp;mid=$mid&amp;ok=1\">" . $admlang['global']['yes'] . "</a> ]</center>";
         CloseTable();
@@ -435,11 +428,9 @@ switch ($op){
     case "messages":
     messages();
     break;
-
     case "editmsg":
     editmsg($mid, $title, $content, $mdate, $expire, $active, $view, $chng_date, $mlanguage);
     break;
-
     case "addmsg":
 /*****[BEGIN]******************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
@@ -449,11 +440,9 @@ switch ($op){
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
     break;
-
     case "deletemsg":
     deletemsg($mid, $ok);
     break;
-
     case "savemsg":
 /*****[BEGIN]******************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
@@ -463,11 +452,10 @@ switch ($op){
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
     break;
-
-}
-
-} else {
+ }
+} 
+else 
+{
     echo "Access Denied";
 }
-
 ?>

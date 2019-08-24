@@ -19,29 +19,31 @@
 /*                           2003 chatserv                              */
 /*      http://www.nukefixes.com -- http://www.nukeresources.com        */
 /************************************************************************/
-
-if (!defined('ADMIN_FILE')) {
-   die ("Illegal File Access");
-}
+/* Titanium Update                                   v3.0.0 08/24/2019  */
+/************************************************************************/
+if (!defined('ADMIN_FILE')) { die ("Illegal File Access"); }
 
 global $prefix, $db;
-if (is_mod_admin()) {
 
-    if (isset($_GET['del']) && $_GET['del'] == 'all') {
+if (is_mod_admin()) 
+{
+
+    if (isset($_GET['del']) && $_GET['del'] == 'all') 
+	{
         $db->sql_query('DELETE FROM `'.$prefix.'_referer`');
         $db->sql_query('OPTIMIZE TABLE `'.$prefix.'_referer`');
         redirect($admin_file.'.php?op=hreferer');
-    } else {
+    } 
+	else 
+	{
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
         echo '<div align="center">' , PHP_EOL;
-		echo '<a href="'.$admin_file.'.php?op=hreferer">' . $admlang['referers']['header'] . '</a></div>' , PHP_EOL;
-        echo '<br /><br />' , PHP_EOL;
+		echo '<a href="'.$admin_file.'.php?op=hreferer"><strong>' . $admlang['referers']['header'] . '</strong></a></div>' , PHP_EOL;
         echo '<div align="center">' , PHP_EOL;
 		echo '[ <a href="'.$admin_file.'.php">' . $admlang['global']['header_return'] . '</a> ]</div>' , PHP_EOL;
-        CloseTable();
         echo "<br />" , PHP_EOL;
-        OpenTable();
+
         echo '<div style="text-align:center"><h1>'.$admlang['referers']['linking'].'</h1></div><br /><br />' , PHP_EOL;
         $result = $db->sql_query("SELECT `url`, `link`, `lasttime` FROM ".$prefix."_referer ORDER by `lasttime` DESC");
 		echo '<table style="width:100%;" border="0" cellpadding="0" cellspacing="1" class="forumline" align="center">' , PHP_EOL;
@@ -69,7 +71,6 @@ if (is_mod_admin()) {
 				echo '<td class="row2" colspan="2" style="text-align: center; font-weight: bold;">' , PHP_EOL;
 				echo '-- '.sprintf($admlang['referers']['none'], strtolower(_HTTPREFERERS)).' --' , PHP_EOL;
 				echo '</td>' , PHP_EOL;
-				// echo '<td class="row2" style="width: 20%; text-align: center; font-weight: bold;">&nbsp;</td>' , PHP_EOL;
 				echo '</tr>' , PHP_EOL;
 				echo '</table>' , PHP_EOL;
         }
@@ -78,8 +79,9 @@ if (is_mod_admin()) {
         include_once(NUKE_BASE_DIR.'footer.php');
     }
 
-} else {
+} 
+else 
+{
     echo 'Access Denied';
 }
-
 ?>

@@ -24,7 +24,7 @@ global $db, $user_prefix, $prefix, $cache, $blockslang, $images, $board_config, 
 
 define('forum_board_icon_path','themes/'.get_theme().'/forums');
 
-$last_new_topics     = 10;
+$last_new_topics     = 13;
 $show_started_by	 = true;
 $alternate_row_class = true;
 
@@ -103,6 +103,6 @@ else:
 	$table .= '</tr>'.PHP_EOL;
 endif;
 
-$table .= '</table><br /><br /><br /><br /><br /><br /><br /><br /><br /><br />'.PHP_EOL;
+$table .= '</table><br /><br /><br /><br /><br />'.PHP_EOL;
 $content = $table;
 ?>

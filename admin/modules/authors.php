@@ -24,6 +24,7 @@
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
       Evolution Functions                      v1.5.0       12/20/2005
+	  Titanium Updated                         v3.0.0       08/24/2019
  ************************************************************************/
 
 if (!defined('ADMIN_FILE')) {
@@ -31,19 +32,18 @@ if (!defined('ADMIN_FILE')) {
 }
 
 global $prefix, $db;
-if (is_mod_admin()) {
-
+if (is_mod_admin()) 
+{
 /*********************************************************/
 /* Admin/Authors Functions                               */
 /*********************************************************/
-
-function displayadmins() 
-{
+ function displayadmins() 
+ {
     global $admin, $prefix, $db, $language, $multilingual, $admin_file, $admlang;
     if (is_admin()) {
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
-        echo '<div style="text-align: center; margin-bottom: 20px;"><a href="'.$admin_file.'.php?op=mod_authors">'.$admlang['authors']['header'].'</a><br /><br/><a href="'.$admin_file.'.php">'.$admlang['global']['header_return'].'</a></div>';
+        echo '<div style="text-align: center; margin-bottom: 20px;"><strong><a href="'.$admin_file.'.php?op=mod_authors">'.$admlang['authors']['header'].'</strong></a><br />[ <a href="'.$admin_file.'.php">'.$admlang['global']['header_return'].'</a> ]</div>';
         echo '<table style="width: 100%;" border="0" cellpadding="3" cellspacing="1" class="forumline">'."\n";
         echo '  <tr>'."\n";
         echo '    <td class="catHead" colspan="6" style="text-align: center; text-transform: uppercase;">'.$admlang['authors']['header'].'</td>'."\n";
@@ -197,7 +197,7 @@ function displayadmins()
         include_once(NUKE_BASE_DIR.'footer.php');
     } else {
         DisplayError("Unauthorized editing of authors detected<br /><br />"._GOBACK);
-    }
+   }
 }
 
 function modifyadmin($chng_aid) 
@@ -664,5 +664,4 @@ switch ($op) {
 } else {
     echo "Access Denied";
 }
-
 ?>
