@@ -2,7 +2,7 @@
 /*=======================================================================
  PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
-// LOri's Phone Number 229-300-1845
+
 /************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                         */
 /* ============================================                         */
@@ -39,19 +39,19 @@
       Color Toggle                             v1.0.0       11/25/2005
       Lazy Google Tap                          v1.0.0       01/27/2005
       Switch Content Script                    v2.0.0       03/30/2006
-	  Aboslute path Mod                        v1.0.0       01/01/2012
-	  Absolute Nuke directory                  v1.0.0       06/15/2005
-	  Image Tools                              v1.0.0       06/16/2008
+      Aboslute path Mod                        v1.0.0       01/01/2012
+      Absolute Nuke directory                  v1.0.0       06/15/2005
+      Image Tools                              v1.0.0       06/16/2008
 -=[Module]=-
       CNB Your Account                         v4.4.2       06/15/2005
 -=[Other]=-
       SSL Administration                       v1.0.0       08/29/2005
       Validation                               v1.1.0       10/17/2005
       Extra Functions                          v1.0.0       12/22/2005
-	  NSN Center Blocks                        v2.2.1       05/26/2009
-	  Titanium Defines                         v1.0.0       01/01/2012
-	  Charcter Set Defines                     v1.0.0       01/01/2012
-	  Titanium Custom Functions                v1.0.0       08/14/2019
+      NSN Center Blocks                        v2.2.1       05/26/2009
+      Titanium Defines                         v1.0.0       01/01/2012
+      Charcter Set Defines                     v1.0.0       01/01/2012
+      Titanium Custom Functions                v1.0.0       08/14/2019
  ************************************************************************/
 
 if(defined('NUKE_EVO')) return;
