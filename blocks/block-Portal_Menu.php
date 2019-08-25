@@ -10,14 +10,12 @@
 # http://www.gnu.org/licenses/gpl.txt                                   #
 #=======================================================================#
 
-if(!defined('NUKE_TITANIUM')) exit;
+if(!defined('NUKE_EVO')) exit;
 
        global $db, 
-	         $db2, 
 		   $admin, 
 		    $user, 
 	      $prefix, 
-  $network_prefix, 
           $cookie, 
 	  $def_module, 
 	    $bgcolor1, 
@@ -26,6 +24,9 @@ if(!defined('NUKE_TITANIUM')) exit;
 		$bgcolor4,
       $userpoints, 
              $uid;
+			 
+      global $user_prefix, $def_module, $currentlang, $cache;			 
+
 
 if(file_exists(NUKE_LANGUAGE_DIR.'Menu/lang-'.$currentlang.'.php')) 
 {
@@ -36,12 +37,193 @@ else
     include_once(NUKE_LANGUAGE_DIR.'Menu/lang-english.php');
 }
 
+$userpoints=intval($userpoints); 
+
+$gestiongroupe = 1; // mettre 0 permet de forcer Sommaire Paramétrable à ne pas gérer les groupes. (gain de 1 requête SQL)
 $managment_group = 1; 
-$detectPM=1; 
-$detectMozilla=0;
+
+$detectPM = 1; // Put 0 to deactivate the detection of the Private Messages.  (gains 1 SQL query)
+$detectMozilla = (preg_match("/Mozilla/i",$_SERVER['HTTP_USER_AGENT']) && !preg_match("/MSIE/i",$_SERVER['HTTP_USER_AGENT']) && !preg_match("/Opera/i",$_SERVER['HTTP_USER_AGENT']) && !preg_match("/Konqueror/i",$_SERVER['HTTP_USER_AGENT'])) ? 1 : 0 ;
+$detectMozilla = 0;
+
 $horizontal=0;
 $div=0;
 
+
+// One recovers the unit in welcome orderly (index) and one will test if one must do the management of the groups.
+// (Grouped together requests to optimize the calls to the DB).
+/*****[BEGIN]******************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+if(!($row = $cache->load('menu_row', 'block'))) {
+/*****[END]********************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+$sql="SELECT t1.invisible, t2.main_module FROM ".$prefix."_menu AS t1, ".$prefix."_main AS t2 LIMIT 1";
+$result = $db->sql_query($sql);
+$row = $db->sql_fetchrow($result);
+/*****[BEGIN]******************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+$cache->save('menu_row', 'block', $row);
+}
+/*****[END]********************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+
+$is_admin = (is_admin($admin)) ? 1 : 0 ;
+//one will test if the visitor is an admin and or a member
+$is_user = (is_user()) ? 1 : 0 ;
+$ThemeSel = get_theme(); // récupère le thème du membre : évite une requête.
+$uid = $cookie[0];
+//$pathicon = "themes/$ThemeSel/images/sommaire";
+$path_icon = "images/menu";
+$imgnew="new.gif";
+
+///////////// on récupère les infos pour savoir si le user a des messages privés non lus /////////////////
+if ($is_user==1 && $detectPM==1) {
+    $uid=intval($uid); // on sécurise l'appel à la BDD
+     $newpms = $db->sql_fetchrow($db->sql_query("SELECT COUNT(*) FROM " . $prefix . "_bbprivmsgs WHERE privmsgs_to_userid='$uid' AND (privmsgs_type='5' OR privmsgs_type='1')")); //2 requetes SQL
+}
+// voilà, si $newpms[0]>0 --> il y a des PMs non lus //
+
+//////// on va mettre la liste des modules dans la variable $modules /////////////////////
+/*****[BEGIN]******************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+if(!($tempoA = $cache->load('menu_tempo', 'block'))) 
+{
+/*****[END]********************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+   if ($managment_group==1) 
+   {
+      $sql = "SELECT title, custom_title, view, active, groups FROM ".$prefix."_modules WHERE active='1' AND inmenu='1' AND `title` NOT LIKE '~l~%' ORDER BY custom_title ASC";
+   }
+   else 
+   {
+    $sql = "SELECT title, custom_title, view, active FROM ".$prefix."_modules WHERE active='1' AND inmenu='1' AND `title` NOT LIKE '~l~%' ORDER BY custom_title ASC";
+   }
+   
+   
+    $modulesaffiche= $db->sql_query($sql);
+    while($tempo = $db->sql_fetchrow($modulesaffiche)) 
+    {
+        $tempoA[] = $tempo;
+    }
+/*****[BEGIN]******************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+  $cache->save('menu_tempo', 'block', $tempoA);
+}
+/*****[END]********************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+
+
+    $compteur=0;
+    
+	if (is_array($tempoA)) 
+	{
+        foreach($tempoA as $tempo) {
+            $module[$compteur]= $tempo['title'];
+            $customtitle[$compteur] = $tempo['custom_title'];
+            $view[$compteur] = $tempo['view'];
+            $active[$row['title']] = $tempo['active'];
+            $mod_group[$compteur] = ($managment_group==1) ? $tempo['groups'] : "";
+            $compteur++;
+            if ($tempo['view']==3) { $gestionsubscription="yes";}
+        }
+    }
+/////// ok, on a les infos de la table modules //////////////
+
+//// on va récupérer le module par défaut dans le thème (s'il existe)
+if (file_exists("themes/$ThemeSel/module.php")) {
+    include("themes/$ThemeSel/module.php");
+    $is_active = ($active[$default_module]!=0) ? 1 : 0 ; // permet de savoir si le Default Module est actif.
+    if ($is_active==1 AND file_exists("modules/$default_module/index.php")) {
+        $main_module = $default_module;
+    }
+}
+
+$total_actions="";
+$flagmenu = 0;  // flag qui est mis automatiquement à "1" quand il y a un module dans la rubrique 99
+                // --> permet d'afficher 1 seule fois la barre horizontale.
+    // on va mettre les données de la table nuke_sommaire_categories dans les variables adéquates.
+
+/*****[BEGIN]******************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+if (!($row2A = $cache->load('menu_row2', 'block'))) {
+/*****[END]********************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+    $sql2= "SELECT groupmenu, module, url, url_text, image, new, new_days, class, bold FROM ".$prefix."_menu_categories ORDER BY id ASC";
+    $result2= $db->sql_query($sql2);
+    while($row2=$db->sql_fetchrow($result2)) {
+        $row2A[] = $row2;
+    } //on récupère la première ligne de la table, et on affecte aux variables.
+/*****[BEGIN]******************************************
+ [ Base:    Caching System                     v3.0.0 ]
+ ******************************************************/
+$cache->save('menu_row2', 'block', $row2A);
+}
+/*****[END]********************************************
+ [ Base:    Caching System                     v3.0.0 ] 
+ ******************************************************/
+ 
+    $compteur=0;
+    $totalcompteur=0;
+    $categorie=$row2A[0]['groupmenu'];
+    $moduleinthisgroup[$categorie][$compteur]=$row2A[0]['module'];
+    $linkinthisgroup[$categorie][$compteur]=$row2A[0]['url'];
+    $linktextinthisgroup[$categorie][$compteur]=$row2A[0]['url_text'];
+    $imageinthisgroup[$categorie][$compteur]=$row2A[0]['image'];
+    $newinthisgroup[$categorie][$compteur]=$row2A[0]['new'];
+    $newdaysinthisgroup[$categorie][$compteur]=$row2A[0]['new_days'];
+    $classinthisgroup[$categorie][$compteur]=$row2A[0]['class'];
+    $grasinthisgroup[$categorie][$compteur]=$row2A[0]['bold'];
+    $totalcategorymodules[$totalcompteur]=$row2A[0]['module']; 
+    $compteur2=$categorie;
+    
+	$total_actions="menu_showhide('menu-".$row2A[0]['groupmenu']."','nok','menuupdown-".$row2A[0]['groupmenu']."');";
+    
+	$totalcompteur=1;
+    unset($row2A[0]);
+
+    if (is_array($row2A)) 
+	{
+
+    foreach($row2A as $row2) 
+	{ 
+        $categorie=$row2['groupmenu'];
+        $totalcategorymodules[$totalcompteur]=$row2['module'];
+        $totalcompteur++;
+
+        if ($compteur2==$categorie) 
+		{ 
+            $compteur++;
+        }
+        else 
+		{
+            $total_actions=$total_actions."menu_showhide('sommaire-".$row2['groupmenu']."','nok','menuupdown-".$row2['groupmenu']."');";
+            $compteur=0;
+        }
+        $moduleinthisgroup[$categorie][$compteur]=$row2['module'];
+        $linkinthisgroup[$categorie][$compteur]=$row2['url'];
+        $linktextinthisgroup[$categorie][$compteur]=$row2['url_text'];
+        $imageinthisgroup[$categorie][$compteur]=$row2['image'];
+        $newinthisgroup[$categorie][$compteur]=$row2['new'];
+        $newdaysinthisgroup[$categorie][$compteur]=$row2['new_days'];
+        $classinthisgroup[$categorie][$compteur]=$row2['class'];
+        $grasinthisgroup[$categorie][$compteur]=$row2['bold'];
+        $compteur2=$categorie;
+      }
+    }
+// --> OK, les variables ont pris la valeur adéquate de la table nuke_sommaire_categories
+$content ="<!-- Menu Turd Pile -->";
+//here
+ 
 $sql="SELECT t1.invisible, t1.dynamic, t2.main_module FROM ".$prefix."_menu AS t1, ".$prefix."_main AS t2 WHERE t1.groupmenu=99 limit 1";
 
 $result = $db->sql_query($sql);
@@ -63,17 +245,6 @@ else
 	$managment_group=0;
 }
 
-$is_admin = (is_admin($admin)) ? 1 : 0 ;
-
-$is_user = (menu_is_user($user,$managment_group)) ? 1 : 0 ; 
-
-$userpoints=intval($userpoints); 
-
-$ThemeSel = menu_get_theme($is_user); 
-
-$path_icon = "images/menu";
-
-$imgnew="new.gif";
 
 //this is the start of the Portal menu
 $sql = "SELECT * FROM ".$prefix."_modules WHERE active='1' AND inmenu='1' ORDER BY custom_title ASC";
@@ -356,8 +527,7 @@ $sql = "SELECT * FROM ".$prefix."_modules WHERE active='1' AND inmenu='1' ORDER 
 		}
 	}
 
-$content ="
-<!--  Titanium Portal Menu v.3.0 b1  -->";
+$content ="\n\n\n\n<!--  START Titanium Portal Menu v.3.1 -->\n";
 ?>
 <script type="text/javascript" language="JavaScript">
 function menu_listbox(page) {
@@ -369,6 +539,7 @@ function menu_listbox(page) {
 			top.location.href=page;
 	}
 }				
+
 function menu_over_popup(page,nom,option) {
 	window.open(page,nom,option);
 }
@@ -377,6 +548,7 @@ function menu_over_popup(page,nom,option) {
 .menunowrap {white-space: nowrap;}
 </style>
 <?php
+# MAIN MENU 
 	$dynamictest=0;
 	global $prefix, $network_prefix, $db, $db2;
 
@@ -403,42 +575,47 @@ function menu_over_popup(page,nom,option) {
 	
 	global $textcolor1,
 	       $textcolor2,
+             $bgcolor1,
+             $bgcolor2,
+             $bgcolor3,
+             $bgcolor4,
 		  $portaladmin, 
-	   $network_prefix, 
+	           $prefix, 
 	      $avatarwidth, 
 		       $domain, 
 			      $uid, 
 			 $ThemeSel;
 	
+	$align = 'absmiddle'; //added by Ernest Buffingtn to align the new.gif image
+	$aligncat = 'style="text-align:left"'; //added by Ernest Buffingtn to align the link text left (not sure I needed it just a temp hack)
+	
     list($portaladminname, 
 	              $avatar, 
-				   $email) = $db2->sql_ufetchrow("SELECT `username`,`user_avatar`, `user_email` FROM `".$network_prefix."_users` WHERE `user_id`='$portaladmin'", SQL_NUM);
+				   $email) = $db->sql_ufetchrow("SELECT `username`,`user_avatar`, `user_email` FROM `".$prefix."_users` WHERE `user_id`='$portaladmin'", SQL_NUM);
 
     
 	if (strcmp($_SERVER['SERVER_NAME'], 'cvs.86it.us') == 0)
 	{
-	  $content.= "<div class=\"supersmall\" align=\"center\"><font color=\"#004400\"><b><center>PHP-Nuke Titanium</center></b></font></div>";
-      $content.= "<div class=\"supersmall\" align=\"center\"><font color=\"#000000\"><b><center><font color=\"$textcolor2\">C</font>oncurrent <font color=\"$textcolor2\">V</font>ersions <font color=\"$textcolor2\">S</font>ystem</center></b></font></div>";
-      $content.= "<div class=\"supersmall\" align=\"center\"><font color=\"$textcolor2\"><center><b>https://".$_SERVER['SERVER_NAME']."</b></center></font></div>";
+      $content .= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor1\"><strong>86it CSC</strong></font></div>";
+      $content .= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor2\"><center><strong>https://".$_SERVER['SERVER_NAME']."</strong></center></font></div>";
 	}
     else
-	if (strcmp($_SERVER['SERVER_NAME'], 'music.86it.us') == 0)
+	if (strcmp($_SERVER['SERVER_NAME'], 'hub.86it.us') == 0)
 	{
-      $content.= "<div class=\"supersmall\" align=\"center\"><font color=\"#004400\"><b>The 86it Social Network</b></font></div>";
-      $content.= "<div class=\"supersmall\" align=\"center\"><font color=\"$textcolor2\"><b>Titanium Tunes</b></font></div>";
-      $content.= "<div class=\"supersmall\" align=\"center\"><font color=\"$textcolor2\"><center><b>https://".$_SERVER['SERVER_NAME']."</b></center></font></div>";
+      $content .= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor1\"><strong>86it Main Hub</strong></font></div>";
+      $content .= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor2\"><center><strong>https://".$_SERVER['SERVER_NAME']."</strong></center></font></div>";
 	}
 	else
 	{
-      $content.= "<div class=\"supersmall\" align=\"center\"><font color=\"#004400\"><b>$portaladminname</b></font></div>";
-      $content.= "<div class=\"supersmall\" align=\"center\"><font color=\"$textcolor2\"><b>Owns This 86it Portal</b></font></div>";
+      $content.= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor1\"><strong>$portaladminname</strong></font></div>";
+      $content.= "<div class=\"supersmall\" align=\"center\"><font size=\"1\" color=\"$textcolor2\"><strong>Owns This 86it Portal</strong></font></div>";
 	}
 	
     global $facebook_plugin_width; 
     global $admin_icon_image_height, $survey_blocks_table_width, $admin_icon_table_width, $avatarwidth, $main_blocks_table_width, $blocks_width, $innertitle;	
 	
-	$content.="<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">";
-	$content.="<tr><td width=\"100%\"></td><td id=\"menu_block\"></td></tr>";
+	$content .= "<table width=\"100%\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\">";
+	$content .= "<tr><td width=\"100%\"></td><td id=\"menu_block\"></td></tr>";
 	
 	if($horizontal==1) 
 	{
@@ -574,7 +751,7 @@ function menu_over_popup(page,nom,option) {
         		}
 				else {
 				$fermebalise= ($som_lien!="") ? "</a>" : "" ;
-					$content.="<img src=\"$path_icon/$som_image\" border=\"0\" alt=\"$som_image\">".$fermebalise."&nbsp;";
+					$content.="<img align=\"$align\" src=\"$path_icon/$som_image\" border=\"0\" alt=\"$som_image\">".$fermebalise."&nbsp;";
 				}
 			}
 
@@ -614,7 +791,7 @@ function menu_over_popup(page,nom,option) {
 				
 				$bold1 = ($som_bold=="on") ? "<strong>" : "" ;
 				$bold2 = ($som_bold=="on") ? "</strong>" : "" ;
-				$new = ($som_new=="on") ? "<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">" : "" ;
+				$new = ($som_new=="on") ? "<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">" : "" ;
 				
 				$content.="".$bold1."$som_name".$bold2."".$new."";
 			}
@@ -816,8 +993,8 @@ function menu_over_popup(page,nom,option) {
 				}
 				
 			
-			$new = ($newinthisgroup[$som_groupmenu][$keyinthisgroup]=="on") ? "<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">" : "" ;
-			$imagedulien="<img src=\"$path_icon/categories/".$imageinthisgroup[$som_groupmenu][$keyinthisgroup]."\" border=0 alt=\"".$imageinthisgroup[$som_groupmenu][$keyinthisgroup]."\">";
+			$new = ($newinthisgroup[$som_groupmenu][$keyinthisgroup]=="on") ? "<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">" : "" ;
+			$imagedulien="<img align=\"$align\" src=\"$path_icon/categories/".$imageinthisgroup[$som_groupmenu][$keyinthisgroup]."\" border=0 alt=\"".$imageinthisgroup[$som_groupmenu][$keyinthisgroup]."\">";
 			if($linkinthisgroup[$som_groupmenu][$keyinthisgroup]) { // v212b4 : n'affiche aucun lien si la case LIEN est vide.
 				$lelien="<a href=\"".$linkinthisgroup[$som_groupmenu][$keyinthisgroup]."\"".$zelink." class=\"".$classinthisgroup[$som_groupmenu][$keyinthisgroup]."\">";
 				$close_lelien="</a>";
@@ -923,7 +1100,7 @@ function menu_over_popup(page,nom,option) {
 					}
 				}
 				if($imageinthisgroup[$som_groupmenu][$keyinthisgroup]!="middot.gif") {
-					$limage="<img src=\"$path_icon/categories/".$imageinthisgroup[$som_groupmenu][$keyinthisgroup]."\" border=\"0\" alt=\"".$imageinthisgroup[$som_groupmenu][$keyinthisgroup]."\">";
+					$limage="<img align=\"$align\" src=\"$path_icon/categories/".$imageinthisgroup[$som_groupmenu][$keyinthisgroup]."\" border=\"0\" alt=\"".$imageinthisgroup[$som_groupmenu][$keyinthisgroup]."\">";
 				}
 				else {
 					$limage="<strong><big>&middot;</big></strong>";
@@ -931,7 +1108,7 @@ function menu_over_popup(page,nom,option) {
 
 				//v2.5
 				if($poster_moduleinthisgroup[$som_groupmenu][$keyinthisgroup]==2) {
-					$limage="<img src=\"$path_icon/admin/interdit.gif\" title=\"".$whyrestricted[$som_groupmenu][$keyinthisgroup]."\" alt=\"".$whyrestricted[$som_groupmenu][$keyinthisgroup]."\">";
+					$limage="<img align=\"$align\" src=\"$path_icon/admin/interdit.gif\" title=\"".$whyrestricted[$som_groupmenu][$keyinthisgroup]."\" alt=\"".$whyrestricted[$som_groupmenu][$keyinthisgroup]."\">";
 				}
 
 				if(($newpms[0]) AND ($nomdumodule =="Private_Messages")) {
@@ -941,33 +1118,64 @@ function menu_over_popup(page,nom,option) {
 					$disp_pmicon="";
 				}
 				////// ajout support NEW! automatique pour les modules de base.
-				$new = ($newinthisgroup[$som_groupmenu][$keyinthisgroup]=="on") ? "<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">" : "" ;
+				$new = ($newinthisgroup[$som_groupmenu][$keyinthisgroup]=="on") ? "<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">" : "" ;
 
-				if($nomdumodule=="Downloads" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
-					$where = (strstr("^cid=[0-9]*$",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
-					$sqlimgnew="SELECT date FROM ".$prefix."_downloads_downloads".$where." order by date desc limit 1";
+				if($nomdumodule=="Downloads" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") 
+				{
+				    $where = (preg_match("/^cid=[0-9]*$/",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
+					$sqlimgnew="SELECT date FROM ".$prefix."_nsngd_downloads".$where." order by date desc limit 1";
 					$resultimgnew=$db->sql_query($sqlimgnew);
 					$rowimgnew = $db->sql_fetchrow($resultimgnew);
+				
 					if($rowimgnew['date']) {
-						strstr ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})", $rowimgnew['date'], $datetime);
+						preg_match ("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $rowimgnew['date'], $datetime);
 						$zedate = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
 						//$now=time();
 						if(intval(($now-$zedate)/86400) <= $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]) {
-							$new="<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
+							$new="<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
 						}
 					}
 				}
-				elseif($nomdumodule=="Web_Links" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
+                else
+				if ($nomdumodule=="Web_Links" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") 
+				{
+                    $where = (preg_match("/^cid=[0-9]*$/",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
+                    $sqlimgnew="SELECT date FROM ".$prefix."_links_links".$where." ORDER BY date DESC LIMIT 1";
+                    $resultimgnew=$db->sql_query($sqlimgnew);
+                    $rowimgnew = $db->sql_fetchrow($resultimgnew);
+                
+				    if ($rowimgnew['date']) 
+					{
+                       preg_match ("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $rowimgnew['date'], $datetime);
+                       $zedate = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
+                       $now=time();
+                    
+					   if(intval(($now-$zedate)/86400) <= $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]) 
+					   {
+                            $new="<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
+                       }
+                     }
+                }
+				else //This is broken in PHP 7,3
+				if($nomdumodule=="Web_Links" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") 
+				{
 					$where = (strstr("^cid=[0-9]*$",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
+				
 					$sqlimgnew="SELECT date FROM ".$prefix."_links_links".$where." order by date desc limit 1";
+				
 					$resultimgnew=$db->sql_query($sqlimgnew);
+				
 					$rowimgnew = $db->sql_fetchrow($resultimgnew);
-					if($rowimgnew['date']) {
+				
+					if($rowimgnew['date']) 
+					{
 						strstr ("([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})", $rowimgnew['date'], $datetime);
+					
 						$zedate = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
-						//$now=time();
+
 						if(intval(($now-$zedate)/86400) <= $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]) {
-							$new="<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
+					
+							$new="<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
 						}
 					}
 				}
@@ -981,7 +1189,7 @@ function menu_over_popup(page,nom,option) {
 						$zedate = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
 						//$now=time();
 						if(intval(($now-$zedate)/86400) <= $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]) {
-							$new="<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
+							$new="<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
 						}
 					}
 				}
@@ -995,7 +1203,7 @@ function menu_over_popup(page,nom,option) {
 						$zedate = mktime(0,0,0,$datetime[2],$datetime[3],$datetime[1]);
 						//$now=time();
 						if(intval(($now-$zedate)/86400) <= $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]) {
-							$new="<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
+							$new="<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
 						}
 					}
 				}
@@ -1019,7 +1227,7 @@ function menu_over_popup(page,nom,option) {
 					
 						//$now=time();
 						if(intval(($now-$zedate)/86400) <= $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]) {
-							$new="<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
+							$new="<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
 						}
 					}
 				}
@@ -1043,12 +1251,12 @@ function menu_over_popup(page,nom,option) {
 					
 						//$now=time();
 						if(intval(($now-$zedate)/86400) <= $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]) {
-							$new="<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
+							$new="<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
 						}
 					}
 				}
 				else // Blogs module
-				if($nomdumodule=="Blogs" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
+				if($nomdumodule=="-Blogs" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
 					$where = (strstr("^new_topic=[0-9]*$",$temponomdumodule[1])) ? " WHERE ".str_replace("new_","",$temponomdumodule[1])."" : "";
 					$sqlimgnew="SELECT time FROM ".$prefix."_blogs".$where." order by time desc limit 1";
 					$resultimgnew=$db->sql_query($sqlimgnew);
@@ -1058,11 +1266,27 @@ function menu_over_popup(page,nom,option) {
 						$zedate = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
 						//$now=time();
 						if(intval(($now-$zedate)/86400) <= $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]) {
-							$new="<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
+							$new="<img align=\"$align\" src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\" alt=\""._MENU_NEWCONTENT."\">";
 						}
 					}
 				}
 
+
+                 elseif ($nomdumodule=="Blogs" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") 
+				 {
+                                        $where = (preg_match("/^new_topic=[0-9]*$/",$temponomdumodule[1])) ? " WHERE ".str_replace("new_","",$temponomdumodule[1])."" : "";
+                                        $sqlimgnew="SELECT time FROM ".$prefix."_blogs".$where." ORDER BY time DESC LIMIT 1";
+                                        $resultimgnew=$db->sql_query($sqlimgnew);
+                                        $rowimgnew = $db->sql_fetchrow($resultimgnew);
+                                        if ($rowimgnew['time']) {
+                                            preg_match ("/([0-9]{4})-([0-9]{1,2})-([0-9]{1,2}) ([0-9]{1,2}):([0-9]{1,2}):([0-9]{1,2})/", $rowimgnew['time'], $datetime);
+                                            $zedate = mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]);
+                                            $now=time();
+                                            if(intval(($now-$zedate)/86400) <= $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]) {
+                                                $new="<img src=\"$path_icon/admin/$imgnew\" border=0 title=\""._MENU_NEWCONTENT."\">";
+                                            }
+                                        }
+                                    }
 				//sublevels - ouvre
 				if($keyinthisgroup==0) {
 					$sublevelinthisgroup[$som_groupmenu][$keyinthisgroup]=0;
@@ -1101,12 +1325,16 @@ function menu_over_popup(page,nom,option) {
 				}
 
 				if($limage!="middot.gif" && ($customtitle2=="" || $customtitle2==" " || $customtitle2=="&nbsp;" || $customtitle2=="&amp;nbsp;")) { //si le texte du lien est vide l'image va être clickable
-					if($no_category_text[$som_groupmenu]===1) {	//V2.1.2beta3
-						$content.=$ligne."<td colspan=2 align=\"left\" width=\"100%\">&nbsp;<a href=\"".$urldumodule."\" ".$targetblank.">".$limage."</a>".$new."";
+					
+					if($no_category_text[$som_groupmenu]===1) 
+					{	
+						$content.=$ligne."<td colspan=2 align=\"left\" width=\"100%\">&nbsp;<a $aligncat href=\"".$urldumodule."\" ".$targetblank.">".$limage."</a> ".$new."";
 					}
-					else {
-						$content.=$ligne."<td width=\"$catimagesize[0]\" align=\"right\"></td><td>&nbsp;<a href=\"".$urldumodule."\" ".$targetblank.">".$limage."</a>".$new."";
+					else  
+					{
+						$content.=$ligne."<td width=\"$catimagesize[0]\" align=\"right\"></td><td>&nbsp;<a $aligncat href=\"".$urldumodule."\" ".$targetblank.">".$limage."</a> ".$new."";
 					}
+					
 					$content.=$sublevel_updownimg."</td>";
 					
 					if(($div==1) && ($keyinthisgroup<count($moduleinthisgroup[$som_groupmenu])-1 && $sublevelinthisgroup[$som_groupmenu][$keyinthisgroup]<$sublevelinthisgroup[$som_groupmenu][$keyinthisgroup+1])) {
@@ -1124,13 +1352,17 @@ function menu_over_popup(page,nom,option) {
 					else {
 						$content.=$ligne."<td".$width." align=\"right\">".$limage.""."</td><td>".$disp_pmicon."";
 					}
-					$content.="&nbsp;<a href=\"".$urldumodule."\" class=\"".$classinthisgroup[$som_groupmenu][$keyinthisgroup]."\" ".$targetblank."><span class=\"".$classinthisgroup[$som_groupmenu][$keyinthisgroup]."\">".$gras1."$customtitle2".$gras2."</span></a>".$new."";
+					
+					$content.="&nbsp;<a $aligncat href=\"".$urldumodule."\" class=\"".$classinthisgroup[$som_groupmenu][$keyinthisgroup]."\" ".$targetblank."><span class=\"".$classinthisgroup[$som_groupmenu][$keyinthisgroup]."\">".$gras1."$customtitle2".$gras2."</span></a> ".$new."";
 					$content.=$sublevel_updownimg."</td>";
-					if(($div==1) && ($keyinthisgroup<count($moduleinthisgroup[$som_groupmenu])-1 && $sublevelinthisgroup[$som_groupmenu][$keyinthisgroup]<$sublevelinthisgroup[$som_groupmenu][$keyinthisgroup+1])) {
+					
+					if(($div==1) && ($keyinthisgroup<count($moduleinthisgroup[$som_groupmenu])-1 && $sublevelinthisgroup[$som_groupmenu][$keyinthisgroup]<$sublevelinthisgroup[$som_groupmenu][$keyinthisgroup+1])) 
+					{
 						//si ce lien est le parent d'un sublevel, et qu'on utilise les layers il ne faut pas fermer la ligne.
 					}
-					else {
-					$content.="</tr>\n";
+					else 
+					{
+					  $content.="</tr>\n";
 					}
 				}
 
@@ -1234,9 +1466,10 @@ function menu_over_popup(page,nom,option) {
 		$content.="<script type=\"text/javascript\" language=\"JavaScript\">$total_actions;\n";
 		$content.=$ferme_sublevels;
 		$content.="</script>";
-		// Note: j'utilise le jscript pour fermer les catégories (et sublevels) au départ, au lieu de mettre "display: none" pour leur contenu.
-		// C'est peut-être moins "élégant", mais le but est de faire fonctionner le menu sur des navigateurs SANS jscript (ou désactivé).
-		// (ça serait relativement gênant de ne pas pouvoir naviguer dans le menu d'un site web si on n'a pas de jscript !) ;-)
+
+      // Note: j'utilise le jscript pour fermer les catégories (et sublevels) au départ, au lieu de mettre "display: none" pour leur contenu.
+	  // C'est peut-être moins "élégant", mais le but est de faire fonctionner le menu sur des navigateurs SANS jscript (ou désactivé).
+	  // (ça serait relativement gênant de ne pas pouvoir naviguer dans le menu d'un site web si on n'a pas de jscript !) ;-)
 	}
 
 
@@ -1246,9 +1479,9 @@ function menu_over_popup(page,nom,option) {
 if( $showadmin==1 && $is_admin===1 && $horizontal!=1) {
 
 	$key=count($module); // $key va permettre de se positionner dans $module[] pour rajouter des modules à la fin
-	$content .= "<br><center><b>"._INVISIBLEMODULES."</b><br>";
-	$content .= "<font class=\"tiny\">"._ACTIVEBUTNOTSEE."</font></center>";
-	$content.="<form action=\"modules.php\" method=\"get\" name=\"menuformlistboxinvisibles\">"
+	$content .= "<br><div align=\"center\"><strong>"._INVISIBLEMODULES."</strong></div>";
+	$content .= "<div align=\"center\"><font class=\"tiny\">"._ACTIVEBUTNOTSEE."</font></div>";
+	$content.="<div align=\"center\"><form action=\"modules.php\" method=\"get\" name=\"menuformlistboxinvisibles\">"
 	."<select name=\"somlistboxinvisibles\" onchange=\"menu_listbox(this.options[this.selectedIndex].value)\">"
 	."<option value=\"select\">"._MENU_SELECTALINK."";
 	$sql = "SELECT * FROM ".$prefix."_modules WHERE active='1' AND inmenu='0' ORDER BY title ASC";
@@ -1262,12 +1495,12 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1) {
 		$content .= "<option value=\"".$urldumodule_admin."\">".$mn_title2."";
 		$key++;
 	}
-	$content.= "</select></form>\n";
+	$content.= "</select></form></div>\n";
 
 	
-	$content .= "<br><center><b>"._NOACTIVEMODULES."</b><br>";
-	$content .= "<font class=\"tiny\">"._FORADMINTESTS."</font></center>";
-	$content.="<form action=\"modules.php\" method=\"get\" name=\"menuformlistboxinactifs\">"
+	$content .= "<br /><div align=\"center\"><strong>"._NOACTIVEMODULES."</strong></div>";
+	$content .= "<div align=\"center\"><font class=\"tiny\">"._FORADMINTESTS."</font></div>";
+	$content.="<div align=\"center\"><form action=\"modules.php\" method=\"get\" name=\"menuformlistboxinactifs\">"
 				."<select name=\"somlistboxinactifs\" onchange=\"menu_listbox(this.options[this.selectedIndex].value)\">"
 				."<option value=\"select\">"._MENU_SELECTALINK."";
 	
@@ -1286,7 +1519,7 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1) {
 		$content .= "<option value=\"".$urldumodule_admin."\">".$mn_title2."";
 		$dummy = 1;
 	}
-	$content.= "</select></form>\n";
+	$content.= "</select></form></div>\n";
 
 	
 	
@@ -1324,7 +1557,7 @@ if( $showadmin==1 && $is_admin===1 && $horizontal!=1) {
 
 function menu_is_user($user, $managment_group) 
 {
-    global $network_prefix, $db2, $uid, $userpoints;
+    global $prefix, $db, $uid, $userpoints;
 
     if(!is_array($user)) 
 	{
@@ -1348,21 +1581,21 @@ function menu_is_user($user, $managment_group)
 	{
 		if($managment_group==0) 
 		{
-        	$sql = "SELECT user_password FROM ".$network_prefix."_users WHERE user_id='$uid'";
+        	$sql = "SELECT user_password FROM ".$prefix."_users WHERE user_id='$uid'";
 		}
 		else 
 		if($managment_group==1) 
 		{
-			$sql = "SELECT user_password, points FROM ".$network_prefix."_users WHERE user_id='$uid'";
+			$sql = "SELECT user_password, points FROM ".$prefix."_users WHERE user_id='$uid'";
 		}
 		else 
 		{
 		  die("There Seems To Be A problem!!");
 		}
         
-		$result = $db2->sql_query($sql);
+		$result = $db->sql_query($sql);
         
-		$row = $db2->sql_fetchrow($result);
+		$row = $db->sql_fetchrow($result);
         
 		$pass = $row['user_password'];
         

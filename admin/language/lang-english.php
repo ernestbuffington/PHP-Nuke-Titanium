@@ -592,10 +592,10 @@ $admlang['global']['guests_only'] 		= 'Anonymous Users Only';
 $admlang['global']['all_visitors'] 		= 'All Visitors';
 $admlang['global']['groups_only'] 		= 'Groups Only';
 
-$admlang['admin']['administration_header'] 	= 'Administration Menu';
-$admlang['admin']['modules_header'] 	= 'Modules Administration';
+$admlang['admin']['administration_header'] 	= '<strong>Administration Menu</strong>';
+$admlang['admin']['modules_header'] 	= '<strong>Modules Administration</strong>';
 
-$admlang['admin']['important'] 			= 'Important Information';
+$admlang['admin']['important'] 			= '<strong>Important Information</strong>';
 // define('_IMPORTANT_INFO','Important Information');
 $admlang['admin']['ip_lock'] 			= 'Admin IP Lock';
 // define('_IP_LOCK','Admin IP Lock');
@@ -630,7 +630,7 @@ $admlang['authors']['superwarn']		= 'WARNING: If Super Admin is checked, the use
  * Mod: Live feed (Live news directly from Evolution Xtreme project site.)
  * @since 2.0.9e
  */
-$admlang['livefeed']['header'] 				= 'Live Feed from PHP-Nuke Titanium Hub';
+$admlang['livefeed']['header'] 				= '<strong>Live Feed from The 86it Developers Hub</strong>';
 
 /**
  * Mod: reCaptcha (Complete replacement for the GD2 captcha system.)

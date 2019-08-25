@@ -456,7 +456,7 @@ else {
 }
     // si on sélectionne 'Lien externe' dans la liste des modules, cela va afficher les inputbox.
             echo "<select name=\"sommaireformingroup[$keysommaire][$z]\" onchange='disab(this,this.value,this.form.elements[\"sommaireformmodulelink[$keysommaire][$z]\"],this.form.elements[\"sommaireformmodulelinktext[$keysommaire][$z]\"],\"$linkvalue\",\"$linktextvalue\"); sommaireadminshowhide(\"$sommairezenom\",$hideok)'>";
-            echo "<option value=\"Aucun\">";
+            echo "<option value=\"No\">";
             $selected = ($moduleinthisgroup[$groupmenu[$keysommaire]][$z]=="SOMMAIRE_HR") ? "selected" : "" ;
             echo "<option value=\"SOMMAIRE_HR\" $selected>*"._SOMMAIREHR."*";
             $selected = ($moduleinthisgroup[$groupmenu[$keysommaire]][$z]=="Lien externe") ? "selected" : "" ;
@@ -750,7 +750,7 @@ else {
                 $db->sql_query($sql);
                 //echo (MySql_error());
             }
-            else if ($sommaireformingroup[$i][$j] !="Aucun") { //sinon, (si il y a un module) on insère le nom du module, et pas de lien.
+            else if ($sommaireformingroup[$i][$j] !="No") { //sinon, (si il y a un module) on insère le nom du module, et pas de lien.
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -782,7 +782,7 @@ else {
                 $db->sql_query($sql);
                 // echo (MySql_error());
             }
-        // --> si 'Aucun' est sélectionné dans les modules, on n'insère aucune donnée !
+        // --> si 'No' est sélectionné dans les modules, on n'insère aucune donnée !
         }
         
 // si la catégorie ne contient aucune donnée (complètement vide), alors on ne l'insère pas dans la DB.

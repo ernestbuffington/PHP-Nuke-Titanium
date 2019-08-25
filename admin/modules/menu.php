@@ -1,6 +1,6 @@
 <?php
 /********************************************************/
-/* Titanium Portal Menu  v3.01b - 01 November 2012      */
+/* Titanium Portal Menu  v5.01 - 25 Aug 2019            */
 /* This file displays the administration console        */
 /* to edit your Portal Menu                             */
 /*                                                      */
@@ -160,7 +160,7 @@ function envoiedit(keymenu, z, type) {
 		var image = document.forms.form_menu.elements["menuformmoduleimage["+keymenu+"]["+z+"]"].value;
 		var lienclass = document.forms.form_menu.elements["menuformmoduleclass["+keymenu+"]["+z+"]"].value;
 		var new_days = document.forms.form_menu.elements["menuformmodulenew_days["+keymenu+"]["+z+"]"].value;
-		// pour schedule
+		// for schedule
 		var date_debut = document.forms.form_menu.elements["menu_schedule_date_debut["+keymenu+"]["+z+"]"].value;
 		var date_fin = document.forms.form_menu.elements["menu_schedule_date_fin["+keymenu+"]["+z+"]"].value;
 		var days = document.forms.form_menu.elements["menu_schedule_days["+keymenu+"]["+z+"]"].value;
@@ -803,7 +803,7 @@ if ($old_school_imagedropdown==0)
     
 	$title = 'Menu Block Admin'; //re-write Ernest Buffington
     
-	OpenTableMessage(); //re-write Ernest Buffington
+	OpenTable(); //re-write Ernest Buffington
 	
 	echo "<style type=\"text/css\">"
 	.".texte 	{ COLOR: $textcolor1; FONT-SIZE: 10px; FONT-FAMILY: Verdana, Helvetica}"
@@ -1027,9 +1027,12 @@ if ($old_school_imagedropdown==0)
 	echo "</td>"
 	."</tr><tr><td bgcolor=\"$bgcolor1\" id=\"showhide_content_$key\"".$display_cat.">";
 	
-	$nbmodules = $nombremodules = count($moduleinthisgroup[$groupmenu[$key]]);
+	// Start - Fix by Ernest Buffington 08/25/2019 for PHP 7.3.6
+    if($moduleinthisgroup[$groupmenu[$key]] && count($moduleinthisgroup[$groupmenu[$key]]) <> 99)
+	$nbmodules = $nombremodules = (count($moduleinthisgroup[$groupmenu[$key]]));
 	$nombremodules=$nombremodules+4; 
-
+    // End - Fix by Ernest Buffington 08/25/2019 for PHP 7.3.6
+	
 	echo "<table align=\"center\" border=0 cellspacing=0 cellpadding=2 width=\"100%\"><tr><td></td><td align =\"center\">"._MENU_CATCONTENT."</td><td align=\"center\">"._MENU_LINKURL."</td><td align=\"center\">"._MENU_LINKTEXT."</td><td width=\"3\"></td>";
 
 	if ($old_school_imagedropdown_cat==1) 
@@ -1125,7 +1128,7 @@ if ($old_school_imagedropdown==0)
 		
 		echo "<select name=\"menuformingroup[$key][$z]\" onchange='disab(this,this.value,this.form.elements[\"menuformmodulelink[$key][$z]\"],this.form.elements[\"menuformmodulelinktext[$key][$z]\"],\"$linkvalue\",\"$linktextvalue\"); menuadminshowhide(\"$menuzenom\",$hideok)'>";
 
-		echo "<option value=\"Aucun\">ADD MODULE LINK TO MENU";
+		echo "<option value=\"No\">ADD MODULE LINK TO MENU";
 		$selected = ($moduleinthisgroup[$groupmenu[$key]][$z]=="Horizonatal Rule") ? "selected" : "" ;
 		echo "<option value=\"Horizonatal Rule\" $selected>*Horizonatal Rule*";
 		$selected = ($moduleinthisgroup[$groupmenu[$key]][$z]=="External Link") ? "selected" : "" ;
@@ -1188,7 +1191,7 @@ if ($old_school_imagedropdown==0)
 		
 		echo "</td></tr></table>";
 		echo "</td>";
-echo "</td></tr></table>";
+        echo "</td></tr></table>";
 		
 		$testehttp=strpos($linkinthisgroup[$groupmenu[$key]][$z],"http://");
 		$testeftp=strpos($linkinthisgroup[$groupmenu[$key]][$z],"ftp://");
@@ -1246,7 +1249,7 @@ echo "</td></tr></table>";
 		echo "<td id=\"spanf$formpointeur\"".$linkclass."><input type=\"hidden\" name=\"menuformmoduleimage[".$key."][".$z."]\" value=\"".$imagenewschool."\"></td>";
 	}
 	else 
-	{ // flash)
+	{ // flash
 		echo "<td id=\"spanf$formpointeur\"".$linkclass." align=\"center\"><select name=\"menuformmoduleimage[$key][$z]\" onChange=\"changeimage_cat('image".$formpointeur."',this.value)\">";
 		echo "<option value='middot.gif' >"._MENU_NOIMG." ( <strong>&middot;</strong> )</option>";
 		
@@ -1350,7 +1353,7 @@ echo "</td></tr></table>";
 
 	echo""
 	."<br><br>"._MENU_REMARKS.""._MENU_REMARKSTWO.""
-	."<br><div align=\"center\"><br><br>version 5.01b - &copy; <a href=\"mailto:ernest.buffington@gmail.com?body=Read the FAQ before asking me questions!!\">Ernest Allen Buffington</a></div>";
+	."<br><div align=\"center\"><br><br>version 5.01 - &copy; <a href=\"mailto:ernest.buffington@gmail.com?body=Read the FAQ before asking me questions!!\">Ernest Allen Buffington</a></div>";
 
 	CloseTable();
 	include("footer.php");
@@ -1445,24 +1448,20 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 $db->sql_query("DELETE FROM ".$prefix."_menu");
 $db->sql_query("DELETE FROM ".$prefix."_menu_categories");
 
-global $db, $db2, $network_prefix, $prefix;
-
+global $db, $prefix;
 $sql="SELECT * FROM ".$prefix."_modules LIMIT 1";
-
 $result=$db->sql_query($sql);
-
 $row=$db->sql_fetchrow($result);
-
-echo Mysql_error();
+//echo Mysql_error();
 
 if(isset($row['mod_group']))
 {
-    global $db, $db2, $network_prefix, $prefix;
+    global $db, $prefix;
 
-	$sql2="SELECT * FROM ".$network_prefix."_users LIMIT 1";
-	$result2=$db2->sql_query($sql2);
-	$row2=$db2->sql_fetchrow($result2);
-	echo Mysql_error();
+	$sql2="SELECT * FROM ".$prefix."_users LIMIT 1";
+	$result2=$db->sql_query($sql2);
+	$row2=$db->sql_fetchrow($result2);
+	//echo Mysql_error();
 	$managment_group=(isset($row2['points'])) ? 1 : 0 ;
 }
 else 
@@ -1493,7 +1492,7 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 			$invisible=$menuformradio;
 		}
 		
-		if ($menuformingroup[$i][$j] !="Aucun") 
+		if ($menuformingroup[$i][$j] !="No") 
 		{
 			if ($menuformingroup[$i][$j] =="Horizonatal Rule") // <hr />
 			{
@@ -1547,7 +1546,7 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 			
 			$db->sql_query($sql);
 			
-			echo (MySql_error());
+			//echo (MySql_error());
 		}
 		
 	}
@@ -1597,7 +1596,7 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 		
 		$db->sql_query($sql);
 		
-		echo (MySql_error());
+		//echo (MySql_error());
 	} 
 }
 
@@ -1641,7 +1640,7 @@ $db->sql_query($sql);
 
 include_once("header.php");
 OpenTable();
-echo (MySql_error());
+//echo (MySql_error());
 echo "<br><div align=\"center\">"._MENU_SUCCESS."</div>";
 echo "<br><div align=\"center\">[<a href=\"admin.php\"> Back To Main Admin Area</a>]</div>";
 echo "<br><div align=\"center\">[<a href=\"".$admin_file.".php?op=menu\">"._MENU_BACKADMIN."</a>]</div>";
@@ -2038,7 +2037,7 @@ function deletecat() {//pour supprimer une catégorie (fonction appelée par le cl
 		$confirm="NO";
 		$db->sql_query("DELETE FROM ".$prefix."_menu WHERE groupmenu='$deletecat'");
 		$db->sql_query("DELETE FROM ".$prefix."_menu_categories WHERE groupmenu='$deletecat'");
-		echo (MySql_error());
+		//echo (MySql_error());
 		index();
 	}
 }
