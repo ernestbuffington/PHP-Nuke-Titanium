@@ -114,9 +114,13 @@ echo '<td id="bg" class="flames" height"0" valign="top" >';
 echo '<div align="center" id="locator"><img src="themes/'.$theme_name.'/logo/the-86it-developers-network.png"></div>';
 # logo end
 
-# start line 2 of the header
+if (strcmp($_SERVER['SERVER_NAME'], 'cvs.86it.us') == 0)
+echo '<div align="center" id="text"><h1><a class="greatminds" href="../../index.php">XHTML 1.0 | curl 7.65.0 | MariaDB 10.1.40 | PHP 5.6.40</a></h1></div>';
+else
+if (strcmp($_SERVER['SERVER_NAME'], 'hub.86it.us') == 0)
 echo '<div align="center" id="text"><h1><a class="greatminds" href="../../index.php">XHTML 1.0 | curl 7.65.0 | MariaDB 10.1.40 | PHP 7.3.6</a></h1></div>';
-# end line 2 of the header
+else
+echo '<div align="center" id="text"><h1><a class="greatminds" href="../../index.php">XHTML 1.0 | curl 7.65.0 | MariaDB 10.1.40 | PHP 7.3.6</a></h1></div>';
 
 echo '<pre>'.' '.'</pre>';
 
