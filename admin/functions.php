@@ -269,7 +269,7 @@ function GraphicAdmin($pos=1)
     echo '<table style="width: 100%;" border="0" cellpadding="4" cellspacing="1">';
     echo '  <tr>';
     /*
-    | START | LIVE NEWS FEED DIRECTLY FROM EVOLUION XTREME
+    | START | LIVE NEWS FEED DIRECTLY FROM The 86it Developers Network
     */
     echo '    <td style="vertical-align: top; width: 64%;">';
     echo '      <table style="width: 100%;" border="0" cellpadding="3" cellspacing="1" class="forumline">';
@@ -279,14 +279,34 @@ function GraphicAdmin($pos=1)
     echo '        <tr>';
     echo '          <td class="row1">';
     echo '            <div style="height: 14.8em; overflow: auto;">';
-    echo '              <table style="font-family: monospace !important; width: 100%;" border="0" cellpadding="3" cellspacing="1" class="exnewsfeed"></table>';
-    echo '            </div>';
+    
+	echo '<table style="font-family: monospace !important; width: 100%;" border="0" cellpadding="3" cellspacing="1" class="livefeed">';
+    
+	global $domain;
+	$agent = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/76.0.3809.100 Safari/537.36';
+    $curl=curl_init('https://hub.86it.us/versions/feed.php');
+    curl_setopt($curl, CURLOPT_USERAGENT, $agent);
+	
+    curl_setopt($curl, CURLOPT_USERAGENT, $agent);
+    curl_setopt($curl, CURLOPT_REFERER, 'https://'.$domain.'/');
+	
+    $dir = NUKE_BASE_DIR.'includes/log';
+    $config['cookie_file'] = $dir . '/' . md5($_SERVER['REMOTE_ADDR']) . '.txt';
+    curl_setopt($curl, CURLOPT_COOKIEFILE, $config['cookie_file']);
+    curl_setopt($curl, CURLOPT_COOKIEJAR, $config['cookie_file']);
+	curl_setopt($curl, CURLOPT_FOLLOWLOCATION, true);
+    curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
+    $page = curl_exec($curl);	
+	echo $page;
+	
+	echo '</table>';
+	echo '            </div>';
     echo '          </td>';
     echo '        </tr>';
     echo '      </table>';
     echo '    </td>';
     /*
-    | END | LIVE NEWS FEED DIRECTLY FROM EVOLUION XTREME
+    | END | LIVE NEWS FEED DIRECTLY FROM The 86it Developers Network
     */
     echo '    <td style="vertical-align: top; width: 36%;">';
     echo '      <table style="width: 100%;" border="0" cellpadding="3" cellspacing="1" class="forumline">';
