@@ -67,7 +67,7 @@ function removeComment ($tid, $sid, $ok=0) {
         if ($ultramode) {
             ultramode();
         }
-        redirect("modules.php?name=News&file=article&sid=$sid");
+        redirect("modules.php?name=Blog&file=article&sid=$sid");
     } else {
         include(NUKE_BASE_DIR.'header.php');
         GraphicAdmin();

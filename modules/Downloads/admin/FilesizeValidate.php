@@ -9,7 +9,7 @@ OpenTable();
 title('<h1>'.$pagetitle.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 echo '<table align="center" cellpadding="2" cellspacing="2" border="0" width="80%">';
 if ($cid == 0) {
 	echo '<tr><td align="center" colspan="4"><strong>' . _DL_CHECKALLDOWNLOADS . '</strong><br />' . _DL_BEPATIENT . '</td></tr>';
@@ -58,7 +58,7 @@ while ($dresult = $db->sql_fetchrow($result)) {
 }
 echo '</table>';
 echo '<br /><div class="text-center">' . _GOBACK . '</div>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

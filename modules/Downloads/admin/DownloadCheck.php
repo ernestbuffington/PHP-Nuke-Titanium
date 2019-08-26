@@ -7,7 +7,7 @@ OpenTable();
 title('<h1>'._DL_DOWNLOADSADMIN . ': ' . _DL_DOWNLOADVALIDATION.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 echo '<div align="center">';
 echo '<p><a class="rn_csrf" href="' . $admin_file . '.php?op=DownloadValidate&amp;cid=0">' . _DL_CHECKALLDOWNLOADS . '</a></p>';
 echo '<p><strong>' . _DL_CHECKCATEGORIES . '</strong><br />' . _DL_INCLUDESUBCATEGORIES . '</p>';
@@ -25,7 +25,7 @@ if ($db->sql_numrows($result) > 0) {
 	echo '</ul>';
 }
 echo '</div>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

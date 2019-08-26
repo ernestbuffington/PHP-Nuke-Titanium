@@ -62,12 +62,12 @@ echo '<li><a href="modules.php?name=FAQ"> FAQ</a></li>';
 echo '</ul>';
 echo '</li>';
 ######################################################################################################################
-echo '<li class="has-sub"><a href="modules.php?name=News"><i class="fa fa-fw fa-object-group"></i> BLOGS</a>';
+echo '<li class="has-sub"><a href="modules.php?name=Blog"><i class="fa fa-fw fa-object-group"></i> BLOGS</a>';
 echo '<ul>';
-echo '<li><a href="modules.php?name=Topics">Blog Topics</a></li>';
-echo '<li><a href="modules.php?name=Stories_Archive">Blog Archives</a></li>';
-echo '<li><a href="modules.php?name=Top">Top 10 Blogs</a></li>';
-echo '<li><a href="modules.php?name=Submit_News">SUBMIT BLOG</a></li>';
+echo '<li><a href="modules.php?name=Blog_Topics">Blog Topics</a></li>';
+echo '<li><a href="modules.php?name=Blog_Archive">Blog Archives</a></li>';
+echo '<li><a href="modules.php?name=Blog_Top">Top 10 Blogs</a></li>';
+echo '<li><a href="modules.php?name=Blog_Submit">SUBMIT BLOG</a></li>';
 echo '</ul>';
 echo '</li>';
 #######################################################################################################################

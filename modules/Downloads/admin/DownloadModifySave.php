@@ -39,13 +39,13 @@ if (empty($title) || empty($url) || empty($description))
 	title('<h1>'.$pagetitle.'</h1>');
 	DLadminmain();
 	echo '<br />';
-	OpenTable4();
+	OpenTable2();
 	echo '<div align="center" class="title">';
 	if (empty($title)) echo '<p>', _DL_ERRORNOTITLE, '</p>';
 	if (empty($url)) echo '<p>', _DL_ERRORNOURL, '</p>';
 	if (empty($description)) echo '<p>', _DL_ERRORNODESCRIPTION, '</p>';
 	echo '<p>', _GOBACK, '</p></div>';
-	CloseTable4();
+	CloseTable2();
 	CloseTable();
 
 	include_once 'footer.php';
@@ -65,10 +65,10 @@ if (strstr($url, '://'))
 	    title('<h1>'.$pagetitle.'</h1>');
 		DLadminmain();
 		echo '<br />';
-		OpenTable4();
+		OpenTable2();
 		echo '<div align="center"><p><strong>', _DL_INVALIDURL, '</strong></p>';
 		echo '<p>', _GOBACK, '</p></div>';
-		CloseTable4();
+		CloseTable2();
 		CloseTable();
 		include_once 'footer.php';
 		die();
@@ -89,10 +89,10 @@ if ($numrows > 0)
 	title('<h1>'.$pagetitle.'</h1>');
 	DLadminmain();
 	echo '<br />';
-	OpenTable4();
+	OpenTable2();
 	echo '<div align="center"><p><strong>', _DL_ERRORURLEXIST, '</strong></p>';
 	echo '<p>', _GOBACK, '</p></div>';
-	CloseTable4();
+	CloseTable2();
 	CloseTable();
 	include_once 'footer.php';
 	die();

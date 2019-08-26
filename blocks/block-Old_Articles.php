@@ -98,14 +98,14 @@ while (list($sid, $title, $time, $comments) = $db->sql_fetchrow($result)) {
     $comments = "";
     }
     if($time2==$datetime2) {
-        $boxstuff .= "<tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=News&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
+        $boxstuff .= "<tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=Blog&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
     } else {
         if(empty($a)) {
-            $boxstuff .= "<tr><td colspan=\"2\"><strong>$datetime2</strong></td></tr><tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=News&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
+            $boxstuff .= "<tr><td colspan=\"2\"><strong>$datetime2</strong></td></tr><tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=Blog&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
         $time2 = $datetime2;
         $a = 1;
     } else {
-        $boxstuff .= "<tr><td colspan=\"2\"><strong>$datetime2</strong></td></tr><tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=News&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
+        $boxstuff .= "<tr><td colspan=\"2\"><strong>$datetime2</strong></td></tr><tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=Blog&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
         $time2 = $datetime2;
     }
     }
@@ -122,8 +122,8 @@ while (list($sid, $title, $time, $comments) = $db->sql_fetchrow($result)) {
 }
 $db->sql_freeresult($result);
 
-if ($dummy == 1 AND is_active("Stories_Archive")) {
-    $boxstuff .= "</table><br /><a href=\"modules.php?name=Stories_Archive\"><strong>"._OLDERARTICLES."</strong></a>\n";
+if ($dummy == 1 AND is_active("Blog_Archive")) {
+    $boxstuff .= "</table><br /><a href=\"modules.php?name=Blog_Archive\"><strong>"._OLDERARTICLES."</strong></a>\n";
 } else {
     $boxstuff .= "</table>";
 }

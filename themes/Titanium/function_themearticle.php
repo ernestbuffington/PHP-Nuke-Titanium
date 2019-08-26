@@ -38,7 +38,7 @@ global $admin, $sid, $tipath, $theme_name;
 	if (!empty($topicimage)) 
 	{
 		$t_image = (file_exists(titanium_images_dir.'topics/'.$topicimage)) ? titanium_images_dir.'topics/'.$topicimage : $tipath.$topicimage;
-		$topic_img = '<td width="25%" align="center" class="extra"><a href="modules.php?name=News&new_topic='.$topic.'"><img src="'.$t_image.'" border="0" alt="'.$topictext.'" title="'.$topictext.'"></a></td>';
+		$topic_img = '<td width="25%" align="center" class="extra"><a href="modules.php?name=Blog&new_topic='.$topic.'"><img src="'.$t_image.'" border="0" alt="'.$topictext.'" title="'.$topictext.'"></a></td>';
 	} 
 	else 
 	{

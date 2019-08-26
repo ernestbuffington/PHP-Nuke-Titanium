@@ -6,7 +6,7 @@ OpenTable();
 title('<h1>'.$pagetitle.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 echo '<form method="post" action="' . $admin_file . '.php">';
 echo '<table align="center" cellpadding="2" cellspacing="2" border="0">';
 echo '<tr><td bgcolor="' . $bgcolor2 . '">' . _DL_NAME . ':</td><td><input type="text" name="title" size="50" maxlength="50" /></td></tr>';
@@ -50,7 +50,7 @@ echo '</select></td></tr>';
 echo '<tr><td align="center" colspan="2"><input type="submit" value="' . _DL_ADDCATEGORY . '" /></td></tr></table>';
 echo '<input type="hidden" name="op" value="CategoryAddSave" />';
 echo '</form>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

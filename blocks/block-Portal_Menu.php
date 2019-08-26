@@ -1179,7 +1179,8 @@ function menu_over_popup(page,nom,option) {
 						}
 					}
 				}
-				elseif($nomdumodule=="Content" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
+				else
+				if($nomdumodule=="Content" && $newdaysinthisgroup[$som_groupmenu][$keyinthisgroup]!="-1") {
 					$where = (strstr("^cid=[0-9]*$",$temponomdumodule[2])) ? " WHERE $temponomdumodule[2]" : "";
 					$sqlimgnew="SELECT date FROM ".$prefix."_pages".$where." order by date desc limit 1";
 					$resultimgnew=$db->sql_query($sqlimgnew);

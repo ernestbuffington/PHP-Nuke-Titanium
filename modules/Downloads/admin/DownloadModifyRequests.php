@@ -9,7 +9,7 @@ OpenTable();
 title('<h1>'.$pagetitle . ' (' . $totalmods . ')'.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 echo '<table width="95%" align="center"><tr><td>';
 if ($totalmods != 0) {
 	$ridinfo = array();
@@ -137,7 +137,7 @@ if ($totalmods != 0) {
 	echo '<p>' . _GOBACK . '</p></div>';
 }
 echo '</td></tr></table>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

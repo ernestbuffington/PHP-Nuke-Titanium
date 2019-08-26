@@ -55,8 +55,8 @@ if ($name == 'Forums') {
         $newpagetitle = "$item_delim $name $item_delim $forum";
     }
 } else
-// News
-if ($name == 'News') {
+// Blog
+if ($name == 'Blog') {
     global $file, $sid, $new_topic;
     $newpagetitle= "$item_delim $name";
     if (isset($new_topic) && is_numeric($new_topic)) {
@@ -73,7 +73,7 @@ if ($name == 'News') {
     }
 } else
 // Topics
-if ($name == 'Topics') {
+if ($name == 'Blog_Topics') {
       $newpagetitle = $item_delim.' '._ACTIVETOPICS;
 } else
 // Web Links
@@ -120,7 +120,7 @@ if ($name == 'Reviews') {
     }
 } else
 // Stories Archive
-if ($name == 'Stories_Archive') {
+if ($name == 'Blog_Archive') {
     global $sa, $year, $month_l, $module_title;
     $name = $module_title;
     $newpagetitle = "$item_delim $name";

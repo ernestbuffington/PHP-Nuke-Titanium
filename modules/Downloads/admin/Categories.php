@@ -6,7 +6,7 @@ OpenTable();
 title('<h1>'.$pagetitle.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 $perpage = $dl_config['admperpage'];
 if (!isset($min)) $min = 0;
 if (!isset($max)) $max = $min+$perpage;
@@ -53,7 +53,7 @@ while ($cidinfo = $db->sql_fetchrow($result)) {
 }
 echo '</table>';
 pagenums_admin($op, $totalselected, $perpage, $max);
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

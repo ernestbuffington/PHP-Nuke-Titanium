@@ -4,7 +4,7 @@
  =======================================================================*/
 
 /********************************************************/
-/* NSN News                                             */
+/* Titanium Blogs                                       */
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
 /* http://www.nukescripts.net                           */
 /* Copyright (c)2000-2005 by NukeScripts Network         */

@@ -10,7 +10,7 @@ OpenTable();
 title('<h1>'._DL_DOWNLOADSADMIN . ': ' . _DL_DOWNLOADVALIDATION.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 $cid = isset($cid) ? intval($cid) : 0;
 echo '<table align="center" cellpadding="2" cellspacing="2" border="0" width="80%">';
 
@@ -79,7 +79,7 @@ while ($lidinfo = $db->sql_fetchrow($result))
 
 echo '<tr><td align="center" colspan="3">' . _GOBACK . '</td></tr>';
 echo '</table>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

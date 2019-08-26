@@ -20,10 +20,11 @@
 if(!defined('NUKE_TITANIUM')) 
 exit;
 
-global $db, $user_prefix, $prefix, $cache, $blockslang, $images, $board_config, $board_config, $userinfo;
+global $block_title, $db, $user_prefix, $prefix, $cache, $blockslang, $images, $board_config, $board_config, $userinfo;
 
 define('forum_board_icon_path','themes/'.get_theme().'/forums');
 
+$block_title = "Last 13 Forum Posts";
 $last_new_topics     = 13;
 $show_started_by	 = true;
 $alternate_row_class = true;

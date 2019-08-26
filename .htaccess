@@ -118,6 +118,14 @@ RewriteRule ^.*$ http://127.0.0.1 [R,L]
 <FilesMatch "\.(inc|tpl|h|ihtml|sql|ini|conf|class|bin|spd|theme|module|exe)$">
 deny from all
 </FilesMatch>
+
+<FilesMatch "versions\feed.php">
+  allow from all
+</FilesMatch>
+<FilesMatch "versions\index.php">
+  allow from all
+</FilesMatch>
+
 # -------------------------------------------
 # Setup caching
 # -------------------------------------------

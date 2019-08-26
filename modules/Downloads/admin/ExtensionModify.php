@@ -10,7 +10,7 @@ OpenTable();
 title('<h1>'._DL_EXTENSIONSADMIN.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 $result = $db->sql_query('SELECT * FROM `' . $prefix . '_nsngd_extensions` WHERE `eid` = ' . $eid);
 if ($db->sql_numrows($result) > 0) {
 	$eidinfo = $db->sql_fetchrow($result);
@@ -54,7 +54,7 @@ if ($db->sql_numrows($result) > 0) {
 } else {
 	echo '<p>', _ACCESSDENIED, '</p>';
 }
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

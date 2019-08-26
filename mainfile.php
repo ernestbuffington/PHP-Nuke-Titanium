@@ -2,7 +2,7 @@
 /*=======================================================================
  PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
-
+// LOri's Phone Number 229-300-1845
 /************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                         */
 /* ============================================                         */
@@ -39,19 +39,19 @@
       Color Toggle                             v1.0.0       11/25/2005
       Lazy Google Tap                          v1.0.0       01/27/2005
       Switch Content Script                    v2.0.0       03/30/2006
-      Aboslute path Mod                        v1.0.0       01/01/2012
-      Absolute Nuke directory                  v1.0.0       06/15/2005
-      Image Tools                              v1.0.0       06/16/2008
+	  Aboslute path Mod                        v1.0.0       01/01/2012
+	  Absolute Nuke directory                  v1.0.0       06/15/2005
+	  Image Tools                              v1.0.0       06/16/2008
 -=[Module]=-
       CNB Your Account                         v4.4.2       06/15/2005
 -=[Other]=-
       SSL Administration                       v1.0.0       08/29/2005
       Validation                               v1.1.0       10/17/2005
       Extra Functions                          v1.0.0       12/22/2005
-      NSN Center Blocks                        v2.2.1       05/26/2009
-      Titanium Defines                         v1.0.0       01/01/2012
-      Charcter Set Defines                     v1.0.0       01/01/2012
-      Titanium Custom Functions                v1.0.0       08/14/2019
+	  NSN Center Blocks                        v2.2.1       05/26/2009
+	  Titanium Defines                         v1.0.0       01/01/2012
+	  Charcter Set Defines                     v1.0.0       01/01/2012
+	  Titanium Custom Functions                v1.0.0       08/14/2019
  ************************************************************************/
 
 if(defined('NUKE_EVO')) return;
@@ -506,7 +506,7 @@ $dbi = $db->db_connect_id;
 $badreasons = 4;
 $sitekey = md5($_SERVER['HTTP_HOST']);
 $gfx_chk = 0;
-$tipath = 'modules/News/images/topics/';
+$tipath = 'modules/Blog/images/topics/';
 $reasons = array('As Is', 'Offtopic', 'Flamebait', 'Troll', 'Redundant', 'Insighful', 'Interesting', 'Informative', 'Funny', 'Overrated', 'Underrated');
 $AllowableHTML = array('b'=>1, 'i'=>1, 'a'=>2, 'em'=>1, 'br'=>1, 'strong'=>1, 'blockquote'=>1, 'tt'=>1, 'li'=>1, 'ol'=>1, 'ul'=>1, 'pre'=>1);
 
@@ -976,7 +976,7 @@ function ultramode() {
         $topictext = $row['topictext'];
         $topicimage = ($row['ticon']) ? stripslashes($row['topicimage']) : '';
         $rtime = formatTimestamp($rtime, 'l, F d');
-        $content .= "%%\n".$rtitle."\n/modules.php?name=News&file=article&sid=".$rsid."\n".$rtime."\n".$raid."\n".$topictext."\n".$rcomments."\n".$topicimage."\n";
+        $content .= "%%\n".$rtitle."\n/modules.php?name=Blog&file=article&sid=".$rsid."\n".$rtime."\n".$raid."\n".$topictext."\n".$rcomments."\n".$topicimage."\n";
     }
     $db->sql_freeresult($result);
     if (file_exists(NUKE_BASE_DIR."ultramode.txt") && is_writable(NUKE_BASE_DIR."ultramode.txt")) {

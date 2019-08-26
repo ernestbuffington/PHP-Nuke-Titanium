@@ -20,10 +20,10 @@ if (!$typeOK)
 	title('<h1>'.$pagetitle.'</h1>');
 	DLadminmain();
 	echo '<br />';
-	OpenTable4();
+	OpenTable2();
 	echo '<div align="center"><p class="title">' . _DL_ERRORTHEEXTENSIONTYP . '</p>';
 	echo '<p class="title">' . _GOBACK . '</p></div>';
-	CloseTable4();
+	CloseTable2();
 	CloseTable();
 	
 	include_once 'footer.php';
@@ -42,10 +42,10 @@ if (!gdValidateExt($xext))
 	title('<h1>'.$pagetitle.'<h1>');
 	DLadminmain();
 	echo '<br />';
-	OpenTable4();
+	OpenTable2();
 	echo '<div align="center"><p class="title">' . _DL_ERRORTHEEXTENSIONVAL . '</p>';
 	echo '<p class="title">' . _GOBACK . '</p></div>';
-	CloseTable4();
+	CloseTable2();
 	CloseTable();
 	include_once 'footer.php';
 	die();
@@ -65,11 +65,11 @@ if ($numrows > 0)
 	title('<h1>'.$pagetitle.'<h1>');
 	DLadminmain();
 	echo '<br />';
-	OpenTable4();
+	OpenTable2();
 	echo '<div align="center"><p class="title">' . _DL_ERRORTHEEXTENSION . ' ' . htmlspecialchars($xext, ENT_QUOTES, _CHARSET) . ' '
 		. _DL_ALREADYEXIST . '</p>';
 	echo '<p class="title">' . _GOBACK . '</p></div>';
-	CloseTable4();
+	CloseTable2();
 	CloseTable();
 	include_once 'footer.php';
 	die();

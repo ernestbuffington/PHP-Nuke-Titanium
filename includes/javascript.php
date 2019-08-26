@@ -271,8 +271,6 @@ include(NUKE_JQUERY_INCLUDE_DIR.'jquery.lightbox.php');                 # v2.9.0
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.colorbox.php');                 # v1.6.4
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.lightbox-lite.php');
 
-include(NUKE_JQUERY_INCLUDE_DIR.'jquery.live.feed.php');
-
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.scroll.to.top.php');            # add in option to change icon per theme
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.private.messages.alert.php');   # v1.0 - https://lonestar-modules.com
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.floating.admin.php');           # v2.0 - floating administration menu

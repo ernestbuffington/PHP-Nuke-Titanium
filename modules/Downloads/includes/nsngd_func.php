@@ -460,7 +460,7 @@ function DLadminmain() {
 	$brokendownloads = $db->sql_numrows($db->sql_query('SELECT `rid` FROM `' . $prefix . '_nsngd_mods` WHERE `brokendownload` = \'1\''));
 	$modrequests = $db->sql_numrows($db->sql_query('SELECT `rid` FROM `' . $prefix . '_nsngd_mods` WHERE `brokendownload` = \'0\''));
 	$newdownloads = $db->sql_numrows($db->sql_query('SELECT `lid` FROM `' . $prefix . '_nsngd_new`'));
-	OpenTable4();
+	OpenTable2();
 	echo '<table align="center" border="0" cellpadding="2" cellspacing="2" width="100%">';
 	echo '<tr>';
 	echo '<td align="center" width="25%"><strong>'._DL_DOWNLOADS.'</strong></td>';
@@ -499,7 +499,7 @@ function DLadminmain() {
 	echo '<td align="center" width="25%"><a href="'.$admin_file.'.php?op=DownloadNew">'._DL_WAITINGDOWNLOADS.'</a> ('.$newdownloads.')</td>';
 	echo '</tr>';
 	echo '</table>';
-	CloseTable4();
+	CloseTable2();
 }
 function convertorderbyin($orderby) {
 	if ($orderby == 'titleA') {
@@ -556,7 +556,7 @@ function menu($maindownload) {
 	global $theme_name, $module_name;
 
 	OpenTable();
-	OpenTable4();
+	OpenTable2();
 	
 	echo '<div align="center" class="content"><p><a href="modules.php?name='.$module_name.'"><img src="'.img('down-logo.png','Downloads').'" border="0" alt="" title="" /></a></p>';
 	echo '<h1>DOWNLOADS</h1>';
@@ -569,11 +569,11 @@ function menu($maindownload) {
 	echo ' | <a href="modules.php?name='.$module_name.'&amp;op=NewDownloads">'._DL_NEW.'</a>';
 	echo ' | <a href="modules.php?name='.$module_name.'&amp;op=MostPopular">'._DL_POPULAR.'</a>';
 	echo ' ]</p></div>';
-	CloseTable4();
+	CloseTable2();
 	
 	echo '<br />';
 	
-	OpenTable4(); 
+	OpenTable2(); 
 	echo '<table align="center" cellpadding="2" cellspacing="2" border="0" width="100%">';
 	echo '<tr><td align="center" colspan="3"><strong>Legend of Symbols</strong></td></tr>';
 	echo '<tr>';
@@ -587,7 +587,7 @@ function menu($maindownload) {
 	echo '<td align="center" width="33%"><img src="'.img('popular.png','Downloads').'" alt="" title="" /> '._DL_POPULAR.'</td>';
 	echo '</tr>';
 	echo '</table>';
-	CloseTable4();
+	CloseTable2();
 }
 
 function SearchForm() {

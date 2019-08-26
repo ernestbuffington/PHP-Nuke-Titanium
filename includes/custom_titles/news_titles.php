@@ -35,7 +35,7 @@ $newpagetitle = '';
  		  $dash;
 	
 	    $imageid = "<meta property=\"og:image\" content=\"".HTTPS."$domain/images/logo.png\">\n";
-          $urlid = "<meta property=\"og:url\" content=\"".HTTPS."$domain/modules.php?name=News\">\n"; 	
+          $urlid = "<meta property=\"og:url\" content=\"".HTTPS."$domain/modules.php?name=Blog\">\n"; 	
  $urldescription = "<meta property=\"og:description\" content=\"$spacer $sitename ¬ $name ⌐\">\n"; 	 
     $newpagetitle= "$spacer $sitename ¬ $name Updates ⌐";
 

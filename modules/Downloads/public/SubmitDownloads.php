@@ -37,13 +37,13 @@ switch($op) {
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
 		title(_ADDADOWNLOAD);
-        OpenTable4();
+        OpenTable2();
         echo "<strong>"._INSTRUCTIONS.":</strong><br />\n";
         echo "<li> "._DSUBMITONCE."</li>\n";
         echo "<li> "._DPOSTPENDING."</li>\n";
         echo "<li> "._USERANDIP."</li>\n";
         echo "</ul>\n";
-        CloseTable4();
+        CloseTable2();
         echo "<br />\n";
         echo "<table align='center' cellpadding='2' cellspacing='2' border='0'>\n";
         echo "<form method='post' action='modules.php?name=$module_name'>\n";

@@ -6,7 +6,7 @@ OpenTable();
 title('<H1>'.$pagetitle.'</H1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 if ($db->sql_numrows($db->sql_query('SELECT `lid` FROM `' . $prefix . '_nsngd_downloads`')) > 0) {
 	echo '<form method="post" action="' . $admin_file . '.php">';
 	echo '<table align="center" cellpadding="2" cellspacing="2" border="0">';
@@ -57,7 +57,7 @@ if ($db->sql_numrows($db->sql_query('SELECT `lid` FROM `' . $prefix . '_nsngd_do
 } else {
 	echo '<div class="text-center" class="thick">' . _DL_NOCATTRANS . '</div>';
 }
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

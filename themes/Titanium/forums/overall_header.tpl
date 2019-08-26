@@ -161,9 +161,9 @@ function checkSearch()
 <form name="search_block" method="post" action="{U_SEARCH}" onsubmit="return checkSearch()">
 <input type="hidden" name="search_fields" value="all" />
 <input type="hidden" name="show_results" value="topics" />
-<table border="0" cellpadding="4" cellspacing="1" class="center col-12">
+<table border="0" cellpadding="4" cellspacing="1" class="wtf col-12">
   <tr>
-    <td>{switch_quick_search.L_QUICK_SEARCH_FOR} <input class="post" type="text" name="search_keywords" size="15" /> {switch_quick_search.L_QUICK_SEARCH_AT} 
+    <td align="center">{switch_quick_search.L_QUICK_SEARCH_FOR} <input class="post" type="text" name="search_keywords" size="15" /> {switch_quick_search.L_QUICK_SEARCH_AT} 
         <select name="site_search">
             {switch_quick_search.SEARCHLIST}
         </select>

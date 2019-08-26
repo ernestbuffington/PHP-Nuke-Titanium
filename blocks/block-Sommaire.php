@@ -937,7 +937,7 @@ $cache->save('sommaire_row4', 'block', $row4);
                 }
         }
         }
-        $content.= "</select></form>\n";
+        $content.= "</select></form><br />\n";
     }
     else {
             $content .= "<br /><strong><big>&middot;</big></strong>&nbsp;<i>"._NONE."</i><br />\n";
@@ -951,5 +951,4 @@ $cache->save('sommaire_row4', 'block', $row4);
  [ Base:    Module Simplifications             v1.0.0 ]
  ******************************************************/
 }//end if admin
-
 ?>

@@ -63,7 +63,7 @@ menu(1);
 echo '<br />';
 title('<h1>'.$dateView.' - '.$totaldownloads.' '. _DL_NEWDOWNLOADS.'</h1>');
 if ($totaldownloads > 0)
-OpenTable4();
+OpenTable2();
 if ($totaldownloads > 0) 
 {
 	echo '<table border="0" cellpadding="0" cellspacing="4" width="100%">';
@@ -95,7 +95,7 @@ if ($totaldownloads > 0)
 	echo '</table>';
 }
 if ($totaldownloads > 0)
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

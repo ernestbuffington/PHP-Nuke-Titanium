@@ -41,7 +41,7 @@ function themeindex($aid, $informant, $time, $title, $counter, $topic, $thetext,
     if (!empty($topicimage)):
     
         $t_image = (file_exists(blue_skulls_images_dir.'topics/'.$topicimage)) ? blue_skulls_images_dir.'topics/'.$topicimage : $tipath.$topicimage;
-        $topic_img = '<td class="col-3 extra" style="text-align:center;"><a href="modules.php?name=News&new_topic='.$topic.'"><img src="'.$t_image.'" border="0" alt="'.$topictext.'" title="'.$topictext.'"></a></td>';
+        $topic_img = '<td class="col-3 extra" style="text-align:center;"><a href="modules.php?name=Blog&new_topic='.$topic.'"><img src="'.$t_image.'" border="0" alt="'.$topictext.'" title="'.$topictext.'"></a></td>';
 
     else:
         $topic_img = '';

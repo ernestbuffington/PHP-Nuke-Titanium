@@ -13,10 +13,10 @@
 			include_once(NUKE_BASE_DIR."header.php");
 			OpenTable();
 		  	title(_DL_PASSERR);
-			OpenTable4();
+			OpenTable2();
 		  	echo "<center>"._DL_INVALIDPASS."</center><br />\n";
 		  	echo "<center>"._GOBACK."</center>\n";
-		  	CloseTable4();
+		  	CloseTable2();
 			CloseTable();
 		  	include_once(NUKE_BASE_DIR."footer.php");
 		}

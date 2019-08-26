@@ -12,8 +12,9 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $db, $prefix, $ab_config, $currentlang;
+global $block_title, $db, $prefix, $ab_config, $currentlang;
 
+$block_title = 'NukeSentinel Security';
 $content = '';
 $result = $db->sql_query('SELECT `reason` FROM `'.$prefix.'_nsnst_blocked_ips`');
 $total_ips = $db->sql_numrows($result);

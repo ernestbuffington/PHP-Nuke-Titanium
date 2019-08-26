@@ -9,7 +9,7 @@ OpenTable();
 title('<h1>'.$pagetitle . ' (' . $numrows . ')'.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 /*
  * Go get all the submitted downloads and present them to the Admin for disposition.
  */
@@ -111,7 +111,7 @@ if ($numrows > 0) {
 } else {
 	echo '<div align="center"><p class="title">' . _DL_DNODOWNLOADSWAITINGVAL . '</p></div>';
 }
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

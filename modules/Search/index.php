@@ -69,16 +69,16 @@ switch($op) {
             }
         } else {
             $topictext = _ALLTOPICS;
-            if (file_exists("themes/$ThemeSel/images/topics/AllTopics.gif")) {
-                $topicimage = "themes/$ThemeSel/images/topics/AllTopics.gif";
+            if (file_exists("themes/$ThemeSel/images/topics/AllTopics.png")) {
+                $topicimage = "themes/$ThemeSel/images/topics/AllTopics.png";
             } else {
-                $topicimage = $tipath.'AllTopics.gif';
+                $topicimage = $tipath.'AllTopics.png';
             }
         }
-        if (file_exists("themes/$ThemeSel/images/topics/AllTopics.gif")) {
-            $alltop = "themes/$ThemeSel/images/topics/AllTopics.gif";
+        if (file_exists("themes/$ThemeSel/images/topics/AllTopics.png")) {
+            $alltop = "themes/$ThemeSel/images/topics/AllTopics.png";
         } else {
-            $alltop = $tipath.'AllTopics.gif';
+            $alltop = $tipath.'AllTopics.png';
         }
         OpenTable();
         if ($type == 'users') {

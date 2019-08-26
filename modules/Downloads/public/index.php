@@ -60,7 +60,7 @@ else
 	$title = '<a href="modules.php?name='.$module_name.'">'._DL_MAIN.'</a> -&gt; '.$title;
 }
 echo '<br />';
-OpenTable4();
+OpenTable2();
 
 echo '<table align="center"><tr><td>Downloads '.$title.'</td></tr></table>';
 /*
@@ -210,7 +210,7 @@ if ($listrows > 0) {
 	// END LISTING
 	pagenums($cid, $query, $orderbyURL, $op, $totalselected, $dl_config['perpage'], $max);
 }
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

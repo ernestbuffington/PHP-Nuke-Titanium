@@ -88,15 +88,15 @@ switch ($op) {
 		include_once 'header.php';
 		OpenTable();
 		title('<h1>'._DL_ADDADOWNLOAD.'</h1>');
-		OpenTable4();
+		OpenTable2();
 		echo '<p class="option">' . _DL_INSTRUCTIONS . ':</p><ul>';
 		echo '<li> ' . _DL_DSUBMITONCE . '</li>';
 		echo '<li> ' . _DL_DPOSTPENDING . '</li>';
 		echo '<li> ' . _DL_USERANDIP . '</li>';
 		echo '</ul>';
-		CloseTable4();
+		CloseTable2();
         echo '<br />';
-		OpenTable4();
+		OpenTable2();
 		echo '<form method="post" action="modules.php?name=' . $module_name . '">';
 		echo '<input type="hidden" name="op" value="Input" />';
 		echo '<table align="center" cellpadding="2" cellspacing="2" border="0">';
@@ -131,7 +131,7 @@ switch ($op) {
 		}
 		echo '</table>';
 		echo '</form>';
-		CloseTable4();
+		CloseTable2();
 
 		CloseTable();
 		include_once 'footer.php';
@@ -146,7 +146,7 @@ switch ($op) {
 		title('<h1>'._DL_ADDADOWNLOAD.'</h1>');
 		$cat = (isset($cat)) ? intval($cat) : 0;
 		$cidinfo = $db->sql_fetchrow($db->sql_query('SELECT * FROM `' . $prefix . '_nsngd_categories` WHERE `cid` = ' . $cat));
-		OpenTable4();
+		OpenTable2();
 		if (isset($cidinfo['whoadd'])) $priv = $cidinfo['whoadd'] - 2;
 		/*
 		 * Check if for the permissions to the category
@@ -223,7 +223,7 @@ switch ($op) {
 		} else {
 			echo '<div align="center"><p class="title">' . _DL_CANTADD . '</p></div>';
 		}
-		CloseTable4();
+		CloseTable2();
 		CloseTable();
 		include_once 'footer.php';
 		break;
@@ -238,10 +238,10 @@ switch ($op) {
 			include_once 'header.php';
 			OpenTable();
 			title('<h1>'._DL_ADDADOWNLOAD.'</h1>');
-			OpenTable4();
+			OpenTable2();
 			echo '<div align="center"><p class="title">' . _DL_DOWNLOADNOTITLE . '</p>';
 			echo '<p>' . _GOBACK . '</p></div>';
-			CloseTable4();
+			CloseTable2();
 			CloseTable();
 			include_once 'footer.php';
 			die();
@@ -250,10 +250,10 @@ switch ($op) {
 			include_once 'header.php';
 			OpenTable();
 			title('<h1>'._DL_ADDADOWNLOAD.'</h1>');
-			OpenTable4();
+			OpenTable2();
 			echo '<div align="center"><p class="title">' . _DL_DOWNLOADNODESC . '</p>';
 			echo '<p>' . _GOBACK . '</p></div>';
-			CloseTable4();
+			CloseTable2();
 			CloseTable();
 			include_once 'footer.php';
 			die();
@@ -310,10 +310,10 @@ switch ($op) {
 						include_once 'header.php';
 						OpenTable();
 						title('<h1>'._DL_ADDADOWNLOAD.'</h1>');
-						OpenTable4();
+						OpenTable2();
 						echo '<div align="center"><p class="title">' . _DL_BADEXT . '</p>';
 						echo '<p>' . _GOBACK . '</p></div>';
-						CloseTable4();
+						CloseTable2();
 						CloseTable();
 						include_once 'footer.php';
 						die();
@@ -321,10 +321,10 @@ switch ($op) {
 						include_once 'header.php';
 						OpenTable();
 						title('<h1>'._DL_ADDADOWNLOAD.'</h1>');
-						OpenTable4();
+						OpenTable2();
 						echo '<div align="center"><p class="title">' . _DL_FILEEXIST . '</p>';
 						echo '<p>' . _GOBACK . '</p></div>';
-						CloseTable4();
+						CloseTable2();
 						CloseTable();
 						include_once 'footer.php';
 						die();
@@ -336,10 +336,10 @@ switch ($op) {
 						include_once 'header.php';
 						OpenTable();
 						title('<h1>'._DL_ADDADOWNLOAD.'</h1>');
-						OpenTable4();
+						OpenTable2();
 						echo '<div align="center"><p class="title">' . _DL_NOUPLOAD . '</p>';
 						echo '<p>' . _GOBACK . '</p></div>';
-						CloseTable4();
+						CloseTable2();
 						CloseTable();
 						include_once 'footer.php';
 						die();
@@ -350,10 +350,10 @@ switch ($op) {
 						include_once 'header.php';
 						OpenTable();
 						title('<h1>'._DL_ADDADOWNLOAD.'</h1>');
-						OpenTable4();
+						OpenTable2();
 						echo '<div align="center"><p class="title">' . _DL_DOWNLOADNOURL . '</p>';
 						echo '<p>' . _GOBACK . '</p></div>';
-						CloseTable4();
+						CloseTable2();
 						CloseTable();
 						include_once 'footer.php';
 						die();
@@ -385,14 +385,14 @@ switch ($op) {
 				include_once 'header.php';
 				OpenTable();
 				title('<h1>'._DL_ADDADOWNLOAD.'</h1>');
-				OpenTable4();
+				OpenTable2();
 				echo '<div align="center"><p class="title">' . _DL_DOWNLOADRECEIVED . '</p>';
 				if ($email != '') {
 					echo '<p>' . _DL_EMAILWHENADD . '</p></div>';
 				} else {
 					echo '<p>' . _DL_CHECKFORIT . '</p></div>';
 				}
-				CloseTable4();
+				CloseTable2();
 				CloseTable();
 				$msg = $sitename . ' ' . _DL_DOWSUB . "\n\n";
 				$msg .= _DL_TITLE . ': ' . $title . "\n\n";
@@ -423,9 +423,9 @@ switch ($op) {
 				include_once 'header.php';
 				OpenTable();
 				title('<h1>'._DL_ADDADOWNLOAD.'</h1>');
-				OpenTable4();
+				OpenTable2();
 				echo '<div align="center"><p class="title">' . _DL_CANTADD . '</p></div>';
-				CloseTable4();
+				CloseTable2();
 				CloseTable();
 				include_once 'footer.php';
 			}
@@ -433,10 +433,10 @@ switch ($op) {
 			include_once 'header.php';
 			OpenTable();
 			title('<h1>'._DL_ADDADOWNLOAD.'<h1>');
-			OpenTable4();
+			OpenTable2();
 			echo '<div align="center"><p class="title">' . _DL_TOUMUST . '</p>';
 			echo '<p>' . _GOBACK . '</p></div>';
-			CloseTable4();
+			CloseTable2();
 			CloseTable();
 			include_once 'footer.php';
 		}

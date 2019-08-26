@@ -26,7 +26,7 @@ OpenTable();
 title('<h1>'._DL_CATEGORIESADMIN.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 echo '<form action="' . $admin_file . '.php" method="post">';
 echo '<table align="center" cellpadding="2" cellspacing="2" border="0">';
 echo '<tr><td align="center" colspan="2"><strong>' . _DL_MODCATEGORY . '</strong></td></tr>';
@@ -84,7 +84,7 @@ echo '<table align="center" cellpadding="2" cellspacing="2" border="0">';
 echo '<tr><td align="center" colspan="2"><input type="submit" value="' . _DL_DELETE . '" /></td></tr></table>';
 echo '<input type="hidden" name="cid" value="' . $cid . '" />';
 echo '<input type="hidden" name="op" value="CategoryDelete" /></form>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

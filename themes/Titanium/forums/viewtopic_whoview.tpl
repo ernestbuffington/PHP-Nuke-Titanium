@@ -11,7 +11,7 @@
   	</td>
   </tr>
   <tr>
-  	<td class="catHead center col-12" colspan="6">List of all users who have viewed this topic</td>
+  	<td align="center" class="catHead wtf col-12" colspan="6">List of all users who have viewed this topic</td>
   </tr>
   <tr>
     <td class="catHead center">#</td>

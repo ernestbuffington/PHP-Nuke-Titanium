@@ -6,7 +6,7 @@ OpenTable();
 title('<h1>'.$pagetitle.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 echo '<form action="' . $admin_file . '.php" method="post">';
 echo '<table align="center" border="0" cellpadding="2" cellspacing="2">';
 echo '<tr><td bgcolor="' . $bgcolor2 . '">' . _DL_ADMBLOCKUNREGMODIFY . '</td><td><select name="xblockunregmodify">';
@@ -103,7 +103,7 @@ echo '<tr><td align="center" colspan="2"><input type="submit" value="' . _DL_SAV
 echo '</table>';
 echo '<input type="hidden" name="op" value="DLConfigSave" />';
 echo '</form>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

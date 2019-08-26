@@ -43,7 +43,7 @@ include_once 'header.php';
 menu(1);
 echo '<br />';
 title('<h1>'._DL_NEWDOWNLOADS.'</h1>');
-OpenTable4();
+OpenTable2();
 /*
  * Get a count of the number of new downloads within the last 7 days.
  */
@@ -95,7 +95,7 @@ while ($counter <= $newdownloadshowdaystmp) {
 		. '">' . $newdownloadDB . '</a>&nbsp;(' . $totaldownloads . ')</li></div>';
 }
 //echo '</ul></div>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

@@ -41,7 +41,7 @@ include_once 'header.php';
 menu(1);
 echo '<br />';
 title('<h1>'._DL_REQUESTDOWNLOADMOD.'</h1>');
-OpenTable4();
+OpenTable2();
 if ($dl_config['blockunregmodify'] == 1 && !is_user($user)) {
 	echo '<div align="center"><p class="title">' . _DL_DONLYREGUSERSMODIFY . '</p></div>';
 } else {
@@ -96,7 +96,7 @@ if ($dl_config['blockunregmodify'] == 1 && !is_user($user)) {
 		echo '</form>';
 	}
 }
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

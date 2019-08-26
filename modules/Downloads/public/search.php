@@ -69,7 +69,7 @@ menu(1);
 echo '<br />';
 if (!empty($query)) {
 	title('<h1>'._DL_SEARCHRESULTS4.': '.$the_query.'</h1>'); 
-	OpenTable4();
+	OpenTable2();
 	echo '<div class="storytitle" style="', $style, '"><h1>Search Result Categories</h1></div>';
 	$sql = 'SELECT `cid`, `title`, `parentid` FROM ' . $prefix . '_nsngd_categories WHERE `active` > 0 AND title LIKE \'%' . $query
 		. '%\' ORDER BY title DESC';
@@ -89,9 +89,9 @@ if (!empty($query)) {
 	} else {
 		echo '<div align="center" class="option"><h2>No Search Results Found For "'.$the_query.'"</h2></div>';
 	}
-	CloseTable4();
+	CloseTable2();
 	echo '<br />';
-	OpenTable4();
+	OpenTable2();
 	echo '<div class="storytitle" style="', $style, '"><h1>Download Search Results</h1></div>';
 	$sql = 'SELECT COUNT(`lid`) FROM `' . $prefix . '_nsngd_downloads` WHERE `active` > 0 AND (`title` LIKE \'%' . $query
 		. '%\' OR `description` LIKE \'%' . $query . '%\')';
@@ -139,13 +139,13 @@ if (!empty($query)) {
 	} else {
 		echo '<p align="center" class="option">' . _DL_NOMATCHES . '</p>';
 	}
-	CloseTable4();
+	CloseTable2();
 	CloseTable();
 } else {
 	//title(_DL_SEARCHRESULTS4 . ': ' . $the_query);
-	OpenTable4();
+	OpenTable2();
 	echo '<p align="center" class="option">' . _DL_NOMATCHES . '</p>';
-	CloseTable4();
+	CloseTable2();
 }
 include_once 'footer.php';
 

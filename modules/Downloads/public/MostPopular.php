@@ -45,7 +45,7 @@ $ratetype = isset($ratetype) ? $ratetype : '';
 include_once 'header.php';
 menu(1);
 echo '<br />';
-OpenTable4();
+OpenTable2();
 
 if ($ratenum != '' && $ratetype != '') 
 {
@@ -118,7 +118,7 @@ if ($db->sql_numrows($result) > 0)
 	
 	echo '</table>';
 }
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

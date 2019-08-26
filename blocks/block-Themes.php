@@ -32,7 +32,7 @@ if (is_user()) {
     $content .= "</div><br />\n";
 } else {
     $content  = "<div align=\"center\"><br />\n"; 
-    $content .= "<form action=\"modules.php?name=News\" method=\"post\">";
+    $content .= "<form action=\"modules.php?name=Blog\" method=\"post\">";
     $content .= GetThemeSelect('tpreview', 'user_themes', false, 'onChange=submit();', get_theme(), 0);
     $content .= "</form>\n"; 
     $content .= "</div><br />\n";

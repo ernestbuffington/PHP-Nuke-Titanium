@@ -93,7 +93,7 @@ while ($row = $db->sql_fetchrow($result)) {
 
     echo "<item>\n";
     echo "<title>".$title."</title>\n";
-    echo "<link>".$nukeurl."/modules.php?name=News&amp;file=article&amp;sid=".$rsid."</link>\n";
+    echo "<link>".$nukeurl."/modules.php?name=Blog&amp;file=article&amp;sid=".$rsid."</link>\n";
     echo "<description><![CDATA[".$hometext."]]></description>\n";
     echo "<guid isPermaLink=\"false\">".$rsid."@".$nukeurl."</guid>\n";
     echo "<dc:subject>".$topicname."</dc:subject>\n";

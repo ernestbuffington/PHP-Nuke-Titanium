@@ -11,7 +11,7 @@ OpenTable();
 title('<h1>'.$pagetitle . ' (' . $totalbroken . ')'.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 echo '<p align="center">' . _DL_DIGNOREINFO . '<br />' . _DL_DDELETEINFO . '</p>';
 echo '<table align="center" width="80%" cellpadding="2" cellspacing="0">';
 if ($totalbroken == 0) {
@@ -70,7 +70,7 @@ if ($totalbroken == 0) {
 	}
 }
 echo '</table>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

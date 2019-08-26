@@ -10,7 +10,7 @@ OpenTable();
 title('<h1>'.$pagetitle.'</h1>');
 DLadminmain();
 echo '<br />';
-OpenTable4();
+OpenTable2();
 $lidinfo = $db->sql_fetchrow($db->sql_query('SELECT * FROM `' . $prefix . '_nsngd_downloads` WHERE `lid` = ' . $lid));
 if (preg_match('#^(http(s?))://#i', $lidinfo['url'])) {
 	$checkURL = '&nbsp;[ <a href="' . $lidinfo['url'] . '" target="_blank">' . _DL_CHECK . '</a> ]';
@@ -101,7 +101,7 @@ echo '<input type="hidden" name="op" value="DownloadDelete" />';
 echo '<input type="hidden" name="lid" value="' . $lid . '" />';
 echo '<input type="hidden" name="min" value="' . $min . '" />';
 echo '</form>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 

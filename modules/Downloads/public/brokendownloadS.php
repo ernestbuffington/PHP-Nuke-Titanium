@@ -62,12 +62,12 @@ $pagetitle = '- ' . _DL_REPORTBROKEN;
 include_once 'header.php';
 menu(1);
 echo '<br />';
-OpenTable4();
+OpenTable2();
 echo '<div align="center">'; 
 echo "<h1>Thanks for the information.</h1>";
 echo "<h1>We'll look into your request shortly.</h1><br />";
 echo '</div>';
-CloseTable4();
+CloseTable2();
 CloseTable();
 include_once 'footer.php';
 
