@@ -370,7 +370,7 @@ table.footer {
     background: url(<?php echo FOOTER_BACKGROUND; ?>);
 	<?php echo FOOTER_CONTAIN; ?>
 }
-table.center {
+table.centerblock {
     background: url(<?php echo CENTER_BACKGROUND; ?>);
 	<?php echo CENTER_CONTAIN; ?>
 }
