@@ -54,6 +54,8 @@ Public License (GPL) and is free to use, modify and redistribute.**
 
 **24.** _PHP-Nuke Titanium uses GD Version v2.1.0_
 
+
+<hr>
 <strong>AUGUST 2019 - Ernest Buffington</strong> 
 <hr>
 <strong>Block block-Portal_Menu.php updated to v5.01 - for PHP 7.3.6 - Aug 28, 2019 </strong><br /> 
