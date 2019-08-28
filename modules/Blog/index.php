@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- 
+ PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -14,27 +14,23 @@
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
-/* Titanium Blogs                                       */
-/* By: The 86it Developers Network                      */
-/* http://hub.86it.us                                   */
-/* Copyright (c) 2019 by The 86it Developers Network    */
-/********************************************************/
-
+/* Titanium Blog                                                        */
+/* By: The 86it Developers Network                                      */
+/* https://hub.86it.us                                                  */
+/* Copyright (c) 2019 Ernest Buffington                                 */
+/************************************************************************/
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
-      Caching System                           v1.0.0       10/31/2005
 -=[Mod]=-
       Advanced Username Color                  v1.0.5       07/29/2005
       Blog BBCodes                             v1.0.0       08/19/2005
       Display Topic Icon                       v1.0.0       06/27/2005
       Display Writes                           v1.0.0       10/14/2005
+	  Titanium Patched                         v3.0.0       08/26/2019
  ************************************************************************/
-
-if (!defined('MODULE_FILE')) 
-die('You can\'t access this file directly...');
-
+if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
 define('INDEX_FILE', true);
 
@@ -61,13 +57,11 @@ get_lang($module_name);
      $sitename, 
     $user_news, 
 	 $userinfo;
-
+ 
 automated_news();
 
 if (isset($new_topic)) 
-{ 
-   redirect("modules.php?name=$module_name&file=topics&topic=$new_topic"); 
-}
+redirect("modules.php?name=$module_name&file=topics&topic=$new_topic"); 
 
 $main_module = main_module();
 
@@ -141,7 +135,7 @@ switch ($op)
         $querylang = (!isset($querylang) || empty($querylang)) ? 'WHERE `time` <= now()' : $querylang . ' AND `time` <= now()';
         $result = $db->sql_query("SELECT * FROM ".$prefix."_stories $querylang ORDER BY sid DESC LIMIT $min,$storynum");
 
-        if($neconfig["columns"] == 1) // DUAL
+        if($neconfig["columns"] == 1) // DUAL BLOG
         echo "<table border='0' cellpadding='0' cellspacing='0' width='100%'>\n";
         
 		$a = 0;
@@ -152,7 +146,8 @@ switch ($op)
         
 		    if(!empty($subject))
             $subject = stripslashes(check_html($subject, "nohtml"));
-            $artinfo["hometext"] =  decode_bbcode(set_smilies(stripslashes($artinfo["hometext"])), 1, true);
+            
+			$artinfo["hometext"] =  decode_bbcode(set_smilies(stripslashes($artinfo["hometext"])), 1, true);
             $artinfo["hometext"] = evo_img_tag_to_resize($artinfo["hometext"]);
             $artinfo["notes"] = stripslashes($artinfo["notes"]);
             $artinfo["sid"] = intval($artinfo["sid"]);
@@ -181,7 +176,8 @@ switch ($op)
                 $introcount = strlen(strip_tags($artinfo["hometext"], "<br />"));
                 $fullcount = strlen($artinfo["bodytext"]);
             }
-            $totalcount = $introcount + $fullcount;
+            
+			$totalcount = $introcount + $fullcount;
             $r_options = "";
             
 			if (isset($userinfo['umode'])) 
@@ -206,16 +202,16 @@ switch ($op)
                 $the_icons .= ' | <a href="modules.php?name='.$module_name.'&amp;file=print&amp;sid='.$artinfo["sid"].'"><i class="fa fa-print"></i></a>'.PHP_EOL;
                 $the_icons .= '&nbsp;<a href="modules.php?name='.$module_name.'&amp;file=friend&amp;op=FriendSend&amp;sid='.$artinfo["sid"].'"><i class="fa fa-envelope"></i></a>';
             }
-            if (is_mod_admin($module_name)) 
+            
+			if (is_mod_admin($module_name)) 
             {
-                // $the_icons .= " | <a href=\"".$admin_file.".php?op=EditStory&amp;sid=".$artinfo["sid"]."\"><img src=\"images/edit.gif\" border=\"0\" alt=\""._EDIT."\" title=\""._EDIT."\" width=\"11\" height=\"11\"></a>&nbsp;<a href=\"".$admin_file.".php?op=RemoveStory&amp;sid=".$artinfo["sid"]."\"><img src=\"images/delete.gif\" border=\"0\" alt=\""._DELETE."\" title=\""._DELETE."\" width=\"11\" height=\"11\"></a>\n";
-
                 $the_icons .= ' | <a href="'.$admin_file.'.php?op=EditStory&amp;sid='.$artinfo["sid"].'"><i class="fa fa-pen"></i></a>'.PHP_EOL;
                 $the_icons .= '&nbsp;<a href="'.$admin_file.'.php?op=RemoveStory&amp;sid='.$artinfo["sid"].'"><i class="fa fa-times-circle"></i></a>';
             }
+
             $read_link = "<a href='modules.php?name=$module_name&amp;file=read_article&amp;sid=".$artinfo["sid"]."$r_options' onclick=\"NewsReadWindow(this.href,'ReadArticle','600','400','yes');return false;\">";
             $story_link = "<a href='modules.php?name=$module_name&amp;file=article&amp;sid=".$artinfo["sid"]."$r_options'>";
-            $morelink = "( "; // added a sapce here as that is how it belongs!  Ernest Buffington 08/09/2019
+            $morelink = "( "; // added a space here as that is how it belongs!  Ernest Buffington 08/09/2019
 
             if($neconfig["texttype"] == 0) 
 			{
@@ -249,7 +245,7 @@ switch ($op)
             }
 
             if ($fullcount > 0) 
-			  $morelink .= "$totalcount "._BYTESMORE." | "; 
+			$morelink .= "$totalcount "._BYTESMORE." | "; 
             
 			if ($articlecomm == 1 AND $artinfo["acomm"] == 0) 
 			{
@@ -261,7 +257,8 @@ switch ($op)
 				elseif ($artinfo["comments"] > 1) 
                     $morelink .= "$story_link".$artinfo["comments"]." "._COMMENTS."</a>";
             }
-            $morelink .= "$the_icons";
+            
+			$morelink .= "$the_icons";
             $sid = $artinfo["sid"];
 
             if ($artinfo["catid"] != 0) 
@@ -294,104 +291,160 @@ switch ($op)
 			    echo "<tr>"; 
                 
 				echo "<td valign='top' width='50%'>";
-                themeindex($artinfo["aid"], $informant, $datetime, $artinfo["title"], $artinfo["counter"], $artinfo["topic"], $artinfo["hometext"], $artinfo["notes"], $morelink, $topicname, $topicimage, $topictext);
-                echo "</td>\n";
+            
+			    themeindex($artinfo["aid"], $informant, $datetime, $artinfo["title"], $artinfo["counter"], $artinfo["topic"], $artinfo["hometext"], $artinfo["notes"], $morelink, $topicname, $topicimage, $topictext);
+            
+			    echo "</td>\n";
                 $a++;
-                if ($a == 2) { echo "</tr>"; $a = 0; } else { echo "<td>&nbsp;</td>"; }
+            
+			    if ($a == 2)
+				{ 
+				   echo "</tr>"; 
+				   $a = 0; 
+				}
+				else 
+				echo "<td>&nbsp;</td>"; 
             } 
-			else // SINGLE
+			else // SINGLE BLOG
             themeindex($artinfo["aid"], $informant, $datetime, $artinfo["title"], $artinfo["counter"], $artinfo["topic"], $artinfo["hometext"], $artinfo["notes"], $morelink, $topicname, $topicimage, $topictext);
         }
-        $db->sql_freeresult($result);
+        
+		$db->sql_freeresult($result);
 
-        if($neconfig["columns"] == 1) { // DUAL
+        if($neconfig["columns"] == 1) // DUAL BLOG
+		{ 
             if ($a ==1) { echo "<td width='50%'>&nbsp;</td></tr>\n"; } else { echo "</tr>\n"; }
             echo "</table>\n";
         }
-        echo "\n<!-- PAGING -->\n";
-        $articlepagesint = ($totalarticles / $storynum);
+        
+		echo "\n<!-- PAGING -->\n";
+        
+		$articlepagesint = ($totalarticles / $storynum);
         $articlepageremain = ($totalarticles % $storynum);
-        if ($articlepageremain != 0) {
+        
+		if ($articlepageremain != 0) 
+		{
             $articlepages = ceil($articlepagesint);
-            if ($totalarticles < $storynum) { $articlepageremain = 0; }
-        } else {
+        
+		    if ($totalarticles < $storynum) 
+			$articlepageremain = 0; 
+        } 
+		else 
             $articlepages = $articlepagesint;
-        }
-        if ($articlepages!=1 && $articlepages!=0) {
+
+        if ($articlepages!=1 && $articlepages!=0) 
+		{
             echo "<br />\n";
-            OpenTable();
-            $counter = 1;
+        
+		    OpenTable();
+        
+		    $counter = 1;
             $currentpage = ($max / $storynum);
-            echo "<form action='modules.php?name=$module_name' method='post'>\n";
+        
+		    echo "<form action='modules.php?name=$module_name' method='post'>\n";
             echo "<table align='center' border='0' cellpadding='2' cellspacing='2'>\n";
             echo "<tr>\n<td><strong>"._NE_SELECT." </strong><select name='min' onChange='top.location.href=this.options[this.selectedIndex].value'>\n";
-            while ($counter <= $articlepages ) {
+        
+		    while ($counter <= $articlepages ) 
+			{
                 $cpage = $counter;
                 $mintemp = ($storynum * $counter) - $storynum;
-                if ($counter == $currentpage) {
+            
+			    if ($counter == $currentpage) 
                     echo "<option selected>$counter</option>\n";
-                } else {
-                    if($module_name == $main_module) {
+				else 
+				{
+                    if($module_name == $main_module) 
                       echo "<option value='index.php?min=$mintemp'>$counter</option>\n";
-                    } else {
+					else 
                       echo "<option value='modules.php?name=$module_name&amp;min=$mintemp'>$counter</option>\n";
-                    }
                 }
-                $counter++;
+                
+				$counter++;
             }
+
             echo "</select><strong> "._NE_OF." $articlepages "._NE_PAGES.".</strong></td>\n</tr>\n";
             echo "</table>\n";
             echo "</form>\n";
+
             CloseTable();
         }
+
         echo "<!-- CLOSE PAGING -->\n";
         include(NUKE_BASE_DIR."footer.php");
     break;
 
     case "rate_article":
-        $score = intval($score);
-        if ($score) {
-            if ($score > 5) { $score = 5; }
-            if ($score < 1) { $score = 1; }
-            if ($score != 1 AND $score != 2 AND $score != 3 AND $score != 4 AND $score != 5) {
+        
+		$score = intval($score);
+        
+		if ($score) 
+		{
+            if ($score > 5) 
+		    $score = 5; 
+            
+			if ($score < 1) 
+		    $score = 1; 
+            
+			if ($score != 1 AND $score != 2 AND $score != 3 AND $score != 4 AND $score != 5) 
+			{
                 redirect("index.php");
                 exit;
             }
 
-            if (isset($ratecookie)) {
+            if (isset($ratecookie)) 
+			{
                 $rcookie = base64_decode($ratecookie);
                 $r_cookie = explode(":", $rcookie);
             }
-            for ($i=0; $i < count($r_cookie); $i++) { if ($r_cookie[$i] == $sid) { $a = 1; } }
-            if ($a == 1) {
+            
+			for ($i=0; $i < count($r_cookie); $i++) 
+			{ 
+			   if ($r_cookie[$i] == $sid) 
+			   $a = 1; 
+		    }
+            
+			if ($a == 1) 
+			{
                 redirect("modules.php?name=$module_name&op=rate_complete&sid=$sid&rated=1");
-            } else {
-                    $result = $db->sql_query("update ".$prefix."_stories set score=score+$score, ratings=ratings+1 where sid='$sid'");
-                    $db->sql_freeresult($result);
-                    $info = base64_encode("$rcookie$sid:");
-                    setcookie("ratecookie","$info",time()+86400);
-                    redirect("modules.php?name=Blog&op=rate_complete&sid=$sid&score=$score");
+            } 
+			else 
+			{
+                $result = $db->sql_query("update ".$prefix."_stories set score=score+$score, ratings=ratings+1 where sid='$sid'");
+                $db->sql_freeresult($result);
+                $info = base64_encode("$rcookie$sid:");
+                setcookie("ratecookie","$info",time()+86400);
+                redirect("modules.php?name=Blog&op=rate_complete&sid=$sid&score=$score");
             }
-        } else {
+        } 
+		else 
+		{
             include_once(NUKE_BASE_DIR."header.php");
-            //title("$sitename: "._ARTICLERATING."");
+
             OpenTable();
+
             echo "<div align=\"center\">"._DIDNTRATE."<br /><br />\n";
             echo ""._GOBACK."</div>";
+
             CloseTable();
+
             @include_once("footer.php");
         }
     break;
 
     case "rate_complete":
+
         $r_options = "";
-        if (is_user()) {
+
+        if (is_user()) 
+		{
             if (isset($userinfo['umode'])) { $r_options .= "&amp;mode=".$userinfo['umode']; } else { $r_options .= "&amp;mode=thread"; }
             if (isset($userinfo['uorder'])) { $r_options .= "&amp;order=".$userinfo['uorder']; } else { $r_options .= "&amp;order=0"; }
             if (isset($userinfo['thold'])) { $r_options .= "&amp;thold=".$userinfo['thold']; } else { $r_options .= "&amp;thold=0"; }
         }
-        include_once(NUKE_BASE_DIR."header.php");
-        //title("$sitename: "._ARTICLERATING."");
+        
+		include_once(NUKE_BASE_DIR."header.php");
+        
         OpenTable();
         
 		if ($rated == 0) 
@@ -399,15 +452,16 @@ switch ($op)
             echo "<br /><br /><div align=\"center\"><strong>"._THANKSVOTEARTICLE."</strong><br /><br />";
             echo "[ <a href='modules.php?name=$module_name&amp;file=article&amp;sid=$sid$r_options'>"._BACKTOARTICLEPAGE."</a> ]</div><br /><br />";
         } 
-		elseif ($rated == 1) 
+		else
+		if ($rated == 1) 
 		{
             echo "<br /><br /><div align=\"center\"><strong>"._ALREADYVOTEDARTICLE."</strong><br /><br />";
             echo "[ <a href='modules.php?name=$module_name&amp;file=article&amp;sid=$sid$r_options'>"._BACKTOARTICLEPAGE."</a> ]</div><br /><br />";
         }
-        CloseTable();
-        @include_once("footer.php");
+        
+		CloseTable();
+        
+		@include_once("footer.php");
     break;
-
 }
-
 ?>

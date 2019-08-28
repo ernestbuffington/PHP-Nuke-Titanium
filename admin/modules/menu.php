@@ -1,23 +1,52 @@
 <?php
-/********************************************************/
-/* Titanium Portal Menu  v5.01 - 25 Aug 2019            */
-/* This file displays the administration console        */
-/* to edit your Portal Menu                             */
-/*                                                      */
-/* Titanium Portal Menu                                 */
-/* ernest.buffington@gmail.com                          */
-/* ---------------------------------------------------- */
-/* This program's license is General Public License     */
-/* http://www.gnu.org/licenses/gpl.txt                  */
-/********************************************************/
-global $admin_file, $admin, $key, $deletecat, $db, $prefix, $sql, $upgrade_test, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $bgcolorhide, $zetheme;
+/*=======================================================================
+ PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ =======================================================================*/
 
-//fixed by Ernest Allen Buffington PHP 5
+/************************************************************************/
+/* PHP-NUKE: Web Portal System                                          */
+/* ===========================                                          */
+/*                                                                      */
+/* Copyright (c) 2002 by Francisco Burzi                                */
+/* http://phpnuke.org                                                   */
+/*                                                                      */
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License.       */
+/************************************************************************/
+/* Titanium Portal Menu                                                 */
+/* By: The 86it Developers Network                                      */
+/* https://hub.86it.us                                                  */
+/* Copyright (c) 2019 Ernest Buffington                                 */
+/************************************************************************/
+
+/*****[CHANGES]**********************************************************
+-=[Base]=-
+      Nuke Patched                             v3.1.0       06/26/2005
+-=[Mod]=-
+	  Titanium Patched                         v3.0.0       08/28/2019
+ ************************************************************************/
+ global $admin_file, 
+             $admin, 
+			   $key, 
+		 $deletecat, 
+		        $db, 
+			$prefix, 
+			   $sql, 
+	  $upgrade_test, 
+	      $bgcolor1, 
+		  $bgcolor2, 
+		  $bgcolor3, 
+		  $bgcolor4, 
+	   $bgcolorhide, 
+	       $zetheme;
+
+# fixed by Ernest Allen Buffington PHP 5
 if (!preg_match("/".$admin_file.".php/", $_SERVER['PHP_SELF'])) 
 {
 	die ("You can't access this file directly...");
 }
-//fixed by Ernest Allen Buffington PHP 5
+# fixed by Ernest Allen Buffington PHP 5
 
 $aid = trim($aid);
 
@@ -26,28 +55,35 @@ $result = $db->sql_query("select name, radminsuper from ".$prefix."_authors wher
 $row = $db->sql_fetchrow($result);
 
 if ($row['radminsuper']!=1) 
-{
-	die ("You Are Not A Network Admin"); 
-}
+die ("You Are Not A Network Admin"); 
 
-$zetheme=get_theme();
+$zetheme = get_theme();
 
-$urlofimages="images/menu";
+global $use_theme_image_dir_for_portal_menu;
+
+if ($use_theme_image_dir_for_portal_menu == true)
+$urlofimages = "themes/$zetheme/images/menu";
+else
+$urlofimages = "images/menu";
 
 if (file_exists(NUKE_ADMIN_DIR.'language/Menu/lang-'.$currentlang.'.php')) 
-{
-    include_once(NUKE_ADMIN_DIR.'language/Menu/lang-'.$currentlang.'.php');
-} 
+include_once(NUKE_ADMIN_DIR.'language/Menu/lang-'.$currentlang.'.php');
 else 
-{
-    include_once(NUKE_ADMIN_DIR.'language/Menu/lang-english.php');
-}
+include_once(NUKE_ADMIN_DIR.'language/Menu/lang-english.php');
 
 $bgcolorhide='#c0c0c0';
 $bgcolorhidefallback='#909090';
 
-function menu_js_code() { //this php function will send all java script functions.
-	global $urlofimages, $zetheme, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $bgcolorhide, $bgcolorhidefallback, $admin_file;
+function menu_js_code() { # this php function will send all the java script functions.
+	global $urlofimages, 
+	           $zetheme, 
+			  $bgcolor1, 
+			  $bgcolor2, 
+			  $bgcolor3, 
+			  $bgcolor4, 
+		   $bgcolorhide, 
+   $bgcolorhidefallback, 
+            $admin_file;
 ?>
 <script type="text/javascript" language="Javascript">
 function menuadminshowhide(zenom, numero) {
@@ -225,7 +261,7 @@ function menu_manage_sublevels(keymenu, z, sens) {
 	}
 	else {
 		var previousz=parseInt(z)-1;
-		// Si le sublevel est déjà supérieur au sublevel d'au-dessus, on ne fait rien !
+		
 		if (parseInt(document.forms.form_menu.elements["sublevel["+keymenu+"]["+z+"]"].value)<=parseInt(document.forms.form_menu.elements["sublevel["+keymenu+"]["+previousz+"]"].value)) {
 			document.forms.form_menu.elements["sublevel["+keymenu+"]["+z+"]"].value=parseInt(document.forms.form_menu.elements["sublevel["+keymenu+"]["+z+"]"].value)+1;
 			document.images["sublevelspacer1["+keymenu+"]["+z+"]"].width=document.forms.form_menu.elements["sublevel["+keymenu+"]["+z+"]"].value*15;
@@ -347,8 +383,6 @@ function menu_move_updown(keymenu,z,lastz,sens) {
 		}
 	}
 }
-
-
 
 function findPosX(obj)
 {
@@ -604,7 +638,8 @@ function index()
 	
 	include_once("header.php");
 	
-	if ($bgcolor2=='silver' || $bgcolor2=='#c0c0c0' ||$bgcolor3=='silver' || $bgcolor3=='#c0c0c0') {
+	if ($bgcolor2=='silver' || $bgcolor2=='#c0c0c0' || $bgcolor3=='silver' || $bgcolor3=='#c0c0c0') 
+	{
 		$bgcolorhide=$bgcolorhidefallback;
 	}
 		
@@ -653,7 +688,8 @@ if ($old_school_imagedropdown==0)
 	  }
 		
         echo "<td><a href=\"javascript:menu_changeimageform('".$file[$i]."');\"><img src=\"".$urlofimages."/".$file[$i]."\" onmouseover=\"this.style.outline='1px outset ".$bgcolor2."'\" onmouseout=\"this.style.outline='none'\"></a></td>";
-  $imgcounter++;
+     
+	 $imgcounter++;
   }
 }
 	echo "</tr></table>";
@@ -690,7 +726,6 @@ if ($old_school_imagedropdown==0)
 		echo "<script type=\"text/javascript\">oldschool=0;</script>"; 
 		echo "<div id=\"menu_imagelist_cat\" style=\"display: none; z-index:2; position: absolute; padding: 15px;\">";
 		echo "<div id=\"imagelist_wrapper_cat\" style=\"z-index:3; background-color: ".$bgcolor3."; border: 1px solid black;\">";
-		//display: none; z-index:2; position: absolute;
 		echo "<table cellpadding=2 style=\"background-color: ".$bgcolor3.";\" title=\""._MENU_JSFIXFORIE1."\" id=\"menu_imagelist_cat_table\">";
 		$imgcounter=1;
 		echo "<tr><td><a href=\"javascript:menu_changeimageform_cat('middot.gif');\"><img src=\"".$urlofimages."/admin/middot.gif\" onmouseover=\"this.style.outline='1px outset ".$bgcolor2."'\" onmouseout=\"this.style.outline='none'\"></a></td>";
@@ -740,11 +775,9 @@ if ($old_school_imagedropdown==0)
 	
 	$categorie=$row2['groupmenu'];
 	
-	$moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5
-	
-	$linkinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url'])); //fixed by Ernest Allen Buffington PHP 5
-	 
-	$linktextinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url_text'])); //fixed by Ernest Allen Buffington PHP 5
+	$moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5 2012
+	$linkinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url'])); //fixed by Ernest Allen Buffington PHP 5 2012
+	$linktextinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url_text'])); //fixed by Ernest Allen Buffington PHP 5 2012
 	
 	$imageinthisgroup[$categorie][$menu_counter]=$row2['image'];
 	
@@ -781,9 +814,9 @@ if ($old_school_imagedropdown==0)
 		$menu_counter=0;
 	  }
 
-	 $moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5
-	 $linkinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url'])); //fixed by Ernest Allen Buffington PHP 5
-	 $linktextinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url_text'])); //fixed by Ernest Allen Buffington PHP 5 
+	 $moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5 2012
+	 $linkinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url'])); //fixed by Ernest Allen Buffington PHP 5 2012
+	 $linktextinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url_text'])); //fixed by Ernest Allen Buffington PHP 5 2012
 	 
 	 $imageinthisgroup[$categorie][$menu_counter]=$row2['image'];
 	 $newinthisgroup[$categorie][$menu_counter]=$row2['new'];
@@ -824,15 +857,19 @@ if ($old_school_imagedropdown==0)
 
     global $admin_file;
 	
-	echo"<div align=\"center\">[<a href=\"$admin_file.php\"> Back To Main Admin Area</a>]</div>"
-	."<div class=\"red\" align=\"center\"><br>"._MENU_ATTNSUPPRCAT."<br></div>";
+	echo"<div align=\"center\"><a href=\"$admin_file.php?op=menu\"><strong>Titanium Portal Menu</strong></a></div>";
+	echo"<div align=\"center\">[ <a href=\"$admin_file.php\">Back To Main Admin Area</a> ]</div>";
+	
 
 	echo ""
 	."<form action=\"".$admin_file.".php?op=menu&amp;go=send\" method=\"post\" name=\"form_menu\">"
-	."<table width=\"100%\" align=\"center\"><tr><td colspan=\"2\">"
-	."<table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=$bgcolor1><tr><td bgcolor=\"#000000\">"
-	."<table width=\"100%\" align=\"center\" cellspacing=\"1\" cellpadding=\"4\"  bordercolor=\"$bgcolor1\">"
-	."<tr align=\"center\"><td bgcolor=\"$bgcolor2\"><strong>"._MENU_WEIGHT."</strong></td><td bgcolor=\"$bgcolor2\" ><strong>"._MENU_CATEGORIES."</strong></td><td bgcolor=\"$bgcolor2\" ><strong>"._MENU_ACTION."</strong></td></tr>";
+	."<table class=\"row1\" width=\"100%\" align=\"center\"><tr><td colspan=\"2\">"
+	."<table class=\"row2\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=$bgcolor1><tr>"
+	."<td class=\"row1\">"
+	."<table class=\"row1\" width=\"100%\" align=\"center\" cellspacing=\"1\" cellpadding=\"4\"  bordercolor=\"$bgcolor1\">"
+	."<tr align=\"center\">"
+	."<td class=\"row2\">"
+	."<strong>"._MENU_WEIGHT."</strong></td><td class=\"row2\"><strong>"._MENU_CATEGORIES."</strong></td><td class=\"row2\"><strong>"._MENU_ACTION."</strong></td></tr>";
 
 	$now=time();
 	$key=0;
@@ -863,7 +900,7 @@ if ($old_school_imagedropdown==0)
 
 	if ($groupmenu[$key]==99) 
 	{ 
-	   echo "<tr align=\"center\"><td bgcolor=\"$bgcolor1\" colspan=3><strong><br>"._MENU_NEWCATEGORY."<br><br></strong></td></tr>";
+	   echo "<tr align=\"center\"><td class=\"row3\" colspan=3><strong><br>"._MENU_NEWCATEGORY."<br><br></strong></td></tr>";
 	   $checkshowadmin=($catname[$key]=='menunoadmindisplay') ? "" : "checked" ; 
 	   $catname[$key]=$row['name']=""; 
 	   $key99=$groupmenu[$key];
@@ -887,14 +924,14 @@ if ($old_school_imagedropdown==0)
 
 	echo""
 	."<tr align=\"center\">"
-	."<td bgcolor=\"$bgcolor2\"".$catclass." rowspan=\"2\" id=\"showhide_weight_$key\"><center>"
+	."<td class=\"row1\" rowspan=\"2\" id=\"showhide_weight_$key\"><center>"
 	."<input type=\"text\" class=\"select\" name=\"menuformgroupmenu[$key]\" size=\"3\" maxlength=2 value=\"$groupmenu[$key]\" onchange='check_numeric(this,$groupmenu[$key])'></center><br>";
 	echo "<input type=\"hidden\" name=\"menu_schedule_date_debut_cat[".$key."]\" value=\"".$date_debut_cat[$key]."\">";
 	echo "<input type=\"hidden\" name=\"menu_schedule_date_fin_cat[".$key."]\" value=\"".$date_fin_cat[$key]."\">";
 	echo "<input type=\"hidden\" name=\"menu_schedule_days_cat[".$key."]\" value=\"".$days_cat[$key]."\">";
 	echo "<a href=\"javascript:envoiedit('".$key."', 'imacategory', 'schedule');\" title=\""._MENU_SCHEDULE."\"><center><img src=\"$urlofimages/admin/calendar_clock2.png\" style=\"margin-top:3px;\" width=\"36\"></center></a>";
 	echo "</td>"
-	."<td bgcolor=\"$bgcolor3\"".$catclass." id=\"showhide_cat_$key\"><table align=\"left\" cellspacing=\"0\" cellpadding=\"0\" border=0>";
+	."<td class=\"row1\" id=\"showhide_cat_$key\"><table align=\"left\" cellspacing=\"0\" cellpadding=\"0\" border=0>";
 
 	$newcolor = ( $new[$key]=="on" ) ? "new.gif" : "new_gray.gif" ;
 	
@@ -940,7 +977,7 @@ if ($old_school_imagedropdown==0)
 		echo "<option value=\"noimg\" $selected>"._MENU_NOIMG."</option>";
 
 		for ($i=0;$i<count($file);$i++) 
-		{ //chaque image /images/menu
+		{ 
 		    if ($file[$i] != "." && $file[$i] != ".." && $file[$i] != "categories" && $file[$i] != "admin") 
 			{
 			   if ($file[$i]==$image[$key]) 
@@ -1017,7 +1054,7 @@ if ($old_school_imagedropdown==0)
 	
 	echo "<input type=\"text\" class=\"select\" name=\"menuformbgcolor[$key]\" size=8 value=\"$categoriebgcolor[$key]\">&nbsp;"._MENU_BGCOLOR."&nbsp;&nbsp;&nbsp;</td>"
 	."</tr><tr height=8><td></td></tr></table></td>"
-	."<td bgcolor=\"$bgcolor2\"".$catclass." rowspan=2 id=\"showhide_suppr_$key\">";
+	."<td class=\"row2\" rowspan=2 id=\"showhide_suppr_$key\">";
 	
 	if ($key99<>99)
 	{
@@ -1025,7 +1062,7 @@ if ($old_school_imagedropdown==0)
 	}
 	
 	echo "</td>"
-	."</tr><tr><td bgcolor=\"$bgcolor1\" id=\"showhide_content_$key\"".$display_cat.">";
+	."</tr><tr><td class=\"row2\" id=\"showhide_content_$key\"".$display_cat.">";
 	
 	// Start - Fix by Ernest Buffington 08/25/2019 for PHP 7.3.6
     if($moduleinthisgroup[$groupmenu[$key]] && count($moduleinthisgroup[$groupmenu[$key]]) <> 99)
@@ -1926,7 +1963,6 @@ function menu_schedule() {
 		echo"</body></html>";
 	}
 	else {
-		//envoyer les données dans le formulaire principal.
 		$key=$_POST['keymenu'];
 		$z=$_POST['z'];
 		$days="";
@@ -2017,14 +2053,19 @@ function menu_schedule() {
 //
 //
 
-function deletecat() {//pour supprimer une catégorie (fonction appelée par le clic sur "supprimer" dans une ligne du formulaire)
+function deletecat() 
+{
 	global $admin_file;
-	if (!isset($admin_file)) {$admin_file="admin";}
+
+	if (!isset($admin_file)) 
+	{
+	  $admin_file="admin";
+	}
+	
 	global $deletecat, $key, $confirm, $catname, $db, $prefix;
+	
 	if ($confirm<>"YES") {
 		include_once ("header.php");
-		GraphicAdmin();
-		echo"<br>";
 		OpenTable();
 		$catname=htmlspecialchars($catname);
 		echo"<div align=\"center\">"._MENU_WARNINGDELETECAT." <i>$catname</i> ?<br><br>";
@@ -2033,7 +2074,8 @@ function deletecat() {//pour supprimer une catégorie (fonction appelée par le cl
 		CloseTable();
 		include_once("footer.php");
 	}
-	else {
+	else 
+	{
 		$confirm="NO";
 		$db->sql_query("DELETE FROM ".$prefix."_menu WHERE groupmenu='$deletecat'");
 		$db->sql_query("DELETE FROM ".$prefix."_menu_categories WHERE groupmenu='$deletecat'");
@@ -2042,8 +2084,8 @@ function deletecat() {//pour supprimer une catégorie (fonction appelée par le cl
 	}
 }
 
-switch($go) {
-
+switch($go) 
+{
 	default:
 	index();
 	break;
@@ -2064,6 +2106,4 @@ switch($go) {
 	menu_schedule();
 	break;
 }
-
-
 ?>

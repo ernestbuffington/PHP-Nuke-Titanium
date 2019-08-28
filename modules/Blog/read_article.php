@@ -14,11 +14,11 @@
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
-/* Titanium Blogs                                       */
-/* By: NukeScripts Network (webmaster@nukescripts.net)  */
-/* http://www.nukescripts.net                           */
-/* Copyright (c) 2000-2005 by NukeScripts Network       */
-/********************************************************/
+/* Titanium Blog                                                        */
+/* By: The 86it Developers Network                                      */
+/* https://hub.86it.us                                                  */
+/* Copyright (c) 2019 Ernest Buffington                                 */
+/************************************************************************/
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
@@ -26,102 +26,132 @@
 -=[Mod]=-
       Advanced Username Color                  v1.0.5       07/29/2005
       Blog BBCodes                             v1.0.0       08/19/2005
+	  Titanium Patched                         v3.0.0       08/26/2019
  ************************************************************************/
-
-if (!defined('MODULE_FILE')) {
-   die('You can\'t access this file directly...');
-}
+if (!defined('MODULE_FILE')) { die('You can\'t access this file directly...'); }
 
 global $cookie, $userinfo;
 
 @include_once(NUKE_INCLUDE_DIR.'counter.php');
 
 $module_name = basename(dirname(__FILE__));
+
 get_lang($module_name);
 
 $sid = (int) $sid;
 
-if (stristr($REQUEST_URI,"mainfile")) {
-    redirect("modules.php?name=$module_name&file=read_article&sid=$sid");
-} elseif (!isset($sid) && !isset($tid)) {
-    redirect("index.php");
-}
+if (stristr($REQUEST_URI,"mainfile")) 
+redirect("modules.php?name=$module_name&file=read_article&sid=$sid");
+else
+if (!isset($sid) && !isset($tid)) 
+redirect("index.php");
 
-if ($save AND is_user()) {
+if ($save AND is_user()) 
+{
     $db->sql_query("UPDATE ".$user_prefix."_users SET umode='$mode', uorder='$order', thold='$thold' where uid='$cookie[0]'");
     $info = base64_encode("$userinfo[user_id]:$userinfo[username]:$userinfo[user_password]:$userinfo[storynum]:$userinfo[umode]:$userinfo[uorder]:$userinfo[thold]:$userinfo[noscore]");
     setcookie("user","$info",time()+$cookieusrtime);
 }
 
-if ($op == "Reply") {
-    redirect("modules.php?name=$module_name&file=comments&op=Reply&pid=0&sid=$sid&mode=$mode&order=$order&thold=$thold");
-}
+if ($op == "Reply") 
+redirect("modules.php?name=$module_name&file=comments&op=Reply&pid=0&sid=$sid&mode=$mode&order=$order&thold=$thold");
 
 $sql = "select catid, aid, time, title, counter, hometext, bodytext, topic, informant, notes, acomm, haspoll, pollID, score, ratings FROM ".$prefix."_stories where sid='$sid'";
 $result = $db->sql_query($sql);
-if ($numrows = $db->sql_numrows($result) != 1) {
+
+if ($numrows = $db->sql_numrows($result) != 1) 
+{
     redirect("index.php");
     exit;
 }
+
 $row = $db->sql_fetchrow($result);
+
 $catid = $row["catid"];
-/*****[BEGIN]******************************************
- [ Mod:    Advanced Username Color             v1.0.5 ]
- ******************************************************/
+
 $aid['name'] = stripslashes($row["aid"]);
+
 $aid['color'] = UsernameColor($aid['name']);
-/*****[END]********************************************
- [ Mod:    Advanced Username Color             v1.0.5 ]
- ******************************************************/
+
 $time = $row["time"];
+
 $title = $row["title"];
+
 $counter = $row["counter"];
-/*****[BEGIN]******************************************
- [ Mod:     Blog BBCodes                       v1.0.0 ]
- ******************************************************/
+
 $hometext = decode_bbcode(set_smilies(stripslashes($row["hometext"])), 1, true);
+
 $bodytext = decode_bbcode(set_smilies(stripslashes($row["bodytext"])), 1, true);
+
 $bodytext = evo_img_tag_to_resize($bodytext);
 $hometext = evo_img_tag_to_resize($hometext);
-/*****[END]********************************************
- [ Mod:     Blog BBCodes                       v1.0.0 ]
- ******************************************************/
+
 $topic = $row["topic"];
+
 $informant = $row["informant"];
+
 $notes = $row["notes"];
+
 $acomm = $row["acomm"];
+
 $haspoll = $row["haspoll"];
+
 $pollID = $row["pollID"];
+
 $score = $row["score"];
+
 $ratings = $row["ratings"];
-if (empty($aid['name'])) { redirect("modules.php?name=$module_name"); }
+
+if (empty($aid['name'])) 
+redirect("modules.php?name=$module_name"); 
+
 $db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 where sid=$sid");
+
 $artpage = 1;
+
 $pagetitle = "- $title";
+
 $Theme_Sel = get_theme();
-    echo "<html>\n";
-    echo "<head>\n";
-    @require_once("themes/$Theme_Sel/theme.php");
-    echo "<link href=\"themes/$Theme_Sel/style/style.css\" rel=\"stylesheet\" type=\"text/css\">";
-    echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
-    echo "<title>$title</title>\n";
-    echo "<base target='parent'>\n";
-    echo "</head>\n";
-    echo "<body>\n";
+
+echo "<html>\n";
+echo "<head>\n";
+
+@require_once("themes/".$Theme_Sel."/theme.php");
+
+echo "<link href=\"themes/".$Theme_Sel."/style/style.css\" rel=\"stylesheet\" type=\"text/css\">";
+echo "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=utf-8\" />";
+echo "<title>".$title."</title>\n";
+echo "<base target='parent'>\n";
+echo "</head>\n";
+echo "<body>\n";
+
 $artpage = 0;
+
 formatTimestamp($time);
+
 $title = stripslashes($title);
 $hometext = stripslashes($hometext);
 $bodytext = stripslashes($bodytext);
 $notes = stripslashes($notes);
 $counter = stripslashes($counter);
-if($notes != "") { $notes = "<br /><br /><strong><i>"._NOTE." $notes</i></strong>"; } else { $notes = ""; }
-if(empty($bodytext)) { $bodytext = "$hometext$notes"; } else { $bodytext = "$hometext<br /><br />$bodytext$notes"; }
-if(empty($informant)) {
-    $informant = $anonymous;
-}
+
+if($notes != "") 
+$notes = "<br /><br /><strong><i>"._NOTE." $notes</i></strong>"; 
+else 
+$notes = ""; 
+
+if(empty($bodytext)) 
+$bodytext = "$hometext$notes"; 
+else 
+$bodytext = "$hometext<br /><br />$bodytext$notes"; 
+
+if(empty($informant)) 
+$informant = $anonymous;
+
 getTopics($sid);
-if($catid != 0) {
+
+if($catid != 0) 
+{
     $sql = "select title from ".$prefix."_stories_cat where catid='$catid'";
     $result = $db->sql_query($sql);
     $row = $db->sql_fetchrow($result);
@@ -130,17 +160,12 @@ if($catid != 0) {
 }
 
 echo "<table width=\"100%\" border=\"0\"><tr><td valign=\"top\" width=\"100%\">\n";
-/*****[BEGIN]******************************************
- [ Mod:    Advanced Username Color             v1.0.5 ]
- ******************************************************/
+
 themearticle($aid['name'], $informant, $datetime, $title, $counter, $bodytext, $topic, $topicname, $topicimage, $topictext);
-/*****[END]********************************************
- [ Mod:    Advanced Username Color             v1.0.5 ]
- ******************************************************/
+
 echo "</td><td>&nbsp;</td><td valign=\"top\">\n";
 
 echo "</body>\n";
 echo "</html>\n";
 exit;
-
 ?>

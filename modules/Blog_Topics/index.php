@@ -65,7 +65,7 @@ if ($db->sql_numrows($result) > 0)
         $topicid = intval($row['topicid']);
         $topicimage = stripslashes($row['topicimage']);
         $topictext = stripslashes(check_html($row['topictext'], "nohtml"));
-        if(file_exists("themes/".$ThemeSel."/images/topics/".$topicimage)) 
+        if(file_exists("themes/".$ThemeSel."/images/Blog_Topics/".$topicimage)) 
 		{
           $t_image = "themes/".$ThemeSel."/";
         } 
@@ -79,7 +79,7 @@ if ($db->sql_numrows($result) > 0)
 		$output .= '<legend align="center" id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom: 0px; font-size: 18px; font-weight: bold;"><a href="modules.php?name=Blog&amp;new_topic="'.$topicid.'">'.$topictext.'</a></legend>';
 		$output .= '<table border="1" width="100%" align="center" cellpadding="2">';
         
-        $output .= '<tr>';
+        $output .= '<tr>'; 
         $output .= '<td valign="top" width="35%"><a href="modules.php?name=Blog&amp;new_topic="'.$topicid.'"><img src='.$t_image.' border="0" alt='.$topictext.' title='.$topictext.' hspace="5" vspace="5"></a><br /><br />';
         $output .= '<span class="content">';
         $output .= '<img class="icons" align="absmiddle" width="16" src="'.img('topic-16.png','Blog_Topics').'"> <strong>'._TOPIC.' :</strong><a href="modules.php?name=Blog&amp;new_topic="'.$topicid.'"><strong> '.$topictext.'</strong></a><br />';

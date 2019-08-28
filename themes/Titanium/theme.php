@@ -46,6 +46,13 @@ $define_theme_xtreme_209e,
 	   $use_xtreme_voting, 
 $make_xtreme_avatar_small;
 
+# This is to tell the main portal menu to luook for the images
+# in the theme dir "theme_name/images/menu"
+global $use_theme_image_dir_for_portal_menu;
+
+$use_theme_image_dir_for_portal_menu = false;
+
+
 $table_spacer_left = '18';
 $table_spacer_right = '18';
 

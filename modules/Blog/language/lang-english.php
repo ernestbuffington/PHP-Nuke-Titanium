@@ -3,29 +3,41 @@
  PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
-/**************************************************************************/
-/* PHP-NUKE: Advanced Content Management System                           */
-/* ============================================                           */
-/*                                                                        */
-/* This is the language module with all the system messages               */
-/*                                                                        */
-/* If you made a translation, please go to the site and send to me        */
-/* the translated file. Please keep the original text order by modules,   */
-/* and just one message per line, also double check your translation!     */
-/*                                                                        */
-/* You need to change the second quoted phrase, not the capital one!      */
-/*                                                                        */
-/* If you need to use double quotes (") remember to add a backslash (\),  */
-/* so your entry will look like: This is \"double quoted\" text.          */
-/* And, if you use HTML code, please double check it.                     */
-/**************************************************************************/
+/************************************************************************/
+/* PHP-NUKE: Web Portal System                                          */
+/* ===========================                                          */
+/*                                                                      */
+/* Copyright (c) 2002 by Francisco Burzi                                */
+/* http://phpnuke.org                                                   */
+/*                                                                      */
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License.       */
+/************************************************************************/
+/* Titanium Blog                                                        */
+/* By: The 86it Developers Network                                      */
+/* https://hub.86it.us                                                  */
+/* Copyright (c) 2019 Ernest Buffington                                 */
+/************************************************************************/
 
 /*****[CHANGES]**********************************************************
+-=[Base]=-
+      Nuke Patched                             v3.1.0       06/26/2005
 -=[Mod]=-
-      NSN Blogs                                 v1.1.0       06/25/2005
+      Advanced Username Color                  v1.0.5       07/29/2005
+      Blog BBCodes                             v1.0.0       08/19/2005
+      Display Topic Icon                       v1.0.0       06/27/2005
+      Display Writes                           v1.0.0       10/14/2005
+	  Titanium Patched                         v3.0.0       08/26/2019
  ************************************************************************/
 
 define('_NEWS','Blogs');
+define("_LASTTWENTY","Blogs Last 100");
+define("_PROGRAMMEDBLOGS","Blogs Programmed");
+
+# COMMENTS
+define('_REMOVECOMMENTS','Would you like to <strong>DELETE</strong> This Comment?');
+define('_SURETODELCOMMENTS','Are you <strong>SURE</strong> you would like to <strong>DELETE</strong> This Comment?');
 
 
 define("_SEND","Send");

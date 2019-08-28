@@ -40,6 +40,13 @@ include(NUKE_THEMES_DIR.$theme_name.'/theme_info.php');
 /*-------------------------*/
 global $digits_color, $fieldset_border_width, $fieldset_color, $define_theme_xtreme_209e, $avatar_overide_size, $ThemeInfo, $use_xtreme_voting, $make_xtreme_avatar_small;
 
+# This is to tell the main portal menu to luook for the images
+# in the theme dir "theme_name/images/menu"
+global $use_theme_image_dir_for_portal_menu;
+
+$use_theme_image_dir_for_portal_menu = false;
+
+
 $digits_color ='#ffb825';
 $fieldset_border_width = '1px'; 
 $fieldset_color = '#4e4e4e';

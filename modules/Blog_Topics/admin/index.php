@@ -224,7 +224,7 @@ function relatededit($tid, $rid) {
         $topicimage = $row2['topicimage'];
     OpenTable();
     echo "<center>"
-        ."<img src=\"images/topics/$topicimage\" align=\"right\" alt=\"$topictext\" />"
+        ."<img src=\"images/Blog_Topics/$topicimage\" align=\"right\" alt=\"$topictext\" />"
         ."<span class=\"option\"><strong>"._EDITRELATED . "</strong></span><br />"
         ."<strong>"._TOPIC . ":</strong> $topictext</center>"
         ."<form action=\"".$admin_file.".php\" method=\"post\">"
@@ -311,7 +311,7 @@ function topicdelete($topicid, $ok=0) {
         $topicimage = $row3['topicimage'];
         $topictext = $row3['topictext'];
         OpenTable();
-        echo "<center><img src=\"images/topics/$topicimage\" alt=\"$topictext\" /><br /><br />"
+        echo "<center><img src=\"images/Blog_Topics/$topicimage\" alt=\"$topictext\" /><br /><br />"
             ."<strong>" . _DELETETOPIC . " $topictext</strong><br /><br />"
             ."" . _TOPICDELSURE . " <i>$topictext</i>?<br />"
             ."" . _TOPICDELSURE1 . "<br /><br />"

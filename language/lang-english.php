@@ -135,7 +135,7 @@ define("_POSTEDBY","Posted by");
 define("_BY","by");
 define("_ON","on");
 define("_WAITINGCONT","Waiting Content");
-define("_SUBMISSIONS","Submissions");
+define("_SUBMISSIONS","Blog Submissions");
 define("_WREVIEWS","Waiting Reviews");
 define("_WLINKS","Waiting Links");
 define("_EPHEMERIDS","Ephemerids");

@@ -13,107 +13,146 @@
 /* This program is free software. You can redistribute it and/or modify */
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
-/*                                                                      */
 /************************************************************************/
-/*         Additional security & Abstraction layer conversion           */
-/*                           2003 chatserv                              */
-/*      http://www.nukefixes.com -- http://www.nukeresources.com        */
+/* Titanium Blog                                                        */
+/* By: The 86it Developers Network                                      */
+/* https://hub.86it.us                                                  */
+/* Copyright (c) 2019 Ernest Buffington                                 */
 /************************************************************************/
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
+-=[Mod]=-
+      Advanced Username Color                  v1.0.5       07/29/2005
+      Blog BBCodes                             v1.0.0       08/19/2005
+      Display Topic Icon                       v1.0.0       06/27/2005
+      Display Writes                           v1.0.0       10/14/2005
+	  Titanium Patched                         v3.0.0       08/26/2019
  ************************************************************************/
-
-if (!defined('ADMIN_FILE')) {
-   die ("Illegal File Access");
-}
+ if (!defined('ADMIN_FILE')) die ("Illegal File Access");
 
 global $prefix, $db;
-if (is_mod_admin()) {
 
+if (is_mod_admin()) 
+{
 /*********************************************************/
 /* Comments Delete Function                              */
 /*********************************************************/
-
 /* Thanks to Oleg [Dark Pastor] Martos from http://www.rolemancer.ru */
 /* to code the comments childs deletion function!                    */
-
-function removeSubComments($tid) {
+ function removeSubComments($tid) 
+ {
     global $prefix, $db;
+
     $tid = intval($tid);
     $result = $db->sql_query("SELECT tid from " . $prefix . "_comments where pid='$tid'");
     $numrows = $db->sql_numrows($result);
-    if($numrows>0) {
-    while ($row = $db->sql_fetchrow($result)) {
-    $stid = intval($row['tid']);
-            removeSubComments($stid);
-            $stid = intval($stid);
-            $db->sql_query("delete from " . $prefix . "_comments where tid='$stid'");
-        }
-    }
-    $db->sql_query("delete from " . $prefix . "_comments where tid='$tid'");
-}
 
-function removeComment ($tid, $sid, $ok=0) {
+    if($numrows>0) 
+	{
+      while ($row = $db->sql_fetchrow($result)) 
+	  {
+         $stid = intval($row['tid']);
+      
+	     removeSubComments($stid);
+      
+	     $stid = intval($stid);
+         $db->sql_query("delete from " . $prefix . "_comments where tid='$stid'");
+      }
+    }
+    
+	$db->sql_query("delete from " . $prefix . "_comments where tid='$tid'");
+ }
+
+ function removeComment ($tid, $sid, $ok=0) 
+ {
     global $ultramode, $prefix, $db, $admin_file;
-    if($ok) {
+
+    if($ok) 
+	{
         $tid = intval($tid);
         $result = $db->sql_query("SELECT date from " . $prefix . "_comments where pid='$tid'");
         $numresults = $db->sql_numrows($result);
         $sid = intval($sid);
-        $db->sql_query("update " . $prefix . "_stories set comments=comments-1-'$numresults' where sid='$sid'");
-        removeSubComments($tid);
-        if ($ultramode) {
-            ultramode();
-        }
-        redirect("modules.php?name=Blog&file=article&sid=$sid");
-    } else {
+    
+	    $db->sql_query("update " . $prefix . "_stories set comments=comments-1-'$numresults' where sid='$sid'");
+    
+	    removeSubComments($tid);
+    
+	    if ($ultramode) 
+        ultramode();
+        
+		redirect("modules.php?name=Blog&file=article&sid=$sid");
+    } 
+	else 
+	{
         include(NUKE_BASE_DIR.'header.php');
-        GraphicAdmin();
-        title( _REMOVECOMMENTS);
-        OpenTable();
-        echo "<center>" . _SURETODELCOMMENTS;
-        echo "<br /><br />[ <a href=\"javascript:history.go(-1)\">" . _NO . "</a> | <a href=\"".$admin_file.".php?op=RemoveComment&amp;tid=$tid&amp;sid=$sid&amp;ok=1\">" . _YES . "</a> ]</center>";
-        CloseTable();
-        include(NUKE_BASE_DIR.'footer.php');
+    
+	    get_lang('Blog');          
+    
+	    OpenTable();
+    
+	    echo "<div align=\"center\">" . _SURETODELCOMMENTS;
+        echo "<br /><br />[ <a href=\"javascript:history.go(-1)\">" . _NO . "</a> | <a href=\"".$admin_file.".php?op=RemoveComment&amp;tid=$tid&amp;sid=$sid&amp;ok=1\">" . _YES . "</a> ]</div>";
+    
+	    CloseTable();
+    
+	    include(NUKE_BASE_DIR.'footer.php');
     }
-}
+ }
 
-function removePollSubComments($tid) {
+ function removePollSubComments($tid) 
+ {
     global $prefix, $db;
+
     $tid = intval($tid);
     $result = $db->sql_query("SELECT tid from " . $prefix . "_pollcomments where pid='$tid'");
     $numrows = $db->sql_numrows($result);
-    if($numrows>0) {
-        while ($row = $db->sql_fetchrow($result)) {
+
+    if($numrows>0) 
+	{
+        while ($row = $db->sql_fetchrow($result)) 
+		{
             $stid = intval($row['tid']);
-            removePollSubComments($stid);
-            $db->sql_query("delete from " . $prefix . "_pollcomments where tid='$stid'");
+        
+		    removePollSubComments($stid);
+        
+		    $db->sql_query("delete from " . $prefix . "_pollcomments where tid='$stid'");
         }
     }
-    $db->sql_query("delete from " . $prefix . "_pollcomments where tid='$tid'");
-}
+    
+	$db->sql_query("delete from " . $prefix . "_pollcomments where tid='$tid'");
+ }
 
-function RemovePollComment ($tid, $pollID, $ok=0) {
+ function RemovePollComment ($tid, $pollID, $ok=0) 
+ {
     global $admin_file;
-    if($ok) {
+
+      if($ok) 
+	  {
         removePollSubComments($tid);
         redirect("modules.php?name=Surveys&op=results&pollID=$pollID");
-    } else {
+      } 
+	  else 
+	  {
         include(NUKE_BASE_DIR.'header.php');
-        GraphicAdmin();
-        title("<center><span class=\"title\"><strong>" . _REMOVECOMMENTS . "</strong></span></center>");
-        OpenTable();
-        echo "<center>" . _SURETODELCOMMENTS . "";
-        echo "<br /><br />[ <a href=\"javascript:history.go(-1)\">" . _NO . "</a> | <a href=\"".$admin_file.".php?op=RemovePollComment&amp;tid=$tid&amp;pollID=$pollID&amp;ok=1\">" . _YES . "</a> ]</center>";
-        CloseTable();
-        include(NUKE_BASE_DIR.'footer.php');
-    }
-}
+	
+		get_lang('Blog');
+    
+	    OpenTable();
+    
+	    echo "<div align=\"center\">" . _SURETODELCOMMENTS . "";
+        echo "<br /><br />[ <a href=\"javascript:history.go(-1)\">" . _NO . "</a> | <a href=\"".$admin_file.".php?op=RemovePollComment&amp;tid=$tid&amp;pollID=$pollID&amp;ok=1\">" . _YES . "</a> ]</div>";
+    
+	    CloseTable();
+    
+	    include(NUKE_BASE_DIR.'footer.php');
+      }
+ }
 
-switch ($op) {
-
+ switch ($op) 
+ {
     case "RemoveComment":
     removeComment ($tid, $sid, $ok);
     break;
@@ -129,11 +168,8 @@ switch ($op) {
     case "RemovePollComment":
     RemovePollComment($tid, $pollID, $ok);
     break;
-
-}
-
-} else {
-    echo "Access Denied";
-}
-
+ } 
+} 
+else 
+echo "Access Denied";
 ?>

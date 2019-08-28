@@ -14,27 +14,33 @@
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
-/********************************************************/
-/* Titanium Blogs                                       */
-/* By: The 86it Developers Network                      */
-/* http://hub.86it.us                                   */
-/* Copyright (c) 2019 by The 86it Developers Network    */
-/********************************************************/
-
+/* Titanium Blog                                                        */
+/* By: The 86it Developers Network                                      */
+/* https://hub.86it.us                                                  */
+/* Copyright (c) 2019 Ernest Buffington                                 */
+/************************************************************************/
+ 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
+-=[Mod]=-
+      Advanced Username Color                  v1.0.5       07/29/2005
+      Blog BBCodes                             v1.0.0       08/19/2005
+      Display Topic Icon                       v1.0.0       06/27/2005
+      Display Writes                           v1.0.0       10/14/2005
+	  Titanium Patched                         v3.0.0       08/26/2019
  ************************************************************************/
-
-if (!defined('ADMIN_FILE')) {
-   die('Access Denied');
-}
+if (!defined('ADMIN_FILE')) die('Access Denied');
 
 global $admin_file;
-$module_name = basename(dirname(dirname(__FILE__)));
-get_lang($module_name);
-adminmenu($admin_file.'.php?op=adminStory', _NEWS, 'addstory.png');
-// adminmenu($admin_file.'.php?op=submissions', _SUBMISSIONS, 'submissions.png');
-// adminmenu($admin_file.'.php?op=NENewsConfig', _NE_NEWSCONFIG, 'news.png');
 
+$module_name = basename(dirname(dirname(__FILE__)));
+
+get_lang($module_name);
+
+adminmenu($admin_file.'.php?op=adminStory', _NEWS, 'logo_red.png');
+adminmenu($admin_file.'.php?op=submissions', _SUBMISSIONS, 'logo_blue2.png');
+adminmenu($admin_file.'.php?op=NENewsConfig', _NE_NEWSCONFIG, 'logo_green.png');
+adminmenu($admin_file.'.php?op=LastTwenty', _LASTTWENTY, 'logo_purple.png');
+adminmenu($admin_file.'.php?op=ProgrammedBlogs', _PROGRAMMEDBLOGS, 'logo_red_purp.png');
 ?>

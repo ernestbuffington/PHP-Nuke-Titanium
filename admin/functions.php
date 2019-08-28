@@ -172,6 +172,8 @@ function adminmenu($url, $title, $image)
 
     if ( $admingraphic ):
         // $image = '<img src="'.$image.'" border="0" alt="'.$title.'" title="'.$title.'" width="32" height="32" />';
+		//My Monitor Icons
+		//$image = '<img src="'.$image.'" border="0" alt="'.$title.'" title="'.$title.'" width="100" height="85" />';
         $image = '<img src="'.$image.'" border="0" alt="'.$title.'" title="'.$title.'" width="40" height="40" />';
     else:
         $image = '';

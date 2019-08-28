@@ -115,7 +115,7 @@ echo '<div align="center" id="locator"><img src="themes/'.$theme_name.'/logo/the
 # logo end
 
 if (strcmp($_SERVER['SERVER_NAME'], 'cvs.86it.us') == 0)
-echo '<div align="center" id="text"><h1><a class="greatminds" href="../../index.php">XHTML 1.0 | curl 7.65.0 | MariaDB 10.1.40 | PHP 5.6.40</a></h1></div>';
+echo '<div align="center" id="text"><h1><a class="greatminds" href="../../index.php">XHTML 1.0 | curl 7.65.0 | MariaDB 10.1.40 | PHP 7.0.33</a></h1></div>';
 else
 if (strcmp($_SERVER['SERVER_NAME'], 'hub.86it.us') == 0)
 echo '<div align="center" id="text"><h1><a class="greatminds" href="../../index.php">XHTML 1.0 | curl 7.65.0 | MariaDB 10.1.40 | PHP 7.3.6</a></h1></div>';

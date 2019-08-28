@@ -3,27 +3,45 @@
  PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
-/********************************************************/
-/* NukeScripts Network (webmaster@nukescripts.net)      */
-/* http://www.nukescripts.net                           */
-/* Copyright (c) 2000-2005 by NukeScripts Network         */
-/********************************************************/
+/************************************************************************/
+/* PHP-NUKE: Web Portal System                                          */
+/* ===========================                                          */
+/*                                                                      */
+/* Copyright (c) 2002 by Francisco Burzi                                */
+/* http://phpnuke.org                                                   */
+/*                                                                      */
+/* This program is free software. You can redistribute it and/or modify */
+/* it under the terms of the GNU General Public License as published by */
+/* the Free Software Foundation; either version 2 of the License.       */
+/************************************************************************/
+/* Titanium Blog                                                        */
+/* By: The 86it Developers Network                                      */
+/* https://hub.86it.us                                                  */
+/* Copyright (c) 2019 Ernest Buffington                                 */
+/************************************************************************/
 
+/*****[CHANGES]**********************************************************
+-=[Base]=-
+      Nuke Patched                             v3.1.0       06/26/2005
+-=[Mod]=-
+      Advanced Username Color                  v1.0.5       07/29/2005
+      Blog BBCodes                             v1.0.0       08/19/2005
+      Display Topic Icon                       v1.0.0       06/27/2005
+      Display Writes                           v1.0.0       10/14/2005
+	  Titanium Patched                         v3.0.0       08/26/2019
+ ************************************************************************/
 define('CP_INCLUDE_DIR', dirname(dirname(dirname(__FILE__))));
 require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 
 $module_name = basename(dirname(__FILE__));
-$mod_name = "Titanium Blogs";
-$author_email = "";
-$author_homepage = "http://www.nukescripts.net";
-$author_name = "<a href=\"$author_homepage\">NukeScripts Network</a>";
-$license = "All Modifications - Copyright &copy; 2000-2005 NukeScripts Network";
-$download_location = "";
-$module_version = "";
-$release_date = "";
-$module_description = "";
-$mod_cost = "";
-if (empty($mod_name)) { $mod_name = str_replace("_", " ", $module_name); }
+$author_email = "webmaster@hub.86it.us";
+$author_homepage = "http://hub.86it.us";
+$author_name = "Ernest Allen Buffington";
+$license = "GNU/GPL";
+$download_location = "http://hub.86it.us";
+$module_version = "3.0.0";
+$release_date = "08/27/2019";
+$module_description = "PHP-Nuke Titanium Blog Module";
 
 show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
 ?>

@@ -46,8 +46,8 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 	if (isset($topicimage))
 	{ 
 	   //facebook page image
-       $facebook_ogimage_normal = "<meta property=\"og:image\" content=\"".HTTP."images/topics/$topicimage\" />\n";
-	   $facebook_ogimage = "<meta property=\"og:image:secure_url\" content=\"".HTTPS."images/topics/$topicimage\" />\n";
+       $facebook_ogimage_normal = "<meta property=\"og:image\" content=\"".HTTP."images/Blog_Topics/$topicimage\" />\n";
+	   $facebook_ogimage = "<meta property=\"og:image:secure_url\" content=\"".HTTPS."images/Blog_Topics/$topicimage\" />\n";
        
 	   $facebookimagetype = "<meta property=\"og:image:type\" content=\"image/png\" />\n";
        $facebook_ogimage_width = "<meta property=\"og:image:width\" content=\"200\" />\n";
@@ -77,7 +77,7 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 	    $facebook_ogdescription = "<meta property=\"og:description\" content=\"¬ $top ⌐\" />\n";
     
 	   //facebook page image
-	    $facebook_ogimage = "<meta property=\"og:image\" content=\"".HTTPS."images/topics/$topicimage\" />\n";
+	    $facebook_ogimage = "<meta property=\"og:image\" content=\"".HTTPS."images/Blog_Topics/$topicimage\" />\n";
 	} 
 	else 
 	if ($file == 'article' && isset($sid) && is_numeric($sid))
@@ -102,7 +102,7 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
             $facebook_ogdescription = "<meta property=\"og:description\" content=\"$hometext\" />\n";
 
             //facebook page image
-            $facebook_ogimage = "<meta property=\"og:image\" content=\"".HTTPS."images/topics/$topicimage\" />\n";
+            $facebook_ogimage = "<meta property=\"og:image\" content=\"".HTTPS."images/Blog_Topics/$topicimage\" />\n";
         } 
 		else 
 		{
@@ -133,7 +133,7 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 	  $facebook_ogdescription = "<meta property=\"og:description\" content=\"Current $name Topic ¬ $topictext ⌐\" />\n";
 
       //facebook page image
-      $facebook_ogimage = "<meta property=\"og:image\" content=\"".HTTPS."images/topics/$topicimage\" />\n";
+      $facebook_ogimage = "<meta property=\"og:image\" content=\"".HTTPS."images/Blog_Topics/$topicimage\" />\n";
 	}
     else 
 	if ($file == 'categories' && isset($catid) && is_numeric($catid))

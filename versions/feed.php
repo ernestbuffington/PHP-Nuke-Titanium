@@ -5,12 +5,22 @@
 <title>Live Feed from PHP-Nuke Titanium Hub</title>
 </head>
 <body> 
-<strong>AUGUST 2019 - Ernest Buffington</strong>
+<strong>AUGUST 2019 - Ernest Buffington</strong> 
 <hr>
+<strong>Block block-Portal_Menu.php updated to v5.01 - for PHP 7.3.6 - Aug 28, 2019 </strong><br /> 
+<strong>Added back Blogs Configuration Admin Function - for PHP 7.3.6 - Aug 27, 2019 </strong><br /> 
+<strong>Added back Blogs Submission Admin Function - for PHP 7.3.6 - Aug 27, 2019 </strong><br />
+<strong>Created Seperate Blogs Last 100 Admin Function - for PHP 7.3.6 - Aug 27, 2019 </strong><br />
+<strong>Created Seperate Blogs Programmed Admin Function - for PHP 7.3.6 - Aug 27, 2019 </strong><br />
 <strong>We had to 86 the Shout_Box Module - Broken in PHP 7.3.6 - Aug 26, 2019 </strong><br />
-<strong>Redesigned the Top Module (now only supports top 10 news)- Aug 26, 2019 </strong><br />
-<strong>Redesigned the Blog_Archive Module - Aug 26, 2019 </strong><br />
-<strong>Redesigned the Topics Module - Aug 26, 2019 </strong><br />
+<strong>We had to 86 the Submit_News Module - Aug 26, 2019 </strong><br />
+<strong>We had to 86 the Top Module - Aug 26, 2019 </strong><br />
+<strong>We had to 86 the Sories_Archive Module - Aug 26, 2019 </strong><br />
+<strong>We had to 86 the Topics Module - Aug 26, 2019 </strong><br />
+<strong>Created Blog_Submit Module - Aug 26, 2019 </strong><br />
+<strong>Created Blog_Top Module (now only supports top 10 Blogs)- Aug 26, 2019 </strong><br />
+<strong>Created Blog_Archive Module - Aug 26, 2019 </strong><br />
+<strong>Created Blog_Topics Module - Aug 26, 2019 </strong><br />
 <strong>Updated Aracade Templates for Titanium Theme - Aug 25, 2019 </strong><br />
 <strong>Updated Aracade Templates for CarbinFiber Blue Skulls Theme - Aug 25, 2019 </strong><br />
 <strong>Updated Aracade Templates for CarbinFiber Red Flames Theme - Aug 25, 2019 </strong><br />

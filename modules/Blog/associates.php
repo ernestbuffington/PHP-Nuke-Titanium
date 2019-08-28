@@ -14,41 +14,55 @@
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
-/*         Additional security & Abstraction layer conversion           */
-/*                           2003 chatserv                              */
-/*      http://www.nukefixes.com -- http://www.nukeresources.com        */
+/* Titanium Blog                                                        */
+/* By: The 86it Developers Network                                      */
+/* https://hub.86it.us                                                  */
+/* Copyright (c) 2019 Ernest Buffington                                 */
 /************************************************************************/
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
+-=[Mod]=-
+      Advanced Username Color                  v1.0.5       07/29/2005
+      Blog BBCodes                             v1.0.0       08/19/2005
+      Display Topic Icon                       v1.0.0       06/27/2005
+      Display Writes                           v1.0.0       10/14/2005
+	  Titanium Patched                         v3.0.0       08/26/2019
  ************************************************************************/
+if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
-if (!defined('MODULE_FILE')) {
-   die('You can\'t access this file directly...');
-}
 $module_name = basename(dirname(__FILE__));
+
 get_lang($module_name);
+
 $sid = intval($sid);
+
 $query = $db->sql_query("SELECT associated FROM ".$prefix."_stories WHERE sid='$sid'");
+
 list($associated) = $db->sql_fetchrow($query);
+
 $db->sql_freeresult($query);
 
-if (!empty($associated)) {
+if (!empty($associated)) 
+{
     OpenTable();
-    echo "<center><strong>"._ASSOTOPIC."</strong><br /><br />";
-     $asso_t = explode("-",$associated);
-    for ($i=0; $i<count($asso_t); $i++) {
-    if (!empty($asso_t[$i])) {
+    echo "<div align=\"center\"><strong>"._ASSOTOPIC."</strong><br /><br />";
+    
+	$asso_t = explode("-",$associated);
+    
+	for ($i=0; $i<count($asso_t); $i++) 
+	{
+      if (!empty($asso_t[$i])) 
+	  {
         $query = $db->sql_query("SELECT topicimage, topictext from ".$prefix."_topics WHERE topicid='".$asso_t[$i]."'");
-        list($topicimage, $topictext) = $db->sql_fetchrow($query);
-        $db->sql_freeresult($query);
-        echo "<a href=\"modules.php?name=$module_name&new_topic=$asso_t[$i]\"><img src=\"".$tipath.$topicimage."\" border=\"0\" hspace=\"10\" alt=\"".$topictext."\" title=\"".$topictext."\"></a>";
+	    list($topicimage, $topictext) = $db->sql_fetchrow($query);
+	    $db->sql_freeresult($query);
+	    echo "<a href=\"modules.php?name=$module_name&new_topic=$asso_t[$i]\"><img src=\"".$tipath.$topicimage."\" border=\"0\" hspace=\"10\" alt=\"".$topictext."\" title=\"".$topictext."\"></a>";
+      }
     }
-    }
-    echo "</center>";
+    echo "</div>";
     CloseTable();
-    echo "<br />";
+    //echo "<br />";
 }
-
 ?>

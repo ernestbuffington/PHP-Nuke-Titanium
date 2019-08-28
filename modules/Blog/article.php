@@ -14,62 +14,84 @@
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
-/*         Additional security & Abstraction layer conversion           */
-/*                           2003 chatserv                              */
-/*      http://www.nukefixes.com -- http://www.nukeresources.com        */
+/* Titanium Blog                                                        */
+/* By: The 86it Developers Network                                      */
+/* https://hub.86it.us                                                  */
+/* Copyright (c) 2019 Ernest Buffington                                 */
 /************************************************************************/
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
-      Display Topic Icon                       v1.0.0       06/27/2005
 -=[Mod]=-
       Advanced Username Color                  v1.0.5       07/29/2005
       Blog BBCodes                             v1.0.0       08/19/2005
+      Display Topic Icon                       v1.0.0       06/27/2005
+      Display Writes                           v1.0.0       10/14/2005
+	  Titanium Patched                         v3.0.0       08/26/2019
  ************************************************************************/
-
-if (!defined('MODULE_FILE')) {
-   die('You can\'t access this file directly...');
-}
+if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
 global $cookie, $userinfo, $theme_name;
 
 $optionbox = "";
+
 $module_name = basename(dirname(__FILE__));
+
 get_lang($module_name);
 
 // we only show the left blocks, else the page gets messed up
 $showblocks = 1;
 
-if (isset($sid)) { $sid = intval($sid); } else { $sid = ""; }
+if (isset($sid)) 
+$sid = intval($sid); 
+else 
+$sid = ""; 
 
-if (stristr($_SERVER['REQUEST_URI'],"mainfile")) {
-    redirect("modules.php?name=$module_name&file=article&sid=$sid");
-} elseif (empty($sid) && !isset($tid)) {
-    redirect("index.php");
+if (stristr($_SERVER['REQUEST_URI'],"mainfile")) 
+redirect("modules.php?name=$module_name&file=article&sid=$sid");
+else
+if (empty($sid) && !isset($tid)) 
+redirect("index.php");
+
+if(is_user()) 
+{
+    if(!isset($mode)) 
+	$mode = $userinfo['umode']; 
+    
+	if(!isset($order)) 
+	$order = $userinfo['uorder']; 
+    
+	if(!isset($thold)) 
+	$thold = $userinfo['thold']; 
+    
+	$db->sql_query("UPDATE ".$user_prefix."_users SET umode='$mode', uorder='$order', thold='$thold' where user_id=".intval($cookie[0]));
 }
 
-if(is_user()) {
-    if(!isset($mode)) { $mode = $userinfo['umode']; }
-    if(!isset($order)) { $order = $userinfo['uorder']; }
-    if(!isset($thold)) { $thold = $userinfo['thold']; }
-    $db->sql_query("UPDATE ".$user_prefix."_users SET umode='$mode', uorder='$order', thold='$thold' where user_id=".intval($cookie[0]));
-}
-
-if ($op == "Reply") {
+if ($op == "Reply") 
+{
     $display = "";
-    if(isset($mode)) { $display .= "&mode=".$mode; }
-    if(isset($order)) { $display .= "&order=".$order; }
-    if(isset($thold)) { $display .= "&thold=".$thold; }
-    redirect("modules.php?name=$module_name&file=comments&op=Reply&pid=0&sid=".$sid.$display);
+    
+	if(isset($mode)) 
+	$display .= "&mode=".$mode; 
+    
+	if(isset($order)) 
+	$display .= "&order=".$order; 
+    
+	if(isset($thold)) 
+	$display .= "&thold=".$thold; 
+    
+	redirect("modules.php?name=$module_name&file=comments&op=Reply&pid=0&sid=".$sid.$display);
 }
 
 $result = $db->sql_query("select catid, aid, time, title, counter, hometext, bodytext, topic, informant, notes, acomm, haspoll, pollID, score, ratings, ticon FROM ".$prefix."_stories where sid='$sid'");
-//Causes trouble, has to be fixed
+
+//Causes trouble, has to be fixed - So you say , explain next time numb nut! Also when you comment use your name or e-mail
 $numrows = $db->sql_numrows($result);
-if (!empty($sid) && $numrows != 1) {
-   redirect("index.php");
-}
+
+if (!empty($sid) && $numrows != 1) 
+redirect("index.php");
+
 $row = $db->sql_fetchrow($result);
 $db->sql_freeresult($result);
 $aaid = stripslashes($row['aid']);
@@ -77,16 +99,18 @@ $catid = intval($row["catid"]);
 $time = $row["time"];
 $title = stripslashes(check_html($row["title"], "nohtml"));
 $counter = $row["counter"];
+
 /*****[BEGIN]******************************************
  [ Mod:     Blog BBCodes                       v1.0.0 ]
  ******************************************************/
 $hometext = decode_bbcode(set_smilies(stripslashes($row["hometext"])), 1, true);
 $bodytext = decode_bbcode(set_smilies(stripslashes($row["bodytext"])), 1, true);
-$hometext = evo_img_tag_to_resize($hometext);
-$bodytext = evo_img_tag_to_resize($bodytext);
 /*****[END]********************************************
  [ Mod:     Blog BBCodes                       v1.0.0 ]
  ******************************************************/
+$hometext = evo_img_tag_to_resize($hometext);
+$bodytext = evo_img_tag_to_resize($bodytext);
+
 $topic = intval($row["topic"]);
 $informant = stripslashes($row["informant"]);
 $notes = stripslashes($row["notes"]);
@@ -95,50 +119,42 @@ $haspoll = intval($row["haspoll"]);
 $pollID = intval($row["pollID"]);
 $score = intval($row["score"]);
 $ratings = intval($row["ratings"]);
-/*****[BEGIN]******************************************
- [ Mod:    Display Topic Icon                  v1.0.0 ]
- ******************************************************/
 $topic_icon = intval($row["ticon"]);
-/*****[END]********************************************
- [ Mod:    Display Topic Icon                  v1.0.0 ]
- ******************************************************/
 
-if (empty($aaid)) {
-    redirect("modules.php?name=".$module_name);
-}
+if (empty($aaid)) 
+redirect("modules.php?name=".$module_name);
 
 $db->sql_query("UPDATE ".$prefix."_stories SET counter=counter+1 where sid='$sid'");
 
 $artpage = 1;
+
 $pagetitle = "- $title";
+
 include(NUKE_BASE_DIR."header.php");
+
 $artpage = 0;
 
 formatTimestamp($time);
+
 $title = stripslashes(check_html($title, "nohtml"));
 $counter = stripslashes($counter);
 $hometext = stripslashes($hometext);
 $bodytext = stripslashes($bodytext);
 $notes = stripslashes($notes);
 
-if (!empty($notes)) {
-    $notes = "<br /><br /><strong>"._NOTE."</strong> <i>$notes</i>";
-} else {
-    $notes = "";
-}
+if (!empty($notes)) 
+$notes = "<br /><br /><strong>"._NOTE."</strong> <i>$notes</i>";
+else 
+$notes = "";
 
-if(empty($bodytext)) {
-    $bodytext = "$hometext$notes";
-} else {
-    $bodytext = "$hometext<br /><br />$bodytext$notes";
-}
+if(empty($bodytext)) 
+$bodytext = "$hometext$notes";
+else 
+$bodytext = "$hometext<br /><br />$bodytext$notes";
 
-if(empty($informant)) {
-    $informant = $anonymous;
-}
-/*****[END]********************************************
- [ Mod:    Advanced Username Color             v1.0.5 ]
- ******************************************************/
+if(empty($informant)) 
+$informant = $anonymous;
+
 getTopics($sid);
 
 if ($catid != 0) {
@@ -147,37 +163,28 @@ if ($catid != 0) {
     $title = "<a href=\"modules.php?name=$module_name&amp;file=categories&amp;op=newindex&amp;catid=$catid\"><font class=\"storycat\">$title1</font></a>: $title";
 }
 
-/*****[BEGIN]******************************************
- [ Mod:    Display Topic Icon                  v1.0.0 ]
- ******************************************************/
-if($topic_icon == 1) {
-    $topicimage = '';
-}
-/*****[END]********************************************
- [ Mod:    Display Topic Icon                  v1.0.0 ]
- ******************************************************/
+if($topic_icon == 1)
+$topicimage = '';
 
 echo "<table width=\"100%\" ><tr><td valign=\"top\" width=\"100%\">\n";
+
 themearticle($aaid, $informant, $datetime, $title, $counter, $bodytext, $topic, $topicname, $topicimage, $topictext);
 
 include_once("modules/$module_name/associates.php");
 
-if (((empty($mode) OR ($mode != "nocomments")) OR ($acomm == 0)) OR ($articlecomm == 1)) {
-    @include_once("modules/$module_name/comments.php");
-}
+if (((empty($mode) OR ($mode != "nocomments")) OR ($acomm == 0)) OR ($articlecomm == 1)) 
+@include_once("modules/$module_name/comments.php");
 
 echo "</td><td>&nbsp;</td><td valign=\"top\">\n";
 
-
-
-if ($multilingual == 1) {
+if ($multilingual == 1) 
     $querylang = "AND (blanguage='$currentlang' OR blanguage='')";
-} else {
+else 
     $querylang = "";
-}
 
 /* Determine if the article has attached a poll */
-if ($haspoll == 1) {
+if ($haspoll == 1) 
+{
     $url = sprintf("modules.php?name=Surveys&amp;op=results&amp;pollID=%d", $pollID);
     $boxContent = "<form action=\"modules.php?name=Surveys\" method=\"post\">";
     $boxContent .= "<input type=\"hidden\" name=\"pollID\" value=\"".$pollID."\">";
@@ -188,51 +195,60 @@ if ($haspoll == 1) {
     $boxTitle = _ARTICLEPOLL;
     $boxContent .= "<span class=\"content\"><strong>$pollTitle</strong></span><br /><br />\n";
     $boxContent .= "<table  width=\"100%\">";
-    for($i = 1; $i <= 12; $i++) {
-    $result4 = $db->sql_query("SELECT pollID, optionText, optionCount, voteID FROM ".$prefix."_poll_data WHERE (pollID='$pollID') AND (voteID='$i')");
-    $row4 = $db->sql_fetchrow($result4);
-    $numrows = $db->sql_numrows($result4);
-    $db->sql_freeresult($result4);
-    if($numrows != 0) {
+
+    for($i = 1; $i <= 12; $i++) 
+	{
+      $result4 = $db->sql_query("SELECT pollID, optionText, optionCount, voteID FROM ".$prefix."_poll_data WHERE (pollID='$pollID') AND (voteID='$i')");
+      $row4 = $db->sql_fetchrow($result4);
+      $numrows = $db->sql_numrows($result4);
+      $db->sql_freeresult($result4);
+      
+	  if($numrows != 0) 
+	  {
         $optionText = $row4["optionText"];
-        if(!empty($optionText)) {
+      
+	    if(!empty($optionText)) 
         $boxContent .= "<tr><td valign=\"top\"><input type=\"radio\" name=\"voteID\" value=\"".$i."\"></td><td width=\"100%\"><span class=\"content\">$optionText</span></td></tr>\n";
-        }
+      }
     }
-    }
-    $boxContent .= "</table><br /><center><span class=\"content\"><input type=\"submit\" value=\""._VOTE."\"></span><br />";
-    for($i = 0; $i < 12; $i++) {
-    $row5 = $db->sql_fetchrow($db->sql_query("SELECT optionCount FROM ".$prefix."_poll_data WHERE (pollID='$pollID') AND (voteID='$i')"));
-    $optionCount = $row5["optionCount"];
-    $sum = (int)$sum+$optionCount;
+    $boxContent .= "</table><br /><div align=\"center\"><span class=\"content\"><input type=\"submit\" value=\""._VOTE."\"></span><br />";
+    
+	for($i = 0; $i < 12; $i++) 
+	{
+      $row5 = $db->sql_fetchrow($db->sql_query("SELECT optionCount FROM ".$prefix."_poll_data WHERE (pollID='$pollID') AND (voteID='$i')"));
+      $optionCount = $row5["optionCount"];
+      $sum = (int)$sum+$optionCount;
     }
     $boxContent .= "<span class=\"content\">[ <a href=\"modules.php?name=Surveys&amp;op=results&amp;pollID=$pollID&amp;mode=".$userinfo['umode']."&amp;order=".$userinfo['uorder']."&amp;thold=".$userinfo['thold']."\"><strong>"._RESULTS."</strong></a> | <a href=\"modules.php?name=Surveys\"><strong>"._POLLS."</strong></a> ]<br />";
 
-    if ($pollcomm) {
-    $result6 = $db->sql_query("select * from ".$prefix."_pollcomments where pollID='$pollID'");
-    $numcom = $db->sql_numrows($result6);
-    $db->sql_freeresult($result6);
-    $boxContent .= "<br />"._VOTES.": <strong>$sum</strong><br />"._PCOMMENTS." <strong>$numcom</strong>\n\n";
-    } else {
-        $boxContent .= "<br />"._VOTES." <strong>$sum</strong>\n\n";
-    }
-    $boxContent .= "</span></center></form>\n\n";
+    if ($pollcomm) 
+	{
+      $result6 = $db->sql_query("select * from ".$prefix."_pollcomments where pollID='$pollID'");
+      $numcom = $db->sql_numrows($result6);
+      $db->sql_freeresult($result6);
+      $boxContent .= "<br />"._VOTES.": <strong>$sum</strong><br />"._PCOMMENTS." <strong>$numcom</strong>\n\n";
+    } 
+	else 
+      $boxContent .= "<br />"._VOTES." <strong>$sum</strong>\n\n";
+   
+	$boxContent .= "</span></div></form>\n\n";
+
     themesidebox($boxTitle, $boxContent, "poll1");
 }
 
 $boxtitle = ""._RELATED."";
 $boxstuff = "<span class=\"content\"><br />";
 
-//$url_result = $db->sql_query("select name, url from ".$prefix."_related where tid='$topic'");
-//
-//while ($row_eight = $db->sql_fetchrow($url_result)) 
-//{
-//    $name = stripslashes($row_eight["name"]);
-//    $url = stripslashes($row_eight["url"]);
-//    $boxstuff .= "<strong><big>&middot;</big></strong>&nbsp;<a href=\"".$url."\" target=\"new\">".$name."</a><br />\n";
-//}
+$url_result = $db->sql_query("select name, url from ".$prefix."_related where tid='$topic'");
 
-//$db->sql_freeresult($url_result);
+while ($row_eight = $db->sql_fetchrow($url_result)) 
+{
+    $name = stripslashes($row_eight["name"]);
+    $url = stripslashes($row_eight["url"]);
+    $boxstuff .= "<strong><big>&middot;</big></strong>&nbsp;<a href=\"".$url."\" target=\"new\">".$name."</a><br />\n";
+}
+
+$db->sql_freeresult($url_result);
 
 $boxstuff .= "<hr noshade width=\"95%\" size=\"1\"><div align=\"center\"><strong>"._MOREABOUT."<strong><br /><a href=\"modules.php?name=Search&amp;topic=$topic\">[ $topictext ]</a><br />\n";
 $boxstuff .= "<hr noshade width=\"95%\" size=\"1\">"._NEWSBY."<br /><a href=\"modules.php?name=Search&amp;author=$aaid\">[ $aaid ]</a></div>\n";
@@ -240,16 +256,18 @@ $boxstuff .= "<hr noshade width=\"95%\" size=\"1\">"._NEWSBY."<br /><a href=\"mo
 $boxstuff .= "</span><hr noshade width=\"95%\" size=\"1\"><div align=\"center\"><span class=\"content\"><strong>Current Blog Topic<br/> ( $topictext )</strong><br />\n";
 
 global $multilingual, $currentlang;
-    if ($multilingual == 1) {
-        $querylang = "AND (alanguage='$currentlang' OR alanguage='')"; /* the OR is needed to display stories who are posted to ALL languages */
-    } else {
-        $querylang = "";
-    }
+    
+if ($multilingual == 1) 
+$querylang = "AND (alanguage='$currentlang' OR alanguage='')"; /* the OR is needed to display stories who are posted to ALL languages */
+else 
+$querylang = "";
+
 $row9 = $db->sql_fetchrow($db->sql_query("select sid, title from ".$prefix."_stories where topic='$topic' $querylang order by counter desc limit 0,1"));
 $topstory = intval($row9["sid"]);
 $ttitle = stripslashes(check_html($row9["title"], "nohtml")); 
 
 $boxstuff .= "<hr noshade width=\"95%\" size=\"1\">Blog Subject<br /><a href=\"modules.php?name=$module_name&amp;file=article&amp;sid=$topstory\">$ttitle</a></span></div><br />\n";
+
 themesidebox($boxtitle, $boxstuff, "newstopic");
 
 global $use_xtreme_voting;
@@ -276,7 +294,7 @@ if ($use_xtreme_voting == true)
   else 
   {
     $rate = 0;
-    $the_image = "</center><br />";
+    $the_image = "<br />";
   }	
 }
 else
@@ -352,8 +370,8 @@ else
 if ($use_xtreme_voting == true)
 {
 $ratetitle = ""._RATEARTICLE."";
-$ratecontent = "<center>"._AVERAGESCORE.": <strong>$rate</strong><br />"._VOTES.": <strong>$ratings</strong>$the_image";
-$ratecontent .= "<form action=\"modules.php?name=$module_name\" method=\"post\"><center>"._RATETHISARTICLE."</center><br />";
+$ratecontent = "<div align=\"center\">"._AVERAGESCORE.": <strong>$rate</strong><br />"._VOTES.": <strong>$ratings</strong>$the_image";
+$ratecontent .= "<form action=\"modules.php?name=$module_name\" method=\"post\"><center>"._RATETHISARTICLE."</div><br />";
 $ratecontent .= "<input type=\"hidden\" name=\"sid\" value=\"$sid\">";
 $ratecontent .= "<input type=\"hidden\" name=\"op\" value=\"rate_article\">";	
 }
@@ -438,14 +456,15 @@ $optiontitle = ""._OPTIONS."";
 $optionbox = "<br />";
 $optionbox .= '&nbsp;<i class="fa fa-print"></i>&nbsp;<a href="modules.php?name='.the_module().'&amp;file=print&amp;sid='.$sid.'">'._PRINTER.'</a><br />'."\n";
 $optionbox .= '&nbsp;<i class="fa fa-envelope"></i> <a href="modules.php?name='.the_module().'&amp;file=friend&amp;op=FriendSend&amp;sid='.$sid.'">'._FRIEND.'</a><br /><br />'."\n";
-if (is_mod_admin($module_name)) {
+
+if (is_mod_admin($module_name)) 
+{
     $optionbox .= '<div class="acenter">'.$customlang['global']['admin'].'<br />[ <a href="'.$admin_file.'.php?op=adminStory">'.$customlang['global']['add'].'</a> | <a href="'.$admin_file.'.php?op=EditStory&amp;sid='.$sid.'">'.$customlang['global']['edit'].'</a> | <a href="'.$admin_file.'.php?op=RemoveStory&amp;sid='.$sid.'">'.$customlang['global']['delete'].'</a> ]</div>';
 }
+
 themesidebox($optiontitle, $optionbox, "newsopt");
 
 echo "</td></tr></table>\n";
 
-
 include_once(NUKE_BASE_DIR.'footer.php');
-
 ?>

@@ -79,7 +79,7 @@ define("_ANDCOMMENTS","and all it's comments?");
 define("_CATEGORIESADMIN","Blog Categories Administration");
 define("_CATEGORYADD","Add a New Blog Category");
 define("_CATNAME","Blog Category Name");
-define("_NOARTCATEDIT","You can't edit <i>Blogs</i> Category");
+define("_NOBLOGEDIT","You can't edit <i>Blogs</i> Category");
 define("_ASELECTCATEGORY","Select Blog Category");
 define("_CATEGORYNAME","Blog Category Name");
 define("_DELETECATEGORY","Delete Blog Category");

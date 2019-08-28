@@ -14,47 +14,46 @@
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
-/*         Additional security & Abstraction layer conversion           */
-/*                           2003 chatserv                              */
-/*      http://www.nukefixes.com -- http://www.nukeresources.com        */
+/* Titanium Blog                                                        */
+/* By: The 86it Developers Network                                      */
+/* https://hub.86it.us                                                  */
+/* Copyright (c) 2019 Ernest Buffington                                 */
 /************************************************************************/
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
 -=[Mod]=-
+      Advanced Username Color                  v1.0.5       07/29/2005
       Blog BBCodes                             v1.0.0       08/19/2005
+	  Titanium Patched                         v3.0.0       08/26/2019
  ************************************************************************/
+if (!defined('MODULE_FILE')) { die('You can\'t access this file directly...'); }
 
-if (!defined('MODULE_FILE')) {
-   die('You can\'t access this file directly...');
-}
 $module_name = basename(dirname(__FILE__));
+
 get_lang($module_name);
 
-if(!isset($sid)) {
-    exit();
-}
+if(!isset($sid)) 
+exit();
 
-function PrintPage($sid) {
+function PrintPage($sid) 
+{
     global $site_logo, $nukeurl, $sitename, $datetime, $prefix, $db, $module_name;
+
     $sid = intval($sid);
     $row = $db->sql_fetchrow($db->sql_query("SELECT title, time, hometext, bodytext, topic, notes FROM ".$prefix."_stories WHERE sid='$sid'"));
     $title = stripslashes(check_html($row["title"], "nohtml"));
     $time = $row["time"];
-/*****[BEGIN]******************************************
- [ Mod:     Blog BBCodes                       v1.0.0 ]
- ******************************************************/
     $hometext = decode_bbcode(set_smilies(stripslashes($row["hometext"])), 1, true);
     $bodytext = decode_bbcode(set_smilies(stripslashes($row["bodytext"])), 1, true);
-/*****[END]********************************************
- [ Mod:     Blog BBCodes                       v1.0.0 ]
- ******************************************************/
     $topic = intval($row["topic"]);
     $notes = stripslashes($row["notes"]);
     $row2 = $db->sql_fetchrow($db->sql_query("SELECT topictext FROM ".$prefix."_topics WHERE topicid='$topic'"));
     $topictext = stripslashes($row2["topictext"]);
+
     formatTimestamp($time);
+
     echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Transitional//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd\">
         <html>
         <head>
@@ -92,5 +91,4 @@ function PrintPage($sid) {
 }
 
 PrintPage($sid);
-
 ?>
