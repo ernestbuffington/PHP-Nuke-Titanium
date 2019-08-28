@@ -70,6 +70,7 @@ define("_MIME", "text/html");
 # Define Titanium Engine Information
 define_once('NUKE_TITANIUM', '3.0.0'); 
 define_once('TITANIUM_EDITION', 'Network');
+define_once('TITANIUM_BUILD', '2034');
 define_once('TITANIUM_VERSION', NUKE_TITANIUM . ' ' . TITANIUM_EDITION);
 
 // Define Xtreme Engine Information
