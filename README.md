@@ -57,7 +57,7 @@ Public License (GPL) and is free to use, modify and redistribute.**
 
 <hr>
 <strong>AUGUST 2019 - Ernest Buffington</strong> 
-<hr>
+
 <strong>Block block-Portal_Menu.php updated to v5.01 - for PHP 7.3.6 - Aug 28, 2019 </strong><br /> 
 <strong>Added back Blogs Configuration Admin Function - for PHP 7.3.6 - Aug 27, 2019 </strong><br /> 
 <strong>Added back Blogs Submission Admin Function - for PHP 7.3.6 - Aug 27, 2019 </strong><br />
@@ -84,11 +84,11 @@ Public License (GPL) and is free to use, modify and redistribute.**
 <strong>Ported Over Titanium Theme - Aug 9, 2019 </strong><br />
 <strong>Portal Menu v5.01 is now functional in PHP 7.3.6 - Aug 8, 2019 </strong><br /><br />
 
-<strong>SEPTEMBER 2017 - Ernest Buffington</strong>
 <hr>
+<strong>SEPTEMBER 2017 - Ernest Buffington</strong>
+
 <strong>New PHP-Nuke Titanium GitHub Repsoitory setup - Sept 4, 2017 </strong><br />
 <a href="https://github.com/ernestbuffington/PHP-Nuke-Titanium" target="_blank">https://github.com/ernestbuffington/PHP-Nuke-Titanium</a>
-<hr>
 
 ## License
 [![FOSSA Status](https://app.fossa.io/api/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium.svg?type=large)](https://app.fossa.io/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium?ref=badge_large)
