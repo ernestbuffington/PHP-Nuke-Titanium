@@ -82,7 +82,7 @@ Public License (GPL) and is free to use, modify and redistribute.**
 <strong>Finished CarbinFiber Red Flames Theme - Aug 9, 2019 </strong><br />
 <strong>Finished CarbinFiber Blue Skulls Theme - Aug 9, 2019 </strong><br />
 <strong>Ported Over Titanium Theme - Aug 9, 2019 </strong><br />
-<strong>Portal Menu v5.01 is now functional in PHP 7.3.6 - Aug 8, 2019 </strong><br /><br />
+<strong>Portal Menu v5.01 is now functional in PHP 7.3.0 - Aug 8, 2019 </strong><br /><br />
 
 <hr>
 <strong>SEPTEMBER 2017 - Ernest Buffington</strong>
