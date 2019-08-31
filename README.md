@@ -8,10 +8,10 @@ Public License (GPL) and is free to use, modify and redistribute.**
 
 **BLOG MODULES**<br />
 **1.** **Blog** : Main Blog<br />
-**4.** **Blog Archives** : Blogs Archive<br />
-**5.** **Blog Submit** : Submit New Blog<br />
-**3.** **Blog_Top** : Top 10 Blogs<br />
-**2.** **Blog_Topics** : Blog Topics<br />
+**2.** **Blog Archives** : Blogs Archive<br />
+**3.** **Blog Submit** : Submit New Blog<br />
+**4.** **Blog_Top** : Top 10 Blogs<br />
+**5.** **Blog_Topics** : Blog Topics<br />
 
 
 
