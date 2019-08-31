@@ -4,7 +4,7 @@
 **PHP-Nuke Titanium is a free open source network content management system (CMS) designed to run on The 86it Developers Network, written in PHP v7.3.6. It uses modular programming architecture that allows users to customize, update and theme 
 their websites. It can use a centralized user database chained to the 86it networks or a private user database. It is released under the terms of the GNU General Public License (GPL) and is free to use, modify and redistribute.**
 
-**BLOG MODULES**<br />
+**<font color=red>BLOG MODULES</font>**<br />
 **1.** **Blog** : Main Blog<br />
 **2.** **Blog Archives** : Blogs Archive<br />
 **3.** **Blog Submit** : Submit New Blog<br />
