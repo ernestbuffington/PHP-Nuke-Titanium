@@ -1,4 +1,5 @@
 ## Welcome to PHP-Nuke Titanium v3.0.0
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/500b0b21a4ba4b50977d1adc8791f1d1)](https://app.codacy.com/app/ernestbuffington/PHP-Nuke-Titanium?utm_source=github.com&utm_medium=referral&utm_content=ernestbuffington/PHP-Nuke-Titanium&utm_campaign=Badge_Grade_Settings)
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium?ref=badge_shield)
 
 **PHP-Nuke Titanium is a free open source network content management system (CMS) designed to run on The 86it Developers Network and The 
