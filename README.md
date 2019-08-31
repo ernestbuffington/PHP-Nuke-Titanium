@@ -5,6 +5,8 @@
 Scorpion Network, written for PHP v7.3.6. It uses modular programming architecture that allows users to customize, update and theme 
 their websites. It uses a centralized user database chained to both networks and It is released under the terms of the GNU General 
 Public License (GPL) and is free to use, modify and redistribute.**
+
+
 **1.** Blog
 **2.** Blog Topics
 **3.** Top 10 Blogs
