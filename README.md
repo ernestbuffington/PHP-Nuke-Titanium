@@ -1,7 +1,7 @@
 ## Welcome to PHP-Nuke Titanium v3.0.0 BUILD : 2034
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium?ref=badge_shield) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f73a87583b47477391011a826a7bd7e8)](https://www.codacy.com/app/ernestbuffington/PHP-Nuke-Titanium?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ernestbuffington/PHP-Nuke-Titanium&amp;utm_campaign=Badge_Grade)
 
-**Special Thanks to The Xtreme Team as We started with the Nuke-Evolution Xtreme v2.09e core Engine**<br />
+**Special Thanks to The Nuke-Evolution Xtreme Team as We started with the Nuke-Evolution Xtreme v2.09e core Engine**<br />
 **1.Lonestar**<br />
 **2.CoRpSe**<br />
 **3.TheMortal**<br />
