@@ -1,6 +1,6 @@
 <?php
 
-// eXtreme Styles mod cache. Generated on Tue, 20 Aug 2019 21:08:14 +0000 (time=1566335294)
+// eXtreme Styles mod cache. Generated on Fri, 30 Aug 2019 21:51:24 +0000 (time=1567201884)
 
 ?><div style="text-align: center">		
 	<?php if ($this->vars['REPORT_LINK']) {  ?>
@@ -26,6 +26,6 @@ Powered by <a href="http://www.phpbb.com/" target="_blank">phpBB</a> &copy; 2001
 <?php if ($this->vars['TRANSLATION_INFO']) {  ?>
 <br />
 <?php } ?>
-CarbinFiber Red Flames Designed By: TheGhost &copy; 2019 <a class="tooltip-html copyright" href="https://www.realmdesignz.com/" target="_blank" title="CarbinFiber Red Flames Designed By: TheGhost<br />Copyright &copy 2019 The 86it Developers Network<br />All Rights Reserved">The 86it Developers Network</a>
+CarbinFiber Red Flames Designed By: TheGhost &copy; 2019 <a class="tooltip-html copyright" href="https://hub.86it.us/" target="_blank" title="CarbinFiber Red Flames Designed By: TheGhost<br />Copyright &copy 2019 The 86it Developers Network<br />All Rights Reserved">The 86it Developers Network</a>
 
 </div>

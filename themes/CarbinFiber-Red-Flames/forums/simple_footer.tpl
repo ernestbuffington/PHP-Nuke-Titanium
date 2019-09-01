@@ -11,5 +11,5 @@
     The phpBB Group : 2019
 // -->
 Powered by <a href="http://www.phpbb.com/" target="_blank" class="copyright">phpBB</a> &copy; 2001, 2019 phpBB Group<br />{TRANSLATION_INFO}<br />
-CarbinFiber Red Flames Designed By: TheGhost &copy; 2019 <a class="tooltip-html copyright" href="https://www.realmdesignz.com/" target="_blank" title="CarbinFiber Red Flames Designed By: TheGhost<br />Copyright &copy 2019 The 86it Developers Network<br />All Rights Reserved">The 86it Developers Network</a>
+CarbinFiber Red Flames Designed By: TheGhost &copy; 2019 <a class="tooltip-html copyright" href="https://hub.86it.us/" target="_blank" title="CarbinFiber Red Flames Designed By: TheGhost<br />Copyright &copy 2019 The 86it Developers Network<br />All Rights Reserved">The 86it Developers Network</a>
 </div>

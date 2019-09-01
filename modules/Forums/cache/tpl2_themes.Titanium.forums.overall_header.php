@@ -1,6 +1,6 @@
 <?php
 
-// eXtreme Styles mod cache. Generated on Fri, 16 Aug 2019 03:22:10 +0000 (time=1565925730)
+// eXtreme Styles mod cache. Generated on Tue, 27 Aug 2019 21:36:36 +0000 (time=1566941796)
 
 ?><?php echo isset($this->vars['META']) ? $this->vars['META'] : $this->lang('META'); ?>
 
@@ -204,9 +204,9 @@ function checkSearch()
 <form name="search_block" method="post" action="<?php echo isset($this->vars['U_SEARCH']) ? $this->vars['U_SEARCH'] : $this->lang('U_SEARCH'); ?>" onsubmit="return checkSearch()">
 <input type="hidden" name="search_fields" value="all" />
 <input type="hidden" name="show_results" value="topics" />
-<table border="0" cellpadding="4" cellspacing="1" class="center col-12">
+<table border="0" cellpadding="4" cellspacing="1" class="wtf col-12">
   <tr>
-    <td><?php echo isset($switch_quick_search_item['L_QUICK_SEARCH_FOR']) ? $switch_quick_search_item['L_QUICK_SEARCH_FOR'] : ''; ?> <input class="post" type="text" name="search_keywords" size="15" /> <?php echo isset($switch_quick_search_item['L_QUICK_SEARCH_AT']) ? $switch_quick_search_item['L_QUICK_SEARCH_AT'] : ''; ?> 
+    <td align="center"><?php echo isset($switch_quick_search_item['L_QUICK_SEARCH_FOR']) ? $switch_quick_search_item['L_QUICK_SEARCH_FOR'] : ''; ?> <input class="post" type="text" name="search_keywords" size="15" /> <?php echo isset($switch_quick_search_item['L_QUICK_SEARCH_AT']) ? $switch_quick_search_item['L_QUICK_SEARCH_AT'] : ''; ?> 
         <select name="site_search">
             <?php echo isset($switch_quick_search_item['SEARCHLIST']) ? $switch_quick_search_item['SEARCHLIST'] : ''; ?>
         </select>

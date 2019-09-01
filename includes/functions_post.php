@@ -71,9 +71,17 @@ function prepare_message($message, $html_on, $bbcode_on, $smile_on, $bbcode_uid 
 
         if ($html_on)
         {
-         		// If HTML is on, we try to make it safe
-         		// This approach is quite agressive and anything that does not look like a valid tag
-         		// is going to get converted to HTML entities
+           # Ernest Buffington
+           if(($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == USER))
+           {
+            //do nothing
+           }
+           else
+             {
+
+         		# If HTML is on, we try to make it safe
+         		# This approach is quite agressive and anything that does not look like a valid tag
+         		# is going to get converted to HTML entities
          		$message = stripslashes($message);
          		$html_match = '#<[^\w<]*(\w+)((?:"[^"]*"|\'[^\']*\'|[^<>\'"])+)?>#';
          		$matches = array();
@@ -91,164 +99,153 @@ function prepare_message($message, $html_on, $bbcode_on, $smile_on, $bbcode_uid 
 
         		$message = addslashes($message);
         		$message = str_replace('&quot;', '\&quot;', $message);
+			 }
+			 # Ernest Buffington
         }
         else
         {
-/*****[BEGIN]******************************************
- [ Mod:     adminHtml                          v1.0.3 ]
- ******************************************************/
-        if($userdata['user_level'] == ADMIN)
-        {
+		   # Ernest Buffington
+           if(($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == USER))
+           {
             //do nothing
-        }
-        else
-        {
-/*****[END]********************************************
- [ Mod:     adminHtml                          v1.0.3 ]
- ******************************************************/
+           }
+           else
+             {
                 $message = preg_replace($html_entities_match, $html_entities_replace, $message);
-/*****[BEGIN]******************************************
- [ Mod:     adminHtml                          v1.0.3 ]
- ******************************************************/
-        }
-/*****[END]********************************************
- [ Mod:     adminHtml                          v1.0.3 ]
- ******************************************************/
+             }
+		  # Ernest Buffington
+		  	 
         }
 
         if($bbcode_on && $bbcode_uid != '')
         {
                 $message = bbencode_first_pass($message, $bbcode_uid);
         }
-/*****[BEGIN]******************************************
- [ Mod:     Allow multiple spaces in posts     v1.0.0 ]
- ******************************************************/
-        $message = replace_double_spaces($message);
-/*****[END]********************************************
- [ Mod:     Allow multiple spaces in posts     v1.0.0 ]
- ******************************************************/
+        
+		$message = replace_double_spaces($message);
 
         return $message;
 }
 
 function unprepare_message($message)
 {
-        global $unhtml_specialchars_match, $unhtml_specialchars_replace;
+    global $unhtml_specialchars_match, $unhtml_specialchars_replace;
 
-        return preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, $message);
+    # Ernest Buffington
+    if(($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == USER))
+    {
+        return $message;
+    }
+    else
+    {
+	   return preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, $message);		 
+	}
+    # Ernest Buffington
+        
 }
 
-//
-// Prepare a message for posting
-//
-/*****[BEGIN]******************************************
- [ Mod:    Must first vote to see results      v1.0.0 ]
- ******************************************************/
+# Prepare a message for posting
 function prepare_post(&$mode, &$post_data, &$bbcode_on, &$html_on, &$smilies_on, &$error_msg, &$username, &$bbcode_uid, &$subject, &$message, &$poll_title, &$poll_options, &$poll_length, &$poll_view_toggle)
-/*****[END]********************************************
- [ Mod:    Must first vote to see results      v1.0.0 ]
- ******************************************************/
 {
-        global $board_config, $userdata, $lang, $phpEx, $phpbb_root_path;
+   global $board_config, $userdata, $lang, $phpEx, $phpbb_root_path;
 
-        // Check username
-        if (!empty($username))
-        {
+   # Check username
+   if (!empty($username))
+   {
         $username = phpbb_clean_username($username);
 
-                if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && $username != $userdata['username']))
-                {
-                        include("includes/functions_validate.php");
-
-                        $result = validate_username($username);
-                        if ($result['error'])
-                        {
-                                $error_msg .= (!empty($error_msg)) ? '<br />' . $result['error_msg'] : $result['error_msg'];
-                        }
-                }
-                else
-                {
-                        $username = '';
-                }
-        }
-
-        // Check subject
-/*****[BEGIN]******************************************
- [ Mod:    Limit smilies per post              v1.0.2 ]
- ******************************************************/
-        if (substr_count(smilies_pass($message), '<img src="'. $board_config['smilies_path']) > $board_config['max_smilies'] )
+        if (!$userdata['session_logged_in'] || ($userdata['session_logged_in'] && $username != $userdata['username']))
         {
-            $to_much_smilies = substr_count(smilies_pass($message), '<img src="'. $board_config['smilies_path']) - $board_config['max_smilies'];
-            $to_many_smilies = sprintf($lang['Max_smilies_per_post'], $board_config['max_smilies'], $to_much_smilies);
-            $error_msg .= ( !empty($error_msg) ) ? '<br />' . $to_many_smilies : $to_many_smilies;
-        }
-/*****[END]********************************************
- [ Mod:    Limit smilies per post              v1.0.2 ]
- ******************************************************/
-        if (!empty($subject))
-        {
-                $subject = htmlspecialchars(trim($subject));
-        }
-        else if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
-        {
-                $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_subject'] : $lang['Empty_subject'];
-        }
+           include("includes/functions_validate.php");
 
-        // Check message
-        if (!empty($message))
-        {
-                $bbcode_uid = ($bbcode_on) ? make_bbcode_uid() : '';
-                $message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
-        }
-        else if ($mode != 'delete' && $mode != 'poll_delete')
-        {
-                $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_message'] : $lang['Empty_message'];
-        }
+           $result = validate_username($username);
+   
+           if ($result['error'])
+           {
+             $error_msg .= (!empty($error_msg)) ? '<br />' . $result['error_msg'] : $result['error_msg'];
+           }
+       }
+       else
+       {
+         $username = '';
+       }
+   }
 
-        //
-        // Handle poll stuff
-        //
-        if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
-        {
-                $poll_length = (isset($poll_length)) ? max(0, intval($poll_length)) : 0;
+   # Check subject
+   if(substr_count(smilies_pass($message), '<img src="'. $board_config['smilies_path']) > $board_config['max_smilies'] )
+   {
+      $to_much_smilies = substr_count(smilies_pass($message), '<img src="'. $board_config['smilies_path']) - $board_config['max_smilies'];
+      $to_many_smilies = sprintf($lang['Max_smilies_per_post'], $board_config['max_smilies'], $to_much_smilies);
+      $error_msg .= ( !empty($error_msg) ) ? '<br />' . $to_many_smilies : $to_many_smilies;
+   }
 
-                if (!empty($poll_title))
-                {
-                        $poll_title = htmlspecialchars(trim($poll_title));
-                }
+   if(!empty($subject))
+   {
+     $subject = htmlspecialchars(trim($subject));
+   }
+   else 
+   if($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
+   {
+     $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_subject'] : $lang['Empty_subject'];
+   }
 
-                if(!empty($poll_options))
-                {
-                        $temp_option_text = array();
-                        while(list($option_id, $option_text) = @each($poll_options))
-                        {
-                                $option_text = trim($option_text);
-                                if (!empty($option_text))
-                                {
-                                        $temp_option_text[intval($option_id)] = htmlspecialchars($option_text);
-                                }
-                        }
-                        $option_text = $temp_option_text;
+   # Check message
+   if(!empty($message))
+   {
+     $bbcode_uid = ($bbcode_on) ? make_bbcode_uid() : '';
+     $message = prepare_message(trim($message), $html_on, $bbcode_on, $smilies_on, $bbcode_uid);
+   }
+   else 
+   if ($mode != 'delete' && $mode != 'poll_delete')
+   {
+     $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_message'] : $lang['Empty_message'];
+   }
 
-                        if (count($poll_options) < 2)
-                        {
-                                $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['To_few_poll_options'] : $lang['To_few_poll_options'];
-                        }
-                        else if (count($poll_options) > $board_config['max_poll_options'])
-                        {
-                                $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['To_many_poll_options'] : $lang['To_many_poll_options'];
-                        }
-                        else if ($poll_title == '')
-                        {
-                                $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_poll_title'] : $lang['Empty_poll_title'];
-                        }
-                }
-        }
+   # Handle poll stuff
+   if ($mode == 'newtopic' || ($mode == 'editpost' && $post_data['first_post']))
+   {
+     $poll_length = (isset($poll_length)) ? max(0, intval($poll_length)) : 0;
 
-        return;
+     if(!empty($poll_title))
+     {
+        $poll_title = htmlspecialchars(trim($poll_title));
+     }
+
+     if(!empty($poll_options))
+     {
+       $temp_option_text = array();
+  
+         while(list($option_id, $option_text) = @each($poll_options))
+         {
+           $option_text = trim($option_text);
+  
+           if (!empty($option_text))
+           {
+              $temp_option_text[intval($option_id)] = htmlspecialchars($option_text);
+           }
+     }
+
+     $option_text = $temp_option_text;
+
+     if(count($poll_options) < 2)
+     {
+       $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['To_few_poll_options'] : $lang['To_few_poll_options'];
+     }
+     else 
+	 if(count($poll_options) > $board_config['max_poll_options'])
+     {
+       $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['To_many_poll_options'] : $lang['To_many_poll_options'];
+     }
+     else 
+	 if($poll_title == '')
+     {
+       $error_msg .= (!empty($error_msg)) ? '<br />' . $lang['Empty_poll_title'] : $lang['Empty_poll_title'];
+     }
+   }
+  }
+ return;
 }
 
-//
 // Post a new topic/reply/poll or edit existing post/poll
 //
 /*****[BEGIN]******************************************
@@ -1228,5 +1225,4 @@ function clean_html($tag)
 		return htmlspecialchars('<' .   $tag[1] . '>');
 	}
 }
-
 ?>

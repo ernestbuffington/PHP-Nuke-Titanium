@@ -16,6 +16,7 @@
 * WOM will now run when your page loads and run all of the
 * functions you have added using womAdd()
 *************************************************************/
+var CKEDITOR_BASEPATH = 'includes/wysiwyg/ckeditor/';
 /*************************************************************
 * The womOn() function will set the window.onload function to
 * be womGo() which will run all of your window.onload

@@ -1263,7 +1263,10 @@ echo "<!--  END Titanium Portal Menu Javascript Functions v5.01 -->\n\n\n\n";
 						}
 					}
 					
-					if(strstr(addcslashes("$urldumodule$", '?&'), $requesturi)) 
+					# Ernest Buffington Fix - 08/23/2019
+					# was strstr now using a case sensitive check so needle problems do not occur 
+					# if(strstr(addcslashes("$urldumodule$", '?&'), $requesturi)) <-- OLD CODE
+					if(strcasecmp(addcslashes("$urldumodule$", '?&'), $requesturi)) 
 					{ 
 						$categorieouverte=$som_groupmenu;
 						$keyouvert=$keyinthisgroup;

@@ -123,7 +123,28 @@ function head()
 	  echo "</style>\n";                                                      ##
 	}                                                                         ##
     ###########################################################################
-    include_once(NUKE_INCLUDE_DIR.'javascript.php');                          ######## Load local javascript File
+    
+	    echo "\n\n<!-- START uploadcare -->\n\n";
+		echo "<script type=\"text/javascript\">\n";
+		echo "UPLOADCARE_PUBLIC_KEY = 'df691884c0a749427aa1';\n";
+		echo "UPLOADCARE_TABS = 'file camera url facebook gdrive gphotos dropbox instagram evernote flickr onedrive box vk huddle';\n";
+		echo "UPLOADCARE_EFFECTS = 'crop,rotate,mirror,flip,enhance,sharp,blur,grayscale,invert';\n";
+		echo "UPLOADCARE_PREVIEW_STEP = true;\n";
+		echo "UPLOADCARE_CLEARABLE = true;\n";
+		echo "</script>\n";
+
+        echo "<script src=\"https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js\"></script>\n";
+		echo "<script src=\"https://ucarecdn.com/libs/widget-tab-effects/1.x/uploadcare.tab-effects.js\"></script>\n";
+        
+		echo "<script type=\"text/javascript\">\n";
+        echo "uploadcare.registerTab('preview', uploadcareTabEffects)\n";
+		echo "</script>\n";
+		echo "\n\n<!-- END uploadcare -->\n\n";
+
+	
+	
+	
+	include_once(NUKE_INCLUDE_DIR.'javascript.php');                          ######## Load local javascript File
     ###########################################################################
 	if (@file_exists(TITANIUM_CLASSES_DIR . 'class.browsers.php')) #      Added by Ernest Buffington
 	    include(TITANIUM_CLASSES_DIR . 'class.browsers.php');      ###### Load Browser class - used for checking your browser types

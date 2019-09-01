@@ -1908,7 +1908,7 @@ if( $refresh || isset($HTTP_POST_VARS['del_poll_option']) || $error_msg != '' )
                 {
                         if( $user_sig != '' || !$userdata['user_allowhtml'] )
                         {
-                                $user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', '&lt;\2&gt;', $user_sig);
+                           $user_sig = preg_replace('#(<)([\/]?.*?)(>)#is', '&lt;\2&gt;', $user_sig);
                         }
                 }
 
@@ -2137,9 +2137,21 @@ if(!$db->sql_numrows($resultat)) {$message = hide_in_quote($message);}
                         $message = preg_replace('/\:(([a-z0-9]:)?)' . $post_info['bbcode_uid'] . '/s', '', $message);
                 }
 
-                $message = str_replace('<', '&lt;', $message);
-                $message = str_replace('>', '&gt;', $message);
-                $message = str_replace('<br />', "\n", $message);
+                # Ernest Buffington
+                if(($userdata['user_level'] == ADMIN) || ($userdata['user_level'] == USER))
+				{
+					
+					
+				}
+				else
+				{
+				  # Hard Coded Tag REPLACEMENT - FUCKS ALL THE EDITORS UP
+                  $message = str_replace('<', '&lt;', $message);
+                  $message = str_replace('>', '&gt;', $message);
+                  $message = str_replace('<br />', "\n", $message);
+				  # Hard Coded Tag REPLACEMENT - FUCKS ALL THE EDITORS UP
+				}
+				# Ernest Buffington
 
                 if ( $mode == 'quote' )
                 {

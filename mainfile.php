@@ -69,7 +69,7 @@ define("_MIME", "text/html");
 
 # Define Titanium Engine Information
 define_once('NUKE_TITANIUM', '3.0.0'); 
-define_once('TITANIUM_EDITION', 'Network');
+define_once('TITANIUM_EDITION', 'Hub');
 define_once('TITANIUM_BUILD', '2034');
 define_once('TITANIUM_VERSION', NUKE_TITANIUM . ' ' . TITANIUM_EDITION);
 
@@ -509,7 +509,18 @@ $sitekey = md5($_SERVER['HTTP_HOST']);
 $gfx_chk = 0;
 $tipath = 'modules/Blog/images/Blog_Topics/';
 $reasons = array('As Is', 'Offtopic', 'Flamebait', 'Troll', 'Redundant', 'Insighful', 'Interesting', 'Informative', 'Funny', 'Overrated', 'Underrated');
-$AllowableHTML = array('b'=>1, 'i'=>1, 'a'=>2, 'em'=>1, 'br'=>1, 'strong'=>1, 'blockquote'=>1, 'tt'=>1, 'li'=>1, 'ol'=>1, 'ul'=>1, 'pre'=>1);
+$AllowableHTML = array('b'=>1, 
+                       'i'=>1, 
+					   'a'=>2, 
+					   'em'=>1, 
+					   'br'=>1, 
+				   'strong'=>1, 
+			   'blockquote'=>1, 
+			           'tt'=>1, 
+					   'li'=>1, 
+					   'ol'=>1, 
+					   'ul'=>1, 
+					  'pre'=>1);
 
 $nukeconfig = load_nukeconfig();
 foreach($nukeconfig as $var => $value) {
