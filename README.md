@@ -2,9 +2,9 @@
 [![FOSSA Status](https://app.fossa.com/api/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium.svg?type=shield)](https://app.fossa.com/projects/git%2Bgithub.com%2Fernestbuffington%2FPHP-Nuke-Titanium?ref=badge_shield) [![Codacy Badge](https://api.codacy.com/project/badge/Grade/f73a87583b47477391011a826a7bd7e8)](https://www.codacy.com/app/ernestbuffington/PHP-Nuke-Titanium?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=ernestbuffington/PHP-Nuke-Titanium&amp;utm_campaign=Badge_Grade)
 
 **Special Thanks to The Xtreme Team as We started with the Nuke-Evolution Xtreme v2.09e core Engine**<br />
-**1.** Lonestar<br />
-**2.** CoRpSe<br />
-**3.** TheMortal<br />
+**1.Lonestar**<br />
+**2.CoRpSe**<br />
+**3.TheMortal**<br />
 
 **PHP-Nuke Titanium is a free open source network content management system (CMS) designed to run on The 86it Developers Network, written in PHP v7.3.6. It uses modular programming architecture that allows users to customize, update and theme 
 their websites. It can use a centralized user database chained to the 86it networks or a private user database. It is released under the terms of the GNU General Public License (GPL) and is free to use, modify and redistribute.**
