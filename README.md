@@ -21,8 +21,9 @@ their websites. It can use a centralized user database chained to the 86it netwo
 **1.** **Loan** : Loan Calculator that uses the US 30/360 Rule<br />
 **Author** : Written by ScottyBcoder (Truman Scott Buffington)
 
-
-
+**cURL Version Feed v3.0**<br />
+**1.** Uses Cookies and proper browser emulation<br />
+**Author** : Written by TheGhost (Ernest Allen Buffington)
 
 <hr>
 <strong>AUGUST 2019 - Ernest Buffington</strong> 
