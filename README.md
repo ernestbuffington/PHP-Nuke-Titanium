@@ -18,8 +18,8 @@ their websites. It can use a centralized user database chained to the 86it netwo
 **1.** **cPanel_Login** : cPanel Admin Links<br />
 
 **Loan MODULE v3.0**<br />
-**1.** **Loan** : Loan Caluclator that uses the US 30/360 Rule<br />
-                  Written by ScottyBcoder (Truman Scott Buffington)
+**1.** **Loan** : Loan Calculator that uses the US 30/360 Rule<br />
+**Author** : Written by ScottyBcoder (Truman Scott Buffington)
 
 
 
