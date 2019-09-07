@@ -19,7 +19,14 @@
 /* https://hub.86it.us                                                  */
 /* Copyright (c) 2019 Ernest Buffington                                 */
 /************************************************************************/
-
+define('_MENU_THANKS', '<br><br>Thanks for using this script. This mod was created by Ernest Allen Buffington, &copy; <a href="https://hub.86it.us" target="_blank">The 86it Developers Network</a>.');
+define('_MENU_INSTALL','I see that you don\'t have the Menu Tables installed yet!<br>With your permission, let us proceed to install the Menu Tables.<br>All you need to do is agree by checking the box below and clicking install, the script will do the rest.');
+define('_MENU_INSTALL2','This is the auto install for the Portal Menu v5.01');
+define('_MENU_INSTALL3','');
+define('_MENU_INSTALLING', 'I am currently performing the database installation, please don\'t change the page while I am installing. This will take a moment!');
+define('_MENU_COMPLETE', 'The installation is now complete. I will redirect you back to the module in a few moments.');
+define('_MENU_INSERT_TABLE', 'Now we create the table.');
+define('_MENU_INSERT_DATA', 'Now we insert the data.');
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005

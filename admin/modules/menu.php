@@ -630,11 +630,21 @@ function index()
 					$bgcolor4, 
 				 $bgcolorhide, 
 		 $bgcolorhidefallback, 
+		         $currentlang,
 		          $textcolor1, 
 				         $key, 
 				   $deletecat, 
 				$upgrade_test, 
 				 $urlofimages;
+	
+	$result = $db->sql_query("SHOW TABLES LIKE '".$prefix."_menu'");
+	$tableExists = $db->sql_numrows($result);
+
+	if ($tableExists == 0)
+	{
+      MenuInstall();
+	  return;	
+    }	
 	
 	include_once("header.php");
 	
@@ -1390,7 +1400,7 @@ if ($old_school_imagedropdown==0)
 
 	echo""
 	."<br><br>"._MENU_REMARKS.""._MENU_REMARKSTWO.""
-	."<br><div align=\"center\"><br><br>version 5.01 - &copy; <a href=\"mailto:ernest.buffington@gmail.com?body=Read the FAQ before asking me questions!!\">Ernest Allen Buffington</a></div>";
+	."<br><div align=\"center\"><br><br>Portal Menu v5.01 - &copy; 2019 The 86it Developers Network</div>";
 
 	CloseTable();
 	include("footer.php");
@@ -1828,9 +1838,10 @@ function menu_schedule() {
 		}
 		
 		include_once("themes/$zetheme/theme.php");
-		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
-		<html><head><title>"._MENU_SCHEDULETITLE."...</title>
-		<LINK REL=\"StyleSheet\" HREF=\"themes/$zetheme/style/style.css\" TYPE=\"text/css\">";
+	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+		<html><head><title>"._MENU_EDITLINKTITLE."</title>
+		<LINK REL=\"StyleSheet\" HREF=\"themes/$zetheme/style/style.css\" TYPE=\"text/css\"></head>
+		<body>";
 		?>
 		<script type="text/javascript" language="javascript">
 		function display_schedule(zeinput) {
@@ -1912,17 +1923,17 @@ function menu_schedule() {
 			$option_ms_fin.="<option value=\"".$zeoption."\"".$selected_fin.">".$zeoption."</option>";
 
 		}
-		$hidecheck=(strpos($_GET['days'],'8')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
+		$hidecheck=(strpos($_GET['days'],'8')!==false) ? "checked " : ""; 
 		$schedulecheck=($_GET['date_debut']!=0 && $_GET['date_fin']!=0) ? "checked " : "";
 		$scheduledisplay=($_GET['date_debut']!=0 && $_GET['date_fin']!=0) ? 'block' : 'none';
 		
-		$monday_check=(strpos($_GET['days'],'1')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
-		$tuesday_check=(strpos($_GET['days'],'2')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
-		$wednesday_check=(strpos($_GET['days'],'3')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
-		$thursday_check=(strpos($_GET['days'],'4')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
-		$friday_check=(strpos($_GET['days'],'5')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
-		$saturday_check=(strpos($_GET['days'],'6')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
-		$sunday_check=(strpos($_GET['days'],'7')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
+		$monday_check=(strpos($_GET['days'],'1')!==false) ? "checked " : ""; 
+		$tuesday_check=(strpos($_GET['days'],'2')!==false) ? "checked " : ""; 
+		$wednesday_check=(strpos($_GET['days'],'3')!==false) ? "checked " : ""; 
+		$thursday_check=(strpos($_GET['days'],'4')!==false) ? "checked " : ""; 
+		$friday_check=(strpos($_GET['days'],'5')!==false) ? "checked " : ""; 
+		$saturday_check=(strpos($_GET['days'],'6')!==false) ? "checked " : ""; 
+		$sunday_check=(strpos($_GET['days'],'7')!==false) ? "checked " : ""; 
 		echo "</td>
 		<td><input type=\"checkbox\" ".$hidecheck."name=\"menu_schedule_hide\" id=\"hide\" OnClick=\"if(this.checked==true) {document.getElementById('schedule').checked=false;document.getElementById('schedule_table').style.display='none'}\"><LABEL for=\"hide\">"._MENU_HIDE."</LABEL>
 			<br>
@@ -2039,10 +2050,10 @@ function menu_schedule() {
 			echo "<script type=\"text/javascript\" language=\"javascript\">menu_hidelink($key,$z,'".$sens."',opener.document);</script>";
 		}
 		
-		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
-			<html><head><title>".__MENU_SCHEDULETITLE."</title>
-			<LINK REL=\"StyleSheet\" HREF=\"themes/$zetheme/style/style.css\" TYPE=\"text/css\"></head>
-			<body>";
+	    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+		<html><head><title>"._MENU_EDITLINKTITLE."</title>
+		<LINK REL=\"StyleSheet\" HREF=\"themes/$zetheme/style/style.css\" TYPE=\"text/css\"></head>
+		<body>";
 		//echo "key:$key - z:$z - $menu_link_class - $menu_new_days - $somlienid - $menu_category_class<br>";
 		echo "<br><br><div align=\"center\"><span  class=\"title\">"._MENU_MOREOPTIONSUCCESS."</span><br>"._MENU_SENDTOVALIDATE."<br><br><br><br><br><br><div align=\"center\" class=\"title\">[<a href=\"javascript:window.close()\">"._MENU_CLOSE."</a>]</div>";
 		echo"</body></html>";
@@ -2050,9 +2061,7 @@ function menu_schedule() {
 	}
 }
 
-//
-//
-
+# delete menu category
 function deletecat() 
 {
 	global $admin_file;
@@ -2084,24 +2093,177 @@ function deletecat()
 	}
 }
 
+function MenuInstall() 
+{
+	global  $admin_file, $prefix, $db, $domain;
+    $result = $db->sql_query("SHOW TABLES LIKE '".$prefix."_menu'");
+    $tableExists = $db->sql_numrows($result);
+	include("header.php");
+
+	if ($tableExists != 0)
+	{
+      index();
+	}
+	else
+	{
+      OpenTable();
+      if (is_mod_admin('admin')) 
+	  {
+		echo '<div align="center"><strong>'._MENU_THANKS.'</strong></div>';
+	    echo '<div align="center"><strong>'._MENU_INSTALL2.'</strong></div></br />';
+	    echo '<br>'._MENU_INSTALLING.'<br><br>' , PHP_EOL;
+		# START MENU TABLES INSTALL
+		# Drop table if there is one there already to avoid errors.
+	    echo 'I\'m going to drop the table "<strong>'.$prefix.'_menu</strong>" if it exists!' , PHP_EOL;
+	    echo '<br>' , PHP_EOL;
+	    echo 'If "<strong>'.$prefix.'_menu</strong>" did exist I have removed it!' , PHP_EOL;
+	    echo '<br>' , PHP_EOL;
+
+	    $db->sql_query("DROP TABLE IF EXISTS `".$prefix."_menu`");
+	
+	    # Lets create the new menu table
+        $result = $db->sql_query("CREATE TABLE IF NOT EXISTS `".$prefix."_menu` (
+        `groupmenu` int(2) NOT NULL DEFAULT '0',
+        `name` varchar(200) DEFAULT NULL,
+        `image` varchar(99) DEFAULT NULL,
+        `lien` text,
+        `hr` char(2) DEFAULT NULL,
+        `center` char(2) DEFAULT NULL,
+        `bgcolor` tinytext,
+        `invisible` int(1) DEFAULT NULL,
+        `class` tinytext,
+        `bold` char(2) DEFAULT NULL,
+        `new` char(2) DEFAULT NULL,
+        `listbox` char(2) DEFAULT NULL,
+        `dynamic` char(2) DEFAULT NULL,
+        `date_debut` bigint(20) NOT NULL DEFAULT '0',
+        `date_fin` bigint(20) NOT NULL DEFAULT '0',
+        `days` varchar(8) DEFAULT NULL,	
+        PRIMARY KEY (`groupmenu`)
+        ) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
+ 	 
+	    echo '<br>' , PHP_EOL
+        , 'Create table '.$prefix.'_menu:' , PHP_EOL;
+        
+		if($result)
+		{
+     	  echo'<span style="color:#008000;"><i>Success</i></span><br>' , PHP_EOL;
+        }
+		else
+		{
+     	  echo'<span style="color:#FF0000;"><i>Failed</i></span><br>' , PHP_EOL;
+        }
+	    echo '' , PHP_EOL
+	    , _MENU_INSERT_DATA , PHP_EOL;
+        
+		# Lets insert the data into the table
+        $result = $db->sql_query("INSERT INTO `".$prefix."_menu` (`groupmenu`, `name`, `image`, `lien`, `hr`, `center`, `bgcolor`, `invisible`, `class`, `bold`, `new`, `listbox`, `dynamic`, `date_debut`, `date_fin`, `days`) VALUES
+        (1, 'Blog Menu', 'community.png', '', 'on', '', '', 0, 'categories', 'on', '', '', '', 0, 0, ''),
+	    (99, '', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 'on', 0, 0, NULL);");
+	    
+		echo '<br>' , PHP_EOL
+        , 'Insert data into '.$prefix.'_menu:' , PHP_EOL;
+        
+		if($result)
+		{
+	      echo'<span style="color:#008000;"><i>Success</i></span><br>' , PHP_EOL;
+        }
+		else
+		{
+	      echo'<span style="color:#FF0000;"><i>Failed</i></span><br>' , PHP_EOL;
+        }
+        # END MENU TABLES INSTALL
+
+		echo '<br />' , PHP_EOL;
+
+	    # START MENU CATEGORIES TABLES INSTALL
+		# Drop table if there is one there already to avoid errors.
+	    echo 'I\'m going to drop the table "<strong>'.$prefix.'_menu_categories</strong>" if it exists!' , PHP_EOL;
+	    echo '<br>' , PHP_EOL;
+	    echo 'If "<strong>'.$prefix.'_menu_categories</strong>" did exist I have removed it!' , PHP_EOL;
+	    echo '<br>' , PHP_EOL;
+
+	    $db->sql_query("DROP TABLE IF EXISTS `".$prefix."_menu_categories`");
+	
+	    # Lets create the new menu table
+        $result = $db->sql_query("CREATE TABLE IF NOT EXISTS `".$prefix."_menu_categories` (
+        `id` int(11) NOT NULL AUTO_INCREMENT,
+        `date_fin` bigint(20) NOT NULL DEFAULT '0',
+        `date_debut` bigint(20) NOT NULL DEFAULT '0',
+        `sublevel` tinyint(3) NOT NULL DEFAULT '0',
+        `groupmenu` int(2) NOT NULL DEFAULT '0',
+        `module` varchar(50) NOT NULL DEFAULT '',
+        `url` text NOT NULL,
+        `url_text` text NOT NULL,
+        `image` varchar(50) NOT NULL DEFAULT '',
+        `new` char(2) DEFAULT NULL,
+        `new_days` tinyint(4) NOT NULL DEFAULT '-1',
+        `class` varchar(20) DEFAULT NULL,
+        `bold` char(2) DEFAULT NULL,
+        `days` varchar(8) NOT NULL DEFAULT '0',
+        PRIMARY KEY (`id`)
+        ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;");
+ 	 
+	    echo '' , PHP_EOL
+        , 'Create table '.$prefix.'_menu_categories:' , PHP_EOL;
+        
+		if($result)
+		{
+     	  echo'<span style="color:#008000;"><i>Success</i></span><br>' , PHP_EOL;
+        }
+		else
+		{
+     	  echo'<span style="color:#FF0000;"><i>Failed</i></span><br>' , PHP_EOL;
+        }
+	    echo '<br>' , PHP_EOL
+	    , _MENU_INSERT_DATA , PHP_EOL;
+        
+		# Lets insert the data into the table
+        $result = $db->sql_query("INSERT INTO `".$prefix."_menu_categories` (`id`, `date_fin`, `date_debut`, `sublevel`, `groupmenu`, `module`, `url`, `url_text`, `image`, `new`, `new_days`, `class`, `bold`, `days`) VALUES
+        (1, 0, 0, 0, 1, 'Blog', '', '', 'tree-T.png', '', 3, 'modules', 'on', ''),
+		(2, 0, 0, 0, 1, 'Blog_Topics', '', '', 'tree-T.png', '', 3, 'modules', 'on', ''),
+        (3, 0, 0, 0, 1, 'Blog_Archive', '', '', 'tree-T.png', '', 3, 'modules', 'on', ''),
+        (4, 0, 0, 0, 1, 'Blog_Top', '', '', 'tree-T.png', '', 3, 'modules', 'on', ''),
+	    (5, 0, 0, 0, 1, 'Blog_Submit', '', '', 'tree-L.png', '', 3, 'modules', 'on', '');");
+	    
+		echo '<br>' , PHP_EOL
+        , 'Insert data into '.$prefix.'_menu_categories:' , PHP_EOL;
+        
+		if($result)
+		{
+	      echo'<span style="color:#008000;"><i>Success</i></span><br>' , PHP_EOL;
+        }
+		else
+		{
+	      echo'<span style="color:#FF0000;"><i>Failed</i></span><br>' , PHP_EOL;
+        }
+        # START MENU CATEGORIES TABLES INSTALL
+		echo '<br /><strong>'._MENU_COMPLETE.'</strong><br /><br />';
+		header('Refresh: 30; URL=https://'.$domain.'/admin.php?op=menu');
+		echo '<div align="center"><strong><a href="https://'.$domain.'/admin.php?op=menu">[ BACK TO PORTAL ADMIN MENU ]</a></strong></div><br /><br />';
+		
+	  CloseTable();		
+	}
+
+  }
+   include("footer.php");
+}
+
 switch($go) 
 {
 	default:
-	index();
+	case "Menu":
+	MenuInstall();
 	break;
-
 	case "send":
 	send();
 	break;
-
 	case "deletecat":
 	deletecat();
 	break;
-
 	case "edit":
 	edit();
 	break;
-	
 	case "schedule":
 	menu_schedule();
 	break;
