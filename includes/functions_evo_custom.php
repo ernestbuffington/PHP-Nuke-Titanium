@@ -1,4 +1,7 @@
 <?php
+/*=======================================================================
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+ =======================================================================*/
 
 function evo_phpmailer( $to, $subject, $message, $headers = '', $attachments = array() )
 {
@@ -501,8 +504,8 @@ function the_rating( $size,$rating,$msg=false )
  * Customize function: Used for dynamic page titles, This replaces the old Dynamic Titles mod, which required multiple database queries.
  * @since 2.0.9e
  */
-function the_pagetitle() // still shitting yella I see! This was done with dynamictitles.php in the include folder....
-{                        // this lacks the extended module browsing information! 
+function the_pagetitle()
+{
     global $sitename;
     $item_delim         = "&raquo;";
     $module_name        = $_GET['name'];
@@ -724,7 +727,7 @@ function get_evo_option($name, $type='string')
 }
 
 /**
- * Custom function: This will be used quite alot throughout the site, For such things as CMS, Block, Module & Theme version chekcing. 
+ * Custom function: This will be used quite alot throughout the site, For such things as CMS, Block, Module & Theme version checking. 
  * @since 2.0.9e
  */
 function get_version_information($version_check_url, $local_cache_location, $force_refresh=false) 

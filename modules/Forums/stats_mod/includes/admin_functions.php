@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /***************************************************************************
@@ -136,7 +136,7 @@ function build_module($info_array, $lang_array, $php_file, $module_id = -1)
         {
             $contents = "<?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/\n\n\n?>";
         }
         else

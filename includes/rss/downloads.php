@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************
@@ -63,7 +63,7 @@ else
 header("Content-Type: text/xml");
 
 
-echo '<?xml version="1.0" encoding="utf-8" ?>';
+echo '<?xml version="1.0" encoding="UTF-8" ?>';
 echo '<rss version="2.0">';
 echo '<channel>';
 

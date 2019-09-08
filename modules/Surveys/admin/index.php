@@ -30,14 +30,14 @@
       Display Writes                           v1.0.0       10/14/2005
  ************************************************************************/
 
-if (!defined('ADMIN_FILE')) {
-   die('Access Denied');
-}
+if (!defined('ADMIN_FILE')) die('Access Denied');
 
 global $prefix, $db, $admdata, $evoconfig;
-$module_name = basename(dirname(dirname(__FILE__)));
-if(is_mod_admin($module_name)) {
 
+$module_name = basename(dirname(dirname(__FILE__)));
+
+if(is_mod_admin($module_name)) 
+{
 /*********************************************************/
 /* Surveys Functions                                */
 /*********************************************************/
@@ -45,7 +45,8 @@ if(is_mod_admin($module_name)) {
 /*****[BEGIN]******************************************
  [ Mod:     News BBCodes                       v1.0.0 ]
  ******************************************************/
-    function shownews_home($text) {
+    function shownews_home($text) 
+	{
        /* $news_bbtable = bbcode_table('hometext', 'postnews', 1);
         $smiles = smilies_table('onerow','hometext', 'postnews');
         echo "<br /><br />$news_bbtable"
@@ -57,7 +58,8 @@ if(is_mod_admin($module_name)) {
        echo "<br />\n";
     }
 
-    function shownews_body($text) {
+    function shownews_body($text) 
+	{
        /* $news_bbtable = bbcode_table('bodytext', 'postnews', 1);
         $smiles = smilies_table('onerow','bodytext', 'postnews');
         echo "<br /><br />$news_bbtable"
@@ -73,7 +75,8 @@ if(is_mod_admin($module_name)) {
 /*****[BEGIN]******************************************
  [ Mod:    Display Topic Icon                  v1.0.0 ]
  ******************************************************/
-    function topicicon($topic_icon) {
+    function topicicon($topic_icon) 
+	{
         echo "<br /><strong>"._DISPLAY_T_ICON."</strong>&nbsp;&nbsp;";
         if (($topic_icon == 0) OR (empty($topic_icon))) {
             $sel1 = "checked";
@@ -93,7 +96,8 @@ if(is_mod_admin($module_name)) {
 /*****[BEGIN]******************************************
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
-    function writes($writes) {
+    function writes($writes) 
+	{
         echo "<br /><strong>"._DISPLAY_WRITES."</strong>&nbsp;&nbsp;";
         if (($writes == 1) || (!is_int($writes))) {
             $sel1 = "";
@@ -108,8 +112,8 @@ if(is_mod_admin($module_name)) {
 /*****[END]********************************************
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
-
-    function poll_index() {
+    function poll_index() 
+	{
       global $admin_file;
         OpenTable();
         echo "<center><span class=\"option\"><strong>" . _POLLADMIN . "</strong></span><br />"
@@ -118,21 +122,23 @@ if(is_mod_admin($module_name)) {
             ."| <a href=\"".$admin_file.".php?op=DeletePoll\">" . _DELETEPOLL . "</a> "
             ."| <a href=\"".$admin_file.".php?op=EditPoll\">" . _CHANGEPOLL . "</a> "
             ."| <a href=\"".$admin_file.".php?op=CreatePoll\">" . _ADDPOLL . "</a> "
-            ."]</center><br /><br />";
+            ."]</center><br />";
+			echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
         CloseTable();
     }
 
-    function poll_options() {
+    function poll_options() 
+	{
       global $admin_file, $db, $prefix, $evoconfig;
 
-      // Fetch random poll
+      # Fetch random poll
       $make_random = intval($evoconfig['poll_random']);
 
-      // Fetch number of days in between voting per user
+      # Fetch number of days in between voting per user
       $number_of_days = intval($evoconfig['poll_days']);
 
-      echo "<br />";
       OpenTable();
+
       echo "<center><span class='option'><strong>" . _POLL_OPTIONS . "</strong></span><br />"
           ."<br />" . _POLL_INFO . "<br /><br /></center>"
           ."<form action='".$admin_file.".php' method='post'>"
@@ -143,7 +149,9 @@ if(is_mod_admin($module_name)) {
       if ($make_random) {
           echo "<input type='radio' name='xmake_random' value='1' checked>" . _YES . " &nbsp;"
               ."<input type='radio' name='xmake_random' value='0'>" . _NO . "";
-      } else {
+      } 
+	  else 
+	  {
           echo "<input type='radio' name='xmake_random' value='1'>" . _YES . " &nbsp;"
               ."<input type='radio' name='xmake_random' value='0' checked>" . _NO . "";
       }
@@ -154,8 +162,9 @@ if(is_mod_admin($module_name)) {
       CloseTable();
     }
 
-    // "borrowed" FROM Credits module and modified
-    function LoadJS() {
+    # "borrowed" FROM Credits module and modified
+    function LoadJS() 
+	{
       echo "<script type=\"text/javascript\">\n"
           ."<!--\n"
           ."function show(id) {\n"
@@ -169,7 +178,8 @@ if(is_mod_admin($module_name)) {
           ."</script>\n";
     }
 
-    function puthome($ihome, $acomm) {
+    function puthome($ihome, $acomm) 
+	{
         echo "<br /><strong>"._PUBLISHINHOME."</strong>&nbsp;&nbsp;";
         if (($ihome == 0) OR (empty($ihome))) {
             $sel1 = "checked";
@@ -196,7 +206,8 @@ if(is_mod_admin($module_name)) {
             ."<input type=\"radio\" name=\"acomm\" value=\"1\" $sel2>"._NO."<br /><br />";
     }
 
-    function SelectCategory($cat) {
+    function SelectCategory($cat) 
+	{
         global $prefix, $db, $admin_file;
         $selcat = $db->sql_query("SELECT catid, title FROM ".$prefix."_stories_cat ORDER BY title");
         $a = 1;
@@ -221,18 +232,12 @@ if(is_mod_admin($module_name)) {
         echo "</select> [ <a href=\"".$admin_file.".php?op=AddCategory\">"._ADD."</a> | <a href=\"".$admin_file.".php?op=EditCategory\">"._EDIT."</a> | <a href=\"".$admin_file.".php?op=DelCategory\">"._DELETE."</a> ]";
     }
 
-    function poll_createPoll() {
+    function poll_createPoll() 
+	{
         global $language, $admin, $multilingual, $prefix, $db, $admin_file;
         include_once(NUKE_BASE_DIR.'header.php');
         LoadJS();
-        OpenTable();
-	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
-        echo "<br /><br />";
-	    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
-	    CloseTable();
-	    echo "<br />";
         poll_index();
-        echo "<br />";
         OpenTable();
         echo "<center><span class=\"option\"><strong>" . _CREATEPOLL . "</strong></span></center>"
 /*****[BEGIN]******************************************
@@ -326,7 +331,8 @@ if(is_mod_admin($module_name)) {
  [ Mod:    Display Topic Icon                  v1.0.0 ]
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
-    function poll_createPosted($pollTitle, $optionText, $planguage, $title, $hometext, $topic, $bodytext, $catid, $ihome, $acomm, $topic_icon, $writes) {
+    function poll_createPosted($pollTitle, $optionText, $planguage, $title, $hometext, $topic, $bodytext, $catid, $ihome, $acomm, $topic_icon, $writes) 
+	{
 /*****[END]********************************************
  [ Mod:    Display Topic Icon                  v1.0.0 ]
  [ Mod:    Display Writes                      v1.0.0 ]
@@ -335,13 +341,15 @@ if(is_mod_admin($module_name)) {
         $SurveyStory = intval($SurveyStory);
         $timeStamp = time();
         $pollTitle = Fix_Quotes($pollTitle);
-        if(!$db->sql_query("INSERT INTO ".$prefix."_poll_desc VALUES (NULL, '$pollTitle', '$timeStamp', '0', '$planguage', '0')")) {
+        if(!$db->sql_query("INSERT INTO ".$prefix."_poll_desc VALUES (NULL, '$pollTitle', '$timeStamp', '0', '$planguage', '0')")) 
+		{
             return;
         }
         $object = $db->sql_fetchrow($db->sql_query("SELECT pollID FROM ".$prefix."_poll_desc WHERE pollTitle='$pollTitle'"));
         $id = $object['pollID'];
         $id = intval($id);
-        for($i = 1, $maxi = count($optionText); $i <= $maxi; $i++) {
+        for($i = 1, $maxi = count($optionText); $i <= $maxi; $i++) 
+		{
             if(!empty($optionText[$i])) {
                 $optionText[$i] = Fix_Quotes($optionText[$i]);
             }
@@ -349,7 +357,8 @@ if(is_mod_admin($module_name)) {
                 return;
             }
         }
-        if (!empty($title) && !empty($hometext)) {
+        if (!empty($title) && !empty($hometext)) 
+		{
             $title = Fix_Quotes($title);
             $hometext = Fix_Quotes($hometext);
             $bodytext = Fix_Quotes($bodytext);
@@ -365,21 +374,16 @@ if(is_mod_admin($module_name)) {
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
         }
-        redirect($admin_file.".php?op=Surveys");
+        
+		redirect($admin_file.".php?op=Surveys");
     }
 
-    function poll_removePoll() {
+    function poll_removePoll() 
+	{
         global $prefix, $db, $admin_file, $multilingual;
 
         include_once(NUKE_BASE_DIR.'header.php');
-        OpenTable();
-	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
-        echo "<br /><br />";
-	    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
-	    CloseTable();
-	    echo "<br />";
         poll_index();
-        echo "<br />";
         OpenTable();
         echo "<center><span class=\"option\"><strong>" . _REMOVEEXISTING . "</strong></span><br /><br />"
         ."" . _POLLDELWARNING . "</center><br /><br />"
@@ -390,7 +394,7 @@ if(is_mod_admin($module_name)) {
         if(!$result) {
             return;
         }
-        /* cycle through the descriptions until everyone has been fetched */
+        # cycle through the descriptions until everyone has been fetched 
         echo "<select name=\"id\">";
         while($object = $db->sql_fetchrow($result)) {
         $object['pollID'] = intval($object['pollID']);
@@ -405,7 +409,8 @@ if(is_mod_admin($module_name)) {
         include_once(NUKE_BASE_DIR.'footer.php');
     }
 
-    function poll_removePosted() {
+    function poll_removePosted() 
+	{
         global $id, $prefix, $db, $admin_file;
 
         $id = intval($id);
@@ -414,17 +419,11 @@ if(is_mod_admin($module_name)) {
         redirect($admin_file.".php?op=Surveys");
     }
 
-    function polledit_select() {
+    function polledit_select() 
+	{
         global $prefix, $db, $admin_file, $multilingual;
         include_once(NUKE_BASE_DIR.'header.php');
-        OpenTable();
-	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
-        echo "<br /><br />";
-	    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
-	    CloseTable();
-	    echo "<br />";
         poll_index();
-        echo "<br />";
         OpenTable();
         echo "<div style='margin: auto;'><span class=\"option\"><strong>" . _EDITPOLL . "</strong></span><br /><br />"
         ."" . _CHOOSEPOLLEDIT . "<br />"
@@ -434,7 +433,7 @@ if(is_mod_admin($module_name)) {
         if(!$result) {
             return;
         }
-        /* cycle through the descriptions until everyone has been fetched */
+        # cycle through the descriptions until everyone has been fetched 
         echo "<select name=\"pollID\">";
         while($object = $db->sql_fetchrow($result)) {
         $object['pollID'] = intval($object['pollID']);
@@ -450,51 +449,55 @@ if(is_mod_admin($module_name)) {
         include_once(NUKE_BASE_DIR.'footer.php');
     }
 
-    function polledit($pollID) {
+    function polledit($pollID) 
+	{
         global $prefix, $db, $multilingual, $admin_file;
 
         include_once(NUKE_BASE_DIR.'header.php');
-        OpenTable();
-	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
-        echo "<br /><br />";
-	    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
-	    CloseTable();
-	    echo "<br />";
         poll_index();
-        $pollID = intval($pollID);
+		$pollID = intval($pollID);
         $row = $db->sql_fetchrow($db->sql_query("SELECT pollTitle, planguage FROM ".$prefix."_poll_desc WHERE pollID='$pollID'"));
         $pollTitle = $row['pollTitle'];
         $planguage = $row['planguage'];
-        echo "<br />";
         OpenTable();
+		
         echo "<center><strong>"._POLLEDIT." $pollTitle</strong></center>";
         echo "<form action=\"".$admin_file.".php\" method=\"post\">";
         echo "<table border=\"0\" align=\"center\"><tr><td align=\"right\">";
         echo "<strong>" . _TITLE . ":</strong></td><td colspan=\"2\"><input type=\"text\" name=\"pollTitle\" value=\"$pollTitle\" size=\"40\" maxlength=\"100\"></td></tr>";
-        if ($multilingual == 1) {
+        
+		if ($multilingual == 1) 
+		{
             echo "<tr><td><strong>" . _LANGUAGE . ":</strong></td><td>"
                 ."<select name=\"planguage\">";
             $languages = lang_list();
             echo '<option value=""'.(($planguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-            for ($i=0, $j = count($languages); $i < $j; $i++) {
+        
+		    for ($i=0, $j = count($languages); $i < $j; $i++) 
+			{
                 if ($languages[$i] != '') {
                     echo '<option value="'.$languages[$i].'"'.(($planguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
                 }
             }
             echo '</select><br /><br />';
             echo "</td></tr>";
-        } else {
+        } 
+		else 
+		{
             echo "<input type=\"hidden\" name=\"planguage\" value=\"$planguage\"><br /><br />";
         }
         $result2 = $db->sql_query("SELECT optionText, optionCount, voteID FROM ".$prefix."_poll_data WHERE pollID='$pollID' ORDER BY voteID");
-        while ($row2 = $db->sql_fetchrow($result2)) {
+        
+		while ($row2 = $db->sql_fetchrow($result2)) 
+		{
             $optionText = $row2['optionText'];
             $optionCount = intval($row2['optionCount']);
             $voteID = intval($row2['voteID']);
             echo "<tr><td align=\"right\"><strong>" . _OPTION . " $voteID:</strong></td><td><input type=\"text\" name=\"optiontext$voteID\" value=\"$optionText\" size=\"40\" maxlength=\"50\"></td><td align=\"right\">$optionCount "._VOTES."</td></tr>";
         }
         $db->sql_freeresult($result2);
-        echo "</table><center><input type=\"hidden\" name=\"pollID\" value=\"$pollID\"><input type=\"hidden\" name=\"op\" value=\"SavePoll\">"
+        
+		echo "</table><center><input type=\"hidden\" name=\"pollID\" value=\"$pollID\"><input type=\"hidden\" name=\"op\" value=\"SavePoll\">"
         ."<strong>" . _CLEARVOTES . "</strong>&nbsp;<input type='radio' name='ClearVotes' value='1' />" . _YES . " &nbsp;"
         ."<input type='radio' name='ClearVotes' value='0' checked=\"checked\" />" . _NO . "<br />"
         ."<br /><input type=\"submit\" value=\"" . _SAVECHANGES . "\"><br /><br />" . _GOBACK . "</center><br /><br /></form>";
@@ -502,31 +505,31 @@ if(is_mod_admin($module_name)) {
         include_once(NUKE_BASE_DIR.'footer.php');
     }
 
-    function savepoll($pollID, $pollTitle, $planguage, $optiontext1, $optiontext2, $optiontext3, $optiontext4, $optiontext5, $optiontext6, $optiontext7, $optiontext8, $optiontext9, $optiontext10, $optiontext11, $optiontext12, $ClearVotes) {
+    function savepoll($pollID, $pollTitle, $planguage, $optiontext1, $optiontext2, $optiontext3, $optiontext4, $optiontext5, $optiontext6, $optiontext7, $optiontext8, $optiontext9, $optiontext10, $optiontext11, $optiontext12, $ClearVotes) 
+	{
         global $prefix, $db, $admin_file;
         $ClearVotes = intval($ClearVotes);
         $pollID = intval($pollID);
         $db->sql_query("UPDATE ".$prefix."_poll_desc SET pollTitle='$pollTitle', planguage='$planguage' WHERE pollID='$pollID'");
-        for($i=1;$i<13;$i++) {
+    
+	    for($i=1;$i<13;$i++) 
+		{
             $var = "optiontext$i";
             $db->sql_query("UPDATE ".$prefix."_poll_data SET optionText='".$$var."' WHERE voteID='$i' AND pollID='$pollID'");
-            if($ClearVotes) {
+        
+		    if($ClearVotes) 
+			{
                 $db->sql_query("UPDATE ".$prefix."_poll_data SET optionCount='0' WHERE voteID='$i' AND pollID='$pollID'");
             }
         }
-        redirect($admin_file.".php?op=Surveys");
+        
+		redirect($admin_file.".php?op=Surveys");
     }
 
     switch($op) {
 
         case "Surveys";
             include_once(NUKE_BASE_DIR.'header.php');
-            OpenTable();
-	        echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
-            echo "<br /><br />";
-	        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
-	        CloseTable();
-	        echo "<br />";
             poll_index();
             poll_options();
             include_once(NUKE_BASE_DIR.'footer.php');
@@ -547,31 +550,24 @@ if(is_mod_admin($module_name)) {
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
         break;
-
         case "ChangePoll":
             ChangePoll($pollID, $pollTitle, $optionText, $voteID);
         break;
-
         case "DeletePoll":
             poll_removePoll();
         break;
-
         case "RemovePosted":
             poll_removePosted();
         break;
-
         case "PollEdit":
             polledit($pollID);
         break;
-
         case "SavePoll":
             savepoll($pollID, $pollTitle, $planguage, $optiontext1, $optiontext2, $optiontext3, $optiontext4, $optiontext5, $optiontext6, $optiontext7, $optiontext8, $optiontext9, $optiontext10, $optiontext11, $optiontext12, $ClearVotes);
         break;
-
         case "EditPoll":
             polledit_select();
         break;
-
         case "PollOptionsSave":
             $xmake_random = intval($xmake_random);
             $xnumber_of_days = intval($xnumber_of_days);
@@ -587,11 +583,11 @@ if(is_mod_admin($module_name)) {
  ******************************************************/
             redirect($admin_file.".php?op=Surveys");
         break;
-
     }
 
-} else {
+} 
+else 
+{
     DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"");
 }
-
 ?>

@@ -1,7 +1,205 @@
-﻿/*
-Copyright (c) 2003-2009, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+﻿/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
 
-(function(){CKEDITOR.plugins.add('stylescombo',{requires:['richcombo','styles'],init:function(d){var e=d.config,f=d.lang.stylesCombo,g=this.path,h;d.ui.addRichCombo('Styles',{label:f.label,title:f.panelTitle,voiceLabel:f.voiceLabel,className:'cke_styles',multiSelect:true,panel:{css:[e.contentsCss,CKEDITOR.getUrl(d.skinPath+'editor.css')],voiceLabel:f.panelVoiceLabel},init:function(){var i=this,j=e.stylesCombo_stylesSet.split(':',2),k=j[1]||CKEDITOR.getUrl(g+'styles/'+j[0]+'.js');j=j[0];CKEDITOR.loadStylesSet(j,k,function(l){var m,n,o=[];h={};for(var p=0;p<l.length;p++){var q=l[p];n=q.name;m=h[n]=new CKEDITOR.style(q);m._name=n;o.push(m);}o.sort(c);var r;for(p=0;p<o.length;p++){m=o[p];n=m._name;var s=m.type;if(s!=r){i.startGroup(f['panelTitle'+String(s)]);r=s;}i.add(n,m.type==CKEDITOR.STYLE_OBJECT?n:b(m._.definition),n);}i.commit();i.onOpen();});},onClick:function(i){d.focus();d.fire('saveSnapshot');var j=h[i],k=d.getSelection();if(j.type==CKEDITOR.STYLE_OBJECT){var l=k.getSelectedElement();if(l)j.applyToObject(l);return;}var m=new CKEDITOR.dom.elementPath(k.getStartElement());if(j.type==CKEDITOR.STYLE_INLINE&&j.checkActive(m))j.remove(d.document);else j.apply(d.document);d.fire('saveSnapshot');},onRender:function(){d.on('selectionChange',function(i){var j=this.getValue(),k=i.data.path,l=k.elements;for(var m=0,n;m<l.length;m++){n=l[m];for(var o in h)if(h[o].checkElementRemovable(n,true)){if(o!=j)this.setValue(o);return;}}this.setValue('');},this);},onOpen:function(){var q=this;if(CKEDITOR.env.ie)d.focus();var i=d.getSelection(),j=i.getSelectedElement(),k=j&&j.getName(),l=new CKEDITOR.dom.elementPath(j||i.getStartElement()),m=[0,0,0,0];q.showAll();q.unmarkAll();for(var n in h){var o=h[n],p=o.type;if(p==CKEDITOR.STYLE_OBJECT){if(j&&o.element==k){if(o.checkElementRemovable(j,true))q.mark(n);m[p]++;}else q.hideItem(n);}else{if(o.checkActive(l))q.mark(n);m[p]++;}}if(!m[CKEDITOR.STYLE_BLOCK])q.hideGroup(f['panelTitle'+String(CKEDITOR.STYLE_BLOCK)]);if(!m[CKEDITOR.STYLE_INLINE])q.hideGroup(f['panelTitle'+String(CKEDITOR.STYLE_INLINE)]);if(!m[CKEDITOR.STYLE_OBJECT])q.hideGroup(f['panelTitle'+String(CKEDITOR.STYLE_OBJECT)]);}});}});var a={};CKEDITOR.addStylesSet=function(d,e){a[d]=e;};CKEDITOR.loadStylesSet=function(d,e,f){var g=a[d];if(g){f(g);return;}CKEDITOR.scriptLoader.load(e,function(){f(a[d]);});};function b(d){var e=[],f=d.element;if(f=='bdo')f='span';e=['<',f];var g=d.attributes;if(g)for(var h in g)e.push(' ',h,'="',g[h],'"');var i=CKEDITOR.style.getStyleText(d);
-if(i)e.push(' style="',i,'"');e.push('>',d.name,'</',f,'>');return e.join('');};function c(d,e){var f=d.type,g=e.type;return f==g?0:f==CKEDITOR.STYLE_OBJECT?-1:g==CKEDITOR.STYLE_OBJECT?1:g==CKEDITOR.STYLE_BLOCK?1:-1;};})();CKEDITOR.config.stylesCombo_stylesSet='default';
+( function() {
+	'use strict';
+
+	CKEDITOR.plugins.add( 'stylescombo', {
+		requires: 'richcombo',
+		// jscs:disable maximumLineLength
+		lang: 'af,ar,az,bg,bn,bs,ca,cs,cy,da,de,de-ch,el,en,en-au,en-ca,en-gb,eo,es,es-mx,et,eu,fa,fi,fo,fr,fr-ca,gl,gu,he,hi,hr,hu,id,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,oc,pl,pt,pt-br,ro,ru,si,sk,sl,sq,sr,sr-latn,sv,th,tr,tt,ug,uk,vi,zh,zh-cn', // %REMOVE_LINE_CORE%
+		// jscs:enable maximumLineLength
+
+		init: function( editor ) {
+			var config = editor.config,
+				lang = editor.lang.stylescombo,
+				styles = {},
+				stylesList = [],
+				combo,
+				allowedContent = [];
+
+			editor.on( 'stylesSet', function( evt ) {
+				var stylesDefinitions = evt.data.styles;
+
+				if ( !stylesDefinitions )
+					return;
+
+				var style, styleName, styleType;
+
+				// Put all styles into an Array.
+				for ( var i = 0, count = stylesDefinitions.length; i < count; i++ ) {
+					var styleDefinition = stylesDefinitions[ i ];
+
+					if ( editor.blockless && ( styleDefinition.element in CKEDITOR.dtd.$block ) ||
+						( typeof styleDefinition.type == 'string' && !CKEDITOR.style.customHandlers[ styleDefinition.type ] ) ) {
+
+						continue;
+					}
+
+					styleName = styleDefinition.name;
+					style = new CKEDITOR.style( styleDefinition );
+
+					if ( !editor.filter.customConfig || editor.filter.check( style ) ) {
+						style._name = styleName;
+						style._.enterMode = config.enterMode;
+						// Get the type (which will be used to assign style to one of 3 groups) from assignedTo if it's defined.
+						style._.type = styleType = style.assignedTo || style.type;
+
+						// Weight is used to sort styles (https://dev.ckeditor.com/ticket/9029).
+						style._.weight = i + ( styleType == CKEDITOR.STYLE_OBJECT ? 1 : styleType == CKEDITOR.STYLE_BLOCK ? 2 : 3 ) * 1000;
+
+						styles[ styleName ] = style;
+						stylesList.push( style );
+						allowedContent.push( style );
+					}
+				}
+
+				// Sorts the Array, so the styles get grouped by type in proper order (https://dev.ckeditor.com/ticket/9029).
+				stylesList.sort( function( styleA, styleB ) {
+					return styleA._.weight - styleB._.weight;
+				} );
+			} );
+
+			editor.ui.addRichCombo( 'Styles', {
+				label: lang.label,
+				title: lang.panelTitle,
+				toolbar: 'styles,10',
+				allowedContent: allowedContent,
+
+				panel: {
+					css: [ CKEDITOR.skin.getPath( 'editor' ) ].concat( config.contentsCss ),
+					multiSelect: true,
+					attributes: { 'aria-label': lang.panelTitle }
+				},
+
+				init: function() {
+					var style, styleName, lastType, type, i, count;
+
+					// Loop over the Array, adding all items to the
+					// combo.
+					for ( i = 0, count = stylesList.length; i < count; i++ ) {
+						style = stylesList[ i ];
+						styleName = style._name;
+						type = style._.type;
+
+						if ( type != lastType ) {
+							this.startGroup( lang[ 'panelTitle' + String( type ) ] );
+							lastType = type;
+						}
+
+						this.add( styleName, style.type == CKEDITOR.STYLE_OBJECT ? styleName : style.buildPreview(), styleName );
+					}
+
+					this.commit();
+				},
+
+				onClick: function( value ) {
+					editor.focus();
+					editor.fire( 'saveSnapshot' );
+
+					var style = styles[ value ],
+						elementPath = editor.elementPath();
+
+					// When more then one style from the same group is active ( which is not ok ),
+					// remove all other styles from this group and apply selected style.
+					if ( style.group && style.removeStylesFromSameGroup( editor ) ) {
+						editor.applyStyle( style );
+					} else {
+						editor[ style.checkActive( elementPath, editor ) ? 'removeStyle' : 'applyStyle' ]( style );
+					}
+
+					editor.fire( 'saveSnapshot' );
+				},
+
+				onRender: function() {
+					editor.on( 'selectionChange', function( ev ) {
+						var currentValue = this.getValue(),
+							elementPath = ev.data.path,
+							elements = elementPath.elements;
+
+						// For each element into the elements path.
+						for ( var i = 0, count = elements.length, element; i < count; i++ ) {
+							element = elements[ i ];
+
+							// Check if the element is removable by any of
+							// the styles.
+							for ( var value in styles ) {
+								if ( styles[ value ].checkElementRemovable( element, true, editor ) ) {
+									if ( value != currentValue )
+										this.setValue( value );
+									return;
+								}
+							}
+						}
+
+						// If no styles match, just empty it.
+						this.setValue( '' );
+					}, this );
+				},
+
+				onOpen: function() {
+					var selection = editor.getSelection(),
+						// When editor is focused but is returned `null` as selected element, then return editable (#646).
+						// In case when selection dosen't cover whole element, we try to return element where selection starts (#862).
+						element = selection.getSelectedElement() || selection.getStartElement() || editor.editable(),
+						elementPath = editor.elementPath( element ),
+						counter = [ 0, 0, 0, 0 ];
+
+					this.showAll();
+					this.unmarkAll();
+					for ( var name in styles ) {
+						var style = styles[ name ],
+							type = style._.type;
+
+						if ( style.checkApplicable( elementPath, editor, editor.activeFilter ) )
+							counter[ type ]++;
+						else
+							this.hideItem( name );
+
+						if ( style.checkActive( elementPath, editor ) )
+							this.mark( name );
+					}
+
+					if ( !counter[ CKEDITOR.STYLE_BLOCK ] )
+						this.hideGroup( lang[ 'panelTitle' + String( CKEDITOR.STYLE_BLOCK ) ] );
+
+					if ( !counter[ CKEDITOR.STYLE_INLINE ] )
+						this.hideGroup( lang[ 'panelTitle' + String( CKEDITOR.STYLE_INLINE ) ] );
+
+					if ( !counter[ CKEDITOR.STYLE_OBJECT ] )
+						this.hideGroup( lang[ 'panelTitle' + String( CKEDITOR.STYLE_OBJECT ) ] );
+				},
+
+				refresh: function() {
+					var elementPath = editor.elementPath();
+
+					if ( !elementPath )
+						return;
+
+					for ( var name in styles ) {
+						var style = styles[ name ];
+
+						if ( style.checkApplicable( elementPath, editor, editor.activeFilter ) )
+							return;
+					}
+					this.setState( CKEDITOR.TRISTATE_DISABLED );
+				},
+
+				// Force a reload of the data
+				reset: function() {
+					if ( combo ) {
+						delete combo._.panel;
+						delete combo._.list;
+						combo._.committed = 0;
+						combo._.items = {};
+						combo._.state = CKEDITOR.TRISTATE_OFF;
+					}
+					styles = {};
+					stylesList = [];
+				}
+			} );
+		}
+	} );
+} )();

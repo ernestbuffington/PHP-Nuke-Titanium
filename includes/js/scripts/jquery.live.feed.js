@@ -12,7 +12,7 @@ nuke_jq(function($)
 	$.ajax(
 	{
 		type: 'GET',
-		url: 'http://versioning.86it.us/titanium-feed.json',
+		url: 'https://versions.evolution-xtreme.co.uk/evolution-xtreme-live-feed.json',
 		cache: false,
 		dataType: 'json',
 		success: function (data)
@@ -20,7 +20,7 @@ nuke_jq(function($)
 			if(!data)
 			{
 				$('.exnewsfeed').parent().css({'color' : 'red', 'font-weight' : 'bold', 'height' : '', 'text-align' : 'center', 'resize' : 'none'});
-				$('.exnewsfeed').replaceWith('The XML File could not be processed correctly. <br /> Please contact a staff member of the 86it Developers Network.');
+				$('.exnewsfeed').replaceWith('The XML File could not be processed correctly. <br /> Please contact a member of the Nuke Evolution Xtreme staff.');
 			}
 			else
 			{
@@ -39,7 +39,7 @@ nuke_jq(function($)
 		error: function (html)
 		{
 			$('.exnewsfeed').parent().css({'color' : 'red', 'font-weight' : 'bold', 'height' : '', 'text-align' : 'center', 'resize' : 'none'});
-			$('.exnewsfeed').replaceWith('The XML File could not be processed correctly. <br /> Please contact a staff member of the 86it Developers Network.');
+			$('.exnewsfeed').replaceWith('The XML File could not be processed correctly. <br /> Please contact a member of the Nuke Evolution Xtreme staff.');
 		}
 
 	});

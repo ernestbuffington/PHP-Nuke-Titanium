@@ -1,37 +1,64 @@
     <?php
 /*=======================================================================
-     PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
-  =======================================================================*/
+
+     Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+
+     =======================================================================*/
 /***************************************************************************
+
      *                                search.php
+
      *                            -------------------
+
      *   begin                : Saturday, Feb 13, 2001
+
      *   copyright            : (C) 2001 The phpBB Group
+
      *   email                : support@phpbb.com
+
      *
+
      *   Id: search.php,v 1.72.2.16 2005/03/15 18:34:34 acydburn Exp
+
      *
+
      ***************************************************************************/
 /***************************************************************************
-     *
-     *   This program is free software; you can redistribute it and/or modify
-     *   it under the terms of the GNU General Public License as published by
-     *   the Free Software Foundation; either version 2 of the License, or
-     *   (at your option) any later version.
-     *
- ***************************************************************************/
 
+     *
+
+     *   This program is free software; you can redistribute it and/or modify
+
+     *   it under the terms of the GNU General Public License as published by
+
+     *   the Free Software Foundation; either version 2 of the License, or
+
+     *   (at your option) any later version.
+
+     *
+
+     ***************************************************************************/
 /*****[CHANGES]**********************************************************
+
     -=[Base]=-
+
           Nuke Patched                             v3.1.0       06/26/2005
+
     -=[Mod]=-
+
           Advanced Username Color                  v1.0.5       06/11/2005
+
           Global Announcements                     v1.2.8       06/13/2005
+
           Search Only Subject                      v0.9.1       06/15/2005
+
           Smilies in Topic Titles                  v1.0.0       07/29/2005
+
           Smilies in Topic Titles Toggle           v1.0.0       09/10/2005
+
           Hide BBCode                              v1.2.0
- ************************************************************************/
+
+     ************************************************************************/
 if (!defined('MODULE_FILE')) {
     die("You can't access this file directly...");
 }
@@ -227,7 +254,9 @@ if ($mode == 'searchuser') {
             $split_search = (!strstr($multibyte_charset, $lang['ENCODING'])) ? split_words(clean_words('search', $stripped_keywords, $stopword_array, $synonym_array), 'search') : split(' ', $search_keywords);
             unset($stripped_keywords);
             /*****[BEGIN]******************************************
+            
             [ Mod:    Search Only Subject                 v0.9.1 ]
+            
             ******************************************************/
             $search_fields = ($HTTP_POST_VARS['search_fields'] == 'all') ? 1 : (($HTTP_POST_VARS['search_fields'] == 'subjonly') ? 2 : 0);
             switch ($search_fields) {
@@ -244,7 +273,9 @@ if ($mode == 'searchuser') {
                     $search_msg_only = "AND m.title_match = 0";
             }
             /*****[END]********************************************
+            
             [ Mod:    Search Only Subject                 v0.9.1 ]
+            
             ******************************************************/
             $word_count = 0;
             $current_match_type = 'or';
@@ -567,14 +598,21 @@ if ($mode == 'searchuser') {
         // truncated result arrays. Normally, search results above 12000 are affected.
         // - to include or not to include
         /*
+        
             $max_result_length = 60000;
         
             if (strlen($search_results) > $max_result_length)
+        
             {
+        
                 $search_results = substr($search_results, 0, $max_result_length);
+        
                 $search_results = substr($search_results, 0, strrpos($search_results, ','));
+        
                 $total_match_count = count(explode(', ', $search_results));
+        
             }
+        
         */
         for ($i = 0;$i < count($store_vars);$i++) {
             $store_search_data[$store_vars[$i]] = $$store_vars[$i];
@@ -623,7 +661,9 @@ if ($mode == 'searchuser') {
     if ($search_results != '') {
         if ($show_results == 'posts') {
             /*****[BEGIN]******************************************
+            
             [ Mod:    Advanced Username Color             v1.0.5 ]
+            
             ******************************************************/
             $sql = "SELECT pt.post_text, pt.bbcode_uid, pt.post_subject, p.*, f.forum_id, f.forum_name, t.*, u.username, u.user_id, u.user_color_gc, u.user_sig, u.user_sig_bbcode_uid
 
@@ -639,11 +679,15 @@ if ($mode == 'searchuser') {
 
      AND p.poster_id = u.user_id";
             /*****[END]********************************************
+            
             [ Mod:    Advanced Username Color             v1.0.5 ]
+            
             ******************************************************/
         } else {
             /*****[BEGIN]******************************************
+            
             [ Mod:    Advanced Username Color             v1.0.5 ]
+            
             ******************************************************/
             $sql = "SELECT t.*, f.forum_id, f.forum_name, u.username, u.user_id, u.user_color_gc as color1, u2.user_color_gc as color2, u2.username as user2, u2.user_id as id2, p.post_username, p2.post_username AS post_username2, p2.post_time
 
@@ -661,7 +705,9 @@ if ($mode == 'searchuser') {
 
      AND u2.user_id = p2.poster_id";
             /*****[END]********************************************
+            
             [ Mod:    Advanced Username Color             v1.0.5 ]
+            
             ******************************************************/
         }
         $per_page = ($show_results == 'posts') ? $board_config['posts_per_page'] : $board_config['topics_per_page'];
@@ -733,24 +779,34 @@ if ($mode == 'searchuser') {
         $tracking_forums = (isset($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f'])) ? unserialize($HTTP_COOKIE_VARS[$board_config['cookie_name'] . '_f']) : array();
         for ($i = 0;$i < count($searchset);$i++) {
             /*****[BEGIN]******************************************
+            
             [ Base:    Nuke Patched                       v3.1.0 ]
+            
             ******************************************************/
             $forum_url = "modules.php?name=Forums&amp;file=viewforum&amp;" . POST_FORUM_URL . "=" . $searchset[$i]['forum_id'] . "";
             $topic_url = "modules.php?name=Forums&amp;file=viewtopic&amp;" . POST_TOPIC_URL . "=" . $searchset[$i]['topic_id'] . "&amp;highlight=$highlight_active";
             $post_url = "modules.php?name=Forums&amp;file=viewtopic&amp;" . POST_POST_URL . "=" . $searchset[$i]['post_id'] . "&amp;highlight=$highlight_active#" . $searchset[$i]['post_id'] . "";
             /*****[END]********************************************
+            
             [ Base:    Nuke Patched                       v3.1.0 ]
+            
             ******************************************************/
             $post_date = create_date($board_config['default_dateformat'], $searchset[$i]['post_time'], $board_config['board_timezone']);
             $message = $searchset[$i]['post_text'];
             /*****[BEGIN]******************************************
+            
             [ Mod:     Smilies in Topic Titles            v1.0.0 ]
+            
             [ Mod:     Smilies in Topic Titles Toggle     v1.0.0 ]
+            
             ******************************************************/
             $topic_title = ($board_config['smilies_in_titles']) ? smilies_pass($searchset[$i]['topic_title']) : $searchset[$i]['topic_title'];
             /*****[END]********************************************
+            
             [ Mod:     Smilies in Topic Titles Toggle     v1.0.0 ]
+            
             [ Mod:     Smilies in Topic Titles            v1.0.0 ]
+            
             ******************************************************/
             $forum_id = $searchset[$i]['forum_id'];
             $topic_id = $searchset[$i]['topic_id'];
@@ -758,7 +814,9 @@ if ($mode == 'searchuser') {
                 if (isset($return_chars)) {
                     $bbcode_uid = $searchset[$i]['bbcode_uid'];
                     /*****[BEGIN]******************************************
+                    
                     [ Mod:    Hide Mod                            v1.2.0 ]
+                    
                     ******************************************************/
                     //
                     // If the board has HTML off but the post has HTML
@@ -766,7 +824,9 @@ if ($mode == 'searchuser') {
                     //
                     if ($return_chars == - 1)
                     /*****[END]********************************************
+                    
                     [ Mod:    Hide Mod                            v1.2.0 ]
+                    
                     ******************************************************/ {
                         $message = strip_tags($message);
                         $message = preg_replace("/\[.*?:$bbcode_uid:?.*?\]/si", '', $message);
@@ -779,14 +839,18 @@ if ($mode == 'searchuser') {
                             }
                         }
                         /*****[BEGIN]******************************************
+                        
                         [ Mod:    Hide Mod                            v1.2.0 ]
+                        
                         ******************************************************/
                         if ($bbcode_uid != '') {
                             $message = ($board_config['allow_bbcode']) ? bbencode_second_pass($message, $bbcode_uid) : preg_replace('/\:[0-9a-z\:]+\]/si', ']', $message);
                             $message = bbencode_third_pass($message, $bbcode_uid, FALSE);
                         }
                         /*****[END]********************************************
+                        
                         [ Mod:    Hide Mod                            v1.2.0 ]
+                        
                         ******************************************************/
                         $message = make_clickable($message);
                         if ($highlight_active) {
@@ -902,13 +966,17 @@ if ($mode == 'searchuser') {
                 }
                 $topic_type = $searchset[$i]['topic_type'];
                 /*****[BEGIN]******************************************
+                
                 [ Mod:     Global Announcements               v1.2.8 ]
+                
                 ******************************************************/
                 if ($topic_type == POST_GLOBAL_ANNOUNCE) {
                     $topic_type = $lang['Topic_global_announcement'] . " ";
                 } else
                 /*****[END]********************************************
+                
                 [ Mod:     Global Announcements               v1.2.8 ]
+                
                 ******************************************************/
                 if ($topic_type == POST_ANNOUNCE) {
                     $topic_type = $lang['Topic_Announcement'] . ' ';
@@ -952,14 +1020,18 @@ if ($mode == 'searchuser') {
                         $folder_new = $images['folder_locked_new'];
                     }
                     /*****[BEGIN]******************************************
+                    
                     [ Mod:     Global Announcements               v1.2.8 ]
+                    
                     ******************************************************/
                     else if ($searchset[$i]['topic_type'] == POST_GLOBAL_ANNOUNCE) {
                         $folder = $images['folder_global_announce'];
                         $folder_new = $images['folder_global_announce_new'];
                     }
                     /*****[END]********************************************
+                    
                     [ Mod:     Global Announcements               v1.2.8 ]
+                    
                     ******************************************************/
                     else if ($searchset[$i]['topic_type'] == POST_ANNOUNCE) {
                         $folder = $images['folder_announce'];
@@ -1027,21 +1099,29 @@ if ($mode == 'searchuser') {
                 }
                 $topic_author = ($searchset[$i]['user_id'] != ANONYMOUS) ? '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '=' . $searchset[$i]['user_id']) . '">' : '';
                 /*****[BEGIN]******************************************
+                
                 [ Mod:    Advanced Username Color             v1.0.5 ]
+                
                 ******************************************************/
                 $topic_author.= ($searchset[$i]['user_id'] != ANONYMOUS) ? UsernameColor($searchset[$i]['color1'], $searchset[$i]['username']) : ((UsernameColor($searchset[$i]['color1'], $searchset[$i]['post_username']) != '') ? UsernameColor($searchset[$i]['color1'], $searchset[$i]['post_username']) : $lang['Guest']);
                 /*****[END]********************************************
+                
                 [ Mod:    Advanced Username Color             v1.0.5 ]
+                
                 ******************************************************/
                 $topic_author.= ($searchset[$i]['user_id'] != ANONYMOUS) ? '</a>' : '';
                 $first_post_time = create_date($board_config['default_dateformat'], $searchset[$i]['topic_time'], $board_config['board_timezone']);
                 $last_post_time = create_date($board_config['default_dateformat'], $searchset[$i]['post_time'], $board_config['board_timezone']);
                 /*****[BEGIN]******************************************
+                
                 [ Mod:    Advanced Username Color             v1.0.5 ]
+                
                 ******************************************************/
                 $last_post_author = ($searchset[$i]['id2'] == ANONYMOUS) ? (($searchset[$i]['post_username2'] != '') ? $searchset[$i]['post_username2'] . ' ' : $lang['Guest'] . ' ') : '<a href="' . append_sid("profile.$phpEx?mode=viewprofile&amp;" . POST_USERS_URL . '=' . $searchset[$i]['id2']) . '">' . UsernameColor($searchset[$i]['color2'], $searchset[$i]['user2']) . '</a>';
                 /*****[END]********************************************
+                
                 [ Mod:    Advanced Username Color             v1.0.5 ]
+                
                 ******************************************************/
                 $last_post_url = '<a href="' . append_sid("viewtopic.$phpEx?" . POST_POST_URL . '=' . $searchset[$i]['topic_last_post_id']) . '#' . $searchset[$i]['topic_last_post_id'] . '"><img src="' . $images['icon_latest_reply'] . '" alt="' . $lang['View_latest_post'] . '" title="' . $lang['View_latest_post'] . '" border="0" /></a>';
                 /*--FNA #2--*/
@@ -1075,16 +1155,22 @@ if (!$result) {
 $is_auth_ary = auth(AUTH_READ, AUTH_LIST_ALL, $userdata);
 $s_forums = '';
 /*****[BEGIN]******************************************
-    [ Mod:    Simple Subforums                    v1.0.1 ]
- ******************************************************/
+
+     [ Mod:    Simple Subforums                    v1.0.1 ]
+
+     ******************************************************/
 $list = array();
 /*****[END]********************************************
+
      [ Mod:    Simple Subforums                    v1.0.1 ]
- ******************************************************/
+
+     ******************************************************/
 while ($row = $db->sql_fetchrow($result)) {
     if ($is_auth_ary[$row['forum_id']]['auth_read']) {
         /*****[BEGIN]******************************************
+        
         [ Mod:    Simple Subforums                    v1.0.1 ]
+        
         ******************************************************/
         $list[] = $row;
     }
@@ -1093,14 +1179,18 @@ for ($i = 0;$i < count($list);$i++) {
     if (!$list[$i]['forum_parent']) {
         $row = $list[$i];
         /*****[END]********************************************
+        
         [ Mod:    Simple Subforums                    v1.0.1 ]
+        
         ******************************************************/
         $s_forums.= '<option value="' . $row['forum_id'] . '">' . $row['forum_name'] . '</option>';
         if (empty($list_cat[$row['cat_id']])) {
             $list_cat[$row['cat_id']] = $row['cat_title'];
         }
         /*****[BEGIN]******************************************
+        
         [ Mod:    Simple Subforums                    v1.0.1 ]
+        
         ******************************************************/
         $parent_id = $row['forum_id'];
         for ($j = 0;$j < count($list);$j++) {
@@ -1110,7 +1200,9 @@ for ($i = 0;$i < count($list);$i++) {
             }
         }
         /*****[END]********************************************
+        
         [ Mod:    Simple Subforums                    v1.0.1 ]
+        
         ******************************************************/
     }
 }
@@ -1164,12 +1256,16 @@ $template->set_filenames(array('body' => 'search_body.tpl'));
 make_jumpbox('viewforum.' . $phpEx);
 $template->assign_vars(array('L_SEARCH_QUERY' => $lang['Search_query'], 'L_SEARCH_OPTIONS' => $lang['Search_options'], 'L_SEARCH_KEYWORDS' => $lang['Search_keywords'], 'L_SEARCH_KEYWORDS_EXPLAIN' => $lang['Search_keywords_explain'], 'L_SEARCH_AUTHOR' => $lang['Search_author'], 'L_SEARCH_AUTHOR_EXPLAIN' => $lang['Search_author_explain'], 'L_SEARCH_ANY_TERMS' => $lang['Search_for_any'], 'L_SEARCH_ALL_TERMS' => $lang['Search_for_all'], 'L_SEARCH_MESSAGE_ONLY' => $lang['Search_msg_only'],
 /*****[BEGIN]******************************************
+
      [ Mod:    Search Only Subject                 v0.9.1 ]
- ******************************************************/
+
+     ******************************************************/
 'L_SEARCH_MESSAGE_SUBJECT_ONLY' => $lang['Search_subject_only'],
 /*****[END]********************************************
+
      [ Mod:    Search Only Subject                 v0.9.1 ]
- ******************************************************/
+
+     ******************************************************/
 'L_SEARCH_MESSAGE_TITLE' => $lang['Search_title_msg'], 'L_CATEGORY' => $lang['Category'], 'L_RETURN_FIRST' => $lang['Return_first'], 'L_CHARACTERS' => $lang['characters_posts'], 'L_SORT_BY' => $lang['Sort_by'], 'L_SORT_ASCENDING' => $lang['Sort_Ascending'], 'L_SORT_DESCENDING' => $lang['Sort_Descending'], 'L_SEARCH_PREVIOUS' => $lang['Search_previous'], 'L_DISPLAY_RESULTS' => $lang['Display_results'], 'L_FORUM' => $lang['Forum'], 'L_TOPICS' => $lang['Topics'], 'L_POSTS' => $lang['Posts'], 'S_SEARCH_ACTION' => append_sid("search.$phpEx?mode=results"), 'S_CHARACTER_OPTIONS' => $s_characters, 'S_FORUM_OPTIONS' => $s_forums, 'S_CATEGORY_OPTIONS' => $s_categories, 'S_TIME_OPTIONS' => $s_time, 'S_SORT_OPTIONS' => $s_sort_by, 'S_HIDDEN_FIELDS' => ''));
 $template->pparse('body');
 include ("includes/page_tail.$phpEx");

@@ -1,6 +1,149 @@
-﻿/*
-Copyright (c) 2003-2009, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+﻿/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
 
-(function(){var a={modes:{wysiwyg:1,source:1},canUndo:false,exec:function(c){var d,e=CKEDITOR.env.ie&&document.domain!=window.location.hostname;if(c.config.fullPage)d=c.getData();else{var f='<body ',g=CKEDITOR.document.getBody(),h=c.config.baseHref.length>0?'<base href="'+c.config.baseHref+'" _cktemp="true"></base>':'';if(g.getAttribute('id'))f+='id="'+g.getAttribute('id')+'" ';if(g.getAttribute('class'))f+='class="'+g.getAttribute('class')+'" ';f+='>';d=c.config.docType+'<html dir="'+c.config.contentsLangDirection+'">'+'<head>'+h+'<title>'+c.lang.preview+'</title>'+'<link href="'+c.config.contentsCss+'" type="text/css" rel="stylesheet" _cktemp="true"/>'+'</head>'+f+c.getData()+'</body></html>';}var i=640,j=420,k=80;try{var l=window.screen;i=Math.round(l.width*0.8);j=Math.round(l.height*0.7);k=Math.round(l.width*0.1);}catch(o){}var m='';if(e){window._cke_htmlToLoad=d;m='javascript:void( (function(){document.open();document.domain="'+document.domain+'";'+'document.write( window.opener._cke_htmlToLoad );'+'document.close();'+'window.opener._cke_htmlToLoad = null;'+'})() )';}var n=window.open(m,null,'toolbar=yes,location=no,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width='+i+',height='+j+',left='+k);if(!e){n.document.write(d);n.document.close();}}},b='preview';CKEDITOR.plugins.add(b,{init:function(c){c.addCommand(b,a);c.ui.addButton('Preview',{label:c.lang.preview,command:b});}});})();
+/**
+ * @fileOverview Preview plugin.
+ */
+
+( function() {
+	var pluginPath;
+
+	var previewCmd = { modes: { wysiwyg: 1, source: 1 },
+		canUndo: false,
+		readOnly: 1,
+		exec: function( editor ) {
+			var sHTML,
+				config = editor.config,
+				baseTag = config.baseHref ? '<base href="' + config.baseHref + '"/>' : '',
+				eventData;
+
+			if ( config.fullPage )
+				sHTML = editor.getData().replace( /<head>/, '$&' + baseTag ).replace( /[^>]*(?=<\/title>)/, '$& &mdash; ' + editor.lang.preview.preview );
+			else {
+				var bodyHtml = '<body ',
+					body = editor.document && editor.document.getBody();
+
+				if ( body ) {
+					if ( body.getAttribute( 'id' ) )
+						bodyHtml += 'id="' + body.getAttribute( 'id' ) + '" ';
+					if ( body.getAttribute( 'class' ) )
+						bodyHtml += 'class="' + body.getAttribute( 'class' ) + '" ';
+				}
+
+				bodyHtml += '>';
+
+				sHTML = editor.config.docType + '<html dir="' + editor.config.contentsLangDirection + '">' +
+					'<head>' +
+						baseTag +
+						'<title>' + editor.lang.preview.preview + '</title>' +
+						CKEDITOR.tools.buildStyleHtml( editor.config.contentsCss ) +
+					'</head>' + bodyHtml +
+						editor.getData() +
+					'</body></html>';
+			}
+
+			var iWidth = 640,
+				// 800 * 0.8,
+				iHeight = 420,
+				// 600 * 0.7,
+				iLeft = 80; // (800 - 0.8 * 800) /2 = 800 * 0.1.
+			try {
+				var screen = window.screen;
+				iWidth = Math.round( screen.width * 0.8 );
+				iHeight = Math.round( screen.height * 0.7 );
+				iLeft = Math.round( screen.width * 0.1 );
+			} catch ( e ) {}
+
+			// (https://dev.ckeditor.com/ticket/9907) Allow data manipulation before preview is displayed.
+			// Also don't open the preview window when event cancelled.
+			if ( editor.fire( 'contentPreview', eventData = { dataValue: sHTML } ) === false )
+				return false;
+
+			var sOpenUrl = '',
+				ieLocation;
+
+			if ( CKEDITOR.env.ie ) {
+				window._cke_htmlToLoad = eventData.dataValue;
+				ieLocation = 'javascript:void( (function(){' + // jshint ignore:line
+					'document.open();' +
+					// Support for custom document.domain.
+					// Strip comments and replace parent with window.opener in the function body.
+					( '(' + CKEDITOR.tools.fixDomain + ')();' ).replace( /\/\/.*?\n/g, '' ).replace( /parent\./g, 'window.opener.' ) +
+					'document.write( window.opener._cke_htmlToLoad );' +
+					'document.close();' +
+					'window.opener._cke_htmlToLoad = null;' +
+				'})() )';
+				// For IE we should use window.location rather than setting url in window.open. (https://dev.ckeditor.com/ticket/11146)
+				sOpenUrl = '';
+			}
+
+			// With Firefox only, we need to open a special preview page, so
+			// anchors will work properly on it. (https://dev.ckeditor.com/ticket/9047)
+			if ( CKEDITOR.env.gecko ) {
+				window._cke_htmlToLoad = eventData.dataValue;
+				sOpenUrl = CKEDITOR.getUrl( pluginPath + 'preview.html' );
+			}
+
+			var oWindow = window.open( sOpenUrl, null, 'toolbar=yes,location=no,status=yes,menubar=yes,scrollbars=yes,resizable=yes,width=' +
+				iWidth + ',height=' + iHeight + ',left=' + iLeft );
+
+			// For IE we want to assign whole js stored in ieLocation, but in case of
+			// popup blocker activation oWindow variable will be null. (https://dev.ckeditor.com/ticket/11597)
+			if ( CKEDITOR.env.ie && oWindow )
+				oWindow.location = ieLocation;
+
+			if ( !CKEDITOR.env.ie && !CKEDITOR.env.gecko ) {
+				var doc = oWindow.document;
+				doc.open();
+				doc.write( eventData.dataValue );
+				doc.close();
+			}
+
+			return true;
+		}
+	};
+
+	var pluginName = 'preview';
+
+	// Register a plugin named "preview".
+	CKEDITOR.plugins.add( pluginName, {
+		// jscs:disable maximumLineLength
+		lang: 'af,ar,az,bg,bn,bs,ca,cs,cy,da,de,de-ch,el,en,en-au,en-ca,en-gb,eo,es,es-mx,et,eu,fa,fi,fo,fr,fr-ca,gl,gu,he,hi,hr,hu,id,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,oc,pl,pt,pt-br,ro,ru,si,sk,sl,sq,sr,sr-latn,sv,th,tr,tt,ug,uk,vi,zh,zh-cn', // %REMOVE_LINE_CORE%
+		// jscs:enable maximumLineLength
+		icons: 'preview,preview-rtl', // %REMOVE_LINE_CORE%
+		hidpi: true, // %REMOVE_LINE_CORE%
+		init: function( editor ) {
+
+			// Preview is not used for the inline creator.
+			if ( editor.elementMode == CKEDITOR.ELEMENT_MODE_INLINE )
+				return;
+
+			pluginPath = this.path;
+
+			editor.addCommand( pluginName, previewCmd );
+			editor.ui.addButton && editor.ui.addButton( 'Preview', {
+				label: editor.lang.preview.preview,
+				command: pluginName,
+				toolbar: 'document,40'
+			} );
+		}
+	} );
+} )();
+
+/**
+ * Event fired when executing `preview` command, which allows additional data manipulation.
+ * With this event, the raw HTML content of the preview window to be displayed can be altered
+ * or modified.
+ *
+ * **Note** This event **should** also be used to sanitize HTML to mitigate possible XSS attacks. Refer to the
+ * {@glink guide/dev_best_practices#validate-preview-content Validate preview content} section of the Best Practices
+ * article to learn more.
+ *
+ * @event contentPreview
+ * @member CKEDITOR
+ * @param {CKEDITOR.editor} editor This editor instance.
+ * @param data
+ * @param {String} data.dataValue The data that will go to the preview.
+ */

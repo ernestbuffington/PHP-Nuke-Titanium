@@ -1,7 +1,9 @@
 <?php
+
 /* -- -----------------------------------------------------------
- * PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ * // Nuke-Evolution Xtreme: Enhanced PHP-Nuke Web Portal System
  * -- -----------------------------------------------------------
+ *
  * >> Database
  *
  * @filename    db.php
@@ -9,9 +11,11 @@
  * @version     1.11
  * @date        Nov 24, 2011
  * @notes       n/a
+ *
  * -- -----------------------------------------------------------
  * // Legal Stuff
  * -- -----------------------------------------------------------
+ *
  * (c) Copyright 2001 The phpBB Group
  * support@phpbb.com
  *

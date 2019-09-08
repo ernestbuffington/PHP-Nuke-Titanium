@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /********************************************************************************/
@@ -87,9 +87,9 @@ define("_ALWAYSSHOWEMAIL","Always show my Email Address");
 define("_APPLICATIONSUB","New User Account Application");
 define("_ARTICLES","Articles");
 define("_ASREG1","Post comments with your name");
-define("_ASREG2","Send news with your name");
+define("_ASREG2","Submit Network Blogs with your name");
 define("_ASREG3","Have a personal box in the Home");
-define("_ASREG4","Select how many news you want in the Home");
+define("_ASREG4","Select how many Blogs you would like to display on the Home page");
 define("_ASREG5","Customize the comments");
 define("_ASREG6","Select different themes");
 define("_ASREG7","some other cool stuff...");
@@ -516,7 +516,7 @@ define("_YOURAVATAR","Your Avatar");
 define("_YOURCODEIS","Your Confirmation Code is:");
 define("_YOURHOMEPAGE","Your Home Page");
 define("_YOURNEWPASSWORD","Your new Password is");
-define("_YOUUSEDEMAIL","You used the e-mail");
+define("_YOUUSEDEMAIL","You or someone else have used your email account");
 define("_YOUWILLRECEIVE","You will receive a confirmation email with a link to a page you should visit to activate your account.");
 define("_YOUWILLRECEIVE2","You will receive an email with login information. After admin approval.");
 define("_YYIM","Your YIM");

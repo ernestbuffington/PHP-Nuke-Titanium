@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /***************************************************************************
@@ -250,7 +250,7 @@ elseif( $profiledata['birthday_display'] == 2 )
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
 
-$facebook_img = ( $profiledata['user_facebook'] ) ? '<a href="http://www.facebook.com/profile.php?id=' . $profiledata['user_facebook'] . '" target="_userwww"><img src="' . $images['icon_facebook'] . '" alt="' . $lang['Visit_facebook'] . '" title="' . $lang['Visit_facebook'] . '" border="0" /></a>' : '&nbsp;';
+$facebook_img = ( $profiledata['user_facebook'] ) ? '<a href="https://facebook.com/' . $profiledata['user_facebook'] . '" target="_userwww"><img src="' . $images['icon_facebook'] . '" alt="' . $lang['Visit_facebook'] . '" title="' . $lang['Visit_facebook'] . '" border="0" /></a>' : '&nbsp;';
 $facebook = ( $profiledata['user_facebook'] ) ? '<a href="' . $temp_url . '" target="_userwww">' . $profiledata['user_facebook'] . '</a>' : '&nbsp;';
 
 $temp_url = append_sid("search.$phpEx?search_author=" . urlencode($profiledata['username']) . "&amp;showresults=posts");

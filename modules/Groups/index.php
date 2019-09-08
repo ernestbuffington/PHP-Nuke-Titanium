@@ -35,18 +35,17 @@ Remote Avatar Resize                     v2.0.0       11/19/2005
 Online/Offline/Hidden                    v2.2.7       01/24/2006
 Auto Group                               v1.2.2       11/06/2006
 ************************************************************************/
-
-if (!defined('NUKE_EVO'))
-    exit;
+if (!defined('NUKE_EVO')) exit;
 
 $module_name = basename(dirname(__FILE__));
-require(NUKE_FORUMS_DIR . 'nukebb.php');
-define('IN_PHPBB', true);
-include(NUKE_FORUMS_DIR . 'extension.inc');
-include(NUKE_FORUMS_DIR . 'common.php');
 
-// -------------------------
-//
+require(NUKE_FORUMS_DIR . 'nukebb.php');
+
+define('IN_PHPBB', true);
+
+include(NUKE_FORUMS_DIR . 'extension.inc');
+
+include(NUKE_FORUMS_DIR . 'common.php');
 /*****[BEGIN]******************************************
 [ Mod:    Online/Offline/Hidden               v2.2.7 ]
 ******************************************************/
@@ -122,19 +121,13 @@ function generate_user_info(&$row, $date_format, $group_mod, &$from, &$posts, &$
     }
     return;
 }
-//
-// --------------------------
 
 global $cache;
 
-//
-// Start session management
-//
+# Start session management
 $userdata = session_pagestart($user_ip, PAGE_GROUPCP);
 init_userprefs($userdata);
-//
-// End session management
-//
+# End session management
 
 $script_name     = 'modules.php?name=' . $module_name;
 $server_name     = trim($board_config['server_name']);
@@ -147,12 +140,17 @@ if (isset($_GET[POST_GROUPS_URL]) || isset($_POST[POST_GROUPS_URL])) {
     $group_id = '';
 }
 
-if (isset($_POST['mode']) || isset($_GET['mode'])) {
+if (isset($_POST['mode']) || isset($_GET['mode'])) 
+{
     $mode = (isset($_POST['mode'])) ? $_POST['mode'] : $_GET['mode'];
-    if (is_string($mode)) {
+
+    if (is_string($mode)) 
+	{
         $mode = htmlspecialchars($mode);
     }
-} else {
+} 
+else 
+{
     $mode = '';
 }
 
@@ -163,18 +161,24 @@ $start        = (isset($_GET['start'])) ? intval($_GET['start']) : 0;
 $start        = ($start < 0) ? 0 : $start;
 $is_moderator = FALSE;
 
-if (isset($_POST['groupstatus']) && $group_id) {
-    if (!is_user()) {
+if (isset($_POST['groupstatus']) && $group_id) 
+{
+    if (!is_user()) 
+	{
         redirect(append_sid("login.$phpEx?redirect=groupcp.$phpEx&" . POST_GROUPS_URL . "=$group_id", true));
     }
     
     $sql = "SELECT group_moderator FROM " . GROUPS_TABLE . " WHERE group_id = '$group_id'";
-    if (!($result = $db->sql_query($sql))) {
+    
+	if (!($result = $db->sql_query($sql))) 
+	{
         message_die(GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
     }
     
     $row = $db->sql_fetchrow($result);
-    if ($row['group_moderator'] != $userdata['user_id'] && $userdata['user_level'] != ADMIN) {
+    
+	if ($row['group_moderator'] != $userdata['user_id'] && $userdata['user_level'] != ADMIN) 
+	{
         $template->assign_vars(array(
             'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">'
         ));
@@ -183,7 +187,9 @@ if (isset($_POST['groupstatus']) && $group_id) {
     }
     
     $sql = "UPDATE " . GROUPS_TABLE . " SET group_type = " . intval($_POST['group_type']) . " WHERE group_id = '$group_id'";
-    if (!($result = $db->sql_query($sql))) {
+    
+	if (!($result = $db->sql_query($sql))) 
+	{
         message_die(GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
     }
     
@@ -193,18 +199,27 @@ if (isset($_POST['groupstatus']) && $group_id) {
     
     $message = $lang['Group_type_updated'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
     message_die(GENERAL_MESSAGE, $message);
-} elseif (isset($_POST['joingroup']) && $group_id) {
-    //
-    // First, joining a group
-    // If the user isn't logged in redirect them to login
-    //
-    if (!is_user() || !$userdata['session_logged_in']) {
-        redirect(append_sid("login.$phpEx?redirect=groupcp.$phpEx&" . POST_GROUPS_URL . "=$group_id", true));
-    } else if ($sid !== $userdata['session_id']) {
-        message_die(GENERAL_ERROR, $lang['Session_invalid']);
-    }
+} 
+else
+if (isset($_POST['joingroup']) && $group_id) 
+{
+    # First, joining a group
+    # If the user isn't logged in redirect them to login
+    global $userinfo;
+    # Check if a Registered User is Logged-In
+    $username = is_user() ? $userinfo['username'] : _ANONYMOUS;
+    # Ask Anonymous User to register or please login.
+   if ($username === _ANONYMOUS):
+   echo '<div align="center">You are not Logged-In as a User!</div><br />';
+   echo '<div align="center">Please <a href="modules.php?name=Your_Account">Login</a> or <a href="modules.php?name=Your_Account&amp;op=new_user">Register</a>&nbsp;&nbsp;</div>';
+   message_die(GENERAL_ERROR, $lang['Session_invalid']);
+   else:
+
+
+   endif;
     
     $sql = "SELECT ug.user_id, g.group_type, group_count, group_count_max FROM (" . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g) WHERE g.group_id = '$group_id' AND ( g.group_type <> " . GROUP_HIDDEN . " OR (g.group_count <= '" . $userdata['user_posts'] . "' AND g.group_count_max > '" . $userdata['user_posts'] . "')) AND ug.group_id = g.group_id";
+
     if (!($result = $db->sql_query($sql))) {
         message_die(GENERAL_ERROR, 'Could not obtain user and group information', '', __LINE__, __FILE__, $sql);
     }
@@ -282,20 +297,32 @@ if (isset($_POST['groupstatus']) && $group_id) {
     
     $message = ($is_autogroup_enable) ? $lang['Group_added'] : $lang['Group_joined'] . '<br /><br />' . sprintf($lang['Click_return_group'], '<a href="' . append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_index'], '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
     message_die(GENERAL_MESSAGE, $message);
-} elseif (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id) {
-    //
-    // Second, unsubscribing from a group
-    // Check for confirmation of unsub.
-    //
-    if ($cancel) {
+} 
+else
+if (isset($_POST['unsub']) || isset($_POST['unsubpending']) && $group_id) 
+{
+    # Second, unsubscribing from a group
+    # Check for confirmation of unsub.
+    if ($cancel) 
+	{
         redirect(append_sid("groupcp.$phpEx", true));
-    } elseif (!is_user() || !$userdata['session_logged_in']) {
-        redirect('modules.php?name=Your_Account&amp;redirect=groupcp.php&amp;' . POST_GROUPS_URL . '=' . $group_id);
-    } else if ($sid !== $userdata['session_id']) {
-        message_die(GENERAL_ERROR, $lang['Session_invalid']);
-    }
+    } 
+	
+    # If the user isn't logged in redirect them to login
+    global $userinfo;
+    # Check if a Registered User is Logged-In
+    $username = is_user() ? $userinfo['username'] : _ANONYMOUS;
+    # Ask Anonymous User to register or please login.
+    if ($username === _ANONYMOUS):
+    echo '<div align="center">You are not Logged-In as a User!</div><br />';
+    echo '<div align="center">Please <a href="modules.php?name=Your_Account">Login</a> or <a href="modules.php?name=Your_Account&amp;op=new_user">Register</a>&nbsp;&nbsp;</div>';
+    message_die(GENERAL_ERROR, $lang['Session_invalid']);
+    else:
+
+    endif;	
     
-    if ($confirm) {
+    if ($confirm) 
+	{
         /*****[BEGIN]******************************************
         [ Mod:     Group Colors and Ranks             v1.0.0 ]
         ******************************************************/
@@ -366,48 +393,56 @@ if (isset($_POST['groupstatus']) && $group_id) {
         include(NUKE_INCLUDE_DIR . 'page_tail.' . $phpEx);
     }
     
-} elseif ($group_id) {
-    //
-    // Did the group moderator get here through an email?
-    // If so, check to see if they are logged in.
-    //
-    if (isset($_GET['validate'])) {
-        if (!is_user()) {
+} 
+else
+if ($group_id) 
+{
+    # Did the group moderator get here through an email?
+    # If so, check to see if they are logged in.
+    if (isset($_GET['validate'])) 
+	{
+        if (!is_user()) 
+		{
             redirect(append_sid("login.$phpEx?redirect=groupcp.$phpEx&" . POST_GROUPS_URL . "=$group_id", true));
             exit;
         }
     }
     
-    //
-    // For security, get the ID of the group moderator.
-    //
+    # For security, get the ID of the group moderator.
     $sql = "SELECT g.group_moderator, g.group_type, aa.auth_mod FROM ( " . GROUPS_TABLE . " g LEFT JOIN " . AUTH_ACCESS_TABLE . " aa ON aa.group_id = g.group_id ) WHERE g.group_id = '$group_id'";
-    if (!($result = $db->sql_query($sql))) {
+
+    if (!($result = $db->sql_query($sql))) 
+	{
         message_die(GENERAL_ERROR, 'Could not get moderator information', '', __LINE__, __FILE__, $sql);
     }
     
-    if ($group_info = $db->sql_fetchrow($result)) {
+    if ($group_info = $db->sql_fetchrow($result)) 
+	{
         $group_moderator = $group_info['group_moderator'];
         
         if ($group_moderator == $userdata['user_id'] || $userdata['user_level'] == ADMIN) {
             $is_moderator = TRUE;
         }
         
-        //
-        // Handle Additions, removals, approvals and denials
-        //
+        # Handle Additions, removals, approvals and denials
         if (!empty($_POST['add']) || !empty($_POST['remove']) || isset($_POST['approve']) || isset($_POST['deny'])) 
         {
-            if (!is_user()) 
-            {
-                redirect(append_sid("login.$phpEx?redirect=groupcp.$phpEx&" . POST_GROUPS_URL . "=$group_id", true));
-            } 
-            elseif ($sid !== $userdata['session_id']) 
-            {
-                message_die(GENERAL_ERROR, $lang['Session_invalid']);
-            }
             
-            if (!$is_moderator) {
+            # If the user isn't logged in redirect them to login
+            global $userinfo;
+            # Check if a Registered User is Logged-In
+            $username = is_user() ? $userinfo['username'] : _ANONYMOUS;
+            # Ask Anonymous User to register or please login.
+            if ($username === _ANONYMOUS):
+            echo '<div align="center">You are not Logged-In as a User!</div><br />';
+            echo '<div align="center">Please <a href="modules.php?name=Your_Account">Login</a> or <a href="modules.php?name=Your_Account&amp;op=new_user">Register</a>&nbsp;&nbsp;</div>';
+            message_die(GENERAL_ERROR, $lang['Session_invalid']);
+            else:
+
+            endif;	
+            
+            if (!$is_moderator) 
+			{
                 $template->assign_vars(array(
                     'META' => '<meta http-equiv="refresh" content="3;url=' . append_sid("index.$phpEx") . '">'
                 ));
@@ -468,12 +503,13 @@ if (isset($_POST['groupstatus']) && $group_id) {
                         }
                     }
                     
-                    //
-                    // Get the group name
-                    // Email the user and tell them they're in the group
-                    //
+                    
+                    # Get the group name
+                    # Email the user and tell them they're in the group
                     $group_sql = "SELECT group_name FROM " . GROUPS_TABLE . " WHERE group_id = '$group_id'";
-                    if (!($result = $db->sql_query($group_sql))) {
+
+                    if (!($result = $db->sql_query($group_sql))) 
+					{
                         message_die(GENERAL_ERROR, 'Could not get group information', '', __LINE__, __FILE__, $group_sql);
                     }
                     
@@ -681,9 +717,7 @@ if (isset($_POST['groupstatus']) && $group_id) {
                         message_die(GENERAL_ERROR, 'Could not update user group table', '', __LINE__, __FILE__, $sql);
                     }
                     
-                    //
-                    // Email users when they are approved
-                    //
+                    # Email users when they are approved
                     if (isset($_POST['approve'])) {
                         if (!($result = $db->sql_query($sql_select))) {
                             message_die(GENERAL_ERROR, 'Could not get user email information', '', __LINE__, __FILE__, $sql);
@@ -694,9 +728,7 @@ if (isset($_POST['groupstatus']) && $group_id) {
                             $bcc_list[] = $row['user_email'];
                         }
                         
-                        //
-                        // Get the group name
-                        //
+                        # Get the group name
                         $group_sql = "SELECT group_name
                                                         FROM " . GROUPS_TABLE . "
                                                         WHERE group_id = '$group_id'";
@@ -733,16 +765,14 @@ if (isset($_POST['groupstatus']) && $group_id) {
                 }
             }
         }
-        //
-        // END approve or deny
-        //
-    } else {
+        # END approve or deny
+    } 
+	else 
+	{
         message_die(GENERAL_MESSAGE, $lang['No_groups_exist']);
     }
     
-    //
-    // Get group details
-    //
+    # Get group details
     $sql = "SELECT * FROM " . GROUPS_TABLE . " WHERE group_id = '$group_id' AND group_single_user = '0'";
     if (!($result = $db->sql_query($sql))) {
         message_die(GENERAL_ERROR, 'Error getting group information', '', __LINE__, __FILE__, $sql);
@@ -752,9 +782,7 @@ if (isset($_POST['groupstatus']) && $group_id) {
         message_die(GENERAL_MESSAGE, $lang['Group_not_exist']);
     }
     
-    //
-    // Get moderator details for this group
-    //
+    # Get moderator details for this group
     /*****[BEGIN]******************************************
     [ Mod:    Online/Offline/Hidden               v2.2.7 ]
     ******************************************************/
@@ -774,9 +802,7 @@ if (isset($_POST['groupstatus']) && $group_id) {
         message_die(GENERAL_ERROR, 'Error getting moderator for group');
     }
     
-    //
-    // Get user information for this group
-    //
+    # Get user information for this group
     /*****[BEGIN]******************************************
     [ Mod:    Online/Offline/Hidden               v2.2.7 ]
     ******************************************************/
@@ -928,18 +954,14 @@ if (isset($_POST['groupstatus']) && $group_id) {
     $page_title = $lang['Group_Control_Panel'];
     include(NUKE_INCLUDE_DIR . 'page_header.' . $phpEx);
     
-    //
-    // Load templates
-    //
+    # Load templates
     $template->set_filenames(array(
         'info' => 'groupcp_info_body.tpl',
         'pendinginfo' => 'groupcp_pending_info.tpl'
     ));
     make_jumpbox('viewforum.' . $phpEx);
     
-    //
-    // Add the moderator
-    //
+    # Add the moderator
     /*****[BEGIN]******************************************
     [ Mod:    Advanced Username Color             v1.0.5 ]
     ******************************************************/
@@ -1036,9 +1058,7 @@ if (isset($_POST['groupstatus']) && $group_id) {
         'S_GROUPCP_ACTION' => append_sid("groupcp.$phpEx?" . POST_GROUPS_URL . "=$group_id")
     ));
     
-    //
-    // Dump out the remaining users
-    //
+    # Dump out the remaining users
     for ($i = $start; $i < min($board_config['topics_per_page'] + $start, $members_count); $i++) {
         /*****[BEGIN]******************************************
         [ Mod:    Advanced Username Color             v1.0.5 ]
@@ -1099,9 +1119,7 @@ if (isset($_POST['groupstatus']) && $group_id) {
     }
     
     if (!$members_count) {
-        //
-        // No group members
-        //
+        # No group members
         $template->assign_block_vars('switch_no_members', array());
         $template->assign_vars(array(
             'L_NO_MEMBERS' => $lang['No_group_members']
@@ -1118,23 +1136,18 @@ if (isset($_POST['groupstatus']) && $group_id) {
     ));
     
     if ($group_info['group_type'] == GROUP_HIDDEN && !$is_group_member && !$is_moderator) {
-        //
-        // No group members
-        //
+        # No group members
         $template->assign_block_vars('switch_hidden_group', array());
         $template->assign_vars(array(
             'L_HIDDEN_MEMBERS' => $lang['Group_hidden_members']
         ));
     }
     
-    //
-    // We've displayed the members who belong to the group, now we
-    // do that pending memebers...
-    //
-    if ($is_moderator) {
-        //
-        // Users pending in ONLY THIS GROUP (which is moderated by this user)
-        //
+    # We've displayed the members who belong to the group, now we
+    # do that pending memebers...
+    if ($is_moderator) 
+	{
+        # Users pending in ONLY THIS GROUP (which is moderated by this user)
         if ($modgroup_pending_count) {
             for ($i = 0; $i < $modgroup_pending_count; $i++) {
                 $username = UsernameColor($modgroup_pending_list[$i]['username']);
@@ -1192,12 +1205,10 @@ if (isset($_POST['groupstatus']) && $group_id) {
     
     $template->pparse('info');
 } else {
-    //
-    // Show the main groupcp.php screen where the user can select a group.
-    //
-    // Select all group that the user is a member of or where the user has
-    // a pending membership.
-    //
+    # Show the main groupcp.php screen where the user can select a group.
+    #
+    # Select all group that the user is a member of or where the user has
+    # a pending membership.
     $in_group = array();
     if (is_user()) {
         $sql = "SELECT g.group_id, g.group_name, g.group_type, ug.user_pending
@@ -1229,9 +1240,7 @@ if (isset($_POST['groupstatus']) && $group_id) {
         }
     }
     
-    //
-    // Select all other groups i.e. groups that this user is not a member of
-    //
+    # Select all other groups i.e. groups that this user is not a member of
     $ignore_group_sql = (count($in_group)) ? "AND group_id NOT IN (" . implode(', ', $in_group) . ")" : '';
     $sql              = "SELECT group_id, group_name, group_type, group_count , group_count_max
                 FROM " . GROUPS_TABLE . " g
@@ -1258,9 +1267,7 @@ if (isset($_POST['groupstatus']) && $group_id) {
     $s_group_list = '<select name="' . POST_GROUPS_URL . '">' . $s_group_list_opt . '</select>';
     
     if ($s_group_list_opt != '' || $s_pending_groups_opt != '' || $s_member_groups_opt != '') {
-        //
-        // Load and process templates
-        //
+        # Load and process templates
         $page_title = $lang['Group_Control_Panel'];
         include(NUKE_INCLUDE_DIR . 'page_header.' . $phpEx);
         
@@ -1311,5 +1318,4 @@ if (isset($_POST['groupstatus']) && $group_id) {
 }
 
 include(NUKE_INCLUDE_DIR . 'page_tail.' . $phpEx);
-
 ?>

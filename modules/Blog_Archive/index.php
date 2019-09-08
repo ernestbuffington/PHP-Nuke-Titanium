@@ -393,8 +393,8 @@ function show_all($min)
         $score = intval($row['score']);
         $ratings = intval($row['ratings']);
         $time = explode(" ", $time);
-        $actions = "<a href=\"modules.php?name=Blog&amp;file=print&amp;sid=$sid\"><img src=\"images/print.gif\" border=0 alt=\""._PRINTER."\" title=\""._PRINTER."\" width=\"15\" height=\"11\"></a>&nbsp;<a href=\"modules.php?name=Blog&amp;file=friend&amp;op=FriendSend&amp;sid=$sid\"><img src=\"images/friend.gif\" border=0 alt=\""._FRIEND."\" title=\""._FRIEND."\" width=\"15\" height=\"11\"></a>";
-    
+        $actions = "<a href=\"modules.php?name=Blog&amp;file=print&amp;sid=$sid\"><i class=\"fa fa-print\"></i></a>&nbsp;<a href=\"modules.php?name=Blog&amp;file=friend&amp;op=FriendSend&amp;sid=$sid\"><i class=\"fa fa-envelope\"></i></a>";
+
 	    if ($score != 0) 
 		{
             $rated = substr($score / $ratings, 0, 4);

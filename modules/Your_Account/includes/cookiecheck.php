@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /*********************************************************************************/
@@ -155,25 +155,14 @@ $CookieArray = $_COOKIE;
     echo "<table cellspacing=\"0\" cellpadding=\"5\" border=\"1\" align=\"left\"><tr><td colspan=\"2\">";
     echo "<span class=\"title\">"._YA_CURRENTCOOKIE."</span></td></tr>";
     echo "<tr><td nowrap=\"nowrap\"><strong>"._YA_COOKIENAME."</strong></td><td width=\"100%\"><strong>"._YA_COOKIEVAL."</strong></td></tr>";
-    
-	if (is_array($CookieArray) && !empty($CookieArray)) 
-	{
-        ###################################################### 
-        # Fixed for PHP 7.3.6 - 08/30/2019                   #
-	    #           //key   //value             //array      #
-	    # while(list($cName,$cValue) = each($CookieArray))   #
-		######################################################
-		foreach($CookieArray as $cName => $cValue) 
-		{
+    if (is_array($CookieArray) && !empty($CookieArray)) {
+        while(list($cName,$cValue) = each($CookieArray)) {
             $cName     = str_replace(" ","",$cName);
-        
-		    if (empty($cValue)) $cValue = "(empty)";
+            if (empty($cValue)) $cValue = "(empty)";
             $cMore     = substr("$cValue", 36, 1);
-        
-		    if (!empty($cMore)) 
+            if (!empty($cMore)) 
             $cValue = substr("$cValue", 0, 35)." ( . . . )";
-        
-		    echo "<tr><td align=\"left\" nowrap=\"nowrap\">$cName</td><td width=\"100%\" align=\"left\">$cValue</td></tr>";
+            echo "<tr><td align=\"left\" nowrap=\"nowrap\">$cName</td><td width=\"100%\" align=\"left\">$cValue</td></tr>";
         }
     echo "</table></td><td valign=\"top\"><input type=\"submit\" name=\"submit\" value='"._YA_COOKIEDELTHESE."'></td></form></tr></table>";
     }

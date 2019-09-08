@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************
@@ -47,7 +47,7 @@ body {
     font-size: 10px;
     font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
     color: black;
-    background: #FFFFFF;
+    background: #D3D3D3;
 }
 a {
     font-size: 10px;
@@ -60,7 +60,7 @@ a {
         ."</head>\n"
         ."<body>\n"
         ."<center><strong>Module Copyright &copy; Information</strong><br />"
-        ."<h1>$module_name Module</h1><br /><br /></center>\n"
+        ."$module_name module for <a href='http://www.nuke-evolution.com' target='_blank'>Nuke-Evolution</a><br /><br /></center>\n"
         ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Module's Name:</strong> $module_name<br />\n"
         ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Module's Version:</strong> $module_version<br />\n"
         ."<img src='../../images/arrow.gif' border='0' alt='' />&nbsp;<strong>Module's Description:</strong> $module_description<br />\n"

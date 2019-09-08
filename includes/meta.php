@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke titanium v3.0.0
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -62,10 +62,17 @@ if(($metatags = $cache->load('metatags', 'config')) === false) {
 ##################################################
 # Finally output the meta tags                   #
 ##################################################
-$metastring = '';
+
+$metastring  = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">';
+$metastring .= '<meta http-equiv="Content-Language" content="'._LANGCODE.'">';
+$metastring .= '<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->';
+// $metastring .= '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
+$metastring .= '<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">';
+
+
 for($i=0,$j=count($metatags);$i<$j;$i++) {
 	$metatag = $metatags[$i];
-    $metastring .= "<meta name=\"".$metatag['meta_name']."\" content=\"".$metatag['meta_content']."\" />\n";
+    $metastring .= "<meta name=\"".$metatag['meta_name']."\" content=\"".$metatag['meta_content']."\">\n";
 }
 
 ###############################################
@@ -75,8 +82,8 @@ for($i=0,$j=count($metatags);$i<$j;$i++) {
 
 // IF YOU REALLY NEED TO REMOVE IT AND HAVE MY WRITTEN AUTHORIZATION CHECK: http://phpnuke.org/modules.php?name=Commercial_License
 // PLAY FAIR AND SUPPORT THE DEVELOPMENT, PLEASE!
-//$metastring .= '<meta name="generator" content="PHP-Nuke Copyright (c) 2006 by Francisco Burzi. This is free software, and you may redistribute it under the GPL (http://phpnuke.org/files/gpl.txt). PHP-Nuke comes with absolutely no warranty, for details, see the license (http://phpnuke.org/files/gpl.txt). Powered by PHP-Nuke Titanium v3.0.0 (https://hub.86it.us).">';
+$metastring .= '<meta name="generator" content="PHP-Nuke Copyright (c) 2006 by Francisco Burzi. This is free software, and you may redistribute it under the GPL (http://phpnuke.org/files/gpl.txt). PHP-Nuke comes with absolutely no warranty, for details, see the license (http://phpnuke.org/files/gpl.txt). Powered by Nuke-Evolution (http://www.nuke-evolution.com).">';
 
 echo $metastring;
-?>
 
+?>

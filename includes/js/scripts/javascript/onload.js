@@ -1,4 +1,10 @@
 /*************************************************************
+* CKeditor 4 Base Path
+* Added by Ernest Allen Buffington
+* 09/08/2019
+*************************************************************/
+var CKEDITOR_BASEPATH = 'includes/wysiwyg/ckeditor/';
+/*************************************************************
 * Window Onload Manager (WOM) v1.0
 * Author: Justin Barlow - www.netlobo.com
 *
@@ -16,7 +22,6 @@
 * WOM will now run when your page loads and run all of the
 * functions you have added using womAdd()
 *************************************************************/
-var CKEDITOR_BASEPATH = 'includes/wysiwyg/ckeditor/';
 /*************************************************************
 * The womOn() function will set the window.onload function to
 * be womGo() which will run all of your window.onload

@@ -1,7 +1,253 @@
-﻿/*
-Copyright (c) 2003-2009, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
 
-CKEDITOR.plugins.add('listblock',{requires:['panel'],onLoad:function(){CKEDITOR.ui.panel.prototype.addListBlock=function(a,b){return this.addBlock(a,new CKEDITOR.ui.listBlock(this.getHolderElement(),b));};CKEDITOR.ui.listBlock=CKEDITOR.tools.createClass({base:CKEDITOR.ui.panel.block,$:function(a,b){var d=this;d.base(a);d.multiSelect=!!b;var c=d.keys;c[40]='next';c[9]='next';c[38]='prev';c[CKEDITOR.SHIFT+9]='prev';c[32]='click';d._.pendingHtml=[];d._.items={};d._.groups={};},_:{close:function(){if(this._.started){this._.pendingHtml.push('</ul>');delete this._.started;}},getClick:function(){if(!this._.click)this._.click=CKEDITOR.tools.addFunction(function(a){var c=this;var b=true;if(c.multiSelect)b=c.toggle(a);else c.mark(a);if(c.onClick)c.onClick(a,b);},this);return this._.click;}},proto:{add:function(a,b,c){var f=this;var d=f._.pendingHtml,e='cke_'+CKEDITOR.tools.getNextNumber();if(!f._.started){d.push('<ul class=cke_panel_list>');f._.started=1;}f._.items[a]=e;d.push('<li id=',e,' class=cke_panel_listItem><a _cke_focus=1 hidefocus=true title="',c||a,'" href="javascript:void(\'',a,'\')" onclick="CKEDITOR.tools.callFunction(',f._.getClick(),",'",a,"'); return false;\">",b||a,'</a></li>');},startGroup:function(a){this._.close();var b='cke_'+CKEDITOR.tools.getNextNumber();this._.groups[a]=b;this._.pendingHtml.push('<h1 id=',b,' class=cke_panel_grouptitle>',a,'</h1>');},commit:function(){var a=this;a._.close();a.element.appendHtml(a._.pendingHtml.join(''));a._.pendingHtml=[];},toggle:function(a){var b=this.isMarked(a);if(b)this.unmark(a);else this.mark(a);return!b;},hideGroup:function(a){var b=this.element.getDocument().getById(this._.groups[a]),c=b&&b.getNext();if(b){b.setStyle('display','none');if(c&&c.getName()=='ul')c.setStyle('display','none');}},hideItem:function(a){this.element.getDocument().getById(this._.items[a]).setStyle('display','none');},showAll:function(){var a=this._.items,b=this._.groups,c=this.element.getDocument();for(var d in a)c.getById(a[d]).setStyle('display','');for(var e in b){var f=c.getById(b[e]),g=f.getNext();f.setStyle('display','');if(g&&g.getName()=='ul')g.setStyle('display','');}},mark:function(a){var b=this;if(!b.multiSelect)b.unmarkAll();b.element.getDocument().getById(b._.items[a]).addClass('cke_selected');},unmark:function(a){this.element.getDocument().getById(this._.items[a]).removeClass('cke_selected');},unmarkAll:function(){var a=this._.items,b=this.element.getDocument();for(var c in a)b.getById(a[c]).removeClass('cke_selected');
-},isMarked:function(a){return this.element.getDocument().getById(this._.items[a]).hasClass('cke_selected');},focus:function(a){this._.focusIndex=-1;if(a){var b=this.element.getDocument().getById(this._.items[a]).getFirst(),c=this.element.getElementsByTag('a'),d,e=-1;while(d=c.getItem(++e))if(d.equals(b)){this._.focusIndex=e;break;}setTimeout(function(){b.focus();},0);}}}});}});
+CKEDITOR.plugins.add( 'listblock', {
+	requires: 'panel',
+
+	onLoad: function() {
+		var list = CKEDITOR.addTemplate( 'panel-list', '<ul role="presentation" class="cke_panel_list">{items}</ul>' ),
+			listItem = CKEDITOR.addTemplate( 'panel-list-item', '<li id="{id}" class="cke_panel_listItem" role=presentation>' +
+				'<a id="{id}_option" _cke_focus=1 hidefocus=true' +
+					' title="{title}"' +
+					' draggable="false"' +
+					' ondragstart="return false;"' + // Draggable attribute is buggy on Firefox.
+					' href="javascript:void(\'{val}\')" ' +
+					' onclick="{onclick}CKEDITOR.tools.callFunction({clickFn},\'{val}\'); return false;"' + // https://dev.ckeditor.com/ticket/188
+						' role="option">' +
+					'{text}' +
+				'</a>' +
+				'</li>' ),
+			listGroup = CKEDITOR.addTemplate( 'panel-list-group', '<h1 id="{id}" draggable="false" ondragstart="return false;" class="cke_panel_grouptitle" role="presentation" >{label}</h1>' ),
+			reSingleQuote = /\'/g,
+			escapeSingleQuotes = function( str ) {
+				return str.replace( reSingleQuote, '\\\'' );
+			};
+
+		CKEDITOR.ui.panel.prototype.addListBlock = function( name, definition ) {
+			return this.addBlock( name, new CKEDITOR.ui.listBlock( this.getHolderElement(), definition ) );
+		};
+
+		CKEDITOR.ui.listBlock = CKEDITOR.tools.createClass( {
+			base: CKEDITOR.ui.panel.block,
+
+			$: function( blockHolder, blockDefinition ) {
+				blockDefinition = blockDefinition || {};
+
+				var attribs = blockDefinition.attributes || ( blockDefinition.attributes = {} );
+				( this.multiSelect = !!blockDefinition.multiSelect ) && ( attribs[ 'aria-multiselectable' ] = true );
+				// Provide default role of 'listbox'.
+				!attribs.role && ( attribs.role = 'listbox' );
+
+				// Call the base contructor.
+				this.base.apply( this, arguments );
+
+				// Set the proper a11y attributes.
+				this.element.setAttribute( 'role', attribs.role );
+
+				var keys = this.keys;
+				keys[ 40 ] = 'next'; // ARROW-DOWN
+				keys[ 9 ] = 'next'; // TAB
+				keys[ 38 ] = 'prev'; // ARROW-UP
+				keys[ CKEDITOR.SHIFT + 9 ] = 'prev'; // SHIFT + TAB
+				keys[ 32 ] = CKEDITOR.env.ie ? 'mouseup' : 'click'; // SPACE
+				CKEDITOR.env.ie && ( keys[ 13 ] = 'mouseup' ); // Manage ENTER, since onclick is blocked in IE (https://dev.ckeditor.com/ticket/8041).
+
+				this._.pendingHtml = [];
+				this._.pendingList = [];
+				this._.items = {};
+				this._.groups = {};
+			},
+
+			_: {
+				close: function() {
+					if ( this._.started ) {
+						var output = list.output( { items: this._.pendingList.join( '' ) } );
+						this._.pendingList = [];
+						this._.pendingHtml.push( output );
+						delete this._.started;
+					}
+				},
+
+				getClick: function() {
+					if ( !this._.click ) {
+						this._.click = CKEDITOR.tools.addFunction( function( value ) {
+							var marked = this.toggle( value );
+							if ( this.onClick )
+								this.onClick( value, marked );
+						}, this );
+					}
+					return this._.click;
+				}
+			},
+
+			proto: {
+				add: function( value, html, title ) {
+					var id = CKEDITOR.tools.getNextId();
+
+					if ( !this._.started ) {
+						this._.started = 1;
+						this._.size = this._.size || 0;
+					}
+
+					this._.items[ value ] = id;
+
+					var data = {
+						id: id,
+						val: escapeSingleQuotes( CKEDITOR.tools.htmlEncodeAttr( value ) ),
+						// Add check for left mouse button (#2857).
+						onclick: CKEDITOR.env.ie ?
+							'return false;" onmouseup="CKEDITOR.tools.getMouseButton(event)===CKEDITOR.MOUSE_BUTTON_LEFT&&' : '',
+						clickFn: this._.getClick(),
+						title: CKEDITOR.tools.htmlEncodeAttr( title || value ),
+						text: html || value
+					};
+
+					this._.pendingList.push( listItem.output( data ) );
+				},
+
+				startGroup: function( title ) {
+					this._.close();
+
+					var id = CKEDITOR.tools.getNextId();
+
+					this._.groups[ title ] = id;
+
+					this._.pendingHtml.push( listGroup.output( { id: id, label: title } ) );
+				},
+
+				commit: function() {
+					this._.close();
+					this.element.appendHtml( this._.pendingHtml.join( '' ) );
+					delete this._.size;
+
+					this._.pendingHtml = [];
+				},
+
+				toggle: function( value ) {
+					var isMarked = this.isMarked( value );
+
+					if ( isMarked )
+						this.unmark( value );
+					else
+						this.mark( value );
+
+					return !isMarked;
+				},
+
+				hideGroup: function( groupTitle ) {
+					var group = this.element.getDocument().getById( this._.groups[ groupTitle ] ),
+						list = group && group.getNext();
+
+					if ( group ) {
+						group.setStyle( 'display', 'none' );
+
+						if ( list && list.getName() == 'ul' )
+							list.setStyle( 'display', 'none' );
+					}
+				},
+
+				hideItem: function( value ) {
+					this.element.getDocument().getById( this._.items[ value ] ).setStyle( 'display', 'none' );
+				},
+
+				showAll: function() {
+					var items = this._.items,
+						groups = this._.groups,
+						doc = this.element.getDocument();
+
+					for ( var value in items ) {
+						doc.getById( items[ value ] ).setStyle( 'display', '' );
+					}
+
+					for ( var title in groups ) {
+						var group = doc.getById( groups[ title ] ),
+							list = group.getNext();
+
+						group.setStyle( 'display', '' );
+
+						if ( list && list.getName() == 'ul' )
+							list.setStyle( 'display', '' );
+					}
+				},
+
+				mark: function( value ) {
+					if ( !this.multiSelect )
+						this.unmarkAll();
+
+					var itemId = this._.items[ value ],
+						item = this.element.getDocument().getById( itemId );
+					item.addClass( 'cke_selected' );
+
+					this.element.getDocument().getById( itemId + '_option' ).setAttribute( 'aria-selected', true );
+					this.onMark && this.onMark( item );
+				},
+
+				markFirstDisplayed: function() {
+					var context = this;
+					this._.markFirstDisplayed( function() {
+						if ( !context.multiSelect )
+							context.unmarkAll();
+					} );
+				},
+
+				unmark: function( value ) {
+					var doc = this.element.getDocument(),
+						itemId = this._.items[ value ],
+						item = doc.getById( itemId );
+
+					item.removeClass( 'cke_selected' );
+					doc.getById( itemId + '_option' ).removeAttribute( 'aria-selected' );
+
+					this.onUnmark && this.onUnmark( item );
+				},
+
+				unmarkAll: function() {
+					var items = this._.items,
+						doc = this.element.getDocument();
+
+					for ( var value in items ) {
+						var itemId = items[ value ];
+
+						doc.getById( itemId ).removeClass( 'cke_selected' );
+						doc.getById( itemId + '_option' ).removeAttribute( 'aria-selected' );
+					}
+
+					this.onUnmark && this.onUnmark();
+				},
+
+				isMarked: function( value ) {
+					return this.element.getDocument().getById( this._.items[ value ] ).hasClass( 'cke_selected' );
+				},
+
+				focus: function( value ) {
+					this._.focusIndex = -1;
+
+					var links = this.element.getElementsByTag( 'a' ),
+						link,
+						selected,
+						i = -1;
+
+					if ( value ) {
+						selected = this.element.getDocument().getById( this._.items[ value ] ).getFirst();
+
+						while ( ( link = links.getItem( ++i ) ) ) {
+							if ( link.equals( selected ) ) {
+								this._.focusIndex = i;
+								break;
+							}
+						}
+					}
+					else {
+						this.element.focus();
+					}
+
+					selected && setTimeout( function() {
+						selected.focus();
+					}, 0 );
+				}
+			}
+		} );
+	}
+} );

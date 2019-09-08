@@ -1,6 +1,43 @@
-﻿/*
-Copyright (c) 2003-2009, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+﻿/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
 
-(function(){var a={exec:function(c){c.insertElement(c.document.createElement('hr'));}},b='horizontalrule';CKEDITOR.plugins.add(b,{init:function(c){c.addCommand(b,a);c.ui.addButton('HorizontalRule',{label:c.lang.horizontalrule,command:b});}});})();
+/**
+ * @fileOverview Horizontal Rule plugin.
+ */
+
+( function() {
+	var horizontalruleCmd = {
+		canUndo: false, // The undo snapshot will be handled by 'insertElement'.
+		exec: function( editor ) {
+			var hr = editor.document.createElement( 'hr' );
+			editor.insertElement( hr );
+		},
+
+		allowedContent: 'hr',
+		requiredContent: 'hr'
+	};
+
+	var pluginName = 'horizontalrule';
+
+	// Register a plugin named "horizontalrule".
+	CKEDITOR.plugins.add( pluginName, {
+		// jscs:disable maximumLineLength
+		lang: 'af,ar,az,bg,bn,bs,ca,cs,cy,da,de,de-ch,el,en,en-au,en-ca,en-gb,eo,es,es-mx,et,eu,fa,fi,fo,fr,fr-ca,gl,gu,he,hi,hr,hu,id,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,oc,pl,pt,pt-br,ro,ru,si,sk,sl,sq,sr,sr-latn,sv,th,tr,tt,ug,uk,vi,zh,zh-cn', // %REMOVE_LINE_CORE%
+		// jscs:enable maximumLineLength
+		icons: 'horizontalrule', // %REMOVE_LINE_CORE%
+		hidpi: true, // %REMOVE_LINE_CORE%
+		init: function( editor ) {
+			if ( editor.blockless )
+				return;
+
+			editor.addCommand( pluginName, horizontalruleCmd );
+			editor.ui.addButton && editor.ui.addButton( 'HorizontalRule', {
+				label: editor.lang.horizontalrule.toolbar,
+				command: pluginName,
+				toolbar: 'insert,40'
+			} );
+		}
+	} );
+} )();

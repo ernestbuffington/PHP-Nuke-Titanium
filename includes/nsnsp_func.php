@@ -1,15 +1,14 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /********************************************************/
 /* NSN Supporters                                       */
-/* By: The 86it Developers Network                      */
-/* http://hub.86it.us                                   */
-/* Copyright (c) 2019 by The 86it Developers Network    */
+/* By: NukeScripts Network (webmaster@nukescripts.net)  */
+/* http://www.nukescripts.net                           */
+/* Copyright (c) 2000-2005 by NukeScripts Network         */
 /********************************************************/
-
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-

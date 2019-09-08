@@ -21,7 +21,7 @@
 */
 
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /*****[CHANGES]**********************************************************
@@ -292,14 +292,21 @@ function message_prepare($message, $html_on, $bbcode_on)
     #
     # Clean up the message
     #
-    
-	$message = trim($message);
-    
-	if ($html_on) 
+	
+# ALL 128 TAGS ENABLED - NOW PICK THE ONES YOU DO NOT WANT FOR THE HARD CODE
+$AllowableCK4HTML = '--,!DOCTYPE,a,abbr,acronym,address,applet,area,article,aside,audio,b,base,basefont,bdi,bdo,big,blockquote,body,br,button,canvas,caption,
+                   center,cite,code,col,colgroup,data,datalist,dd,del,details,dfn,dialog,dir,div,dl,dt,em,embed,fieldset,figcaption,figure,font,footer,form,
+                    frame,frameset,h1,h2,h3,h4,h5,h6,head,header,hr,html,i,iframe,img,input,ins,kbd,label,legend,li,link,main,map,mark,meta,meter,nav,noframes,
+                 noscript,object,ol,optgroup,option,output,p,param,picture,pre,progress,q,rp,rt,ruby,s,samp,script,section,select,small,source,video,audio,span,
+                   strike,del,s,strong,style,sub,summary,details,sup,svg,table,tbody,td,template,textarea,tfoot,th,thead,time,title,tr,track,tt,u,ul,var,wbr';
+	
+	
+    $message = trim($message);
+    if ($html_on) 
     {
-        $allowed_html_tags = split(',', $board_config['allow_html_tags']);
-        
-		$end_html = 0;
+        //$allowed_html_tags = split(',', $board_config['allow_html_tags']);
+		$allowed_html_tags = split(',', $AllowableCK4HTML);
+        $end_html = 0;
         $start_html = 1;
         $tmp_message = '';
         $message = ' ' . $message . ' ';
@@ -344,8 +351,8 @@ function message_prepare($message, $html_on, $bbcode_on)
 		{
             $tmp_message .= BBCode::encode_html(substr($message, $end_html + 1));
         }
-        
-		$message = ($tmp_message != '') ? trim($tmp_message) : trim($message);
+    
+	    $message = ($tmp_message != '') ? trim($tmp_message) : trim($message);
     } 
 	else 
 	{
@@ -356,6 +363,8 @@ function message_prepare($message, $html_on, $bbcode_on)
 	{
         $message = BBCode::encode($message);
     }
-    return $message;
+    
+	return $message;
 }
+
 ?>

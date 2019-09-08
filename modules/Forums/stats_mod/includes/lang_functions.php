@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /***************************************************************************
@@ -319,7 +319,7 @@ function set_lang_entry($language, $module_id, $key, $value)
     {
         $contents = "<?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/\n\n\n?>";
     }
     else
@@ -405,7 +405,7 @@ function set_lang_block($language, $module_id, $lang_block)
     {
         $contents = "<?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/\n\n\n?>";
     }
     else
@@ -523,7 +523,7 @@ function lang_add_new_key($language, $module_id, $add_key, $add_value)
     {
         $contents = "<?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/\n\n\n?>";
     }
     else
@@ -633,7 +633,7 @@ function delete_lang_key($language, $module_id, $key_name)
     {
         $contents = "<?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/\n\n\n?>";
     }
     else
@@ -719,7 +719,7 @@ function add_empty_language($new_language)
         {
             $contents = "<?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/\n\n\n?>";
         }
         else
@@ -849,7 +849,7 @@ function add_new_language_predefined($new_language, $modules)
         {
             $contents = "<?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/\n\n\n?>";
         }
         else

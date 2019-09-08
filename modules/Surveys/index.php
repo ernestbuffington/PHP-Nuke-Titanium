@@ -28,51 +28,83 @@
       Extended Surveys Admin Interface         v1.0.0       08/24/2005
  ************************************************************************/
 
-if (!defined('MODULE_FILE')) {
-    die('You can\'t access this file directly...');
-}
+if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
 $module_name = basename(dirname(__FILE__));
+
 get_lang($module_name);
 
 if(isset($pollID)) $pollID = intval($pollID);
 if(isset($voteID)) $voteID = intval($voteID);
 
-if(!isset($pollID)) {
+if(!isset($pollID)) 
+{
     include_once(NUKE_BASE_DIR.'header.php');
     pollList();
     include_once(NUKE_BASE_DIR.'footer.php');
-} elseif(isset($forwarder)) {
+} 
+else
+if(isset($forwarder)) 
+{
     pollCollector($pollID, $voteID, $forwarder);
-} elseif($op == 'results' && $pollID > 0) {
+} 
+else
+if($op == 'results' && $pollID > 0) 
+{
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
-    echo "<center><span class=\"title\"><strong>"._CURRENTPOLLRESULTS."</strong></span></center>";
+    echo "<div align=\"center\"><span class=\"title\"><strong>"._CURRENTPOLLRESULTS."</strong></span></div>";
     CloseTable();
-    echo "<br /><table border='0' width='100%'><tr><td width='70%' valign='top'>";
+
+    echo "<table border='0' width='100%'><tr><td width='65%' valign='top'>";
+
     OpenTable();
     pollResults($pollID);
     CloseTable();
-    echo "</td><td>&nbsp;</td><td width='30%' valign='top'>";
+
+    echo "</td><td>&nbsp;</td><td width='100%' valign='top'>";
+
     OpenTable();
     echo "<strong>"._LAST5POLLS." $sitename</strong><br /><br />";
-    if (isset($userinfo['umode'])) { $r_options .= "&amp;mode=$userinfo[umode]"; }
-    if (isset($userinfo['uorder'])) { $r_options .= "&amp;order=$userinfo[uorder]"; }
-    if (isset($userinfo['thold'])) { $r_options .= "&amp;thold=$userinfo[thold]"; }
-    $resu = $db->sql_query("SELECT pollID, pollTitle, voters FROM ".$prefix."_poll_desc WHERE artid='0' ORDER BY timeStamp DESC LIMIT 1,6");
-    while (list($plid, $pltitle, $plvoters) = $db->sql_fetchrow($resu)) {
-        if ($pollID == $plid) {
+    
+	if (isset($userinfo['umode'])) 
+	{ 
+	  $r_options .= "&amp;mode=$userinfo[umode]"; 
+	}
+    
+	if (isset($userinfo['uorder'])) 
+	{ 
+	  $r_options .= "&amp;order=$userinfo[uorder]"; 
+	}
+    
+	if (isset($userinfo['thold'])) 
+	{ 
+	  $r_options .= "&amp;thold=$userinfo[thold]"; 
+	}
+    
+	$resu = $db->sql_query("SELECT pollID, pollTitle, voters FROM ".$prefix."_poll_desc WHERE artid='0' ORDER BY timeStamp DESC LIMIT 1,6");
+    
+	while (list($plid, $pltitle, $plvoters) = $db->sql_fetchrow($resu)) 
+	{
+        if ($pollID == $plid) 
+		{
             echo "<img src=\"images/arrow.gif\" border=\"0\">&nbsp;$pltitle ($plvoters "._LVOTES.")<br /><br />";
-        } else {
+        } 
+		else 
+		{
             echo "<img src=\"images/arrow.gif\" border=\"0\">&nbsp;<a href=\"modules.php?name=$module_name&amp;op=results&amp;pollID=$plid$r_options\">$pltitle</a> ($plvoters "._LVOTES.")<br /><br />";
         }
     }
     $db->sql_freeresult($resu);
-    echo "<a href=\"modules.php?name=$module_name\"><strong>"._MOREPOLLS."</strong></a>";
+    
+	echo "<a href=\"modules.php?name=$module_name\"><strong>"._MOREPOLLS."</strong></a>";
     CloseTable();
-    echo "</td></tr></table>";
-    if ($pollcomm && $mode != "nocomments") {
-        echo "<br /><br />";
+    
+	echo "</td></tr></table>";
+    
+	if ($pollcomm && $mode != "nocomments") 
+	{
+        echo "";
         include(NUKE_MODULES_DIR.$module_name."/comments.php");
     }
     include_once(NUKE_BASE_DIR.'footer.php');
@@ -82,40 +114,55 @@ if($voteID > 0)
 {
     pollCollector($pollID, $voteID);
 } 
-elseif($pollID != pollLatest()) 
+else
+if($pollID != pollLatest()) 
 {
     include_once(NUKE_BASE_DIR.'header.php');
+
     OpenTable();
     echo "<center><span class=\"option\"><strong>"._SURVEY."</strong></span></center>";
     CloseTable();
+
     echo "<br /><br /><table border=\"0\" align=\"center\"><tr><td>";
+
     pollMain($pollID);
+
     echo "</td></tr></table>";
+
     include_once(NUKE_BASE_DIR.'footer.php');
-} else {
+} 
+else 
+{
     include_once(NUKE_BASE_DIR.'header.php');
-    OpenTable();
-    echo "<center><span class=\"option\"><strong>"._CURRENTSURVEY."</strong></span></center>";
-    CloseTable();
-    echo "<br /><br /><table border=\"0\" align=\"center\"><tr><td>";
-    pollMain(pollLatest());
-    echo "</td></tr></table>";
-    include_once(NUKE_BASE_DIR.'footer.php');
+    
+	echo "<table border=\"0\" align=\"center\"><tr><td>";
+    
+	pollMain(pollLatest());
+    
+	echo "</td></tr></table>";
+    
+	include_once(NUKE_BASE_DIR.'footer.php');
 }
 
 /*********************************************************/
 /* Functions                                             */
 /*********************************************************/
-
-function pollMain($pollID) {
+function pollMain($pollID) 
+{
     global $boxTitle, $boxContent, $pollcomm, $user, $prefix, $db, $module_name;
-    if(!isset($pollID)) $pollID = 1;
-    include_once(NUKE_MODULES_DIR.$module_name.'/includes/pollblock.php');
-    global $content;
-    themesidebox(_SURVEY, $content, "poll1");
+
+    if(!isset($pollID)) 
+	$pollID = 1;
+    
+	include_once(NUKE_MODULES_DIR.$module_name.'/includes/pollblock.php');
+    
+	global $content;
+
+	themesidebox(_SURVEY, $content, $pollID);
 }
 
-function pollLatest() {
+function pollLatest() 
+{
     global $prefix, $multilingual, $currentlang, $db;
     $querylang = "";
     if ($multilingual) { $querylang = "AND planguage='$currentlang' OR planguage=''"; }
@@ -125,7 +172,8 @@ function pollLatest() {
     return($pollID[0]);
 }
 
-function pollCollector($pollID, $voteID, $forwarder) {
+function pollCollector($pollID, $voteID, $forwarder) 
+{
     global $prefix, $db, $evoconfig, $identify;
     $ip = $identify->get_ip();
     $number_of_days = intval($evoconfig['poll_days']);
@@ -134,11 +182,15 @@ function pollCollector($pollID, $voteID, $forwarder) {
     $result = $db->sql_query("SELECT ip FROM ".$prefix."_poll_check WHERE ip='$ip' AND pollID='$pollID'");
     list($ips) = $db->sql_fetchrow($result);
     $db->sql_freeresult($result);
-    if ($ip != $ips) {
+
+    if ($ip != $ips) 
+	{
         $ctime = time();
         $db->sql_query("INSERT INTO ".$prefix."_poll_check (ip, time, pollID) VALUES ('$ip', '$ctime', '$pollID')");
         $db->sql_query("UPDATE ".$prefix."_poll_data SET optionCount=optionCount+1 WHERE pollID='$pollID' AND voteID='$voteID'");
-        if (!empty($voteID)) {
+    
+	    if (!empty($voteID)) 
+		{
             $db->sql_query("UPDATE ".$prefix."_poll_desc SET voters=voters+1 WHERE pollID='$pollID'");
         }
     }
@@ -146,7 +198,8 @@ function pollCollector($pollID, $voteID, $forwarder) {
     exit;
 }
 
-function pollList() {
+function pollList() 
+{
     global $user, $prefix, $multilingual, $currentlang, $admin, $db, $module_name, $admin_file;
 
     $r_options = '';
@@ -159,10 +212,19 @@ function pollList() {
     echo "<center><span class=\"title\"><strong>"._PASTSURVEYS."</strong></span></center>";
     echo "<table border=\"0\" cellpadding=\"8\"><tr><td>";
     $querylang = "";
-    if ($multilingual) { $querylang = "AND planguage='$currentlang' OR planguage=''"; }
+
+    if ($multilingual) 
+	{ 
+	  $querylang = "AND planguage='$currentlang' OR planguage=''"; 
+	}
     $result = $db->sql_query("SELECT pollID, pollTitle, voters FROM ".$prefix."_poll_desc WHERE artid='0' $querylang ORDER BY timeStamp DESC");
-    while(list($plID, $plTitle, $voters) = $db->sql_fetchrow($result)) {
-        if (is_mod_admin($module_name)) { $editing = ' - <a href="'.$admin_file.'.php?op=PollEdit&amp;pollID='.$plID.'">Edit</a>'; }
+    
+	while(list($plID, $plTitle, $voters) = $db->sql_fetchrow($result)) 
+	{
+        if (is_mod_admin($module_name)) 
+		{ 
+		  $editing = ' - <a href="'.$admin_file.'.php?op=PollEdit&amp;pollID='.$plID.'">Edit</a>'; 
+		}
         echo "<img src=\"images/arrow.gif\" border=\"0\" alt=\"\" title=\"\" width=\"9\" height=\"9\">&nbsp;<a href=\"modules.php?name=$module_name&amp;pollID=$plID\">$plTitle</a> ";
         echo "(<a href=\"modules.php?name=$module_name&amp;op=results&amp;pollID=$plID$r_options\">"._RESULTS."</a> - $voters "._LVOTES."$editing)<br />\n";
     }
@@ -171,40 +233,50 @@ function pollList() {
     CloseTable();
 }
 
-function pollResults($pollID) {
+function pollResults($pollID) 
+{
     global $resultTableBgColor, $resultBarFile, $Default_Theme, $user, $prefix, $db, $admin, $module_name, $admin_file;
 
     if(!isset($pollID)) $pollID = 1;
     $result = $db->sql_query("SELECT pollID, pollTitle, artid FROM ".$prefix."_poll_desc WHERE pollID='$pollID'");
     $holdtitle = $db->sql_fetchrow($result);
     $db->sql_freeresult($result);
-    echo "<strong>$holdtitle[1]</strong><br /><br />";
+    echo "<strong>$holdtitle[1]</strong>";
 
     $result = $db->sql_query("SELECT SUM(optionCount) FROM ".$prefix."_poll_data WHERE pollID='$pollID'");
     list($sum) = $db->sql_fetchrow($result);
     $db->sql_freeresult($result);
     echo "<table border=\"0\">";
 
-    /* cycle through all options */
+    # cycle through all options 
     $result = $db->sql_query("SELECT optionText, optionCount FROM ".$prefix."_poll_data WHERE pollID='$pollID' AND optionText!='' ORDER BY voteID");
-    while(list($optionText, $optionCount) = $db->sql_fetchrow($result)) {
+    
+	while(list($optionText, $optionCount) = $db->sql_fetchrow($result)) 
+	{
         echo "<tr><td>$optionText</td>";
         $percent = 0;
-        if($sum) {
+    
+	    if($sum) 
+		{
             $percent = 100 * $optionCount / $sum;
         }
         echo "<td>";
-        $percentInt = (int)$percent * 4 * 1;
+        
+		$percentInt = (int)$percent * 4 * 1;
         $percent2 = (int)$percent;
         $ThemeSel = get_theme();
-        if (file_exists('themes/'.$ThemeSel."/images/survey_leftbar.gif") AND file_exists('themes/'.$ThemeSel."/images/survey_mainbar.gif") AND file_exists('themes/'.$ThemeSel."/images/survey_rightbar.gif")) {
+        
+		if (file_exists('themes/'.$ThemeSel."/images/survey_leftbar.gif") AND file_exists('themes/'.$ThemeSel."/images/survey_mainbar.gif") AND file_exists('themes/'.$ThemeSel."/images/survey_rightbar.gif")) 
+		{
             $l_size = @getimagesize('themes/'.$ThemeSel.'/images/survey_leftbar.gif');
             $m_size = @getimagesize('themes/'.$ThemeSel.'/images/survey_mainbar.gif');
             $r_size = @getimagesize('themes/'.$ThemeSel.'/images/survey_rightbar.gif');
             $leftbar = "survey_leftbar.gif";
             $mainbar = "survey_mainbar.gif";
             $rightbar = "survey_rightbar.gif";
-        } else {
+        } 
+		else 
+		{
             $l_size = @getimagesize('themes/'.$ThemeSel.'/images/leftbar.gif');
             $m_size = @getimagesize('themes/'.$ThemeSel.'/images/mainbar.gif');
             $r_size = @getimagesize('themes/'.$ThemeSel.'/images/rightbar.gif');
@@ -260,11 +332,16 @@ function pollResults($pollID) {
     }
     $db->sql_freeresult($result);
     echo "</table><br />";
-    echo "<center><span class=\"content\">";
-    echo "<strong>"._TOTALVOTES." $sum</strong><br />";
-    echo "<br /><br />";
-    $article = "";
-    if ($holdtitle[3] > 0) { $article = "<br /><br />"._GOBACK; }
+    
+	echo "<center><span class=\"content\">";
+    
+	echo "<strong>"._TOTALVOTES." $sum</strong><br />";
+    
+	echo "<br /><br />";
+    
+	$article = "";
+    
+	if ($holdtitle[3] > 0) { $article = "<br /><br />"._GOBACK; }
     echo "[ <a href=\"modules.php?name=$module_name&amp;pollID=$pollID\">"._VOTING."</a> | "
         ."<a href=\"modules.php?name=$module_name\">"._OTHERPOLLS."</a> ] $article </span></center>";
     if (is_mod_admin($module_name)) {
@@ -272,5 +349,5 @@ function pollResults($pollID) {
     }
     return(1);
 }
-
 ?>
+

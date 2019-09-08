@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -271,6 +271,8 @@ include(NUKE_JQUERY_INCLUDE_DIR.'jquery.lightbox.php');                 # v2.9.0
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.colorbox.php');                 # v1.6.4
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.lightbox-lite.php');
 
+include(NUKE_JQUERY_INCLUDE_DIR.'jquery.live.feed.php');
+
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.scroll.to.top.php');            # add in option to change icon per theme
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.private.messages.alert.php');   # v1.0 - https://lonestar-modules.com
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.floating.admin.php');           # v2.0 - floating administration menu
@@ -280,28 +282,21 @@ include(NUKE_JQUERY_INCLUDE_DIR.'jquery.tooltipster.php');
  [ Mod:     jQuery                             v1.5.0 ]
  ******************************************************/
 
-//addJSToBody(NUKE_JQUERY_SCRIPTS_DIR.'Evo.EE.js','file');
-//addJSToBody(NUKE_JQUERY_SCRIPTS_DIR.'Evo.EE.CMD.js','file');
+addJSToBody(NUKE_JQUERY_SCRIPTS_DIR.'Evo.EE.js','file');
+addJSToBody(NUKE_JQUERY_SCRIPTS_DIR.'Evo.EE.CMD.js','file');
 
 global  $analytics;
 if (!empty($analytics)) {
-
-//updated by Ernest Buffington 05/05/2019 new goole snipped for analytics
-echo "
-<!-- Google Analytics -->
-<script type='text/javascript'>
-(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-})(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
-
-ga('create', '".$analytics."', 'auto');  
-ga('send', 'pageview');
-</script>
-<!-- End Google Analytics -->\n\n";
+    echo "<script type=\"text/javascript\">
+            var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");
+            document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));
+          </script>
+          <script type=\"text/javascript\">
+            var pageTracker = _gat._getTracker(\"".$analytics."\");
+            pageTracker._initData();
+            pageTracker._trackPageview();
+          </script>";
 }
-//updated by Ernest Buffington 05/05/2019 new goole snipped for analytics
-
 
 global $more_js;
 if (!empty($more_js)) {

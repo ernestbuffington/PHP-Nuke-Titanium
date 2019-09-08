@@ -64,6 +64,9 @@ $lang_evo_userblock['BLOCK']['PMS']['OPEN_INBOX'] = 'Open Inbox';
 //Members
 $lang_evo_userblock['BLOCK']['MEMBERS']['MEMBERS'] = 'Group Memberships';
 
+# added for groups pending in Evo User Block by Ernest Allen Buffington 09/03/2019
+$lang_evo_userblock['BLOCK']['MEMBERS']['PENDING'] = 'Group Memberships Pending';
+
 //Users
 $lang_evo_userblock['BLOCK']['USERS']['MEMBERSHIPS'] = 'Memberships';
 $lang_evo_userblock['BLOCK']['USERS']['NEW_TODAY'] = 'New Today';

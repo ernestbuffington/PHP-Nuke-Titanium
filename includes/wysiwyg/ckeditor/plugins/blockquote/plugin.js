@@ -1,7 +1,251 @@
-﻿/*
-Copyright (c) 2003-2009, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+﻿/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
 
-(function(){function a(e,f){var g=f.block||f.blockLimit;if(!g||g.getName()=='body')return CKEDITOR.TRISTATE_OFF;if(g.getAscendant('blockquote',true))return CKEDITOR.TRISTATE_ON;return CKEDITOR.TRISTATE_OFF;};function b(e){var f=e.editor,g=f.getCommand('blockquote');g.state=a(f,e.data.path);g.fire('state');};function c(e){for(var f=0,g=e.getChildCount(),h;f<g&&(h=e.getChild(f));f++)if(h.type==CKEDITOR.NODE_ELEMENT&&h.isBlockBoundary())return false;return true;};var d={exec:function(e){var f=e.getCommand('blockquote').state,g=e.getSelection(),h=g&&g.getRanges()[0];if(!h)return;var i=g.createBookmarks();if(CKEDITOR.env.ie){var j=i[0].startNode,k=i[0].endNode,l;if(j&&j.getParent().getName()=='blockquote'){l=j;while(l=l.getNext())if(l.type==CKEDITOR.NODE_ELEMENT&&l.isBlockBoundary()){j.move(l,true);break;}}if(k&&k.getParent().getName()=='blockquote'){l=k;while(l=l.getPrevious())if(l.type==CKEDITOR.NODE_ELEMENT&&l.isBlockBoundary()){k.move(l);break;}}}var m=h.createIterator(),n;if(f==CKEDITOR.TRISTATE_OFF){var o=[];while(n=m.getNextParagraph())o.push(n);if(o.length<1){var p=e.document.createElement(e.config.enterMode==CKEDITOR.ENTER_P?'p':'div'),q=i.shift();h.insertNode(p);p.append(new CKEDITOR.dom.text('﻿',e.document));h.moveToBookmark(q);h.selectNodeContents(p);h.collapse(true);q=h.createBookmark();o.push(p);i.unshift(q);}var r=o[0].getParent(),s=[];for(var t=0;t<o.length;t++){n=o[t];r=r.getCommonAncestor(n.getParent());}var u={table:1,tbody:1,tr:1,ol:1,ul:1};while(u[r.getName()])r=r.getParent();var v=null;while(o.length>0){n=o.shift();while(!n.getParent().equals(r))n=n.getParent();if(!n.equals(v))s.push(n);v=n;}while(s.length>0){n=s.shift();if(n.getName()=='blockquote'){var w=new CKEDITOR.dom.documentFragment(e.document);while(n.getFirst()){w.append(n.getFirst().remove());o.push(w.getLast());}w.replace(n);}else o.push(n);}var x=e.document.createElement('blockquote');x.insertBefore(o[0]);while(o.length>0){n=o.shift();x.append(n);}}else if(f==CKEDITOR.TRISTATE_ON){var y=[],z={};while(n=m.getNextParagraph()){var A=null,B=null;while(n.getParent()){if(n.getParent().getName()=='blockquote'){A=n.getParent();B=n;break;}n=n.getParent();}if(A&&B&&!B.getCustomData('blockquote_moveout')){y.push(B);CKEDITOR.dom.element.setMarker(z,B,'blockquote_moveout',true);}}CKEDITOR.dom.element.clearAllMarkers(z);var C=[],D=[];z={};while(y.length>0){var E=y.shift();x=E.getParent();if(!E.getPrevious())E.remove().insertBefore(x);else if(!E.getNext())E.remove().insertAfter(x);else{E.breakParent(E.getParent());
-D.push(E.getNext());}if(!x.getCustomData('blockquote_processed')){D.push(x);CKEDITOR.dom.element.setMarker(z,x,'blockquote_processed',true);}C.push(E);}CKEDITOR.dom.element.clearAllMarkers(z);for(t=D.length-1;t>=0;t--){x=D[t];if(c(x))x.remove();}if(e.config.enterMode==CKEDITOR.ENTER_BR){var F=true;while(C.length){E=C.shift();if(E.getName()=='div'){w=new CKEDITOR.dom.documentFragment(e.document);var G=F&&E.getPrevious()&&!(E.getPrevious().type==CKEDITOR.NODE_ELEMENT&&E.getPrevious().isBlockBoundary());if(G)w.append(e.document.createElement('br'));var H=E.getNext()&&!(E.getNext().type==CKEDITOR.NODE_ELEMENT&&E.getNext().isBlockBoundary());while(E.getFirst())E.getFirst().remove().appendTo(w);if(H)w.append(e.document.createElement('br'));w.replace(E);F=false;}}}}g.selectBookmarks(i);e.focus();}};CKEDITOR.plugins.add('blockquote',{init:function(e){e.addCommand('blockquote',d);e.ui.addButton('Blockquote',{label:e.lang.blockquote,command:'blockquote'});e.on('selectionChange',b);},requires:['domiterator']});})();
+( function() {
+	function noBlockLeft( bqBlock ) {
+		for ( var i = 0, length = bqBlock.getChildCount(), child; i < length && ( child = bqBlock.getChild( i ) ); i++ ) {
+			if ( child.type == CKEDITOR.NODE_ELEMENT && child.isBlockBoundary() )
+				return false;
+		}
+		return true;
+	}
+
+	var commandObject = {
+		exec: function( editor ) {
+			var state = editor.getCommand( 'blockquote' ).state,
+				selection = editor.getSelection(),
+				range = selection && selection.getRanges()[ 0 ];
+
+			if ( !range )
+				return;
+
+			var bookmarks = selection.createBookmarks();
+
+			// Kludge for https://dev.ckeditor.com/ticket/1592: if the bookmark nodes are in the beginning of
+			// blockquote, then move them to the nearest block element in the
+			// blockquote.
+			if ( CKEDITOR.env.ie ) {
+				var bookmarkStart = bookmarks[ 0 ].startNode,
+					bookmarkEnd = bookmarks[ 0 ].endNode,
+					cursor;
+
+				if ( bookmarkStart && bookmarkStart.getParent().getName() == 'blockquote' ) {
+					cursor = bookmarkStart;
+					while ( ( cursor = cursor.getNext() ) ) {
+						if ( cursor.type == CKEDITOR.NODE_ELEMENT && cursor.isBlockBoundary() ) {
+							bookmarkStart.move( cursor, true );
+							break;
+						}
+					}
+				}
+
+				if ( bookmarkEnd && bookmarkEnd.getParent().getName() == 'blockquote' ) {
+					cursor = bookmarkEnd;
+					while ( ( cursor = cursor.getPrevious() ) ) {
+						if ( cursor.type == CKEDITOR.NODE_ELEMENT && cursor.isBlockBoundary() ) {
+							bookmarkEnd.move( cursor );
+							break;
+						}
+					}
+				}
+			}
+
+			var iterator = range.createIterator(),
+				block;
+			iterator.enlargeBr = editor.config.enterMode != CKEDITOR.ENTER_BR;
+
+			if ( state == CKEDITOR.TRISTATE_OFF ) {
+				var paragraphs = [];
+				while ( ( block = iterator.getNextParagraph() ) )
+					paragraphs.push( block );
+
+				// If no paragraphs, create one from the current selection position.
+				if ( paragraphs.length < 1 ) {
+					var para = editor.document.createElement( editor.config.enterMode == CKEDITOR.ENTER_P ? 'p' : 'div' ),
+						firstBookmark = bookmarks.shift();
+					range.insertNode( para );
+					para.append( new CKEDITOR.dom.text( '\ufeff', editor.document ) );
+					range.moveToBookmark( firstBookmark );
+					range.selectNodeContents( para );
+					range.collapse( true );
+					firstBookmark = range.createBookmark();
+					paragraphs.push( para );
+					bookmarks.unshift( firstBookmark );
+				}
+
+				// Make sure all paragraphs have the same parent.
+				var commonParent = paragraphs[ 0 ].getParent(),
+					tmp = [];
+				for ( var i = 0; i < paragraphs.length; i++ ) {
+					block = paragraphs[ i ];
+					commonParent = commonParent.getCommonAncestor( block.getParent() );
+				}
+
+				// The common parent must not be the following tags: table, tbody, tr, ol, ul.
+				var denyTags = { table: 1, tbody: 1, tr: 1, ol: 1, ul: 1 };
+				while ( denyTags[ commonParent.getName() ] )
+					commonParent = commonParent.getParent();
+
+				// Reconstruct the block list to be processed such that all resulting blocks
+				// satisfy parentNode.equals( commonParent ).
+				var lastBlock = null;
+				while ( paragraphs.length > 0 ) {
+					block = paragraphs.shift();
+					while ( !block.getParent().equals( commonParent ) )
+						block = block.getParent();
+					if ( !block.equals( lastBlock ) )
+						tmp.push( block );
+					lastBlock = block;
+				}
+
+				// If any of the selected blocks is a blockquote, remove it to prevent
+				// nested blockquotes.
+				while ( tmp.length > 0 ) {
+					block = tmp.shift();
+					if ( block.getName() == 'blockquote' ) {
+						var docFrag = new CKEDITOR.dom.documentFragment( editor.document );
+						while ( block.getFirst() ) {
+							docFrag.append( block.getFirst().remove() );
+							paragraphs.push( docFrag.getLast() );
+						}
+
+						docFrag.replace( block );
+					} else {
+						paragraphs.push( block );
+					}
+				}
+
+				// Now we have all the blocks to be included in a new blockquote node.
+				var bqBlock = editor.document.createElement( 'blockquote' );
+				bqBlock.insertBefore( paragraphs[ 0 ] );
+				while ( paragraphs.length > 0 ) {
+					block = paragraphs.shift();
+					bqBlock.append( block );
+				}
+			} else if ( state == CKEDITOR.TRISTATE_ON ) {
+				var moveOutNodes = [],
+					database = {};
+
+				while ( ( block = iterator.getNextParagraph() ) ) {
+					var bqParent = null,
+						bqChild = null;
+					while ( block.getParent() ) {
+						if ( block.getParent().getName() == 'blockquote' ) {
+							bqParent = block.getParent();
+							bqChild = block;
+							break;
+						}
+						block = block.getParent();
+					}
+
+					// Remember the blocks that were recorded down in the moveOutNodes array
+					// to prevent duplicates.
+					if ( bqParent && bqChild && !bqChild.getCustomData( 'blockquote_moveout' ) ) {
+						moveOutNodes.push( bqChild );
+						CKEDITOR.dom.element.setMarker( database, bqChild, 'blockquote_moveout', true );
+					}
+				}
+
+				CKEDITOR.dom.element.clearAllMarkers( database );
+
+				var movedNodes = [],
+					processedBlockquoteBlocks = [];
+
+				database = {};
+				while ( moveOutNodes.length > 0 ) {
+					var node = moveOutNodes.shift();
+					bqBlock = node.getParent();
+
+					// If the node is located at the beginning or the end, just take it out
+					// without splitting. Otherwise, split the blockquote node and move the
+					// paragraph in between the two blockquote nodes.
+					if ( !node.getPrevious() )
+						node.remove().insertBefore( bqBlock );
+					else if ( !node.getNext() )
+						node.remove().insertAfter( bqBlock );
+					else {
+						node.breakParent( node.getParent() );
+						processedBlockquoteBlocks.push( node.getNext() );
+					}
+
+					// Remember the blockquote node so we can clear it later (if it becomes empty).
+					if ( !bqBlock.getCustomData( 'blockquote_processed' ) ) {
+						processedBlockquoteBlocks.push( bqBlock );
+						CKEDITOR.dom.element.setMarker( database, bqBlock, 'blockquote_processed', true );
+					}
+
+					movedNodes.push( node );
+				}
+
+				CKEDITOR.dom.element.clearAllMarkers( database );
+
+				// Clear blockquote nodes that have become empty.
+				for ( i = processedBlockquoteBlocks.length - 1; i >= 0; i-- ) {
+					bqBlock = processedBlockquoteBlocks[ i ];
+					if ( noBlockLeft( bqBlock ) )
+						bqBlock.remove();
+				}
+
+				if ( editor.config.enterMode == CKEDITOR.ENTER_BR ) {
+					var firstTime = true;
+					while ( movedNodes.length ) {
+						node = movedNodes.shift();
+
+						if ( node.getName() == 'div' ) {
+							docFrag = new CKEDITOR.dom.documentFragment( editor.document );
+							var needBeginBr = firstTime && node.getPrevious() && !( node.getPrevious().type == CKEDITOR.NODE_ELEMENT && node.getPrevious().isBlockBoundary() );
+							if ( needBeginBr )
+								docFrag.append( editor.document.createElement( 'br' ) );
+
+							var needEndBr = node.getNext() && !( node.getNext().type == CKEDITOR.NODE_ELEMENT && node.getNext().isBlockBoundary() );
+							while ( node.getFirst() )
+								node.getFirst().remove().appendTo( docFrag );
+
+							if ( needEndBr )
+								docFrag.append( editor.document.createElement( 'br' ) );
+
+							docFrag.replace( node );
+							firstTime = false;
+						}
+					}
+				}
+			}
+
+			selection.selectBookmarks( bookmarks );
+			editor.focus();
+		},
+
+		refresh: function( editor, path ) {
+			// Check if inside of blockquote.
+			var firstBlock = path.block || path.blockLimit;
+			this.setState( editor.elementPath( firstBlock ).contains( 'blockquote', 1 ) ? CKEDITOR.TRISTATE_ON : CKEDITOR.TRISTATE_OFF );
+		},
+
+		context: 'blockquote',
+
+		allowedContent: 'blockquote',
+		requiredContent: 'blockquote'
+	};
+
+	CKEDITOR.plugins.add( 'blockquote', {
+		// jscs:disable maximumLineLength
+		lang: 'af,ar,az,bg,bn,bs,ca,cs,cy,da,de,de-ch,el,en,en-au,en-ca,en-gb,eo,es,es-mx,et,eu,fa,fi,fo,fr,fr-ca,gl,gu,he,hi,hr,hu,id,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,oc,pl,pt,pt-br,ro,ru,si,sk,sl,sq,sr,sr-latn,sv,th,tr,tt,ug,uk,vi,zh,zh-cn', // %REMOVE_LINE_CORE%
+		// jscs:enable maximumLineLength
+		icons: 'blockquote', // %REMOVE_LINE_CORE%
+		hidpi: true, // %REMOVE_LINE_CORE%
+		init: function( editor ) {
+			if ( editor.blockless )
+				return;
+
+			editor.addCommand( 'blockquote', commandObject );
+
+			editor.ui.addButton && editor.ui.addButton( 'Blockquote', {
+				label: editor.lang.blockquote.toolbar,
+				command: 'blockquote',
+				toolbar: 'blocks,10'
+			} );
+		}
+	} );
+} )();

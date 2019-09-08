@@ -1,6 +1,147 @@
-﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+ * @fileOverview Defines the {@link CKEDITOR.lang} object, for the
+ * Basque language.
+ */
+
+/**#@+
+   @type String
+   @example
 */
 
-CKEDITOR.lang.eu={dir:'ltr',editorTitle:'Rich text editor, %1, press ALT 0 for help.',toolbar:'Toolbar',editor:'Rich Text Editor',source:'HTML Iturburua',newPage:'Orrialde Berria',save:'Gorde',preview:'Aurrebista',cut:'Ebaki',copy:'Kopiatu',paste:'Itsatsi',print:'Inprimatu',underline:'Azpimarratu',bold:'Lodia',italic:'Etzana',selectAll:'Hautatu dena',removeFormat:'Kendu Formatua',strike:'Marratua',subscript:'Azpi-indize',superscript:'Goi-indize',horizontalrule:'Txertatu Marra Horizontala',pagebreak:'Txertatu Orrialde-jauzia',pagebreakAlt:'Page Break',unlink:'Kendu Esteka',undo:'Desegin',redo:'Berregin',common:{browseServer:'Zerbitzaria arakatu',url:'URL',protocol:'Protokoloa',upload:'Gora kargatu',uploadSubmit:'Zerbitzarira bidalia',image:'Irudia',flash:'Flasha',form:'Formularioa',checkbox:'Kontrol-laukia',radio:'Aukera-botoia',textField:'Testu Eremua',textarea:'Testu-area',hiddenField:'Ezkutuko Eremua',button:'Botoia',select:'Hautespen Eremua',imageButton:'Irudi Botoia',notSet:'<Ezarri gabe>',id:'Id',name:'Izena',langDir:'Hizkuntzaren Norabidea',langDirLtr:'Ezkerretik Eskumara(LTR)',langDirRtl:'Eskumatik Ezkerrera (RTL)',langCode:'Hizkuntza Kodea',longDescr:'URL Deskribapen Luzea',cssClass:'Estilo-orriko Klaseak',advisoryTitle:'Izenburua',cssStyle:'Estiloa',ok:'Ados',cancel:'Utzi',close:'Close',preview:'Preview',generalTab:'Orokorra',advancedTab:'Aurreratua',validateNumberFailed:'Balio hau ez da zenbaki bat.',confirmNewPage:'Eduki honetan gorde gabe dauden aldaketak galduko dira. Ziur zaude orri berri bat kargatu nahi duzula?',confirmCancel:'Aukera batzuk aldatu egin dira. Ziur zaude elkarrizketa-koadroa itxi nahi duzula?',options:'Options',target:'Target',targetNew:'New Window (_blank)',targetTop:'Topmost Window (_top)',targetSelf:'Same Window (_self)',targetParent:'Parent Window (_parent)',langDirLTR:'Left to Right (LTR)',langDirRTL:'Right to Left (RTL)',styles:'Style',cssClasses:'Stylesheet Classes',width:'Zabalera',height:'Altuera',align:'Lerrokatu',alignLeft:'Ezkerrera',alignRight:'Eskuman',alignCenter:'Erdian',alignTop:'Goian',alignMiddle:'Erdian',alignBottom:'Behean',invalidHeight:'Altuera zenbaki bat izan behar da.',invalidWidth:'Zabalera zenbaki bat izan behar da.',unavailable:'%1<span class="cke_accessibility">, erabilezina</span>'},contextmenu:{options:'Context Menu Options'},specialChar:{toolbar:'Txertatu Karaktere Berezia',title:'Karaktere Berezia Aukeratu',options:'Special Character Options'},link:{toolbar:'Txertatu/Editatu Esteka',other:'<other>',menu:'Aldatu Esteka',title:'Esteka',info:'Estekaren Informazioa',target:'Target (Helburua)',upload:'Gora kargatu',advanced:'Aurreratua',type:'Esteka Mota',toUrl:'URL',toAnchor:'Aingura orrialde honetan',toEmail:'ePosta',targetFrame:'<marko>',targetPopup:'<popup leihoa>',targetFrameName:'Marko Helburuaren Izena',targetPopupName:'Popup Leihoaren Izena',popupFeatures:'Popup Leihoaren Ezaugarriak',popupResizable:'Tamaina Aldakorra',popupStatusBar:'Egoera Barra',popupLocationBar:'Kokaleku Barra',popupToolbar:'Tresna Barra',popupMenuBar:'Menu Barra',popupFullScreen:'Pantaila Osoa (IE)',popupScrollBars:'Korritze Barrak',popupDependent:'Menpekoa (Netscape)',popupLeft:'Ezkerreko  Posizioa',popupTop:'Goiko Posizioa',id:'Id',langDir:'Hizkuntzaren Norabidea',langDirLTR:'Ezkerretik Eskumara(LTR)',langDirRTL:'Eskumatik Ezkerrera (RTL)',acccessKey:'Sarbide-gakoa',name:'Izena',langCode:'Hizkuntzaren Norabidea',tabIndex:'Tabulazio Indizea',advisoryTitle:'Izenburua',advisoryContentType:'Eduki Mota (Content Type)',cssClasses:'Estilo-orriko Klaseak',charset:'Estekatutako Karaktere Multzoa',styles:'Estiloa',selectAnchor:'Aingura bat hautatu',anchorName:'Aingura izenagatik',anchorId:'Elementuaren ID-gatik',emailAddress:'ePosta Helbidea',emailSubject:'Mezuaren Gaia',emailBody:'Mezuaren Gorputza',noAnchors:'(Ez daude aingurak eskuragarri dokumentuan)',noUrl:'Mesedez URL esteka idatzi',noEmail:'Mesedez ePosta helbidea idatzi'},anchor:{toolbar:'Aingura',menu:'Ainguraren Ezaugarriak',title:'Ainguraren Ezaugarriak',name:'Ainguraren Izena',errorName:'Idatzi ainguraren izena'},list:{numberedTitle:'Numbered List Properties',bulletedTitle:'Bulleted List Properties',type:'Type',start:'Start',validateStartNumber:'List start number must be a whole number.',circle:'Circle',disc:'Disc',square:'Square',none:'None',notset:'<not set>',armenian:'Armenian numbering',georgian:'Georgian numbering (an, ban, gan, etc.)',lowerRoman:'Lower Roman (i, ii, iii, iv, v, etc.)',upperRoman:'Upper Roman (I, II, III, IV, V, etc.)',lowerAlpha:'Lower Alpha (a, b, c, d, e, etc.)',upperAlpha:'Upper Alpha (A, B, C, D, E, etc.)',lowerGreek:'Lower Greek (alpha, beta, gamma, etc.)',decimal:'Decimal (1, 2, 3, etc.)',decimalLeadingZero:'Decimal leading zero (01, 02, 03, etc.)'},findAndReplace:{title:'Bilatu eta Ordeztu',find:'Bilatu',replace:'Ordezkatu',findWhat:'Zer bilatu:',replaceWith:'Zerekin ordeztu:',notFoundMsg:'Idatzitako testua ez da topatu.',matchCase:'Maiuskula/minuskula',matchWord:'Esaldi osoa bilatu',matchCyclic:'Bilaketa ziklikoa',replaceAll:'Ordeztu Guztiak',replaceSuccessMsg:'Zenbat aldiz ordeztua: %1'},table:{toolbar:'Taula',title:'Taularen Ezaugarriak',menu:'Taularen Ezaugarriak',deleteTable:'Ezabatu Taula',rows:'Lerroak',columns:'Zutabeak',border:'Ertzaren Zabalera',widthPx:'pixel',widthPc:'ehuneko',widthUnit:'width unit',cellSpace:'Gelaxka arteko tartea',cellPad:'Gelaxken betegarria',caption:'Epigrafea',summary:'Laburpena',headers:'Goiburuak',headersNone:'Bat ere ez',headersColumn:'Lehen zutabea',headersRow:'Lehen lerroa',headersBoth:'Biak',invalidRows:'Lerro kopurua 0 baino handiagoa den zenbakia izan behar da.',invalidCols:'Zutabe kopurua 0 baino handiagoa den zenbakia izan behar da.',invalidBorder:'Ertzaren tamaina zenbaki bat izan behar da.',invalidWidth:'Taularen zabalera zenbaki bat izan behar da.',invalidHeight:'Taularen altuera zenbaki bat izan behar da.',invalidCellSpacing:'Gelaxka arteko tartea zenbaki bat izan behar da.',invalidCellPadding:'Gelaxken betegarria zenbaki bat izan behar da.',cell:{menu:'Gelaxka',insertBefore:'Txertatu Gelaxka Aurretik',insertAfter:'Txertatu Gelaxka Ostean',deleteCell:'Kendu Gelaxkak',merge:'Batu Gelaxkak',mergeRight:'Elkartu Eskumara',mergeDown:'Elkartu Behera',splitHorizontal:'Banatu Gelaxkak Horizontalki',splitVertical:'Banatu Gelaxkak Bertikalki',title:'Gelaxken Ezaugarriak',cellType:'Gelaxka Mota',rowSpan:'Hedatutako Lerroak',colSpan:'Hedatutako Zutabeak',wordWrap:'Itzulbira',hAlign:'Lerrokatze Horizontala',vAlign:'Lerrokatze Bertikala',alignBaseline:'Oinarri-lerroan',bgColor:'Fondoaren Kolorea',borderColor:'Ertzaren Kolorea',data:'Data',header:'Goiburua',yes:'Bai',no:'Ez',invalidWidth:'Gelaxkaren zabalera zenbaki bat izan behar da.',invalidHeight:'Gelaxkaren altuera zenbaki bat izan behar da.',invalidRowSpan:'Lerroen hedapena zenbaki osoa izan behar da.',invalidColSpan:'Zutabeen hedapena zenbaki osoa izan behar da.',chooseColor:'Choose'},row:{menu:'Lerroa',insertBefore:'Txertatu Lerroa Aurretik',insertAfter:'Txertatu Lerroa Ostean',deleteRow:'Ezabatu Lerroak'},column:{menu:'Zutabea',insertBefore:'Txertatu Zutabea Aurretik',insertAfter:'Txertatu Zutabea Ostean',deleteColumn:'Ezabatu Zutabeak'}},button:{title:'Botoiaren Ezaugarriak',text:'Testua (Balorea)',type:'Mota',typeBtn:'Botoia',typeSbm:'Bidali',typeRst:'Garbitu'},checkboxAndRadio:{checkboxTitle:'Kontrol-laukiko Ezaugarriak',radioTitle:'Aukera-botoiaren Ezaugarriak',value:'Balorea',selected:'Hautatuta'},form:{title:'Formularioaren Ezaugarriak',menu:'Formularioaren Ezaugarriak',action:'Ekintza',method:'Metodoa',encoding:'Kodeketa'},select:{title:'Hautespen Eremuaren Ezaugarriak',selectInfo:'Informazioa',opAvail:'Aukera Eskuragarriak',value:'Balorea',size:'Tamaina',lines:'lerro kopurura',chkMulti:'Hautaketa anitzak baimendu',opText:'Testua',opValue:'Balorea',btnAdd:'Gehitu',btnModify:'Aldatu',btnUp:'Gora',btnDown:'Behera',btnSetValue:'Aukeratutako balorea ezarri',btnDelete:'Ezabatu'},textarea:{title:'Testu-arearen Ezaugarriak',cols:'Zutabeak',rows:'Lerroak'},textfield:{title:'Testu Eremuaren Ezaugarriak',name:'Izena',value:'Balorea',charWidth:'Zabalera',maxChars:'Zenbat karaktere gehienez',type:'Mota',typeText:'Testua',typePass:'Pasahitza'},hidden:{title:'Ezkutuko Eremuaren Ezaugarriak',name:'Izena',value:'Balorea'},image:{title:'Irudi Ezaugarriak',titleButton:'Irudi Botoiaren Ezaugarriak',menu:'Irudi Ezaugarriak',infoTab:'Irudi informazioa',btnUpload:'Zerbitzarira bidalia',upload:'Gora Kargatu',alt:'Ordezko Testua',lockRatio:'Erlazioa Blokeatu',unlockRatio:'Unlock Ratio',resetSize:'Tamaina Berrezarri',border:'Ertza',hSpace:'HSpace',vSpace:'VSpace',alertUrl:'Mesedez Irudiaren URLa idatzi',linkTab:'Esteka',button2Img:'Aukeratutako irudi botoia, irudi normal batean eraldatu nahi duzu?',img2Button:'Aukeratutako irudia, irudi botoi batean eraldatu nahi duzu?',urlMissing:'Image source URL is missing.',validateBorder:'Border must be a whole number.',validateHSpace:'HSpace must be a whole number.',validateVSpace:'VSpace must be a whole number.'},flash:{properties:'Flasharen Ezaugarriak',propertiesTab:'Ezaugarriak',title:'Flasharen Ezaugarriak',chkPlay:'Automatikoki Erreproduzitu',chkLoop:'Begizta',chkMenu:'Flasharen Menua Gaitu',chkFull:'Onartu Pantaila osoa',scale:'Eskalatu',scaleAll:'Dena erakutsi',scaleNoBorder:'Ertzik gabe',scaleFit:'Doitu',access:'Scriptak baimendu',accessAlways:'Beti',accessSameDomain:'Domeinu berdinekoak',accessNever:'Inoiz ere ez',alignAbsBottom:'Abs Behean',alignAbsMiddle:'Abs Erdian',alignBaseline:'Oinan',alignTextTop:'Testua Goian',quality:'Kalitatea',qualityBest:'Hoberena',qualityHigh:'Altua',qualityAutoHigh:'Auto Altua',qualityMedium:'Ertaina',qualityAutoLow:'Auto Baxua',qualityLow:'Baxua',windowModeWindow:'Leihoa',windowModeOpaque:'Opakoa',windowModeTransparent:'Gardena',windowMode:'Leihoaren modua',flashvars:'Flash Aldagaiak',bgcolor:'Atzeko kolorea',hSpace:'HSpace',vSpace:'VSpace',validateSrc:'Mesedez URL esteka idatzi',validateHSpace:'HSpace zenbaki bat izan behar da.',validateVSpace:'VSpace zenbaki bat izan behar da.'},spellCheck:{toolbar:'Ortografia',title:'Ortografia zuzenketa',notAvailable:'Barkatu baina momentu honetan zerbitzua ez dago erabilgarri.',errorLoading:'Errorea gertatu da aplikazioa zerbitzaritik kargatzean: %s.',notInDic:'Ez dago hiztegian',changeTo:'Honekin ordezkatu',btnIgnore:'Ezikusi',btnIgnoreAll:'Denak Ezikusi',btnReplace:'Ordezkatu',btnReplaceAll:'Denak Ordezkatu',btnUndo:'Desegin',noSuggestions:'- Iradokizunik ez -',progress:'Zuzenketa ortografikoa martxan...',noMispell:'Zuzenketa ortografikoa bukatuta: Akatsik ez',noChanges:'Zuzenketa ortografikoa bukatuta: Ez da ezer aldatu',oneChange:'Zuzenketa ortografikoa bukatuta: Hitz bat aldatu da',manyChanges:'Zuzenketa ortografikoa bukatuta: %1 hitz aldatu dira',ieSpellDownload:'Zuzentzaile ortografikoa ez dago instalatuta. Deskargatu nahi duzu?'},smiley:{toolbar:'Aurpegierak',title:'Aurpegiera Sartu',options:'Smiley Options'},elementsPath:{eleLabel:'Elements path',eleTitle:'%1 elementua'},numberedlist:'Zenbakidun Zerrenda',bulletedlist:'Buletdun Zerrenda',indent:'Handitu Koska',outdent:'Txikitu Koska',justify:{left:'Lerrokatu Ezkerrean',center:'Lerrokatu Erdian',right:'Lerrokatu Eskuman',block:'Justifikatu'},blockquote:'Aipamen blokea',clipboard:{title:'Itsatsi',cutError:'Zure web nabigatzailearen segurtasun ezarpenak testuak automatikoki moztea ez dute baimentzen. Mesedez teklatua erabili ezazu (Ctrl/Cmd+X).',copyError:'Zure web nabigatzailearen segurtasun ezarpenak testuak automatikoki kopiatzea ez dute baimentzen. Mesedez teklatua erabili ezazu (Ctrl/Cmd+C).',pasteMsg:'Mesedez teklatua erabilita (<STRONG>Ctrl/Cmd+V</STRONG>) ondorego eremuan testua itsatsi eta <STRONG>OK</STRONG> sakatu.',securityMsg:'Nabigatzailearen segurtasun ezarpenak direla eta, editoreak ezin du arbela zuzenean erabili. Leiho honetan berriro itsatsi behar duzu.',pasteArea:'Paste Area'},pastefromword:{confirmCleanup:'Itsatsi nahi duzun testua Wordetik hartua dela dirudi. Itsatsi baino lehen garbitu nahi duzu?',toolbar:'Itsatsi Word-etik',title:'Itsatsi Word-etik',error:'It was not possible to clean up the pasted data due to an internal error'},pasteText:{button:'Testu Arrunta bezala Itsatsi',title:'Testu Arrunta bezala Itsatsi'},templates:{button:'Txantiloiak',title:'Eduki Txantiloiak',options:'Template Options',insertOption:'Ordeztu oraingo edukiak',selectPromptMsg:'Mesedez txantiloia aukeratu editorean kargatzeko<br>(orain dauden edukiak galduko dira):',emptyListMsg:'(Ez dago definitutako txantiloirik)'},showBlocks:'Blokeak erakutsi',stylesCombo:{label:'Estiloa',panelTitle:'Formatting Styles',panelTitle1:'Bloke Estiloak',panelTitle2:'Inline Estiloak',panelTitle3:'Objektu Estiloak'},format:{label:'Formatua',panelTitle:'Formatua',tag_p:'Arrunta',tag_pre:'Formateatua',tag_address:'Helbidea',tag_h1:'Izenburua 1',tag_h2:'Izenburua 2',tag_h3:'Izenburua 3',tag_h4:'Izenburua 4',tag_h5:'Izenburua 5',tag_h6:'Izenburua 6',tag_div:'Paragrafoa (DIV)'},div:{title:'Create Div Container',toolbar:'Create Div Container',cssClassInputLabel:'Stylesheet Classes',styleSelectLabel:'Style',IdInputLabel:'Id',languageCodeInputLabel:' Language Code',inlineStyleInputLabel:'Inline Style',advisoryTitleInputLabel:'Advisory Title',langDirLabel:'Language Direction',langDirLTRLabel:'Left to Right (LTR)',langDirRTLLabel:'Right to Left (RTL)',edit:'Edit Div',remove:'Remove Div'},iframe:{title:'IFrame Properties',toolbar:'IFrame',noUrl:'Please type the iframe URL',scrolling:'Enable scrollbars',border:'Show frame border'},font:{label:'Letra-tipoa',voiceLabel:'Letra-tipoa',panelTitle:'Letra-tipoa'},fontSize:{label:'Tamaina',voiceLabel:'Tamaina',panelTitle:'Tamaina'},colorButton:{textColorTitle:'Testu Kolorea',bgColorTitle:'Atzeko kolorea',panelTitle:'Colors',auto:'Automatikoa',more:'Kolore gehiago...'},colors:{'000':'Black',800000:'Maroon','8B4513':'Saddle Brown','2F4F4F':'Dark Slate Gray','008080':'Teal','000080':'Navy','4B0082':'Indigo',696969:'Dark Gray',B22222:'Fire Brick',A52A2A:'Brown',DAA520:'Golden Rod','006400':'Dark Green','40E0D0':'Turquoise','0000CD':'Medium Blue',800080:'Purple',808080:'Gray',F00:'Red',FF8C00:'Dark Orange',FFD700:'Gold','008000':'Green','0FF':'Cyan','00F':'Blue',EE82EE:'Violet',A9A9A9:'Dim Gray',FFA07A:'Light Salmon',FFA500:'Orange',FFFF00:'Yellow','00FF00':'Lime',AFEEEE:'Pale Turquoise',ADD8E6:'Light Blue',DDA0DD:'Plum',D3D3D3:'Light Grey',FFF0F5:'Lavender Blush',FAEBD7:'Antique White',FFFFE0:'Light Yellow',F0FFF0:'Honeydew',F0FFFF:'Azure',F0F8FF:'Alice Blue',E6E6FA:'Lavender',FFF:'White'},scayt:{title:'Ortografia Zuzenketa Idatzi Ahala (SCAYT)',opera_title:'Not supported by Opera',enable:'Gaitu SCAYT',disable:'Desgaitu SCAYT',about:'SCAYTi buruz',toggle:'SCAYT aldatu',options:'Aukerak',langs:'Hizkuntzak',moreSuggestions:'Iradokizun gehiago',ignore:'Baztertu',ignoreAll:'Denak baztertu',addWord:'Hitza Gehitu',emptyDic:'Hiztegiaren izena ezin da hutsik egon.',optionsTab:'Aukerak',allCaps:'Ignore All-Caps Words',ignoreDomainNames:'Ignore Domain Names',mixedCase:'Ignore Words with Mixed Case',mixedWithDigits:'Ignore Words with Numbers',languagesTab:'Hizkuntzak',dictionariesTab:'Hiztegiak',dic_field_name:'Dictionary name',dic_create:'Create',dic_restore:'Restore',dic_delete:'Delete',dic_rename:'Rename',dic_info:'Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.',aboutTab:'Honi buruz'},about:{title:'CKEditor(r)i buruz',dlgTitle:'CKEditor(r)i buruz',moreInfo:'Lizentziari buruzko informazioa gure webgunean:',copy:'Copyright &copy; $1. Eskubide guztiak erreserbaturik.'},maximize:'Maximizatu',minimize:'Minimize',fakeobjects:{anchor:'Aingura',flash:'Flash Animazioa',iframe:'IFrame',hiddenfield:'Hidden Field',unknown:'Objektu ezezaguna'},resize:'Arrastatu tamaina aldatzeko',colordialog:{title:'Select color',options:'Color Options',highlight:'Highlight',selected:'Selected Color',clear:'Clear'},toolbarCollapse:'Collapse Toolbar',toolbarExpand:'Expand Toolbar',bidi:{ltr:'Text direction from left to right',rtl:'Text direction from right to left'}};
+/**
+ * Contains the dictionary of language entries.
+ * @namespace
+ */
+CKEDITOR.lang[ 'eu' ] = {
+	// ARIA description.
+	editor: 'Testu aberastuaren editorea',
+	editorPanel: 'Testu aberastuaren editorearen panela',
+
+	// Common messages and labels.
+	common: {
+		// Screenreader titles. Please note that screenreaders are not always capable
+		// of reading non-English words. So be careful while translating it.
+		editorHelp: 'Sakatu ALT 0 laguntza jasotzeko',
+
+		browseServer: 'Arakatu zerbitzaria',
+		url: 'URLa',
+		protocol: 'Protokoloa',
+		upload: 'Kargatu',
+		uploadSubmit: 'Bidali zerbitzarira',
+		image: 'Irudia',
+		flash: 'Flash',
+		form: 'Formularioa',
+		checkbox: 'Kontrol-laukia',
+		radio: 'Aukera-botoia',
+		textField: 'Testu-eremua',
+		textarea: 'Testu-area',
+		hiddenField: 'Ezkutuko eremua',
+		button: 'Botoia',
+		select: 'Hautespen-eremua',
+		imageButton: 'Irudi-botoia',
+		notSet: '<ezarri gabe>',
+		id: 'Id',
+		name: 'Izena',
+		langDir: 'Hizkuntzaren norabidea',
+		langDirLtr: 'Ezkerretik eskuinera (LTR)',
+		langDirRtl: 'Eskuinetik ezkerrera (RTL)',
+		langCode: 'Hizkuntzaren kodea',
+		longDescr: 'URLaren deskribapen luzea',
+		cssClass: 'Estilo-orriko klaseak',
+		advisoryTitle: 'Aholkatutako izenburua',
+		cssStyle: 'Estiloa',
+		ok: 'Ados',
+		cancel: 'Utzi',
+		close: 'Itxi',
+		preview: 'Aurrebista',
+		resize: 'Aldatu tamainaz',
+		generalTab: 'Orokorra',
+		advancedTab: 'Aurreratua',
+		validateNumberFailed: 'Balio hau ez da zenbaki bat.',
+		confirmNewPage: 'Eduki honetan gorde gabe dauden aldaketak galduko dira. Ziur zaude orri berri bat kargatu nahi duzula?',
+		confirmCancel: 'Aukera batzuk aldatu dituzu. Ziur zaude elkarrizketa-koadroa itxi nahi duzula?',
+		options: 'Aukerak',
+		target: 'Helburua',
+		targetNew: 'Leiho berria (_blank)',
+		targetTop: 'Goieneko leihoan (_top)',
+		targetSelf: 'Leiho berean (_self)',
+		targetParent: 'Leiho gurasoan (_parent)',
+		langDirLTR: 'Ezkerretik eskuinera (LTR)',
+		langDirRTL: 'Eskuinetik ezkerrera (RTL)',
+		styles: 'Estiloa',
+		cssClasses: 'Estilo-orriko klaseak',
+		width: 'Zabalera',
+		height: 'Altuera',
+		align: 'Lerrokatzea',
+		left: 'Ezkerrean',
+		right: 'Eskuinean',
+		center: 'Erdian',
+		justify: 'Justifikatu',
+		alignLeft: 'Lerrokatu ezkerrean',
+		alignRight: 'Lerrokatu eskuinean',
+		alignCenter: 'Align Center', // MISSING
+		alignTop: 'Goian',
+		alignMiddle: 'Erdian',
+		alignBottom: 'Behean',
+		alignNone: 'Bat ere ez',
+		invalidValue: 'Balio desegokia.',
+		invalidHeight: 'Altuera zenbaki bat izan behar da.',
+		invalidWidth: 'Zabalera zenbaki bat izan behar da.',
+		invalidLength: 'Value specified for the "%1" field must be a positive number with or without a valid measurement unit (%2).', // MISSING
+		invalidCssLength: '"%1" eremurako zehaztutako balioak zenbaki positibo bat izan behar du, CSS neurri unitate batekin edo gabe (px, %, in, cm, mm, em, ex, pt edo pc).',
+		invalidHtmlLength: '"%1" eremurako zehaztutako balioak zenbaki positibo bat izan behar du, HTML neurri unitate batekin edo gabe (px edo %).',
+		invalidInlineStyle: 'Lineako estiloan zehaztutako balioak "izen : balio" formatuko tupla bat edo gehiago izan behar dira, komaz bereiztuak.',
+		cssLengthTooltip: 'Sartu zenbaki bat edo zenbaki bat baliozko CSS unitate batekin (px, %, in, cm, mm, em, ex, pt, edo pc).',
+
+		// Put the voice-only part of the label in the span.
+		unavailable: '%1<span class="cke_accessibility">, erabilezina</span>',
+
+		// Keyboard keys translations used for creating shortcuts descriptions in tooltips, context menus and ARIA labels.
+		keyboard: {
+			8: 'Atzera tekla',
+			13: 'Sartu',
+			16: 'Maius',
+			17: 'Ktrl',
+			18: 'Alt',
+			32: 'Zuriunea',
+			35: 'Buka',
+			36: 'Etxea',
+			46: 'Ezabatu',
+			112: 'F1', // MISSING
+			113: 'F2', // MISSING
+			114: 'F3', // MISSING
+			115: 'F4', // MISSING
+			116: 'F5', // MISSING
+			117: 'F6', // MISSING
+			118: 'F7', // MISSING
+			119: 'F8', // MISSING
+			120: 'F9', // MISSING
+			121: 'F10', // MISSING
+			122: 'F11', // MISSING
+			123: 'F12', // MISSING
+			124: 'F13', // MISSING
+			125: 'F14', // MISSING
+			126: 'F15', // MISSING
+			127: 'F16', // MISSING
+			128: 'F17', // MISSING
+			129: 'F18', // MISSING
+			130: 'F19', // MISSING
+			131: 'F20', // MISSING
+			132: 'F21', // MISSING
+			133: 'F22', // MISSING
+			134: 'F23', // MISSING
+			135: 'F24', // MISSING
+			224: 'Komandoa'
+		},
+
+		// Prepended to ARIA labels with shortcuts.
+		keyboardShortcut: 'Laster-tekla',
+
+		optionDefault: 'Lehenetsia'
+	}
+};

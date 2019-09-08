@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************
@@ -363,7 +363,7 @@ function LoadThemeInfo($theme)
         $row = $db->sql_fetchrow($result);
         $db->sql_freeresult($result);
         $loaded_info = (!empty($row['theme_info'])) ? explode(':::', $row['theme_info']) : $default;
-        @$theme_info = array_combine($params, $loaded_info);
+        $theme_info = array_combine($params, $loaded_info);
         $cache->save($theme, 'themes', $theme_info);
     }
     return $theme_info;

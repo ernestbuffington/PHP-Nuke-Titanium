@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /**************************************************************************/
@@ -28,7 +28,7 @@ define("_ADDNEWBANNER","Add a New Banner");
 define("_BANNERSADMIN","Banners Administration");
 define("_ADDCLIENT","Add a New Client");
 define("_BANNERS","Banners");
-define("_BANNERS_ADMIN_HEADER", "PHP-Nuke Titanium :: Modules Admin Panel");
+define("_BANNERS_ADMIN_HEADER", "Nuke-Evolution Banners :: Modules Admin Panel");
 define("_BANNERS_RETURNMAIN", "Return to Main Administration");
 define("_ACTIVEBANNERS","Current Active Banners");
 define("_ACTIVEBANNERS2","Active Banners");

@@ -1,7 +1,461 @@
-﻿/*
-Copyright (c) 2003-2009, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+﻿/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
 
-(function(){var a={ol:1,ul:1};function b(g,h){g.getCommand(this.name).setState(h);};function c(g){var r=this;var h=g.data.path.elements,i,j,k=g.editor;for(var l=0;l<h.length;l++){if(h[l].getName()=='li'){j=h[l];continue;}if(a[h[l].getName()]){i=h[l];break;}}if(i)if(r.name=='outdent')return b.call(r,k,CKEDITOR.TRISTATE_OFF);else{while(j&&(j=j.getPrevious()))if(j.getName&&j.getName()=='li')return b.call(r,k,CKEDITOR.TRISTATE_OFF);return b.call(r,k,CKEDITOR.TRISTATE_DISABLED);}if(!r.useIndentClasses&&r.name=='indent')return b.call(r,k,CKEDITOR.TRISTATE_OFF);var m=g.data.path,n=m.block||m.blockLimit;if(!n)return b.call(r,k,CKEDITOR.TRISTATE_DISABLED);if(r.useIndentClasses){var o=n.$.className.match(r.classNameRegex),p=0;if(o){o=o[1];p=r.indentClassMap[o];}if(r.name=='outdent'&&!p||r.name=='indent'&&p==k.config.indentClass.length)return b.call(r,k,CKEDITOR.TRISTATE_DISABLED);return b.call(r,k,CKEDITOR.TRISTATE_OFF);}else{var q=parseInt(n.getStyle(r.indentCssProperty),10);if(isNaN(q))q=0;if(q<=0)return b.call(r,k,CKEDITOR.TRISTATE_DISABLED);return b.call(r,k,CKEDITOR.TRISTATE_OFF);}};function d(g,h,i){var j=h.startContainer,k=h.endContainer;while(j&&!j.getParent().equals(i))j=j.getParent();while(k&&!k.getParent().equals(i))k=k.getParent();if(!j||!k)return;var l=j,m=[],n=false;while(!n){if(l.equals(k))n=true;m.push(l);l=l.getNext();}if(m.length<1)return;var o=i.getParents();for(var p=0;p<o.length;p++)if(o[p].getName&&a[o[p].getName()]){i=o[p];break;}var q=this.name=='indent'?1:-1,r=m[0],s=m[m.length-1],t={},u=CKEDITOR.plugins.list.listToArray(i,t),v=u[s.getCustomData('listarray_index')].indent;for(p=r.getCustomData('listarray_index');p<=s.getCustomData('listarray_index');p++)u[p].indent+=q;for(p=s.getCustomData('listarray_index')+1;p<u.length&&u[p].indent>v;p++)u[p].indent+=q;var w=CKEDITOR.plugins.list.arrayToList(u,t,null,g.config.enterMode,0);if(w)w.listNode.replace(i);CKEDITOR.dom.element.clearAllMarkers(t);};function e(g,h){var o=this;var i=h.createIterator();i.enforceRealBlocks=true;var j;while(j=i.getNextParagraph())if(o.useIndentClasses){var k=j.$.className.match(o.classNameRegex),l=0;if(k){k=k[1];l=o.indentClassMap[k];}if(o.name=='outdent')l--;elsel++;l=Math.min(l,g.config.indentClasses.length);l=Math.max(l,0);var m=CKEDITOR.tools.ltrim(j.$.className.replace(o.classNameRegex,''));if(l<1)j.$.className=m;else j.addClass(g.config.indentClasses[l-1]);}else{var n=parseInt(j.getStyle(o.indentCssProperty),10);if(isNaN(n))n=0;n+=(o.name=='indent'?1:-1)*(g.config.indentOffset);
-n=Math.max(n,0);n=Math.ceil(n/g.config.indentOffset)*g.config.indentOffset;j.setStyle(o.indentCssProperty,n?n+g.config.indentUnit:'');if(j.getAttribute('style')==='')j.removeAttribute('style');}};function f(g,h){var j=this;j.name=h;j.useIndentClasses=g.config.indentClasses&&g.config.indentClasses.length>0;if(j.useIndentClasses){j.classNameRegex=new RegExp('(?:^|\\s+)('+g.config.indentClasses.join('|')+')(?=$|\\s)');j.indentClassMap={};for(var i=0;i<g.config.indentClasses.length;i++)j.indentClassMap[g.config.indentClasses[i]]=i+1;}else j.indentCssProperty=g.config.contentsLangDirection=='ltr'?'margin-left':'margin-right';};f.prototype={exec:function(g){var h=g.getSelection(),i=h&&h.getRanges()[0];if(!h||!i)return;var j=h.createBookmarks(true),k=i.getCommonAncestor();while(k&&!(k.type==CKEDITOR.NODE_ELEMENT&&a[k.getName()]))k=k.getParent();if(k)d.call(this,g,i,k);else e.call(this,g,i);g.focus();g.forceNextSelectionCheck();h.selectBookmarks(j);}};CKEDITOR.plugins.add('indent',{init:function(g){var h=new f(g,'indent'),i=new f(g,'outdent');g.addCommand('indent',h);g.addCommand('outdent',i);g.ui.addButton('Indent',{label:g.lang.indent,command:'indent'});g.ui.addButton('Outdent',{label:g.lang.outdent,command:'outdent'});g.on('selectionChange',CKEDITOR.tools.bind(c,h));g.on('selectionChange',CKEDITOR.tools.bind(c,i));},requires:['domiterator','list']});})();CKEDITOR.tools.extend(CKEDITOR.config,{indentOffset:40,indentUnit:'px',indentClasses:null});
+/**
+ * @fileOverview Increase and Decrease Indent commands.
+ */
+
+( function() {
+	'use strict';
+
+	var TRISTATE_DISABLED = CKEDITOR.TRISTATE_DISABLED,
+		TRISTATE_OFF = CKEDITOR.TRISTATE_OFF;
+
+	CKEDITOR.plugins.add( 'indent', {
+		// jscs:disable maximumLineLength
+		lang: 'af,ar,az,bg,bn,bs,ca,cs,cy,da,de,de-ch,el,en,en-au,en-ca,en-gb,eo,es,es-mx,et,eu,fa,fi,fo,fr,fr-ca,gl,gu,he,hi,hr,hu,id,is,it,ja,ka,km,ko,ku,lt,lv,mk,mn,ms,nb,nl,no,oc,pl,pt,pt-br,ro,ru,si,sk,sl,sq,sr,sr-latn,sv,th,tr,tt,ug,uk,vi,zh,zh-cn', // %REMOVE_LINE_CORE%
+		// jscs:enable maximumLineLength
+		icons: 'indent,indent-rtl,outdent,outdent-rtl', // %REMOVE_LINE_CORE%
+		hidpi: true, // %REMOVE_LINE_CORE%
+
+		init: function( editor ) {
+			var genericDefinition = CKEDITOR.plugins.indent.genericDefinition;
+
+			// Register generic commands.
+			setupGenericListeners( editor, editor.addCommand( 'indent', new genericDefinition( true ) ) );
+			setupGenericListeners( editor, editor.addCommand( 'outdent', new genericDefinition() ) );
+
+			// Create and register toolbar button if possible.
+			if ( editor.ui.addButton ) {
+				editor.ui.addButton( 'Indent', {
+					label: editor.lang.indent.indent,
+					command: 'indent',
+					directional: true,
+					toolbar: 'indent,20'
+				} );
+
+				editor.ui.addButton( 'Outdent', {
+					label: editor.lang.indent.outdent,
+					command: 'outdent',
+					directional: true,
+					toolbar: 'indent,10'
+				} );
+			}
+
+			// Register dirChanged listener.
+			editor.on( 'dirChanged', function( evt ) {
+				var range = editor.createRange(),
+					dataNode = evt.data.node;
+
+				range.setStartBefore( dataNode );
+				range.setEndAfter( dataNode );
+
+				var walker = new CKEDITOR.dom.walker( range ),
+					node;
+
+				while ( ( node = walker.next() ) ) {
+					if ( node.type == CKEDITOR.NODE_ELEMENT ) {
+						// A child with the defined dir is to be ignored.
+						if ( !node.equals( dataNode ) && node.getDirection() ) {
+							range.setStartAfter( node );
+							walker = new CKEDITOR.dom.walker( range );
+							continue;
+						}
+
+						// Switch alignment classes.
+						var classes = editor.config.indentClasses;
+						if ( classes ) {
+							var suffix = ( evt.data.dir == 'ltr' ) ? [ '_rtl', '' ] : [ '', '_rtl' ];
+							for ( var i = 0; i < classes.length; i++ ) {
+								if ( node.hasClass( classes[ i ] + suffix[ 0 ] ) ) {
+									node.removeClass( classes[ i ] + suffix[ 0 ] );
+									node.addClass( classes[ i ] + suffix[ 1 ] );
+								}
+							}
+						}
+
+						// Switch the margins.
+						var marginLeft = node.getStyle( 'margin-right' ),
+							marginRight = node.getStyle( 'margin-left' );
+
+						marginLeft ? node.setStyle( 'margin-left', marginLeft ) : node.removeStyle( 'margin-left' );
+						marginRight ? node.setStyle( 'margin-right', marginRight ) : node.removeStyle( 'margin-right' );
+					}
+				}
+			} );
+		}
+	} );
+
+	/**
+	 * Global command class definitions and global helpers.
+	 *
+	 * @class
+	 * @singleton
+	 */
+	CKEDITOR.plugins.indent = {
+		/**
+		 * A base class for a generic command definition, responsible mainly for creating
+		 * Increase Indent and Decrease Indent toolbar buttons as well as for refreshing
+		 * UI states.
+		 *
+		 * Commands of this class do not perform any indentation by themselves. They
+		 * delegate this job to content-specific indentation commands (i.e. indentlist).
+		 *
+		 * @class CKEDITOR.plugins.indent.genericDefinition
+		 * @extends CKEDITOR.commandDefinition
+		 * @param {CKEDITOR.editor} editor The editor instance this command will be
+		 * applied to.
+		 * @param {String} name The name of the command.
+		 * @param {Boolean} [isIndent] Defines the command as indenting or outdenting.
+		 */
+		genericDefinition: function( isIndent ) {
+			/**
+			 * Determines whether the command belongs to the indentation family.
+			 * Otherwise it is assumed to be an outdenting command.
+			 *
+			 * @readonly
+			 * @property {Boolean} [=false]
+			 */
+			this.isIndent = !!isIndent;
+
+			// Mimic naive startDisabled behavior for outdent.
+			this.startDisabled = !this.isIndent;
+		},
+
+		/**
+		 * A base class for specific indentation command definitions responsible for
+		 * handling a pre-defined set of elements i.e. indentlist for lists or
+		 * indentblock for text block elements.
+		 *
+		 * Commands of this class perform indentation operations and modify the DOM structure.
+		 * They listen for events fired by {@link CKEDITOR.plugins.indent.genericDefinition}
+		 * and execute defined actions.
+		 *
+		 * **NOTE**: This is not an {@link CKEDITOR.command editor command}.
+		 * Context-specific commands are internal, for indentation system only.
+		 *
+		 * @class CKEDITOR.plugins.indent.specificDefinition
+		 * @param {CKEDITOR.editor} editor The editor instance this command will be
+		 * applied to.
+		 * @param {String} name The name of the command.
+		 * @param {Boolean} [isIndent] Defines the command as indenting or outdenting.
+		 */
+		specificDefinition: function( editor, name, isIndent ) {
+			this.name = name;
+			this.editor = editor;
+
+			/**
+			 * An object of jobs handled by the command. Each job consists
+			 * of two functions: `refresh` and `exec` as well as the execution priority.
+			 *
+			 *	* The `refresh` function determines whether a job is doable for
+			 *	  a particular context. These functions are executed in the
+			 *	  order of priorities, one by one, for all plugins that registered
+			 *	  jobs. As jobs are related to generic commands, refreshing
+			 *	  occurs when the global command is firing the `refresh` event.
+			 *
+			 *	  **Note**: This function must return either {@link CKEDITOR#TRISTATE_DISABLED}
+			 *	  or {@link CKEDITOR#TRISTATE_OFF}.
+			 *
+			 *	* The `exec` function modifies the DOM if possible. Just like
+			 *	  `refresh`, `exec` functions are executed in the order of priorities
+			 *	  while the generic command is executed. This function is not executed
+			 *	  if `refresh` for this job returned {@link CKEDITOR#TRISTATE_DISABLED}.
+			 *
+			 *	  **Note**: This function must return a Boolean value, indicating whether it
+			 *	  was successful. If a job was successful, then no other jobs are being executed.
+			 *
+			 * Sample definition:
+			 *
+			 *		command.jobs = {
+			 *			// Priority = 20.
+			 *			'20': {
+			 *				refresh( editor, path ) {
+			 *					if ( condition )
+			 *						return CKEDITOR.TRISTATE_OFF;
+			 *					else
+			 *						return CKEDITOR.TRISTATE_DISABLED;
+			 *				},
+			 *				exec( editor ) {
+			 *					// DOM modified! This was OK.
+			 *					return true;
+			 *				}
+			 *			},
+			 *			// Priority = 60. This job is done later.
+			 *			'60': {
+			 *				// Another job.
+			 *			}
+			 *		};
+			 *
+			 * For additional information, please check comments for
+			 * the `setupGenericListeners` function.
+			 *
+			 * @readonly
+			 * @property {Object} [={}]
+			 */
+			this.jobs = {};
+
+			/**
+			 * Determines whether the editor that the command belongs to has
+			 * {@link CKEDITOR.config#enterMode config.enterMode} set to {@link CKEDITOR#ENTER_BR}.
+			 *
+			 * @readonly
+			 * @see CKEDITOR.config#enterMode
+			 * @property {Boolean} [=false]
+			 */
+			this.enterBr = editor.config.enterMode == CKEDITOR.ENTER_BR;
+
+			/**
+			 * Determines whether the command belongs to the indentation family.
+			 * Otherwise it is assumed to be an outdenting command.
+			 *
+			 * @readonly
+			 * @property {Boolean} [=false]
+			 */
+			this.isIndent = !!isIndent;
+
+			/**
+			 * The name of the global command related to this one.
+			 *
+			 * @readonly
+			 */
+			this.relatedGlobal = isIndent ? 'indent' : 'outdent';
+
+			/**
+			 * A keystroke associated with this command (*Tab* or *Shift+Tab*).
+			 *
+			 * @readonly
+			 */
+			this.indentKey = isIndent ? 9 : CKEDITOR.SHIFT + 9;
+
+			/**
+			 * Stores created markers for the command so they can eventually be
+			 * purged after the `exec` function is run.
+			 */
+			this.database = {};
+		},
+
+		/**
+		 * Registers content-specific commands as a part of the indentation system
+		 * directed by generic commands. Once a command is registered,
+		 * it listens for events of a related generic command.
+		 *
+		 *		CKEDITOR.plugins.indent.registerCommands( editor, {
+		 *			'indentlist': new indentListCommand( editor, 'indentlist' ),
+		 *			'outdentlist': new indentListCommand( editor, 'outdentlist' )
+		 *		} );
+		 *
+		 * Content-specific commands listen for the generic command's `exec` and
+		 * try to execute their own jobs, one after another. If some execution is
+		 * successful, `evt.data.done` is set so no more jobs (commands) are involved.
+		 *
+		 * Content-specific commands also listen for the generic command's `refresh`
+		 * and fill the `evt.data.states` object with states of jobs. A generic command
+		 * uses this data to determine its own state and to update the UI.
+		 *
+		 * @member CKEDITOR.plugins.indent
+		 * @param {CKEDITOR.editor} editor The editor instance this command is
+		 * applied to.
+		 * @param {Object} commands An object of {@link CKEDITOR.command}.
+		 */
+		registerCommands: function( editor, commands ) {
+			editor.on( 'pluginsLoaded', function() {
+				for ( var name in commands ) {
+					( function( editor, command ) {
+						var relatedGlobal = editor.getCommand( command.relatedGlobal );
+
+						for ( var priority in command.jobs ) {
+							// Observe generic exec event and execute command when necessary.
+							// If the command was successfully handled by the command and
+							// DOM has been modified, stop event propagation so no other plugin
+							// will bother. Job is done.
+							relatedGlobal.on( 'exec', function( evt ) {
+								if ( evt.data.done )
+									return;
+
+								// Make sure that anything this command will do is invisible
+								// for undoManager. What undoManager only can see and
+								// remember is the execution of the global command (relatedGlobal).
+								editor.fire( 'lockSnapshot' );
+
+								if ( command.execJob( editor, priority ) )
+									evt.data.done = true;
+
+								editor.fire( 'unlockSnapshot' );
+
+								// Clean up the markers.
+								CKEDITOR.dom.element.clearAllMarkers( command.database );
+							}, this, null, priority );
+
+							// Observe generic refresh event and force command refresh.
+							// Once refreshed, save command state in event data
+							// so generic command plugin can update its own state and UI.
+							relatedGlobal.on( 'refresh', function( evt ) {
+								if ( !evt.data.states )
+									evt.data.states = {};
+
+								evt.data.states[ command.name + '@' + priority ] =
+									command.refreshJob( editor, priority, evt.data.path );
+							}, this, null, priority );
+						}
+
+						// Since specific indent commands have no UI elements,
+						// they need to be manually registered as a editor feature.
+						editor.addFeature( command );
+					} )( this, commands[ name ] );
+				}
+			} );
+		}
+	};
+
+	CKEDITOR.plugins.indent.genericDefinition.prototype = {
+		context: 'p',
+
+		exec: function() {}
+	};
+
+	CKEDITOR.plugins.indent.specificDefinition.prototype = {
+		/**
+		 * Executes the content-specific procedure if the context is correct.
+		 * It calls the `exec` function of a job of the given `priority`
+		 * that modifies the DOM.
+		 *
+		 * @param {CKEDITOR.editor} editor The editor instance this command
+		 * will be applied to.
+		 * @param {Number} priority The priority of the job to be executed.
+		 * @returns {Boolean} Indicates whether the job was successful.
+		 */
+		execJob: function( editor, priority ) {
+			var job = this.jobs[ priority ];
+
+			if ( job.state != TRISTATE_DISABLED )
+				return job.exec.call( this, editor );
+		},
+
+		/**
+		 * Calls the `refresh` function of a job of the given `priority`.
+		 * The function returns the state of the job which can be either
+		 * {@link CKEDITOR#TRISTATE_DISABLED} or {@link CKEDITOR#TRISTATE_OFF}.
+		 *
+		 * @param {CKEDITOR.editor} editor The editor instance this command
+		 * will be applied to.
+		 * @param {Number} priority The priority of the job to be executed.
+		 * @returns {Number} The state of the job.
+		 */
+		refreshJob: function( editor, priority, path ) {
+			var job = this.jobs[ priority ];
+
+			if ( !editor.activeFilter.checkFeature( this ) )
+				job.state = TRISTATE_DISABLED;
+			else
+				job.state = job.refresh.call( this, editor, path );
+
+			return job.state;
+		},
+
+		/**
+		 * Checks if the element path contains the element handled
+		 * by this indentation command.
+		 *
+		 * @param {CKEDITOR.dom.elementPath} node A path to be checked.
+		 * @returns {CKEDITOR.dom.element}
+		 */
+		getContext: function( path ) {
+			return path.contains( this.context );
+		}
+	};
+
+	/**
+	 * Attaches event listeners for this generic command. Since the indentation
+	 * system is event-oriented, generic commands communicate with
+	 * content-specific commands using the `exec` and `refresh` events.
+	 *
+	 * Listener priorities are crucial. Different indentation phases
+	 * are executed with different priorities.
+	 *
+	 * For the `exec` event:
+	 *
+	 *	* 0: Selection and bookmarks are saved by the generic command.
+	 *	* 1-99: Content-specific commands try to indent the code by executing
+	 *	  their own jobs ({@link CKEDITOR.plugins.indent.specificDefinition#jobs}).
+	 *	* 100: Bookmarks are re-selected by the generic command.
+	 *
+	 * The visual interpretation looks as follows:
+	 *
+	 *		  +------------------+
+	 *		  | Exec event fired |
+	 *		  +------ + ---------+
+	 *		          |
+	 *		        0 -<----------+ Selection and bookmarks saved.
+	 *		          |
+	 *		          |
+	 *		       25 -<---+ Exec 1st job of plugin#1 (return false, continuing...).
+	 *		          |
+	 *		          |
+	 *		       50 -<---+ Exec 1st job of plugin#2 (return false, continuing...).
+	 *		          |
+	 *		          |
+	 *		       75 -<---+ Exec 2nd job of plugin#1 (only if plugin#2 failed).
+	 *		          |
+	 *		          |
+	 *		      100 -<-----------+ Re-select bookmarks, clean-up.
+	 *		          |
+	 *		+-------- v ----------+
+	 *		| Exec event finished |
+	 *		+---------------------+
+	 *
+	 * For the `refresh` event:
+	 *
+	 *	* <100: Content-specific commands refresh their job states according
+	 *	  to the given path. Jobs save their states in the `evt.data.states` object
+	 *	  passed along with the event. This can be either {@link CKEDITOR#TRISTATE_DISABLED}
+	 *	  or {@link CKEDITOR#TRISTATE_OFF}.
+	 *	* 100: Command state is determined according to what states
+	 *	  have been returned by content-specific jobs (`evt.data.states`).
+	 *	  UI elements are updated at this stage.
+	 *
+	 *	  **Note**: If there is at least one job with the {@link CKEDITOR#TRISTATE_OFF} state,
+	 *	  then the generic command state is also {@link CKEDITOR#TRISTATE_OFF}. Otherwise,
+	 *	  the command state is {@link CKEDITOR#TRISTATE_DISABLED}.
+	 *
+	 * @param {CKEDITOR.command} command The command to be set up.
+	 * @private
+	 */
+	function setupGenericListeners( editor, command ) {
+		var selection, bookmarks;
+
+		// Set the command state according to content-specific
+		// command states.
+		command.on( 'refresh', function( evt ) {
+			// If no state comes with event data, disable command.
+			var states = [ TRISTATE_DISABLED ];
+
+			for ( var s in evt.data.states )
+				states.push( evt.data.states[ s ] );
+
+			this.setState( CKEDITOR.tools.search( states, TRISTATE_OFF ) ? TRISTATE_OFF : TRISTATE_DISABLED );
+		}, command, null, 100 );
+
+		// Initialization. Save bookmarks and mark event as not handled
+		// by any plugin (command) yet.
+		command.on( 'exec', function( evt ) {
+			selection = editor.getSelection();
+			bookmarks = selection.createBookmarks( 1 );
+
+			// Mark execution as not handled yet.
+			if ( !evt.data )
+				evt.data = {};
+
+			evt.data.done = false;
+		}, command, null, 0 );
+
+		// Housekeeping. Make sure selectionChange will be called.
+		// Also re-select previously saved bookmarks.
+		command.on( 'exec', function() {
+			editor.forceNextSelectionCheck();
+			selection.selectBookmarks( bookmarks );
+		}, command, null, 100 );
+	}
+} )();

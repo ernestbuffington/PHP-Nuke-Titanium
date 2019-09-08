@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -64,18 +64,15 @@ if ($db->sql_numrows($result) < 1) {
     $past = time()-86400*$number_of_days;
     $result = $db->sql_query("SELECT ip FROM ".$prefix."_poll_check WHERE ip='$ip' AND pollID='$pollID'");
     $result2 = $db->sql_query("SELECT optionText, voteID, optionCount FROM ".$prefix."_poll_data WHERE pollID='$pollID' AND optionText!='' ORDER BY voteID");
-    
-	if ($db->sql_numrows($result) > 0) 
+    if ($db->sql_numrows($result) > 0) 
 	{
         while ($row = $db->sql_fetchrow($result2)) 
 		{
             $options[] = $row;
-            if ($sum == '')  //fix added
-			$sum = '0';      //fix added
-			$sum += (int)$row['optionCount'];
+            if (is_numeric($sum)) # Fix Ernest Buffington ADD
+		    $sum += (int)$row['optionCount'];
         }
-         
-		$ThemeSel = get_theme();
+        $ThemeSel = get_theme();
         $leftbar = file_exists("themes/$ThemeSel/images/survey_leftbar.gif") ? 'survey_leftbar.gif' : 'leftbar.gif';
         $mainbar = file_exists("themes/$ThemeSel/images/survey_mainbar.gif") ? 'survey_mainbar.gif' : 'mainbar.gif';
         $rightbar = file_exists("themes/$ThemeSel/images/survey_rightbar.gif") ? 'survey_rightbar.gif' : 'rightbar.gif';
@@ -104,23 +101,10 @@ if ($db->sql_numrows($result) < 1) {
         $button = '';
     }
     else {
-        while ($row = $db->sql_fetchrow($result2)) 
-		{
-			############################################################### PHP v7.3.6
-			# FIX ADD by TheGhost 08/01/2019                        #
-			# New E_WARNING and E_NOTICE errors have been           #
-			# introduced when invalid strings are coerced using     # 
-			# operators expecting numbers or their assignment       #
-			# equivalents. An E_NOTICE is emitted when the string   #  
-			# begins with a numeric value but contains trailing     #
-			# non-numeric characters, and an E_WARNING is emitted   #
-			# when the string does not contain a numeric value.     #
-			#########################################################
-			if ($sum == '')                                         #
-			$sum = '0';                                             #
-			#########################################################
+        while ($row = $db->sql_fetchrow($result2)) {
             $content .= "<tr><td valign=\"top\"><input type=\"radio\" name=\"voteID\" value=\"".$row['voteID']."\"></td><td width=\"100%\"><span class=\"content\">".$row['optionText']."</span></td></tr>\n";
-            $sum += (int) $row['optionCount'];
+            if (is_numeric($sum)) # Fix Ernest Buffington ADD
+			$sum += (int) $row['optionCount'];
         }
         $button .= '<input type="hidden" name="pollID" value="'.$pollID.'">';
         $button .= '<input type="hidden" name="forwarder" value="'.$url.'">';
@@ -140,5 +124,4 @@ if ($db->sql_numrows($result) < 1) {
     }
     $content .= "</span></center></form>\n";
 }
-
 ?>

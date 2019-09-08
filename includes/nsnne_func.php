@@ -1,10 +1,10 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /********************************************************/
-/* Titanium Blogs                                       */
+/* NSN News                                             */
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
 /* http://www.nukescripts.net                           */
 /* Copyright (c)2000-2005 by NukeScripts Network         */

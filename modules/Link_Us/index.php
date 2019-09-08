@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0  :  Enhanced Web Portal System
+ Nuke-Evolution   :   Enhanced Web Portal System
  ========================================================================
 
  Nuke-Evo Base          :   #$#BASE

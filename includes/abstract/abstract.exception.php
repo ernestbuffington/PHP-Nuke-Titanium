@@ -1,7 +1,7 @@
 <?php
 
 /* -- -----------------------------------------------------------
- * PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ * // Nuke-Evolution Xtreme: Enhanced PHP-Nuke Web Portal System
  * -- -----------------------------------------------------------
  *
  * >> Exception Handler

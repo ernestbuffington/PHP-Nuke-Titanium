@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /********************************************************************/
@@ -55,8 +55,8 @@ if ($name == 'Forums') {
         $newpagetitle = "$item_delim $name $item_delim $forum";
     }
 } else
-// Blog
-if ($name == 'Blog') {
+// News
+if ($name == 'News') {
     global $file, $sid, $new_topic;
     $newpagetitle= "$item_delim $name";
     if (isset($new_topic) && is_numeric($new_topic)) {
@@ -73,7 +73,7 @@ if ($name == 'Blog') {
     }
 } else
 // Topics
-if ($name == 'Blog_Topics') {
+if ($name == 'Topics') {
       $newpagetitle = $item_delim.' '._ACTIVETOPICS;
 } else
 // Web Links
@@ -92,11 +92,20 @@ if ($name == 'Web_Links') {
     }
 } else
 // Downloads
-if ($name == 'Downloads') 
-{
- include_once(NUKE_TITLES_DIR.'Downloads.php');
-} 
-else
+if ($name == 'Downloads') {
+    global $l_op, $cid, $lid, $module_title;
+    $name = $module_title;
+    $newpagetitle = "$item_delim $name";
+    if(isset($cid) && is_numeric($cid)) {
+        list($cat, $parent) = $db->sql_ufetchrow("SELECT `title`, `parentid` FROM `".$prefix."_downloads_categories` WHERE `cid`='$cid'", SQL_NUM);
+        if ($parent == 0) {
+            $newpagetitle = "$item_delim $name $item_delim $cat";
+        } else {
+            list($parent) = $db->sql_ufetchrow("SELECT `title` FROM `".$prefix."_downloads_categories` WHERE `cid`='$parent'", SQL_NUM);
+            $newpagetitle = "$item_delim $name $item_delim $parent $item_delim $cat";
+        }
+    }
+} else
 // Content
 if ($name == 'Content') {
     global $pa, $cid, $pid;
@@ -120,7 +129,7 @@ if ($name == 'Reviews') {
     }
 } else
 // Stories Archive
-if ($name == 'Blog_Archive') {
+if ($name == 'Stories_Archive') {
     global $sa, $year, $month_l, $module_title;
     $name = $module_title;
     $newpagetitle = "$item_delim $name";

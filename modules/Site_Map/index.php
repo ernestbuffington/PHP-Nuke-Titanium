@@ -72,133 +72,98 @@ function downloads_subs($cid, $spaces, $xml) {
 include_once(NUKE_BASE_DIR.'header.php');
 
 Opentable();
-echo '<div class="title" style="text-align: center"><strong>'._NJMAP.' '.$sitename.'</strong></div>'; //fixed
+echo("<div align=\"center\"><H2>"._NJMAP." $sitename</H2></div>");
 Closetable();
 
 OpenTable();
-
-echo '<div align="center">';
-
-echo "<table align=\"center\" border=\"0\">";
-
-echo '<tr><td align"absmiddle"><img width="15" src="'.img('home.png','Site_Map').'" alt="cath"></td><td><a href="'.$nukeurl.'">Homepage</a></td></tr>';
-
+echo"<table align=\"center\" border=\"0\">";
+echo"<tr><td><img src=\"modules/Site_Map/images/cath.gif\" alt=\"cath\"></td><td><a href=\"$nukeurl\">Homepage</a></td></tr>\n";
 $result2 = $db->sql_query("SELECT `title`, `custom_title`, `view`, `groups` FROM `" . $prefix . "_modules` WHERE `active`=1 ORDER BY `custom_title`");
-
-while ($row2 = $db->sql_fetchrow($result2)) 
-{
+while ($row2 = $db->sql_fetchrow($result2)) {
 	$titolomodulo = $row2['custom_title'];
 	$link = $row2['title'];
 	$permesso = $row2['view'];
 	$groups = $row2['groups'];
     $show = true;
 	echo"<tr><td>";
-	
-	if ($permesso < 3) 
-	{
-		echo '<img src="'.img('green_lock.png','Site_Map').'" alt="'.$link.'">';
-	} 
-	else 
-	if ($permesso == 4 && is_admin()) 
-	{
-	    echo '<img src="'.img('green_lock.png','Site_Map').'" alt="'.$link.'">';
-	} 
-	else 
-	if ($permesso == 6 && !empty($groups) && is_array($groups)) 
-	{
+	if ($permesso < 3) {
+		echo "<img src=\"modules/Site_Map/images/cat1.gif\" alt=\"cat1\">";
+	} else if ($permesso == 4 && is_admin()) {
+	    echo "<img src=\"modules/Site_Map/images/cat1.gif\" alt=\"cat1\">";
+	} else if ($permesso == 6 && !empty($groups) && is_array($groups)) {
 	    $ingroup = false;
-	
 	    global $userinfo;
-	
-	    foreach ($groups as $group) 
-		{
-		     if (isset($userinfo['groups'][$group])) 
-			 {
+	    foreach ($groups as $group) {
+		     if (isset($userinfo['groups'][$group])) {
 		         $ingroup = true;
 		     }
 	    }
-	    
-		if (!$ingroup) 
-		{
+	    if (!$ingroup) {
 	        echo "<img src=\"modules/Site_Map/images/cat1.gif\" alt=\"cat1\">";
-	    } 
-		else 
-		{
-	        echo '<img src="'.img('red_lock.png','Site_Map').'" alt="deny">';  
+	    } else {
+	        echo"<img src=\"modules/Site_Map/images/deny.gif\" alt=\"deny\">";
 			$show = false;
 	    }
-	} 
-	else 
-	{
-		echo '<img src="'.img('red_lock.png','Site_Map').'" alt="deny">';
+	} else {
+		echo"<img src=\"modules/Site_Map/images/deny.gif\" alt=\"deny\">";
 		$show = false;
 	}
 	echo "</td>\n";
 
 	echo "<td><a href=\"modules.php?name=$link\">$titolomodulo</a></td></tr>\n";
 
-	switch($link) 
-	{
-		case 'Evo UserBlock':
-		break;
+	switch($link) {
 		case 'Downloads':
-			$result3 = $db->sql_query("SELECT `cid`, `title` FROM `" . $prefix . "_nsngd_categories` WHERE `active`=1 AND `parentid`=0 ORDER BY `title`");
-			
-			while ($row3 = $db->sql_fetchrow($result3)) 
-			{
+			$result3 = $db->sql_query("SELECT `cid`, `title` FROM `" . $prefix . "_downloads_categories` WHERE `active`=1 AND `parentid`=0 ORDER BY `title`");
+			while ($row3 = $db->sql_fetchrow($result3)) {
 				$titolodown = $row3['title'];
 				$cid1 = $row3['cid'];
-			
-				echo '<tr><td></td><td><img src="'.img('lime_lock.png','Site_Map').'" alt="cat3"> <a href="modules.php?name=Downloads&amp;cid='.$cid1.'">'.$titolodown.'</a></td>';
-			
+				echo"<tr><td>&nbsp;</td><td><img src=\"modules/Site_Map/images/cat3.gif\" alt=\"cat3\"> <a href=\"modules.php?name=Downloads&amp;cid=$cid1\">$titolodown</a></td>";
 				if($xml)
                 {
                     //XML
                     @fwrite($var, "<url><loc>$nukeurl/modules.php?name=Downloads&amp;cid=$cid1</loc></url>\n");
                 }
-                $db->sql_freeresult($result3);				
-				
-				###############################################################################################################################################################
-				
-				
-				$result4 = $db->sql_query("SELECT `cid`, `title` FROM `" . $prefix . "_nsngd_categories` WHERE `active`=1 AND `parentid`=$cid1 ORDER BY `title`");
-				
-				while ($row4 = $db->sql_fetchrow($result4)) 
-				{
+                $result4 = $db->sql_query("SELECT `cid`, `title` FROM `" . $prefix . "_downloads_categories` WHERE `active`=1 AND `parentid`=$cid1 ORDER BY `title`");
+				while ($row4 = $db->sql_fetchrow($result4)) {
 					$titolodown2 = $row4['title'];
-				
 					$cid2 = $row4['cid'];
-				
-					echo '<tr><td></td><td>  <img width="15" src='.img('invisible_pixel.gif','Site_Map').'><img src="'.img('orange_lock.png','Site_Map').'" alt="cat2"> <a href="modules.php?name=Downloads&amp;cid='.$cid2,'">'.$titolodown2.'</a></td>';
-				
+					echo"<tr><td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"modules/Site_Map/images/cat2.gif\" alt=\"cat2\"> <a href=\"modules.php?name=Downloads&amp;cid=$cid2\">$titolodown2</a></td>";
 					if($xml)
                     {
-                       //XML
-                       @fwrite($var, "<url><loc>$nukeurl/modules.php?name=Downloads&amp;cid=$cid2</loc></url>\n");
+                            //XML
+                            @fwrite($var, "<url><loc>$nukeurl/modules.php?name=Downloads&amp;cid=$cid2</loc></url>\n");
                    }
-                   
+                   $result4b = $db->sql_query("SELECT `cid`, `lid`, `title` FROM `" . $prefix . "_downloads_downloads` WHERE `active`=1 AND `cid`=$cid2 ORDER BY `hits` LIMIT 0,".$ndown);
+                    while ($row4b = $db->sql_fetchrow($result4b)) {
+        				$titolodown3=$row4b['title'];
+        				$cid3=$row4b['lid'];
+        				echo"<tr><td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"modules/Site_Map/images/catt.gif\" alt=\"cat\"> <a href=\"modules.php?name=Downloads&amp;op=getit&amp;lid=$cid3\">$titolodown3</a></td>";
+        				if($xml)
+                        {
+                                //XML
+                                //@fwrite($var, "<url><loc>$nukeurl/modules.php?name=Downloads&amp;op=getit&amp;lid=$cid3</loc></url>\n");
+                        }
+                    }
+                    $db->sql_freeresult($result4b);
                 }
                 $db->sql_freeresult($result4);
-
-				###############################################################################################################################################################
 			}
+            $db->sql_freeresult($result3);
 		break;
 		
 		case 'File_Repository':
 
 			$result3 = $db->sql_query("SELECT `cid`, `cname` FROM `" . $prefix . "_file_repository_categories` WHERE `parentid`=0 ORDER BY `cname`");
-			
 			while ($row3 = $db->sql_fetchrow($result3)):
 
 				$titolodown = $row3['cname'];
 				$cid1 = $row3['cid'];
-				echo"<tr><td>&nbsp;</td><td><img src=\"".img('orange_lock.png','Site_Map')."\" alt=\"cat3\"> <a href=\"modules.php?name=File_Repository&amp;cid=$cid1\">$titolodown</a></td>";
-			
+				echo"<tr><td>&nbsp;</td><td><img src=\"modules/Site_Map/images/cat3.gif\" alt=\"cat3\"> <a href=\"modules.php?name=File_Repository&amp;cid=$cid1\">$titolodown</a></td>";
 				if($xml)
 					@fwrite($var, "<url><loc>$nukeurl/modules.php?name=File_Repository&amp;cid=$cid1</loc></url>\n");
 
 				$result3b = $db->sql_query("SELECT `cid`, `did`, `title` FROM `" . $prefix . "_file_repository_items` WHERE `cid`=$cid1 ORDER BY `hits` LIMIT 0,".$ndown);
-			
 				while ($row3b = $db->sql_fetchrow($result3b)):
 
 					$titolodown3 = $row3b['title'];
@@ -215,7 +180,7 @@ while ($row2 = $db->sql_fetchrow($result2))
 
 					$titolodown2 = $row4['cname'];
 					$cid2 = $row4['cid'];
-					echo"<tr><td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"".img('lime_lock.png','Site_Map')."\" alt=\"cat2\"> <a href=\"modules.php?name=File_Repository&amp;cid=$cid2\">$titolodown2</a></td>";
+					echo"<tr><td>&nbsp;</td><td>&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"modules/Site_Map/images/cat2.gif\" alt=\"cat2\"> <a href=\"modules.php?name=File_Repository&amp;cid=$cid2\">$titolodown2</a></td>";
 					if($xml)
 						@fwrite($var, "<url><loc>$nukeurl/modules.php?name=File_Repository&amp;cid=$cid2</loc></url>\n");
 
@@ -241,64 +206,40 @@ while ($row2 = $db->sql_fetchrow($result2))
 		
 
 		case 'Forums':
-			
 			$result5 = $db->sql_query("SELECT `cat_id`, `cat_title` FROM `" . $prefix . "_bbcategories` ORDER BY `cat_order`");
-			
-			while ($row5 = $db->sql_fetchrow($result5)) 
-			{
+			while ($row5 = $db->sql_fetchrow($result5)) {
 				$titolocatf = $row5['cat_title'];
-			
 				$cat_id = $row5['cat_id'];
 
 				//Check to make sure its not a blank category
 				$number_of_forums = $db->sql_numrows($db->sql_query("SELECT * FROM " . $prefix . "_bbforums WHERE cat_id=$cat_id AND auth_view<2 AND auth_read<2 ORDER BY forum_order"));
-				if ($number_of_forums <= 0) 
-				continue;
+				if ($number_of_forums <= 0) continue;
 
-				
-				if ($auth_view == 0 && !is_user())
-				echo"<tr><td></td><td><img width=\"15\" src=\"".img('invisible_pixel.gif','Site_Map')."\" alt=\"invisible_pixel.gif\"><img src=\"".img('red_lock.png','Site_Map')."\" alt=\"".$titolocatf."\"> <a href=\"modules.php?name=Forums&amp;file=index&amp;c=$cat_id\">$titolocatf</a></td>";
-		        else
-                echo"<tr><td></td><td><img width=\"15\" src=\"".img('invisible_pixel.gif','Site_Map')."\" alt=\"invisible_pixel.gif\"><img src=\"".img('lime_lock.png','Site_Map')."\" alt=\"".$titolocatf."\"> <a href=\"modules.php?name=Forums&amp;file=index&amp;c=$cat_id\">$titolocatf</a></td>";				
-				
-				if($xml)
+				echo"<tr><td>&nbsp;</td><td><img src=\"modules/Site_Map/images/cat3.gif\" alt=\"cat3\"> <a href=\"modules.php?name=Forums&amp;file=index&amp;c=$cat_id\">$titolocatf</a></td>";
+		        if($xml)
                 {
                     //XML
                     @fwrite($var, "<url><loc>$nukeurl/modules.php?name=Forums&amp;file=index&amp;c=$cat_id</loc></url>\n");
                 }
-                
-				$result6 = $db->sql_query("SELECT `forum_name`, `forum_id`, `auth_view`, `auth_read` FROM `" . $prefix . "_bbforums` WHERE `cat_id`=$cat_id AND `auth_view`<2 AND `auth_read`<2 ORDER BY `forum_order`");
-				
+                $result6 = $db->sql_query("SELECT `forum_name`, `forum_id`, `auth_view`, `auth_read` FROM `" . $prefix . "_bbforums` WHERE `cat_id`=$cat_id AND `auth_view`<2 AND `auth_read`<2 ORDER BY `forum_order`");
 				while ($row6 = $db->sql_fetchrow($result6)) {
 					$titoloforum = $row6['forum_name'];
 					$fid = $row6['forum_id'];
 					$auth_view = $row6['auth_view'];
 					$auth_read = $row6['auth_read'];
-					
 					echo"<tr><td>&nbsp;</td><td>";
-					
-					if ($auth_view == 0 && !is_user()) 
-					{
-						echo $auth_view;
-						echo"&nbsp;&nbsp;&nbsp;&nbsp;<img width=\"15\" src=\"".img('invisible_pixel.gif','Site_Map')."\" alt=\"invisible_pixel.gif\"><img src=\"".img('red_lock.png','Site_Map')."\" alt=\"Denied\">";
-						echo" $titoloforum</td></tr>";
-					} 
-					else 
-					{
-						if ($auth_view == 0 && !is_user()) 
-						echo "<img width=\"15\" src=\"".img('invisible_pixel.gif','Site_Map')."\" alt=\"invisible_pixel.gif\"><img src=\"".img('red_lock.png','Site_Map')."\" alt=\"".$titoloforum."\">";
-						else
-						echo "<img width=\"15\" src=\"".img('invisible_pixel.gif','Site_Map')."\" alt=\"invisible_pixel.gif\"><img src=\"".img('orange_lock.png','Site_Map')."\" alt=\"".$titoloforum."\">";
-						echo " <a href=\"modules.php?name=Forums&amp;file=viewforum&amp;f=$fid\">$titoloforum</a></td></tr>";
-    			    
-					    if($xml)
+					if ($auth_view && !is_user()) {
+						echo"&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"modules/Site_Map/images/deny.gif\" alt=\"deny\">";
+						echo"$titoloforum</td></tr>";
+					} else {
+						echo"&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"modules/Site_Map/images/cat2.gif\" alt=\"cat2\">";
+						echo" <a href=\"modules.php?name=Forums&amp;file=viewforum&amp;f=$fid\">$titoloforum</a></td></tr>";
+    			        if($xml)
                         {
                             //XML
                             @fwrite($var, "<url><loc>$nukeurl/modules.php?name=Forums&amp;file=viewforum&amp;f=$fid</loc><changefreq>daily</changefreq></url>\n");
                         }
-                        
-						$resultT = $db->sql_query("SELECT topic_title, topic_id FROM " . $prefix . "_bbtopics WHERE forum_id=$fid ORDER BY topic_id DESC LIMIT 0,".$ntopics);
-						
+                        $resultT = $db->sql_query("SELECT topic_title, topic_id FROM " . $prefix . "_bbtopics WHERE forum_id=$fid ORDER BY topic_id DESC LIMIT 0,".$ntopics);
 						while($rowT = $db->sql_fetchrow($resultT)) {
 						    echo"<tr><td>&nbsp;</td><td>";
 							echo"&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<img src=\"modules/Site_Map/images/catt.gif\" alt=\"cat\">";
@@ -417,7 +358,6 @@ while ($row2 = $db->sql_fetchrow($result2))
 }
 $db->sql_freeresult($result2);
 echo"</table>";
-echo '</div>';
 CloseTable();
 
 // YOU ARE NOT AUTHORISED TO REMOVE OR EDIT BELOW LINES WITHOUT AUTHORS PERMISSIONS. PLEASE PLAY FAIR.

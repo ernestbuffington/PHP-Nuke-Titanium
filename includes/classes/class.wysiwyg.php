@@ -1,6 +1,7 @@
 <?php
+
 /*********************************************
-  PHP-Nuke Titanium v3.0.0
+  CPG Dragonfly CMS
   ********************************************
   Copyright (c) 2004 - 2005 by CPG-Nuke Dev Team
   http://dragonflycms.org

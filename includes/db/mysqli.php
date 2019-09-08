@@ -22,13 +22,11 @@
 if(!defined("SQL_LAYER"))
 {
 
-// FIX LINK
-// https://stackoverflow.com/questions/22588874/use-of-undefined-constant-mysql-error-assumed-mysql-error 
-define('SQL_LAYER','mysqli'); // FIXED by Ernest Allen Buffington 08/2/2019
-define('SQL_NUM', 'MYSQL_NUM'); // FIXED by Ernest Allen Buffington 08/2/2019
-define('SQL_BOTH', 'MYSQL_BOTH'); // FIXED by Ernest Allen Buffington 08/2/2019
-define('SQL_ASSOC', 'MYSQL_ASSOC'); 
-define('END_TRANSACTION', '2'); // FIXED by Ernest Allen Buffington 08/2/2019
+define("SQL_LAYER","mysqli");
+define('SQL_NUM', MYSQL_NUM);
+define('SQL_BOTH', MYSQL_BOTH);
+define('SQL_ASSOC', MYSQL_ASSOC);
+define('END_TRANSACTION', 2);
 
 class sql_db
 {
@@ -80,12 +78,10 @@ class sql_db
 		}
 	}
 
-	// FIXED 08/12/2019
+	//
 	// Constructor
-	// FIX LINK
-	//https://stackoverflow.com/questions/47549783/php-deprecated-methods-with-the-same-name-as-their-class-will-not-be-constructo
-	//function sql_db($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
-	function __construct($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
+	//
+	function sql_db($sqlserver, $sqluser, $sqlpassword, $database, $persistency = true)
 	{
 		$this->persistency = $persistency;
 		$this->user = $sqluser;

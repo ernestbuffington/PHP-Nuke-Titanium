@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /********************************************************/
@@ -35,7 +35,7 @@ define('REGEX_UNION','#\w?\s?union\s\w*?\s?(select|all|distinct|insert|update|dr
 @require_once(NUKE_BASE_DIR.'config.php');
 @require_once(NUKE_DB_DIR.'db.php');
 
-# Load required configs
+// Load required configs
 global $remote, $nsnst_const, $admin_file, $userinfo, $currentlang, $cache, $nukeurl, $name;
 
 $identify = new identify();
@@ -113,14 +113,14 @@ if ((isset($uinfo) && isset($uinfo['user_id']) && isset($uinfo['username'])) && 
   $nsnst_const['ban_username'] = $nuke_config['anonymous'];
 }
 
-# Load required lang file
+// Load required lang file
 if (file_exists(NUKE_MODULES_DIR.'NukeSentinel/language/lang-'.$currentlang.'.php')) {
    include_once(NUKE_MODULES_DIR.'NukeSentinel/language/lang-'.$currentlang.'.php');
 } else {
    include_once(NUKE_MODULES_DIR.'NukeSentinel/language/lang-english.php');
 }
 
-# Load Blocker Arrays
+// Load Blocker Arrays
 if(($blocker_array = $cache->load('blockers', 'sentinel')) === false) {
     $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_blockers` ORDER BY `blocker`");
     $num_rows = $db->sql_numrows($result);
@@ -138,25 +138,17 @@ function string_bypass ($str) {
     return substr($nsnst_const['query_string'],0,strlen($str)) != $str;
 }
 
-# Invalid admin check
+// Invalid admin check
 if(isset($aid) AND (!isset($admin) OR empty($admin)) AND $op!='login' AND string_bypass('name=Calendar')) { die(_AB_FALSEADMIN); }
 
-# Stop Santy Worm
-# If you have problems with forums remove ,highlight from the string below
+// Stop Santy Worm
+// If you have problems with forums remove ,highlight from the string below
 if($ab_config['santy_protection'] == 1) {
   $bad_uri_content=array("rush","highlight=%","perl","chr(","pillar","visualcoder","sess_");
-  
-  # FIX for PHP 7.3.6 by Ernest Allen Buffington on 08/13/2019
-  # while(list($stid,$uri_content)=each($bad_uri_content)) 
-  foreach ($bad_uri_content as $name => $uri_content) 
-  { 
-    if(stristr($_SERVER['REQUEST_URI'], $uri_content)) 
-  { 
-  
-  die(_AB_SANTY); } }
+  while(list($stid,$uri_content)=each($bad_uri_content)) { if(stristr($_SERVER['REQUEST_URI'], $uri_content)) { die(_AB_SANTY); } }
 }
 
-# Invalid ip check
+// Invalid ip check
 if($ab_config['test_switch'] != 1) {
   if($nsnst_const['remote_ip']=="none") {
   echo abget_template("abuse_invalid.tpl");
@@ -164,30 +156,30 @@ if($ab_config['test_switch'] != 1) {
   }
 }
 
-# Invalid user agent
+// Invalid user agent
 if($nsnst_const['user_agent']=="none" AND !stristr($_SERVER['PHP_SELF'], "backend.php") AND ($nsnst_const['remote_ip'] != $nsnst_const['server_ip'])) {
   echo abget_template("abuse_invalid2.tpl");
   die();
 }
 
-# Invalid request method check
+// Invalid request method check
 if(strtolower($nsnst_const['request_method'])!="get" AND strtolower($nsnst_const['request_method'])!="head" AND strtolower($nsnst_const['request_method'])!="post" AND strtolower($nsnst_const['request_method'])!="put") { die(_AB_INVALIDMETHOD); }
 
-# DOS Attack Blocker
+// DOS Attack Blocker
 if($ab_config['prevent_dos'] == 1 AND !stristr($_SERVER['PHP_SELF'], "backend.php") AND !stristr($nukeurl, $_SERVER['SERVER_NAME'])) {
   if (empty($nsnst_const['user_agent']) || $nsnst_const['user_agent'] == "-" || !isset($nsnst_const['user_agent'])) { die(_AB_GETOUT); }
 }
 
 
-# Site Switch Check
+// Site Switch Check
 if($ab_config['site_switch'] == 1 AND !stristr($_SERVER['PHP_SELF'], $admin_file.".php") AND !is_admin() && !defined('NO_DISABLE')) {
   $display_page = abget_template($ab_config['site_reason']);
   $display_page = preg_replace("/<\/body>/i", "<hr noshade='noshade' />\n<div align='right'>"._AB_NUKESENTINEL."</div>\n</body>", $display_page);
   die($display_page);
 }
 
-# Clearing of expired blocks
-# CAUTION: This function can slow your sites load time
+// Clearing of expired blocks
+// CAUTION: This function can slow your sites load time
 $clearedtime = strtotime(date("Y-m-d 23:59:59", $nsnst_const['ban_time']));
 $cleartime = strtotime(date("Y-m-d 23:59:59", $nsnst_const['ban_time'])) - 86400;
 if($ab_config['self_expire'] == 1 AND $ab_config['blocked_clear'] < $cleartime) {
@@ -237,25 +229,25 @@ if($ab_config['self_expire'] == 1 AND $ab_config['blocked_clear'] < $cleartime) 
   $db->sql_query("UPDATE `".$prefix."_nsnst_config` SET `config_value`='$clearedtime' WHERE `config_name`='blocked_clear'");
 }
 
-# Proxy Blocker
+// Proxy Blocker
 if($ab_config['proxy_switch'] == 1) {
   $proxy0 = $nsnst_const['remote_ip'];
   $proxy1 = $nsnst_const['client_ip'];
   $proxy2 = $nsnst_const['forward_ip'];
   $proxy_host = @getHostByAddr($proxy0);
-  #Lite:
+  //Lite:
   if($ab_config['proxy_switch'] == 1 AND ($proxy1 != "none" OR $proxy2 != "none")) {
     $display_page = abget_template($ab_config['proxy_reason']);
     $display_page = preg_replace("/<\/body>/i", "<hr noshade='noshade' />\n<div align='right'>"._AB_NUKESENTINEL." ".$ab_config['version_number']." "._AB_BYNSN."</div>\n</body>", $display_page);
     die($display_page);
   }
-  #Mild:
+  //Mild:
   if($ab_config['proxy_switch'] == 2 AND ($proxy1 != "none" OR $proxy2 != "none" OR stristr($proxy_host,"proxy"))) {
     $display_page = abget_template($ab_config['proxy_reason']);
     $display_page = preg_replace("/<\/body>/i", "<hr noshade='noshade' />\n<div align='right'>"._AB_NUKESENTINEL." ".$ab_config['version_number']." "._AB_BYNSN."</div>\n</body>", $display_page);
     die($display_page);
   }
-  #Strong:
+  //Strong:
   if($ab_config['proxy_switch'] == 3 AND ($proxy1 != "none" OR $proxy2 != "none" OR stristr($proxy_host,"proxy") OR $proxy0 == $proxy_host)) {
     $display_page = abget_template($ab_config['proxy_reason']);
     $display_page = preg_replace("/<\/body>/i", "<hr noshade='noshade' />\n<div align='right'>"._AB_NUKESENTINEL." ".$ab_config['version_number']." "._AB_BYNSN."</div>\n</body>", $display_page);
@@ -263,15 +255,15 @@ if($ab_config['proxy_switch'] == 1) {
   }
 }
 
-# Check if ip is blocked
+// Check if ip is blocked
 $blocked_row = abget_blocked($nsnst_const['remote_ip']);
 if($blocked_row) { blocked($blocked_row); }
 
-# Check if range is blocked
+// Check if range is blocked
 $blockedrange_row = abget_blockedrange($nsnst_const['remote_ip']);
 if($blockedrange_row) { blockedrange($blockedrange_row); }
 
-# AUTHOR Protection
+// AUTHOR Protection
 $blocker_row = $blocker_array['author'];
 if($blocker_row['activate'] > 0) {
   if(isset($op)) {
@@ -281,7 +273,7 @@ if($blocker_row['activate'] > 0) {
   }
 }
 
-# ADMIN protection
+// ADMIN protection
 $blocker_row = $blocker_array['admin'];
 if($blocker_row['activate'] > 0) {
   if(stristr($_SERVER['PHP_SELF'],$admin_file.".php") AND ($op!="logout" AND $op!="login" AND $op!="adminMain" AND $op!="gfx" AND isset($op)) AND !is_admin()) {
@@ -289,8 +281,8 @@ if($blocker_row['activate'] > 0) {
   }
 }
 
-# Check for UNION attack
-# Copyright 2004(c) Raven PHP Scripts
+// Check for UNION attack
+// Copyright 2004(c) Raven PHP Scripts
 /*****[BEGIN]******************************************
  [ Base:    Advanced Security Extension        v1.0.0 ]
  ******************************************************/
@@ -298,7 +290,7 @@ function union_check($item) {
     global $blocker_array;
     $blocker_row = $blocker_array['union'];
     if($blocker_row['activate'] > 0) {
-      #if (stristr($item,'+union+') OR stristr($item,'%20union%20') OR stristr($item,'*/union/*') OR stristr($item,' union ') OR stristr($item,'/union/') OR stristr($item,'=union%20') OR stristr($item,'=union ')) {
+      //if (stristr($item,'+union+') OR stristr($item,'%20union%20') OR stristr($item,'*/union/*') OR stristr($item,' union ') OR stristr($item,'/union/') OR stristr($item,'=union%20') OR stristr($item,'=union ')) {
       if (preg_match(REGEX_UNION, $item)) {
         block_ip($blocker_row);
       }
@@ -309,8 +301,8 @@ union_check($nsnst_const['request_string'].$nsnst_const['request_string_base64']
  [ Base:    Advanced Security Extension        v1.0.0 ]
  ******************************************************/
 
-# Check for CLIKE attack
-# Copyright 2004(c) Raven PHP Scripts
+// Check for CLIKE attack
+// Copyright 2004(c) Raven PHP Scripts
 $blocker_row = $blocker_array['clike'];
 if($blocker_row['activate'] > 0) {
   if(stristr($nsnst_const['query_string'],'/*')
@@ -321,22 +313,22 @@ if($blocker_row['activate'] > 0) {
   }
 }
 
-# Check Filters
+// Check Filters
 $blocker_row = $blocker_array['filter'];
 if($blocker_row['activate'] > 0) {
-  # Check for Forum attack
-  # Copyright 2004(c) GanjaUK & ChatServ
+  // Check for Forum attack
+  // Copyright 2004(c) GanjaUK & ChatServ
   if (!stristr($nsnst_const['query_string'],'&file=nickpage') AND  stristr($nsnst_const['query_string'],'&user=') AND
   ($name=="Private_Messages" || $name=="Forums" || $name=="Members_List")) {
     block_ip($blocker_row);
   }
-  # Check for News attack
-  # Copyright 2004(c) ChatServ
+  // Check for News attack
+  // Copyright 2004(c) ChatServ
   if (stristr($nsnst_const['query_string'],'%25') AND ($name=="News" || $name=="Reviews")) {
     block_ip($blocker_row);
   }
   if (string_bypass('feed=news') && string_bypass('name=gallery2')) {
-      # Check for XSS attack
+      // Check for XSS attack
       if ( ((stristr($nsnst_const['query_string'], "http://") || stristr($nsnst_const['query_string'], "https://")) && substr($_SERVER['REQUEST_URI'],0,strlen("/index.php?url=")) != '/index.php?url=') OR
       (stristr($nsnst_const['query_string'], "cmd=") AND !stristr($nsnst_const['query_string'], "&cmd")) OR
       (stristr($nsnst_const['query_string'], "exec") AND !stristr($nsnst_const['query_string'], "execu")) OR
@@ -348,8 +340,8 @@ if($blocker_row['activate'] > 0) {
 }
 
 /*if(!is_admin() && string_bypass('feed=news') && string_bypass('name=gallery2')) {
-  # Check for SCRIPTING attack
-  # Copyright 2004(c) ChatServ
+  // Check for SCRIPTING attack
+  // Copyright 2004(c) ChatServ
   $blocker_row = $blocker_array['script'];
   if($blocker_row['activate'] > 0) {
     foreach($_GET as $sec_key => $secvalue) {
@@ -385,7 +377,7 @@ if($blocker_row['activate'] > 0) {
   }
 }*/
 
-# Check for Referer
+// Check for Referer
 $blocker_row = $blocker_array['referer'];
 if($blocker_row['activate'] > 0) {
   $referer_request = '/'.$_SERVER['REQUEST_METHOD'].$_SERVER['REQUEST_URI'];
@@ -400,7 +392,7 @@ if($blocker_row['activate'] > 0) {
   }
 }
 
-# Check for Harvester
+// Check for Harvester
 $blocker_row = $blocker_array['harvester'];
 if($blocker_row['activate'] > 0) {
   if($blocker_row['list'] > "") {
@@ -414,7 +406,7 @@ if($blocker_row['activate'] > 0) {
   }
 }
 
-# Check for Strings
+// Check for Strings
 $blocker_row = $blocker_array['string'];
 if($blocker_row['activate'] > 0) {
   if($ab_config['list_string'] > "") {
@@ -428,7 +420,7 @@ if($blocker_row['activate'] > 0) {
   }
 }
 
-# Check for Request
+// Check for Request
 $blocker_row = $blocker_array['request'];
 if($blocker_row['activate'] > 0) {
   if($blocker_row['list'] > "") {
@@ -442,7 +434,7 @@ if($blocker_row['activate'] > 0) {
   }
 }
 
-# Force to NUKEURL
+// Force to NUKEURL
 if($ab_config['force_nukeurl'] == 1 AND !defined('RSS_FEED')) {
   $servtemp1 = strtolower(str_replace("http://", "", $nukeurl));
   if(substr($servtemp1, -1) == "/") { $servtemp1 = substr($servtemp1, 0, strlen($servtemp1)-1); }
@@ -456,8 +448,8 @@ if($ab_config['force_nukeurl'] == 1 AND !defined('RSS_FEED')) {
   }
 }
 
-# IP Tracking
-# CAUTION: This function can slow your sites load time
+// IP Tracking
+// CAUTION: This function can slow your sites load time
 if($ab_config['track_active'] == 1 AND !is_excluded($nsnst_const['remote_ip'])) {
   if(!empty($nsnst_const['post_string'])) {
     $pg = $nsnst_const['script_name']."?".$nsnst_const['post_string'];
@@ -500,7 +492,7 @@ if($ab_config['track_active'] == 1 AND !is_excluded($nsnst_const['remote_ip'])) 
       $db->sql_query("DELETE FROM `".$prefix."_nsnst_tracked_ips` WHERE `date` < ".$ab_config['track_del']);
       $result = $db->sql_query("UPDATE `".$prefix."_nsnst_config` SET `config_value`='$clearedtime' WHERE `config_name`='track_clear'");
       $db->sql_freeresult($result);
-      #$db->sql_query("OPTIMIZE TABLE `".$prefix."_nsnst_tracked_ips`");
+      //$db->sql_query("OPTIMIZE TABLE `".$prefix."_nsnst_tracked_ips`");
     }
   }
 }
@@ -651,12 +643,12 @@ function get_remote_addr () {
 
 function clear_session(){
   global $prefix, $db, $nsnst_const;
-  # Clear nuke_session location
+  // Clear nuke_session location
   $x_forwarded = $nsnst_const['forward_ip'];
   $client_ip = $nsnst_const['client_ip'];
   $remote_addr = $nsnst_const['remote_addr'];
   $db->sql_query("DELETE FROM `".$prefix."_session` WHERE `host_addr`='$x_forwarded' OR `host_addr`='$client_ip' OR `host_addr`='$remote_addr'");
-  # Clear nuke_bbsessions location
+  // Clear nuke_bbsessions location
   $x_f = explode(".", $x_forwarded);
   $x_forwarded = str_pad(dechex($x_f[0]), 2, "0", STR_PAD_LEFT).str_pad(dechex($x_f[1]), 2, "0", STR_PAD_LEFT).str_pad(dechex($x_f[2]), 2, "0", STR_PAD_LEFT).str_pad(dechex($x_f[3]), 2, "0", STR_PAD_LEFT);
   $c_p = explode(".", $client_ip);
@@ -916,7 +908,7 @@ function write_mail($banip, $blocker_row, $abmatch="") {
     $message .= _AB_REQUEST_METHOD.": ".$nsnst_const['request_method']."\n";
     if ($blocker_row['email_lookup'] == 1) {
       $message .= "--------------------\n"._AB_WHOISFOR."\n";
-      # Copyright 2004(c) Raven PHP Scripts
+      // Copyright 2004(c) Raven PHP Scripts
       if(!@file_get_contents("http://ws.arin.net/cgi-bin/whois.pl?queryinput=".$nsnst_const['remote_ip'])) {
         $msg = ('Unable to query WhoIs information for '.$nsnst_const['remote_ip'].'.');
       } else {
@@ -941,7 +933,7 @@ function write_mail($banip, $blocker_row, $abmatch="") {
       $message .= strip_tags($msg);
     } elseif ($blocker_row['email_lookup'] == 2) {
       $message .= "--------------------\n";
-      # Copyright 2004(c) NukeScripts
+      // Copyright 2004(c) NukeScripts
       /*if(!@file_get_contents("http://dnsstuff.com/tools/whois.ch?ip=".$nsnst_const['remote_ip'])) {
         $data = 'Unable to query WhoIs information for '.$nsnst_const['remote_ip'].'.';
       } else {
@@ -1033,7 +1025,7 @@ function is_god($admin) {
     $apwd = trim($apwd);
     $aname = Fix_Quotes($aname);
     $admrow = $db->sql_fetchrow($db->sql_query("SELECT * FROM `".$prefix."_authors` WHERE `aid`='$aname'"));
-    #if((strtolower($admrow['name']) == "god" OR $admrow['radminsuper'] == 1) AND $admrow['pwd']==$apwd) { return $GodSave = 1; }
+    //if((strtolower($admrow['name']) == "god" OR $admrow['radminsuper'] == 1) AND $admrow['pwd']==$apwd) { return $GodSave = 1; }
     if(strtolower($admrow['name']) == "god" AND $admrow['pwd']==$apwd) { return $GodSave = 1; }
   }
   return $GodSave = 0;
@@ -1043,8 +1035,8 @@ function abget_template($template="") {
   global $sitename, $adminmail, $ab_config, $nsnst_const, $db, $prefix, $ip, $abmatch;
   if (!empty($template) && preg_match('/\.php/', $template)) $template = '';
   if(empty($template)) { $template = "abuse_default.tpl"; }
-  #$sitename = $nuke_config['sitename'];
-  #$adminmail = $nuke_config['adminmail'];
+  //$sitename = $nuke_config['sitename'];
+  //$adminmail = $nuke_config['adminmail'];
   $adminmail = str_replace("@", "(at)", $adminmail);
   $adminmail = str_replace(".", "(dot)", $adminmail);
   $adminmail2 = urlencode($adminmail);
@@ -1067,7 +1059,7 @@ function abget_template($template="") {
   $display_page = str_replace("__CLIENTIP__", htmlentities($nsnst_const['client_ip']), $display_page);
   $display_page = str_replace("__FORWARDEDFOR__", htmlentities($nsnst_const['forward_ip']), $display_page);
   $display_page = str_replace("__REMOTEADDR__", htmlentities($nsnst_const['remote_addr']), $display_page);
-  # New fields for use in display pages
+  // New fields for use in display pages
   $display_page = str_replace("__QUERYSTRING__", htmlentities($nsnst_const['query_string']), $display_page);
   $display_page = str_replace("__GETSTRING__", htmlentities($nsnst_const['get_string']), $display_page);
   $display_page = str_replace("__POSTSTRING__", htmlentities($nsnst_const['post_string']), $display_page);
@@ -1235,9 +1227,9 @@ function PMA_auth_check() {
   global $REMOTE_USER, $AUTH_USER, $REMOTE_PASSWORD, $AUTH_PASSWORD;
   global $HTTP_AUTHORIZATION;
 
-  # Grabs the $PHP_AUTH_USER variable whatever are the values of the
-  # 'register_globals' and the 'variables_order' directives
-  # loic1 - 2001/25/11: use the new globals arrays defined with php 4.1+
+  // Grabs the $PHP_AUTH_USER variable whatever are the values of the
+  // 'register_globals' and the 'variables_order' directives
+  // loic1 - 2001/25/11: use the new globals arrays defined with php 4.1+
   if (empty($PHP_AUTH_USER)) {
     if (!empty($_SERVER) && isset($_SERVER['PHP_AUTH_USER'])) {
       $PHP_AUTH_USER = $_SERVER['PHP_AUTH_USER'];
@@ -1247,7 +1239,7 @@ function PMA_auth_check() {
       $PHP_AUTH_USER = $_ENV['REMOTE_USER'];
     } else if (@getenv('REMOTE_USER')) {
       $PHP_AUTH_USER = getenv('REMOTE_USER');
-    # Fix from Matthias Fichtner for WebSite Professional - Part 1
+    // Fix from Matthias Fichtner for WebSite Professional - Part 1
     } else if (isset($AUTH_USER)) {
       $PHP_AUTH_USER = $AUTH_USER;
     } else if (!empty($_ENV) && isset($_ENV['AUTH_USER'])) {
@@ -1256,9 +1248,9 @@ function PMA_auth_check() {
       $PHP_AUTH_USER = getenv('AUTH_USER');
     }
   }
-  # Grabs the $PHP_AUTH_PW variable whatever are the values of the
-  # 'register_globals' and the 'variables_order' directives
-  # loic1 - 2001/25/11: use the new globals arrays defined with php 4.1+
+  // Grabs the $PHP_AUTH_PW variable whatever are the values of the
+  // 'register_globals' and the 'variables_order' directives
+  // loic1 - 2001/25/11: use the new globals arrays defined with php 4.1+
   if (empty($PHP_AUTH_PW)) {
     if (!empty($_SERVER) && isset($_SERVER['PHP_AUTH_PW'])) {
       $PHP_AUTH_PW = $_SERVER['PHP_AUTH_PW'];
@@ -1268,7 +1260,7 @@ function PMA_auth_check() {
       $PHP_AUTH_PW = $_ENV['REMOTE_PASSWORD'];
     } else if (@getenv('REMOTE_PASSWORD')) {
       $PHP_AUTH_PW = getenv('REMOTE_PASSWORD');
-    # Fix from Matthias Fichtner for WebSite Professional - Part 2
+    // Fix from Matthias Fichtner for WebSite Professional - Part 2
     } else if (isset($AUTH_PASSWORD)) {
       $PHP_AUTH_PW = $AUTH_PASSWORD;
     } else if (!empty($_ENV) && isset($_ENV['AUTH_PASSWORD'])) {
@@ -1277,7 +1269,7 @@ function PMA_auth_check() {
       $PHP_AUTH_PW = getenv('AUTH_PASSWORD');
     }
   }
-  # Gets authenticated user settings with IIS
+  // Gets authenticated user settings with IIS
   if (empty($PHP_AUTH_USER) && empty($PHP_AUTH_PW)
     && function_exists('base64_decode')) {
     if (!empty($HTTP_AUTHORIZATION)
@@ -1291,9 +1283,9 @@ function PMA_auth_check() {
       && substr(getenv('HTTP_AUTHORIZATION'), 0, 6) == 'Basic ') {
       list($PHP_AUTH_USER, $PHP_AUTH_PW) = explode(':', base64_decode(substr(getenv('HTTP_AUTHORIZATION'), 6)));
     }
-  } # end IIS
+  } // end IIS
 
-  # Returns whether we get authentication settings or not
+  // Returns whether we get authentication settings or not
   if (empty($PHP_AUTH_USER)) {
     return FALSE;
   } else {
@@ -1303,7 +1295,7 @@ function PMA_auth_check() {
     }
     return TRUE;
   }
-} # end of the 'PMA_auth_check()' function
+} // end of the 'PMA_auth_check()' function
 
 /*********************************************************************************************/
 /* HTTP Auth code for ".$admin_file.".php protection.  Tried to make it a function call      */

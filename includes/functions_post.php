@@ -140,7 +140,7 @@ function unprepare_message($message)
     {
 	   return preg_replace($unhtml_specialchars_match, $unhtml_specialchars_replace, $message);		 
 	}
-    # Ernest Buffington
+    # Ernest Buffington 
         
 }
 

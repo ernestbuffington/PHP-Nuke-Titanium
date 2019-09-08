@@ -99,7 +99,7 @@ function img_tag_to_resize($text) {
     }
     // $text = preg_replace('/<\s*?img/',"<img resizemod=\"on\" ",$text);
     # <div class="reimg-loading"></div><img class="reimg" onload="reimg(this);" onerror="reimg(this);"
-    $text = preg_replace('/<\s*?img/',"<div class=\"reimg-loading\"></div><img class=\"reimg\" onload=\"reimg(this);\" onerror=\"reimg(this);\" ",$text);
+    $text = preg_replace('/<\s*?img/',"<div align=\"center\" class=\"reimg-loading\"></div><img class=\"reimg\" onload=\"reimg(this);\" onerror=\"reimg(this);\" ",$text);
     return $text;
 }
 

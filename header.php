@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 - PHP-Nuke Titanium
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -27,134 +27,60 @@
 	  NSN Center Blocks                        v2.2.1       05/26/2009
  ************************************************************************/
 
-if(!defined('HEADER')){ define('HEADER', true); }else{ return; }
-if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])){ exit('Access Denied'); }
+if(!defined('HEADER')) 
+{
+    define('HEADER', true);
+} 
+else 
+{
+    return;
+}
+
+if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
+    exit('Access Denied');
+}
 
 require_once(dirname(__FILE__).'/mainfile.php');
 
 function head() 
 {
-    global $define_theme_xtreme_209e, $myappid, $ab_config, $modheader, $name, $cache, $userinfo, $cookie, $sitekey, $db, $name, $banners, $sitename, $ads, $browser, $ThemeSel;
+    global $sitename, $ab_config, $modheader, $cache;
 
-	include_once(TITANIUM_THEMES_DIR.$ThemeSel.'/theme.php');
+    $ThemeSel = get_theme();
+    echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
+    // echo '<!DOCTYPE html>';
+    // echo "<html lang=\""._LANGCODE."\" dir=\""._LANG_DIRECTION."\">\n";
+    echo '<head>'."\n";
 
-    if (@file_exists(TITANIUM_INCLUDE_DIR . 'mimetype.php') && ($define_theme_xtreme_209e != true)) 
-	{
-        include(TITANIUM_INCLUDE_DIR.'mimetype.php');
-    } 
-	else 
-	{
-        echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\" \"http://www.w3.org/TR/html4/loose.dtd\">\n";
-        echo '<head>'."\n";
-		
-	  # function to grab the page title.
-      the_pagetitle();
-    }
+    # START uploadcare PLUGIN for CKeditor 4 - 09/07/2019
+    echo "\n\n<!-- START uploadcare -->\n\n";
+    echo "<script type=\"text/javascript\">\n";
+    echo "UPLOADCARE_PUBLIC_KEY = 'df691884c0a749427aa1';\n";
+    echo "UPLOADCARE_TABS = 'file camera url facebook gdrive gphotos dropbox instagram evernote flickr onedrive box vk huddle';\n";
+    echo "UPLOADCARE_EFFECTS = 'crop,rotate,mirror,flip,enhance,sharp,blur,grayscale,invert';\n";
+    echo "UPLOADCARE_PREVIEW_STEP = true;\n";
+    echo "UPLOADCARE_CLEARABLE = true;\n";
+    echo "</script>\n";
+
+    echo "<script src=\"https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js\"></script>\n";
+    echo "<script src=\"https://ucarecdn.com/libs/widget-tab-effects/1.x/uploadcare.tab-effects.js\"></script>\n";
+        
+    echo "<script type=\"text/javascript\">\n";
+    echo "uploadcare.registerTab('preview', uploadcareTabEffects)\n";
+    echo "</script>\n";
+    echo "\n\n<!-- END uploadcare -->\n\n";
+	# START uploadcare PLUGIN for CKeditor 4 - 09/07/2019
+
+    # function to grab the page title.
+    the_pagetitle();
 
     include_once(NUKE_INCLUDE_DIR.'meta.php');
-	if ($define_theme_xtreme_209e != true)
-	include_once(TITANIUM_INCLUDE_DIR.'dynamic_titles.php');
+    # START Cookie SandBox added by Ernest Allen Buffington - 09/03/2019
+	include_once(NUKE_INCLUDE_DIR.'cookies.php');
+	# END Cookie SandBox added by Ernest Allen Buffington - 09/03/2019
 	
-    ############################################################################ 
-    if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/a-links.php'))       ##
-	{                                                                         ##
-	  echo "<style type=\"text/css\">\n";                                     ##
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/a-links.php');         ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##                             Theme Design On The Fly
-    if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/async-hide.php'))    ############################## Stop Deleteing Cache To see
-	{                                                                         ##                             your changes! 08/13/2019
-	  echo "<style type=\"text/css\">\n";                                     ##                             By Ernest Allen Buffington
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/async-hide.php');      ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##
-    if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/block.php'))         ##
-	{                                                                         ##
-	  echo "<style type=\"text/css\">\n";                                     ##
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/block.php');           ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##
-	if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/body.php'))          ##
-	{                                                                         ##
-	  echo "<style type=\"text/css\">\n";                                     ##
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/body.php');            ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##
-	if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/categories.php'))    ##
-	{                                                                         ##
-	  echo "<style type=\"text/css\">\n";                                     ##
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/categories.php');      ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##
-	if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/maintable.php'))     ##
-	{                                                                         ##
-	  echo "<style type=\"text/css\">\n";                                     ##
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/maintable.php');       ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##
-	if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/menunowrap.php'))    ##
-	{                                                                         ##
-	  echo "<style type=\"text/css\">\n";                                     ##
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/menunowrap.php');      ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##
-	if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/modules.php'))       ##
-	{                                                                         ##
-	  echo "<style type=\"text/css\">\n";                                     ##
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/modules.php');         ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##
-	if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/myButton.php'))      ##
-	{                                                                         ##
-	  echo "<style type=\"text/css\">\n";                                     ##
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/myButton.php');        ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##
-	if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/storycat.php'))      ##
-	{                                                                         ##
-	  echo "<style type=\"text/css\">\n";                                     ##
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/storycat.php');        ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##
-	if (@file_exists(TITANIUM_THEMES_DIR.$ThemeSel.'/css/style.php'))         ##
-	{                                                                         ##
-	  echo "<style type=\"text/css\">\n";                                     ##
-	  require_once(TITANIUM_THEMES_DIR.$ThemeSel.'/css/style.php');           ##
-	  echo "</style>\n";                                                      ##
-	}                                                                         ##
-    ###########################################################################
-    
-	    echo "\n\n<!-- START uploadcare -->\n\n";
-		echo "<script type=\"text/javascript\">\n";
-		echo "UPLOADCARE_PUBLIC_KEY = 'df691884c0a749427aa1';\n";
-		echo "UPLOADCARE_TABS = 'file camera url facebook gdrive gphotos dropbox instagram evernote flickr onedrive box vk huddle';\n";
-		echo "UPLOADCARE_EFFECTS = 'crop,rotate,mirror,flip,enhance,sharp,blur,grayscale,invert';\n";
-		echo "UPLOADCARE_PREVIEW_STEP = true;\n";
-		echo "UPLOADCARE_CLEARABLE = true;\n";
-		echo "</script>\n";
-
-        echo "<script src=\"https://ucarecdn.com/libs/widget/3.x/uploadcare.full.min.js\"></script>\n";
-		echo "<script src=\"https://ucarecdn.com/libs/widget-tab-effects/1.x/uploadcare.tab-effects.js\"></script>\n";
-        
-		echo "<script type=\"text/javascript\">\n";
-        echo "uploadcare.registerTab('preview', uploadcareTabEffects)\n";
-		echo "</script>\n";
-		echo "\n\n<!-- END uploadcare -->\n\n";
-
-	
-	
-	
-	include_once(NUKE_INCLUDE_DIR.'javascript.php');                          ######## Load local javascript File
-    ###########################################################################
-	if (@file_exists(TITANIUM_CLASSES_DIR . 'class.browsers.php')) #      Added by Ernest Buffington
-	    include(TITANIUM_CLASSES_DIR . 'class.browsers.php');      ###### Load Browser class - used for checking your browser types
-                                                                   #      Start date Jan 1st 2012 till Present - It is a work in progress!
-    ################################################################
-	if (@file_exists(TITANIUM_INCLUDE_DIR . 'cookies.php')) #            Added by Ernest Buffington
-	{                                                       ############ Load the custom cookies file if it exist COOKIE CONTROL
-        include(TITANIUM_INCLUDE_DIR . 'cookies.php');      #            Jan 1st 2012 
-    }                                                       #
-    #########################################################
+	include_once(NUKE_INCLUDE_DIR.'javascript.php');
+    include_once(NUKE_THEMES_DIR.$ThemeSel.'/theme.php');
 
     if ((($favicon = $cache->load('favicon', 'config')) === false) || empty($favicon)) 
 	{
@@ -164,16 +90,16 @@ function head()
 		else 
 		if (file_exists(NUKE_THEMES_DIR.$ThemeSel.'/images/favicon.ico')) $favicon = "themes/$ThemeSel/images/favicon.ico";
 		else 
-        $favicon = 'none';
-
-        if ($favicon != 'none') 
-        echo "<link rel=\"shortcut icon\" href=\"$favicon\" type=\"image/x-icon\" />\n";
+            $favicon = 'none';
         
-		$cache->save('favicon', 'config', $favicon);
+		if ($favicon != 'none') 
+            echo "<link rel=\"shortcut icon\" href=\"$favicon\" type=\"image/x-icon\" />\n";
+
+        $cache->save('favicon', 'config', $favicon);
     } 
 	else 
 	{
-        if ($favicon != 'none')
+        if ($favicon != 'none') 
         echo "<link rel=\"shortcut icon\" href=\"$favicon\" type=\"image/x-icon\" />\n";
     }
 
@@ -185,49 +111,34 @@ function head()
     echo "<link rel=\"alternate\" type=\"application/rss+xml\" title=\"RSS $sitename &raquo; Web Links\" href=\"rss.php?feed=weblinks\">\n";
 
     global $browser;
-    
-	if(isset($modheader)) {
+    if(isset($modheader)) {
         echo $modheader;
     }
 
     writeHEAD();
     
-    if ((($custom_head = $cache->load('custom_head', 'config')) === false) || empty($custom_head)) 
-	{
+    if ((($custom_head = $cache->load('custom_head', 'config')) === false) || empty($custom_head)) {
         $custom_head = array();
-    
-	    if (file_exists(NUKE_INCLUDE_DIR.'custom_files/custom_head.php')) 
-		{
+        if (file_exists(NUKE_INCLUDE_DIR.'custom_files/custom_head.php')) {
             $custom_head[] = 'custom_head';
         }
-        
-		if (file_exists(NUKE_INCLUDE_DIR.'custom_files/custom_header.php')) 
-		{
+        if (file_exists(NUKE_INCLUDE_DIR.'custom_files/custom_header.php')) {
             $custom_head[] = 'custom_header';
         }
-        
-		if (!empty($custom_head)) 
-		{
-            foreach ($custom_head as $file) 
-			{
+        if (!empty($custom_head)) {
+            foreach ($custom_head as $file) {
                 include_once(NUKE_INCLUDE_DIR.'custom_files/'.$file.'.php');
             }
         }
-        
-		$cache->save('custom_head', 'config', $custom_head);
-    } 
-	else 
-	{
-        if (!empty($custom_head)) 
-		{
-            foreach ($custom_head as $file) 
-			{
+        $cache->save('custom_head', 'config', $custom_head);
+    } else {
+        if (!empty($custom_head)) {
+            foreach ($custom_head as $file) {
                 include_once(NUKE_INCLUDE_DIR.'custom_files/'.$file.'.php');
             }
         }
     }
-    
-	/* ----- as you can probably tell this is used for IE compatibility ----- */
+    /* ----- as you can probably tell this is used for IE compatibility ----- */
     echo '<!--[if lt IE 9]><script src="https://cdnjs.cloudflare.com/ajax/libs/html5shiv/3.7.3/html5shiv.min.js"></script><![endif]-->'."\n";
     echo "</head>\n";
     themeheader();
@@ -288,8 +199,8 @@ function online()
      *
      * @since 2.0.9E
      */
-    if($guest == 0)
-    $db->sql_query("replace into `".$prefix."_users_who_been` (`user_ID`, `username`, `last_visit`) values ('".$userinfo['user_id']."', '".$userinfo['username']."', ".time().");");
+    if ( $guest == 0 )
+        $db->sql_query("replace into `".$prefix."_users_who_been` (`user_ID`, `username`, `last_visit`) values ('".$userinfo['user_id']."', '".$userinfo['username']."', ".time().");");
 }
 
 online();
@@ -316,4 +227,5 @@ endif;
 /*****[END]********************************************
  [ Mod:    NSN Center Blocks                   v2.2.1 ]
  ******************************************************/
+
 ?>

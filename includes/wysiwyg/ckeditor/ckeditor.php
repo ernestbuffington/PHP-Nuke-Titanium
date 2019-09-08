@@ -43,6 +43,7 @@ class ckeditor {
 		
         $this->first = false;
 		$modheader = '<script type="text/javascript" src="includes/wysiwyg/ckeditor/ckeditor.js"></script>';
+
     }
 	
 	function getHtml($name) {
@@ -67,5 +68,4 @@ class ckeditor {
         return $ckeditor;
     }
 }
-
 ?>

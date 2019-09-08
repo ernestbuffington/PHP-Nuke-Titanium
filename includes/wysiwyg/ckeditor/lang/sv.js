@@ -1,6 +1,146 @@
-﻿/*
-Copyright (c) 2003-2011, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
+
+/**
+* @fileOverview
 */
 
-CKEDITOR.lang.sv={dir:'ltr',editorTitle:'Rich text editor, %1, press ALT 0 for help.',toolbar:'Toolbar',editor:'Rich Text Editor',source:'Källa',newPage:'Ny sida',save:'Spara',preview:'Förhandsgranska',cut:'Klipp ut',copy:'Kopiera',paste:'Klistra in',print:'Skriv ut',underline:'Understruken',bold:'Fet',italic:'Kursiv',selectAll:'Markera allt',removeFormat:'Radera formatering',strike:'Genomstruken',subscript:'Nedsänkta tecken',superscript:'Upphöjda tecken',horizontalrule:'Infoga horisontal linje',pagebreak:'Infoga sidbrytning',pagebreakAlt:'Page Break',unlink:'Radera länk',undo:'Ångra',redo:'Gör om',common:{browseServer:'Bläddra på server',url:'URL',protocol:'Protokoll',upload:'Ladda upp',uploadSubmit:'Skicka till server',image:'Bild',flash:'Flash',form:'Formulär',checkbox:'Kryssruta',radio:'Alternativknapp',textField:'Textfält',textarea:'Textruta',hiddenField:'Dolt fält',button:'Knapp',select:'Flervalslista',imageButton:'Bildknapp',notSet:'<ej angivet>',id:'Id',name:'Namn',langDir:'Språkriktning',langDirLtr:'Vänster till Höger (VTH)',langDirRtl:'Höger till Vänster (HTV)',langCode:'Språkkod',longDescr:'URL-beskrivning',cssClass:'Stylesheet class',advisoryTitle:'Titel',cssStyle:'Style',ok:'OK',cancel:'Avbryt',close:'Close',preview:'Preview',generalTab:'General',advancedTab:'Avancerad',validateNumberFailed:'This value is not a number.',confirmNewPage:'Any unsaved changes to this content will be lost. Are you sure you want to load new page?',confirmCancel:'Some of the options have been changed. Are you sure to close the dialog?',options:'Options',target:'Target',targetNew:'New Window (_blank)',targetTop:'Topmost Window (_top)',targetSelf:'Same Window (_self)',targetParent:'Parent Window (_parent)',langDirLTR:'Left to Right (LTR)',langDirRTL:'Right to Left (RTL)',styles:'Style',cssClasses:'Stylesheet Classes',width:'Bredd',height:'Höjd',align:'Justering',alignLeft:'Vänster',alignRight:'Höger',alignCenter:'Centrerad',alignTop:'Överkant',alignMiddle:'Mitten',alignBottom:'Nederkant',invalidHeight:'Height must be a number.',invalidWidth:'Width must be a number.',unavailable:'%1<span class="cke_accessibility">, unavailable</span>'},contextmenu:{options:'Context Menu Options'},specialChar:{toolbar:'Klistra in utökat tecken',title:'Välj utökat tecken',options:'Special Character Options'},link:{toolbar:'Infoga/Redigera länk',other:'<annan>',menu:'Redigera länk',title:'Länk',info:'Länkinformation',target:'Mål',upload:'Ladda upp',advanced:'Avancerad',type:'Länktyp',toUrl:'URL',toAnchor:'Ankare i sidan',toEmail:'E-post',targetFrame:'<ram>',targetPopup:'<popup-fönster>',targetFrameName:'Målets ramnamn',targetPopupName:'Popup-fönstrets namn',popupFeatures:'Popup-fönstrets egenskaper',popupResizable:'Resizable',popupStatusBar:'Statusfält',popupLocationBar:'Adressfält',popupToolbar:'Verktygsfält',popupMenuBar:'Menyfält',popupFullScreen:'Helskärm (endast IE)',popupScrollBars:'Scrolllista',popupDependent:'Beroende (endest Netscape)',popupLeft:'Position från vänster',popupTop:'Position från sidans topp',id:'Id',langDir:'Språkriktning',langDirLTR:'Vänster till Höger (VTH)',langDirRTL:'Höger till Vänster (HTV)',acccessKey:'Behörighetsnyckel',name:'Namn',langCode:'Språkriktning',tabIndex:'Tabindex',advisoryTitle:'Titel',advisoryContentType:'Innehållstyp',cssClasses:'Stylesheet class',charset:'Teckenuppställning',styles:'Style',selectAnchor:'Välj ett ankare',anchorName:'efter ankarnamn',anchorId:'efter objektid',emailAddress:'E-postadress',emailSubject:'Ämne',emailBody:'Innehåll',noAnchors:'(Inga ankare kunde hittas)',noUrl:'Var god ange länkens URL',noEmail:'Var god ange E-postadress'},anchor:{toolbar:'Infoga/Redigera ankarlänk',menu:'Egenskaper för ankarlänk',title:'Egenskaper för ankarlänk',name:'Ankarnamn',errorName:'Var god ange ett ankarnamn'},list:{numberedTitle:'Numbered List Properties',bulletedTitle:'Bulleted List Properties',type:'Type',start:'Start',validateStartNumber:'List start number must be a whole number.',circle:'Circle',disc:'Disc',square:'Square',none:'None',notset:'<not set>',armenian:'Armenian numbering',georgian:'Georgian numbering (an, ban, gan, etc.)',lowerRoman:'Lower Roman (i, ii, iii, iv, v, etc.)',upperRoman:'Upper Roman (I, II, III, IV, V, etc.)',lowerAlpha:'Lower Alpha (a, b, c, d, e, etc.)',upperAlpha:'Upper Alpha (A, B, C, D, E, etc.)',lowerGreek:'Lower Greek (alpha, beta, gamma, etc.)',decimal:'Decimal (1, 2, 3, etc.)',decimalLeadingZero:'Decimal leading zero (01, 02, 03, etc.)'},findAndReplace:{title:'Sök och ersätt',find:'Sök',replace:'Ersätt',findWhat:'Sök efter:',replaceWith:'Ersätt med:',notFoundMsg:'Angiven text kunde ej hittas.',matchCase:'Skiftläge',matchWord:'Inkludera hela ord',matchCyclic:'Match cyclic',replaceAll:'Ersätt alla',replaceSuccessMsg:'%1 occurrence(s) replaced.'},table:{toolbar:'Tabell',title:'Tabellegenskaper',menu:'Tabellegenskaper',deleteTable:'Radera tabell',rows:'Rader',columns:'Kolumner',border:'Kantstorlek',widthPx:'pixlar',widthPc:'procent',widthUnit:'width unit',cellSpace:'Cellavstånd',cellPad:'Cellutfyllnad',caption:'Rubrik',summary:'Sammanfattning',headers:'Headers',headersNone:'None',headersColumn:'First column',headersRow:'First Row',headersBoth:'Both',invalidRows:'Number of rows must be a number greater than 0.',invalidCols:'Number of columns must be a number greater than 0.',invalidBorder:'Border size must be a number.',invalidWidth:'Table width must be a number.',invalidHeight:'Table height must be a number.',invalidCellSpacing:'Cell spacing must be a number.',invalidCellPadding:'Cell padding must be a number.',cell:{menu:'Cell',insertBefore:'Lägg till Cell Före',insertAfter:'Lägg till Cell Efter',deleteCell:'Radera celler',merge:'Sammanfoga celler',mergeRight:'Sammanfoga Höger',mergeDown:'Sammanfoga Ner',splitHorizontal:'Dela Cell Horisontellt',splitVertical:'Dela Cell Vertikalt',title:'Cell Properties',cellType:'Cell Type',rowSpan:'Rows Span',colSpan:'Columns Span',wordWrap:'Word Wrap',hAlign:'Horizontal Alignment',vAlign:'Vertical Alignment',alignBaseline:'Baseline',bgColor:'Background Color',borderColor:'Border Color',data:'Data',header:'Header',yes:'Yes',no:'No',invalidWidth:'Cell width must be a number.',invalidHeight:'Cell height must be a number.',invalidRowSpan:'Rows span must be a whole number.',invalidColSpan:'Columns span must be a whole number.',chooseColor:'Choose'},row:{menu:'Rad',insertBefore:'Lägg till Rad Före',insertAfter:'Lägg till Rad Efter',deleteRow:'Radera rad'},column:{menu:'Kolumn',insertBefore:'Lägg till Kolumn Före',insertAfter:'Lägg till Kolumn Efter',deleteColumn:'Radera kolumn'}},button:{title:'Egenskaper för knapp',text:'Text (Värde)',type:'Typ',typeBtn:'Knapp',typeSbm:'Skicka',typeRst:'Återställ'},checkboxAndRadio:{checkboxTitle:'Egenskaper för kryssruta',radioTitle:'Egenskaper för alternativknapp',value:'Värde',selected:'Vald'},form:{title:'Egenskaper för formulär',menu:'Egenskaper för formulär',action:'Funktion',method:'Metod',encoding:'Encoding'},select:{title:'Egenskaper för flervalslista',selectInfo:'Information',opAvail:'Befintliga val',value:'Värde',size:'Storlek',lines:'Linjer',chkMulti:'Tillåt flerval',opText:'Text',opValue:'Värde',btnAdd:'Lägg till',btnModify:'Redigera',btnUp:'Upp',btnDown:'Ner',btnSetValue:'Markera som valt värde',btnDelete:'Radera'},textarea:{title:'Egenskaper för textruta',cols:'Kolumner',rows:'Rader'},textfield:{title:'Egenskaper för textfält',name:'Namn',value:'Värde',charWidth:'Teckenbredd',maxChars:'Max antal tecken',type:'Typ',typeText:'Text',typePass:'Lösenord'},hidden:{title:'Egenskaper för dolt fält',name:'Namn',value:'Värde'},image:{title:'Bildegenskaper',titleButton:'Egenskaper för bildknapp',menu:'Bildegenskaper',infoTab:'Bildinformation',btnUpload:'Skicka till server',upload:'Ladda upp',alt:'Alternativ text',lockRatio:'Lås höjd/bredd förhållanden',unlockRatio:'Unlock Ratio',resetSize:'Återställ storlek',border:'Kant',hSpace:'Horis. marginal',vSpace:'Vert. marginal',alertUrl:'Var god och ange bildens URL',linkTab:'Länk',button2Img:'Do you want to transform the selected image button on a simple image?',img2Button:'Do you want to transform the selected image on a image button?',urlMissing:'Image source URL is missing.',validateBorder:'Border must be a whole number.',validateHSpace:'HSpace must be a whole number.',validateVSpace:'VSpace must be a whole number.'},flash:{properties:'Flashegenskaper',propertiesTab:'Properties',title:'Flashegenskaper',chkPlay:'Automatisk uppspelning',chkLoop:'Upprepa/Loopa',chkMenu:'Aktivera Flashmeny',chkFull:'Allow Fullscreen',scale:'Skala',scaleAll:'Visa allt',scaleNoBorder:'Ingen ram',scaleFit:'Exakt passning',access:'Script Access',accessAlways:'Always',accessSameDomain:'Same domain',accessNever:'Never',alignAbsBottom:'Absolut nederkant',alignAbsMiddle:'Absolut centrering',alignBaseline:'Baslinje',alignTextTop:'Text överkant',quality:'Quality',qualityBest:'Best',qualityHigh:'High',qualityAutoHigh:'Auto High',qualityMedium:'Medium',qualityAutoLow:'Auto Low',qualityLow:'Low',windowModeWindow:'Window',windowModeOpaque:'Opaque',windowModeTransparent:'Transparent',windowMode:'Window mode',flashvars:'Variables for Flash',bgcolor:'Bakgrundsfärg',hSpace:'Horis. marginal',vSpace:'Vert. marginal',validateSrc:'Var god ange länkens URL',validateHSpace:'HSpace must be a number.',validateVSpace:'VSpace must be a number.'},spellCheck:{toolbar:'Stavningskontroll',title:'Spell Check',notAvailable:'Sorry, but service is unavailable now.',errorLoading:'Error loading application service host: %s.',notInDic:'Saknas i ordlistan',changeTo:'Ändra till',btnIgnore:'Ignorera',btnIgnoreAll:'Ignorera alla',btnReplace:'Ersätt',btnReplaceAll:'Ersätt alla',btnUndo:'Ångra',noSuggestions:'- Förslag saknas -',progress:'Stavningskontroll pågår...',noMispell:'Stavningskontroll slutförd: Inga stavfel påträffades.',noChanges:'Stavningskontroll slutförd: Inga ord rättades.',oneChange:'Stavningskontroll slutförd: Ett ord rättades.',manyChanges:'Stavningskontroll slutförd: %1 ord rättades.',ieSpellDownload:'Stavningskontrollen är ej installerad. Vill du göra det nu?'},smiley:{toolbar:'Smiley',title:'Infoga smiley',options:'Smiley Options'},elementsPath:{eleLabel:'Elements path',eleTitle:'%1 element'},numberedlist:'Numrerad lista',bulletedlist:'Punktlista',indent:'Öka indrag',outdent:'Minska indrag',justify:{left:'Vänsterjustera',center:'Centrera',right:'Högerjustera',block:'Justera till marginaler'},blockquote:'Block Quote',clipboard:{title:'Klistra in',cutError:'Säkerhetsinställningar i Er webläsare tillåter inte åtgården Klipp ut. Använd (Ctrl/Cmd+X) istället.',copyError:'Säkerhetsinställningar i Er webläsare tillåter inte åtgården Kopiera. Använd (Ctrl/Cmd+C) istället',pasteMsg:'Var god och klistra in Er text i rutan nedan genom att använda (<STRONG>Ctrl/Cmd+V</STRONG>) klicka sen på <STRONG>OK</STRONG>.',securityMsg:'På grund av din webläsares säkerhetsinställningar kan verktyget inte få åtkomst till urklippsdatan. Var god och använd detta fönster istället.',pasteArea:'Paste Area'},pastefromword:{confirmCleanup:'The text you want to paste seems to be copied from Word. Do you want to clean it before pasting?',toolbar:'Klistra in från Word',title:'Klistra in från Word',error:'It was not possible to clean up the pasted data due to an internal error'},pasteText:{button:'Klistra in som vanlig text',title:'Klistra in som vanlig text'},templates:{button:'Sidmallar',title:'Sidmallar',options:'Template Options',insertOption:'Ersätt aktuellt innehåll',selectPromptMsg:'Var god välj en mall att använda med editorn<br>(allt nuvarande innehåll raderas):',emptyListMsg:'(Ingen mall är vald)'},showBlocks:'Show Blocks',stylesCombo:{label:'Anpassad stil',panelTitle:'Formatting Styles',panelTitle1:'Block Styles',panelTitle2:'Inline Styles',panelTitle3:'Object Styles'},format:{label:'Teckenformat',panelTitle:'Teckenformat',tag_p:'Normal',tag_pre:'Formaterad',tag_address:'Adress',tag_h1:'Rubrik 1',tag_h2:'Rubrik 2',tag_h3:'Rubrik 3',tag_h4:'Rubrik 4',tag_h5:'Rubrik 5',tag_h6:'Rubrik 6',tag_div:'Normal (DIV)'},div:{title:'Create Div Container',toolbar:'Create Div Container',cssClassInputLabel:'Stylesheet Classes',styleSelectLabel:'Style',IdInputLabel:'Id',languageCodeInputLabel:' Language Code',inlineStyleInputLabel:'Inline Style',advisoryTitleInputLabel:'Advisory Title',langDirLabel:'Language Direction',langDirLTRLabel:'Left to Right (LTR)',langDirRTLLabel:'Right to Left (RTL)',edit:'Edit Div',remove:'Remove Div'},iframe:{title:'IFrame Properties',toolbar:'IFrame',noUrl:'Please type the iframe URL',scrolling:'Enable scrollbars',border:'Show frame border'},font:{label:'Typsnitt',voiceLabel:'Font',panelTitle:'Typsnitt'},fontSize:{label:'Storlek',voiceLabel:'Font Size',panelTitle:'Storlek'},colorButton:{textColorTitle:'Textfärg',bgColorTitle:'Bakgrundsfärg',panelTitle:'Colors',auto:'Automatisk',more:'Fler färger...'},colors:{'000':'Black',800000:'Maroon','8B4513':'Saddle Brown','2F4F4F':'Dark Slate Gray','008080':'Teal','000080':'Navy','4B0082':'Indigo',696969:'Dark Gray',B22222:'Fire Brick',A52A2A:'Brown',DAA520:'Golden Rod','006400':'Dark Green','40E0D0':'Turquoise','0000CD':'Medium Blue',800080:'Purple',808080:'Gray',F00:'Red',FF8C00:'Dark Orange',FFD700:'Gold','008000':'Green','0FF':'Cyan','00F':'Blue',EE82EE:'Violet',A9A9A9:'Dim Gray',FFA07A:'Light Salmon',FFA500:'Orange',FFFF00:'Yellow','00FF00':'Lime',AFEEEE:'Pale Turquoise',ADD8E6:'Light Blue',DDA0DD:'Plum',D3D3D3:'Light Grey',FFF0F5:'Lavender Blush',FAEBD7:'Antique White',FFFFE0:'Light Yellow',F0FFF0:'Honeydew',F0FFFF:'Azure',F0F8FF:'Alice Blue',E6E6FA:'Lavender',FFF:'White'},scayt:{title:'Spell Check As You Type',opera_title:'Not supported by Opera',enable:'Enable SCAYT',disable:'Disable SCAYT',about:'About SCAYT',toggle:'Toggle SCAYT',options:'Options',langs:'Languages',moreSuggestions:'More suggestions',ignore:'Ignore',ignoreAll:'Ignore All',addWord:'Add Word',emptyDic:'Dictionary name should not be empty.',optionsTab:'Options',allCaps:'Ignore All-Caps Words',ignoreDomainNames:'Ignore Domain Names',mixedCase:'Ignore Words with Mixed Case',mixedWithDigits:'Ignore Words with Numbers',languagesTab:'Languages',dictionariesTab:'Dictionaries',dic_field_name:'Dictionary name',dic_create:'Create',dic_restore:'Restore',dic_delete:'Delete',dic_rename:'Rename',dic_info:'Initially the User Dictionary is stored in a Cookie. However, Cookies are limited in size. When the User Dictionary grows to a point where it cannot be stored in a Cookie, then the dictionary may be stored on our server. To store your personal dictionary on our server you should specify a name for your dictionary. If you already have a stored dictionary, please type its name and click the Restore button.',aboutTab:'About'},about:{title:'About CKEditor',dlgTitle:'About CKEditor',moreInfo:'For licensing information please visit our web site:',copy:'Copyright &copy; $1. All rights reserved.'},maximize:'Maximize',minimize:'Minimize',fakeobjects:{anchor:'Anchor',flash:'Flash Animation',iframe:'IFrame',hiddenfield:'Hidden Field',unknown:'Unknown Object'},resize:'Drag to resize',colordialog:{title:'Select color',options:'Color Options',highlight:'Highlight',selected:'Selected Color',clear:'Clear'},toolbarCollapse:'Collapse Toolbar',toolbarExpand:'Expand Toolbar',bidi:{ltr:'Text direction from left to right',rtl:'Text direction from right to left'}};
+/**#@+
+   @type String
+   @example
+*/
+
+/**
+ * Contains the dictionary of language entries.
+ * @namespace
+ */
+CKEDITOR.lang[ 'sv' ] = {
+	// ARIA description.
+	editor: 'Rich Text-editor',
+	editorPanel: 'Panel till Rich Text-editor',
+
+	// Common messages and labels.
+	common: {
+		// Screenreader titles. Please note that screenreaders are not always capable
+		// of reading non-English words. So be careful while translating it.
+		editorHelp: 'Tryck ALT 0 för hjälp',
+
+		browseServer: 'Bläddra på server',
+		url: 'URL',
+		protocol: 'Protokoll',
+		upload: 'Ladda upp',
+		uploadSubmit: 'Skicka till server',
+		image: 'Bild',
+		flash: 'Flash',
+		form: 'Formulär',
+		checkbox: 'Kryssruta',
+		radio: 'Alternativknapp',
+		textField: 'Textfält',
+		textarea: 'Textruta',
+		hiddenField: 'Dolt fält',
+		button: 'Knapp',
+		select: 'Flervalslista',
+		imageButton: 'Bildknapp',
+		notSet: '<ej angivet>',
+		id: 'Id',
+		name: 'Namn',
+		langDir: 'Språkriktning',
+		langDirLtr: 'Vänster till Höger (VTH)',
+		langDirRtl: 'Höger till Vänster (HTV)',
+		langCode: 'Språkkod',
+		longDescr: 'URL-beskrivning',
+		cssClass: 'Stilmall',
+		advisoryTitle: 'Titel',
+		cssStyle: 'Stilmall',
+		ok: 'OK',
+		cancel: 'Avbryt',
+		close: 'Stäng',
+		preview: 'Förhandsgranska',
+		resize: 'Dra för att ändra storlek',
+		generalTab: 'Allmänt',
+		advancedTab: 'Avancerad',
+		validateNumberFailed: 'Värdet är inte ett nummer.',
+		confirmNewPage: 'Alla ändringar i innehållet kommer att förloras. Är du säker på att du vill ladda en ny sida?',
+		confirmCancel: 'Några av alternativen har ändrats. Är du säker på att du vill stänga dialogrutan?',
+		options: 'Alternativ',
+		target: 'Mål',
+		targetNew: 'Nytt fönster (_blank)',
+		targetTop: 'Översta fönstret (_top)',
+		targetSelf: 'Samma fönster (_self)',
+		targetParent: 'Föregående fönster (_parent)',
+		langDirLTR: 'Vänster till höger (LTR)',
+		langDirRTL: 'Höger till vänster (RTL)',
+		styles: 'Stil',
+		cssClasses: 'Stilmallar',
+		width: 'Bredd',
+		height: 'Höjd',
+		align: 'Justering',
+		left: 'Vänster',
+		right: 'Höger',
+		center: 'Centrerad',
+		justify: 'Justera till marginaler',
+		alignLeft: 'Vänsterjustera',
+		alignRight: 'Högerjustera',
+		alignCenter: 'Centrera',
+		alignTop: 'Överkant',
+		alignMiddle: 'Mitten',
+		alignBottom: 'Nederkant',
+		alignNone: 'Ingen',
+		invalidValue: 'Felaktigt värde.',
+		invalidHeight: 'Höjd måste vara ett nummer.',
+		invalidWidth: 'Bredd måste vara ett nummer.',
+		invalidLength: 'Värdet för fältet "%1" måste vara ett positivt nummer med eller utan en giltig mätenhet (%2).',
+		invalidCssLength: 'Värdet för fältet "%1" måste vara ett positivt nummer med eller utan CSS-mätenheter (px, %, in, cm, mm, em, ex, pt, eller pc).',
+		invalidHtmlLength: 'Värdet för fältet "%1" måste vara ett positivt nummer med eller utan godkända HTML-mätenheter (px eller %).',
+		invalidInlineStyle: 'Det angivna värdet för style måste innehålla en eller flera tupler separerade med semikolon i följande format: "name : value"',
+		cssLengthTooltip: 'Ange ett nummer i pixlar eller ett nummer men godkänd CSS-mätenhet (px, %, in, cm, mm, em, ex, pt, eller pc).',
+
+		// Put the voice-only part of the label in the span.
+		unavailable: '%1<span class="cke_accessibility">, Ej tillgänglig</span>',
+
+		// Keyboard keys translations used for creating shortcuts descriptions in tooltips, context menus and ARIA labels.
+		keyboard: {
+			8: 'Backsteg',
+			13: 'Retur',
+			16: 'Skift',
+			17: 'Ctrl',
+			18: 'Alt',
+			32: 'Mellanslag',
+			35: 'Slut',
+			36: 'Hem',
+			46: 'Radera',
+			112: 'F1',
+			113: 'F2',
+			114: 'F3',
+			115: 'F4',
+			116: 'F5',
+			117: 'F6',
+			118: 'F7',
+			119: 'F8',
+			120: 'F9',
+			121: 'F10',
+			122: 'F11',
+			123: 'F12',
+			124: 'F13',
+			125: 'F14',
+			126: 'F15',
+			127: 'F16',
+			128: 'F17',
+			129: 'F18',
+			130: 'F19',
+			131: 'F20',
+			132: 'F21',
+			133: 'F22',
+			134: 'F23',
+			135: 'F24',
+			224: 'Kommando'
+		},
+
+		// Prepended to ARIA labels with shortcuts.
+		keyboardShortcut: 'Kortkommando',
+
+		optionDefault: 'Standard'
+	}
+};

@@ -162,15 +162,21 @@ switch ($op)
             
 			$the_icons = "";
             
-			if (is_user()) 
-            $the_icons .= " | <a href='modules.php?name=$module_name&amp;file=print&amp;sid=".$artinfo["sid"]."'><img src='images/print.gif' border='0' alt='"._PRINTER."' title='"._PRINTER."' width='11' height='11'></a>&nbsp;<a href='modules.php?name=$module_name&amp;file=friend&amp;op=FriendSend&amp;sid=".$artinfo["sid"]."'><img src='images/friend.gif' border='0' alt='"._FRIEND."' title='"._FRIEND."' width='11' height='11'></a>\n";
+	        if (is_user()) 
+            {
+              $the_icons .= ' | <a href="modules.php?name='.$module_name.'&amp;file=print&amp;sid='.$artinfo["sid"].'"><i class="fa fa-print"></i></a>'.PHP_EOL;
+              $the_icons .= '&nbsp;<a href="modules.php?name='.$module_name.'&amp;file=friend&amp;op=FriendSend&amp;sid='.$artinfo["sid"].'"><i class="fa fa-envelope"></i></a>';
+            }
             
-			if (is_mod_admin($module_name)) 
-            $the_icons .= " | <a href=\"".$admin_file.".php?op=EditStory&amp;sid=".$artinfo["sid"]."\"><img src=\"images/edit.gif\" border=\"0\" alt=\""._EDIT."\" title=\""._EDIT."\" width=\"11\" height=\"11\"></a>&nbsp;<a href=\"".$admin_file.".php?op=RemoveStory&amp;sid=".$artinfo["sid"]."\"><img src=\"images/delete.gif\" border=\"0\" alt=\""._DELETE."\" title=\""._DELETE."\" width=\"11\" height=\"11\"></a>\n";
-            
+		    if (is_mod_admin($module_name)) 
+            {
+              $the_icons .= ' | <a href="'.$admin_file.'.php?op=EditStory&amp;sid='.$artinfo["sid"].'"><i class="fa fa-pen"></i></a>'.PHP_EOL;
+              $the_icons .= '&nbsp;<a href="'.$admin_file.'.php?op=RemoveStory&amp;sid='.$artinfo["sid"].'"><i class="fa fa-times-circle"></i></a>';
+            }
+			
 			$read_link = "<a href='modules.php?name=$module_name&amp;file=read_article&amp;sid=".$artinfo["sid"]."$r_options' onclick=\"NewsReadWindow(this.href,'ReadArticle','600','400','yes');return false;\">";
             $story_link = "<a href='modules.php?name=$module_name&amp;file=article&amp;sid=".$artinfo["sid"]."$r_options'>";
-            $morelink = "(";
+            $morelink = "( ";
 
             if($neconfig["texttype"] == 0) 
 			{
@@ -234,7 +240,7 @@ switch ($op)
 			$rated = 0; 
             
 			$morelink .= " | "._SCORE." $rated";
-            $morelink .= ")";
+            $morelink .= " )";
             $morelink = str_replace(" |  | ", " | ", $morelink);
             $informant = $artinfo["informant"];
 

@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -212,7 +212,7 @@ switch($op) {
                             $row6 = $db->sql_fetchrow($db->sql_query("SELECT `topictext` FROM `".$prefix."_topics` WHERE `topicid`='$topic'"));
                             $topictext = stripslashes(check_html($row6['topictext'], "nohtml"));
 
-                            $furl = "modules.php?name=Blog&amp;file=article&amp;sid=$sid";
+                            $furl = "modules.php?name=News&amp;file=article&amp;sid=$sid";
                             $datetime = formatTimestamp($time);
                             $query = stripslashes(htmlentities($query, ENT_QUOTES));
                             if (empty($informant)) {
@@ -298,7 +298,7 @@ switch($op) {
                             $row_res = $db->sql_fetchrow($db->sql_query("SELECT `title` FROM `".$prefix."_stories` WHERE `sid`='$sid'"));
                             $title = stripslashes(check_html($row_res['title'], "nohtml"));
                             $reply = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_comments WHERE pid='$tid'"));
-                            $furl = "modules.php?name=Blog&amp;file=article&amp;thold=-1&amp;mode=flat&amp;order=1&amp;sid=$sid#$tid";
+                            $furl = "modules.php?name=News&amp;file=article&amp;thold=-1&amp;mode=flat&amp;order=1&amp;sid=$sid#$tid";
                             if(!$name) {
                                 $name = $anonymous;
                             } else {
@@ -342,9 +342,7 @@ switch($op) {
                         print "<strong>"._NEXTMATCHES."</strong></a></center>";
                     }
                 }
-            } 
-			/* else
-			if ($type == 'reviews') {
+            } elseif ($type == 'reviews') {
                 $res_n = $db->sql_query("SELECT id, title, text, reviewer, score FROM ".$prefix."_reviews WHERE (title LIKE '%$query%' OR text LIKE '%$query%') $queryrlang ORDER BY date DESC LIMIT $min,$offset");
                 $nrows = $db->sql_numrows($res_n);
                 $x=0;
@@ -393,9 +391,7 @@ switch($op) {
                         print "<strong>"._NEXTMATCHES."</strong></a></center>";
                     }
                 }
-            } */
-			else
-			if ($type == 'users') {
+            } elseif ($type == 'users') {
                 $res_n3 = $db->sql_query("SELECT user_id, username, name FROM ".$user_prefix."_users WHERE (username LIKE '%$query%' OR name LIKE '%$query%' OR bio LIKE '%$query%') ORDER BY username ASC LIMIT $min,$offset");
                 $nrows = $db->sql_numrows($res_n3);
                 $x=0;
@@ -442,13 +438,11 @@ switch($op) {
             $mod1 = $mod2 = $mod3 = '';
             if (isset($query) AND !empty($query)) {
                 echo "<br />";
-                
-				//if (is_active('Downloads')) {
-                //    $dcnt = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_downloads_downloads` WHERE `title` LIKE '%$query%' OR `description` LIKE '%$query%'"));
-                //    $mod1 = "<li> <a href=\"modules.php?name=Downloads&amp;d_op=search&amp;query=$query\">"._DOWNLOADS."</a> ($dcnt "._SEARCHRESULTS.")";
-                //}
-                
-				if (is_active('Web_Links')) {
+                if (is_active('Downloads')) {
+                    $dcnt = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_downloads_downloads` WHERE `title` LIKE '%$query%' OR `description` LIKE '%$query%'"));
+                    $mod1 = "<li> <a href=\"modules.php?name=Downloads&amp;d_op=search&amp;query=$query\">"._DOWNLOADS."</a> ($dcnt "._SEARCHRESULTS.")";
+                }
+                if (is_active('Web_Links')) {
                     $lcnt = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_links_links` WHERE `title` LIKE '%$query%' OR `description` LIKE '%$query%'"));
                     $mod2 = "<li> <a href=\"modules.php?name=Web_Links&amp;l_op=search&amp;query=$query\">"._WEBLINKS."</a> ($lcnt "._SEARCHRESULTS.")";
                 }

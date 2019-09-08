@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
@@ -13,34 +13,21 @@ class error_handler {
     var $debug = false;
     var $file;
     var $line;
-    
-    //function error_handler($debug=false)
-	function __construct($debug=false) 
-	{
-        if (!is_bool($debug) && $debug == 'full') 
-		{
-            if(is_admin()) 
-			{
-                error_reporting(E_ALL); 
+
+    function error_handler($debug=false) {
+        if (!is_bool($debug) && $debug == 'full') {
+            if(is_admin()) {
+                error_reporting(E_ALL); # report all errors
                 ini_set("display_errors", "1");
-            } 
-			else 
-			{
+            } else {
                 error_reporting(E_ALL ^ E_NOTICE);
             }
             $this->debug = true;
-        } 
-		else 
-		if ($debug) 
-		{
+        } else if ($debug) {
             $this->debug = $debug;
             error_reporting(E_ALL ^ E_NOTICE);
-			
-        } 
-		else 
-		{
-            if(!is_admin()) 
-			{
+        } else {
+            if(!is_admin()) {
                 error_reporting(0);
             }
         }
@@ -63,24 +50,18 @@ class error_handler {
         }
     }
 
-    function handle_error($message, $type='Notice') 
-	{
-        if ($this->debug) 
-		{
+    function handle_error($message, $type='Notice') {
+        if ($this->debug) {
             $this->_backtrace();
             $error['message'] = $type.": ".$message." in ".$this->file." on line ".$this->line."<br />";
             $this->errors[] = $error;
         }
     }
 
-    function return_errors() 
-	{
-        if($this->debug) 
-		{
-            if(is_array($this->errors)) 
-			{
-                foreach ($this->errors as $key => $value) 
-				{
+    function return_errors() {
+        if($this->debug) {
+            if(is_array($this->errors)) {
+                foreach ($this->errors as $key => $value) {
                     $content .= "<tr><td align='center'>".$value['message']."</td></tr>";
                 }
             }
@@ -91,4 +72,5 @@ class error_handler {
 }
 
 $debugger = new error_handler($debug);
+
 ?>

@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /***************************************************************************
@@ -1832,7 +1832,7 @@ for($i = 0; $i < $total_posts; $i++)
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
 				
-                $facebook_img = ( $postrow[$i]['user_facebook'] ) ? '<a href="http://www.facebook.com/profile.php?id=' . $postrow[$i]['user_facebook'] . '" target="_userwww"><img src="' . $images['icon_facebook'] . '" alt="' . $lang['Visit_facebook'] . ': ' . 
+                $facebook_img = ( $postrow[$i]['user_facebook'] ) ? '<a href="https://facebook.com/' . $postrow[$i]['user_facebook'] . '" target="_userwww"><img src="' . $images['icon_facebook'] . '" alt="' . $lang['Visit_facebook'] . ': ' . 
 				$postrow[$i]['user_facebook'] . '" title="' . $lang['Visit_facebook'] . '" border="0" /></a>' : '';
 		            $facebook = ( $postrow[$i]['user_facebook'] ) ? '<a href="' . $temp_url . '">' . $lang['FACEBOOK'] . '</a>' : '';
 /*****[BEGIN]******************************************
@@ -1883,12 +1883,12 @@ for($i = 0; $i < $total_posts; $i++)
 /*****[BEGIN]******************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
-				        $age = false;
+				$age = false;
 /*****[END]********************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
-				        $facebook_img = '';
-		            $facebook = '';
+				$facebook_img = '';
+		        $facebook = '';
 /*****[BEGIN]******************************************
  [ Mod:    Online/Offline/Hidden               v2.2.7 ]
  ******************************************************/

@@ -1,6 +1,138 @@
-﻿/*
-Copyright (c) 2003-2009, CKSource - Frederico Knabben. All rights reserved.
-For licensing, see LICENSE.html or http://ckeditor.com/license
-*/
+/**
+ * @license Copyright (c) 2003-2019, CKSource - Frederico Knabben. All rights reserved.
+ * For licensing, see LICENSE.md or https://ckeditor.com/legal/ckeditor-oss-license
+ */
 
-CKEDITOR.plugins.add('panelbutton',{requires:['button'],beforeInit:function(a){a.ui.addHandler(CKEDITOR.UI_PANELBUTTON,CKEDITOR.ui.panelButton.handler);}});CKEDITOR.UI_PANELBUTTON=4;(function(){var a=function(b){var d=this;var c=d._;if(c.state==CKEDITOR.TRISTATE_DISABLED)return;d.createPanel(b);if(c.on){c.panel.hide();return;}c.panel.showBlock(d._.id,d.document.getById(d._.id),4);};CKEDITOR.ui.panelButton=CKEDITOR.tools.createClass({base:CKEDITOR.ui.button,$:function(b){var d=this;var c=b.panel;delete b.panel;d.base(b);d.document=c&&c.parent&&c.parent.getDocument()||CKEDITOR.document;d.hasArrow=true;d.click=a;d._={panelDefinition:c};},statics:{handler:{create:function(b){return new CKEDITOR.ui.panelButton(b);}}},proto:{createPanel:function(b){var c=this._;if(c.panel)return;var d=this._.panelDefinition||{},e=d.parent||CKEDITOR.document.getBody(),f=this._.panel=new CKEDITOR.ui.floatPanel(b,e,d),g=this;f.onShow=function(){if(g.className)this.element.getFirst().addClass(g.className+'_panel');c.oldState=g._.state;g.setState(CKEDITOR.TRISTATE_ON);c.on=1;if(g.onOpen)g.onOpen();};f.onHide=function(){if(g.className)this.element.getFirst().removeClass(g.className+'_panel');g.setState(c.oldState);c.on=0;if(g.onClose)g.onClose();};f.onEscape=function(){f.hide();g.document.getById(c.id).focus();};if(this.onBlock)this.onBlock(f,c.id);f.getBlock(c.id).onHide=function(){c.on=0;g.setState(CKEDITOR.TRISTATE_OFF);};}}});})();
+CKEDITOR.plugins.add( 'panelbutton', {
+	requires: 'button',
+	onLoad: function() {
+		function clickFn( editor ) {
+			var _ = this._;
+
+			if ( _.state == CKEDITOR.TRISTATE_DISABLED )
+				return;
+
+			this.createPanel( editor );
+
+			if ( _.on ) {
+				_.panel.hide();
+				return;
+			}
+
+			_.panel.showBlock( this._.id, this.document.getById( this._.id ), 4 );
+		}
+
+		/**
+		 * @class
+		 * @extends CKEDITOR.ui.button
+		 * @todo class and methods
+		 */
+		CKEDITOR.ui.panelButton = CKEDITOR.tools.createClass( {
+			base: CKEDITOR.ui.button,
+
+			/**
+			 * Creates a panelButton class instance.
+			 *
+			 * @constructor
+			 */
+			$: function( definition ) {
+				// We don't want the panel definition in this object.
+				var panelDefinition = definition.panel || {};
+				delete definition.panel;
+
+				this.base( definition );
+
+				this.document = ( panelDefinition.parent && panelDefinition.parent.getDocument() ) || CKEDITOR.document;
+
+				panelDefinition.block = {
+					attributes: panelDefinition.attributes
+				};
+				panelDefinition.toolbarRelated = true;
+
+				this.hasArrow = 'listbox';
+
+				this.click = clickFn;
+
+				this._ = {
+					panelDefinition: panelDefinition
+				};
+			},
+
+			statics: {
+				handler: {
+					create: function( definition ) {
+						return new CKEDITOR.ui.panelButton( definition );
+					}
+				}
+			},
+
+			proto: {
+				createPanel: function( editor ) {
+					var _ = this._;
+
+					if ( _.panel )
+						return;
+
+					var panelDefinition = this._.panelDefinition,
+						panelBlockDefinition = this._.panelDefinition.block,
+						panelParentElement = panelDefinition.parent || CKEDITOR.document.getBody(),
+						panel = this._.panel = new CKEDITOR.ui.floatPanel( editor, panelParentElement, panelDefinition ),
+						block = panel.addBlock( _.id, panelBlockDefinition ),
+						me = this;
+
+					panel.onShow = function() {
+						if ( me.className )
+							this.element.addClass( me.className + '_panel' );
+
+						me.setState( CKEDITOR.TRISTATE_ON );
+
+						_.on = 1;
+
+						me.editorFocus && editor.focus();
+
+						if ( me.onOpen )
+							me.onOpen();
+					};
+
+					panel.onHide = function( preventOnClose ) {
+						if ( me.className )
+							this.element.getFirst().removeClass( me.className + '_panel' );
+
+						me.setState( me.modes && me.modes[ editor.mode ] ? CKEDITOR.TRISTATE_OFF : CKEDITOR.TRISTATE_DISABLED );
+
+						_.on = 0;
+
+						if ( !preventOnClose && me.onClose )
+							me.onClose();
+					};
+
+					panel.onEscape = function() {
+						panel.hide( 1 );
+						me.document.getById( _.id ).focus();
+					};
+
+					if ( this.onBlock )
+						this.onBlock( panel, block );
+
+					block.onHide = function() {
+						_.on = 0;
+						me.setState( CKEDITOR.TRISTATE_OFF );
+					};
+				}
+			}
+		} );
+
+	},
+	beforeInit: function( editor ) {
+		editor.ui.addHandler( CKEDITOR.UI_PANELBUTTON, CKEDITOR.ui.panelButton.handler );
+	}
+} );
+
+/**
+ * Button UI element.
+ *
+ * @readonly
+ * @property {String} [='panelbutton']
+ * @member CKEDITOR
+ */
+CKEDITOR.UI_PANELBUTTON = 'panelbutton';

@@ -2,7 +2,7 @@
 
 /*=======================================================================
 
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
 
  =======================================================================*/
 
