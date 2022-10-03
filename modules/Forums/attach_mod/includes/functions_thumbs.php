@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /**
 *
@@ -16,9 +17,9 @@
 * All Attachment Functions needed to create Thumbnails
 */
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
-    die('Hacking attempt');
+    die('ACCESS DENIED');
 }
 
 $imagick = '';

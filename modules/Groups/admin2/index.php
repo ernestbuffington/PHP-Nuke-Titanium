@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************
    Nuke-Evolution: Enhanced Forum Block
@@ -50,18 +51,18 @@ if (!defined('ADMIN_FILE')) {
    die('Access Denied');
 }
 
-global $prefix, $db, $admdata;
-$module_name = basename(dirname(dirname(__FILE__)));
+global $titanium_prefix, $titanium_db, $admdata;
+$titanium_module_name = basename(dirname(dirname(__FILE__)));
 if(is_mod_admin('Forums')) {
 
     switch($op) {
         case "Groups":
-        redirect('modules/Forums/admin/index.php?op=Groups');
+        redirect_titanium('modules/Forums/admin/index.php?op=Groups');
         break;
     }
 
 } else {
-    DisplayError("<center><strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"</center>");
+    DisplayError("<center><strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$titanium_module_name\"</center>");
 }
 
 ?>

@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /*********************************************************************************/
 /* CNB Your Account: An Advanced User Management System for phpnuke             */
@@ -40,7 +41,7 @@ if (!defined('CNBYA')) {
 
 if (is_mod_admin('super')) {
 
-    $num = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_authors WHERE aid='$add_aid'"));
+    $num = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_authors WHERE aid='$add_aid'"));
     if ($num > 0) {
         $pagetitle = ": "._USERADMIN." - "._PROMOTEUSER;
         include_once(NUKE_BASE_DIR.'header.php');
@@ -62,9 +63,9 @@ if (is_mod_admin('super')) {
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
         for ($i=0; $i < count($auth_modules); $i++) {
-            $row = $db->sql_fetchrow($db->sql_query("SELECT admins FROM ".$prefix."_modules WHERE mid='$auth_modules[$i]'"));
+            $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT admins FROM ".$titanium_prefix."_modules WHERE mid='$auth_modules[$i]'"));
             $adm = "$row[admins]$add_name";
-            $db->sql_query("UPDATE ".$prefix."_modules SET admins='$adm,' WHERE mid='$auth_modules[$i]'");
+            $titanium_db->sql_query("UPDATE ".$titanium_prefix."_modules SET admins='$adm,' WHERE mid='$auth_modules[$i]'");
         }
          $add_password = check_html($add_password, 'nohtml');
          $add_aid = check_html($add_aid, 'nohtml');
@@ -74,7 +75,7 @@ if (is_mod_admin('super')) {
          $add_password = check_html($add_password, 'nohtml');
          $add_radminsuper = intval($add_radminsuper);
          $add_admlanguage = check_html($add_admlanguage, 'nohtml');
-        $result = $db->sql_query("INSERT INTO " . $prefix . "_authors VALUES ('$add_aid', '$add_name', '$add_url', '$add_email', '$add_password', '0', '$add_radminsuper', '$add_admlanguage')");
+        $result = $titanium_db->sql_query("INSERT INTO " . $titanium_prefix . "_authors VALUES ('$add_aid', '$add_name', '$add_url', '$add_email', '$add_password', '0', '$add_radminsuper', '$add_admlanguage')");
     }
     elseif ($Version_Num >= 7.4){
 
@@ -97,7 +98,7 @@ if (is_mod_admin('super')) {
     $add_radminency = intval($add_radminency);
     $add_radminsuper = intval($add_radminsuper);
     $add_admlanguage = check_html($add_admlanguage, 'nohtml');
-    $result = $db->sql_query("INSERT INTO " . $prefix . "_authors VALUES ('$add_aid', '$add_name', '$add_url', '$add_email', '$add_password', '0', '$add_radminarticle','$add_radmintopic','$add_radminuser','$add_radminsurvey','$add_radminlink','$add_radminfaq','$add_radmindownload','$add_radminreviews','$add_radminnewsletter','$add_radminforum','$add_radmincontent','$add_radminency','$add_radminsuper','$add_admlanguage')");
+    $result = $titanium_db->sql_query("INSERT INTO " . $titanium_prefix . "_authors VALUES ('$add_aid', '$add_name', '$add_url', '$add_email', '$add_password', '0', '$add_radminarticle','$add_radmintopic','$add_radminuser','$add_radminsurvey','$add_radminlink','$add_radminfaq','$add_radmindownload','$add_radminreviews','$add_radminnewsletter','$add_radminforum','$add_radmincontent','$add_radminency','$add_radminsuper','$add_admlanguage')");
     }
     else {
 
@@ -120,7 +121,7 @@ if (is_mod_admin('super')) {
     $add_radminency = intval($add_radminency);
     $add_radminsuper = intval($add_radminsuper);
     $add_admlanguage = check_html($add_admlanguage, 'nohtml');
-    $result = $db->sql_query("INSERT INTO " . $prefix . "_authors VALUES ('$add_aid', '$add_name', '$add_url', '$add_email', '$add_password', '0', '$add_radminarticle','$add_radmintopic','$add_radminuser','$add_radminsurvey','$add_radminsection','$add_radminlink','$add_radminephem','$add_radminfaq','$add_radmindownload','$add_radminreviews','$add_radminnewsletter','$add_radminforum','$add_radmincontent','$add_radminency','$add_radminsuper','$add_admlanguage')");
+    $result = $titanium_db->sql_query("INSERT INTO " . $titanium_prefix . "_authors VALUES ('$add_aid', '$add_name', '$add_url', '$add_email', '$add_password', '0', '$add_radminarticle','$add_radmintopic','$add_radminuser','$add_radminsurvey','$add_radminsection','$add_radminlink','$add_radminephem','$add_radminfaq','$add_radmindownload','$add_radminreviews','$add_radminnewsletter','$add_radminforum','$add_radmincontent','$add_radminency','$add_radminsuper','$add_admlanguage')");
         }
         /////////////////////END/////////////////////////////
         if (!$result) {
@@ -145,19 +146,22 @@ if (is_mod_admin('super')) {
             if ($ya_config['servermail'] == 0) {
                 $message = _SORRYTO." $sitename "._HASPROMOTE;
                 $subject = _ACCTPROMOTE;
-                $from  = "From: $adminmail\n";
-                $from .= "Reply-To: $adminmail\n";
-                $from .= "Return-Path: $adminmail\n";
-                evo_mail($add_email, $subject, $message, $from);
+                $headers = array(
+                    'Content-Type: text/html; charset=UTF-8',
+                    'From: '.$adminmail,                    
+                    'Reply-To: '.$adminmail,
+                    'Return-Path: '.$adminmail
+                );
+                evo_phpmailer( $add_email, $subject, $message, $headers );
             }
             CloseTable();
             include_once(NUKE_BASE_DIR.'footer.php');
         }
-        if ($add_radminforum == "1") { $db->sql_query("UPDATE ".$user_prefix."_users SET user_level='2' WHERE user_id='$chng_uid'"); }
+        if ($add_radminforum == "1") { $titanium_db->sql_query("UPDATE ".$titanium_user_prefix."_users SET user_level='2' WHERE user_id='$chng_uid'"); }
     }
 
 } else {
-    redirect("../../../index.php");
+    redirect_titanium("../../../index.php");
     die ();
 }
 

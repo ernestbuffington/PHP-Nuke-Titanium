@@ -144,6 +144,45 @@ nuke_jq(function($)
         }        
     });
 
+
+    /* ----- font size changer ----- */ 
+    $('.bbcfontsize').click(function()
+    {
+        var field       = $(this).data('field');
+        var selection   = $('textarea#'+field).selection();
+
+        if(!selection)
+            $.MessageBox(must_select); 
+
+        if(selection)
+        {
+            // Custom DOM/jQuery Element
+            var select = $("<select>", {
+                css : {
+                    "width"         : "100%",
+                    "margin-top"    : "1rem"
+                }
+            });
+
+            select.append("<option>medium</option>");
+            select.append("<option>xx-small</option>");
+            select.append("<option>small</option>");
+            select.append("<option>smaller</option>");
+            select.append("<option>large</option>");
+            select.append("<option>x-large</option>");
+            select.append("<option>xx-large</option>");
+            select.append("<option>xxx-large</option>");
+            $.MessageBox({
+                message : font_family,
+                input   : select,
+                buttonFail  : buttonCancel,
+            }).done(function(data){
+                // console.log(data);
+                $('textarea#'+field).selection('replace', { text: '[size=' + data + ']'+selection+'[/size]' });
+            });
+        }        
+    });
+
     /* ----- color changer ----- */ 
     $('.bbccolor').ColorPicker(
     {

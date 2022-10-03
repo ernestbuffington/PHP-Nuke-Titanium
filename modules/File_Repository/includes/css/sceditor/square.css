@@ -453,7 +453,7 @@ div.sceditor-group {
   zoom: 1;
 }
 .sceditor-button {
-  float: left;
+  /*float: left;
   cursor: pointer;
   padding: 3px 5px;
   width: 16px;
@@ -464,8 +464,19 @@ div.sceditor-group {
   -moz-background-clip: padding;
   -webkit-background-clip: padding-box;
   background-clip: padding-box;
-  /* Needed for Safari 5? */
-  text-indent: -9999px;
+  text-indent: -9999px;*/
+      float: left;
+    cursor: pointer;
+    padding: 3px 5px;
+    /* width: 16px; */
+    /* height: 20px; */
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    -moz-background-clip: padding;
+    -webkit-background-clip: padding-box;
+    background-clip: padding-box;
+    text-indent: -9999px;
 }
 .ie .sceditor-button {
   text-indent: 0;
@@ -611,7 +622,7 @@ div.sceditor-group:first-child {
   border-left: 0;
 }
 .sceditor-button {
-  height: 16px;
+  /*height: 16px;*/
   padding: 5px;
   margin: 1px;
   -webkit-border-radius: 0;

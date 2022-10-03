@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ PHP-Nuke Titanium: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -24,43 +24,29 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 | management system based on PHP-Nuke                     |
 ---------------------------------------------------------*/
 
-global $portaladmin;
-/*----[ $portaladmin ] ----------------------------------------
-| The current portal admin - user_id of the portal owner      |
-| Default: owner user_id                                      |
---------------------------------------------------------------*/
-$portaladmin = 2;
-
-/*----[ $dbhost ] ----------------------------------------
+/*----[ $titanium_dbhost ] -------------------------------
 | Your database host, normally 'localhost'                |
 |                                                         |
 | Default: localhost                                      |
 ---------------------------------------------------------*/
-$dbhost = 'localhost';
-
-/*----[ $dbname ] ----------------------------------------
-| The name of your database that will hold Evo's tables   |
-|                                                         |
-| Default: xxx_evo                                        |
+$titanium_dbhost = 'localhost';
+/*----[ $titanium_dbname ] -------------------------------
+| The name of your database that will hold tables         |
 ---------------------------------------------------------*/
-$dbname = 'hub_external';
+$titanium_dbname = 'dev4_engine';
 
-/*----[ $dbuname ] ---------------------------------------
+/*----[ $titanium_dbuname ] ------------------------------
 | The username linked to your database, must have correct |
 | permissions                                             |
-|                                                         |
-| Default: xxx_evo                                        |
 ---------------------------------------------------------*/
-$dbuname = 'hub_root';
+$titanium_dbuname = 'dev4_user';
 
-/*----[ $dbpass ] ----------------------------------------
+/*----[ $titanium_dbpass ] -------------------------------
 | The password associated with your db usersname          |
-|                                                         |
-| Default: null                                           |
 ---------------------------------------------------------*/
-$dbpass = '';
+$titanium_dbpass = 'xxxxxxxxxxxxxxxxxxxx';
 
-/*----[ $dbtype ] ----------------------------------------
+/*----[ $titanium_dbtype ] -------------------------------
 | The type of SQL server you prefer to use                |
 |                                                         |
 | Choose from the following (case-sensitive):             |
@@ -69,29 +55,22 @@ $dbpass = '';
 |                                                         |
 | Default: mysqli                                         |
 ---------------------------------------------------------*/
-$dbtype = 'mysqli';
+$titanium_dbtype = 'mysqli';
 
-/*----[ $prefix ] ----------------------------------------
-| The prefix for your Nuke-Evolution tables               |
+/*----[ $titanium_prefix ] -------------------------------
+| The prefix for your tables                              |
 |                                                         |
-| Default: nuke                                           |
+| Default: titanium                                       |
 ---------------------------------------------------------*/
-$prefix = 'nuke';
+$titanium_prefix = 'titanium';
 
-/*----[ $network_prefix ] --------------------------------
-| The prefix for your Network tables                      |
+/*----[ $titanium_user_prefix ] --------------------------
+| The prefix for your PHP-Nuke Titanium user-related      |
+| tables Do not change this unless it is really needed    |
 |                                                         |
-| Default: network                                        |
+| Default: titanium                                       |
 ---------------------------------------------------------*/
-$network_prefix = 'network';
-
-/*----[ $user_prefix ] -----------------------------------
-| The prefix for your Nuke-Evolution user-related tables  |
-| Do not change this unless it is really needed           |
-|                                                         |
-| Default: nuke                                           |
----------------------------------------------------------*/
-$user_prefix = 'nuke';
+$titanium_user_prefix = 'titanium';
 
 /*----[ $admin_file ] ------------------------------------
 | The filename of your Admin File                         |
@@ -105,7 +84,7 @@ $user_prefix = 'nuke';
 $admin_file = 'admin';
 
 /*----[ $directory_mode ] ------------------------------------------
-| permissions - by default, Evo will create new folders with the    |
+| permissions - by default, we will create new folders with the     |
 | permissions set with the following settings.  NOTE: do NOT use    |
 | quotes around this value or it will not work.                     |
 | Examples:                                                         |
@@ -115,7 +94,7 @@ $admin_file = 'admin';
 $directory_mode = 0777;
 
 /*----[ $file_mode ] -------------------------------------------------- 
-| file permissions mode - by default, Evo will create all new files    |
+| file permissions mode - by default, we will create all new files     |
 | with the permissions that are provided here.  NOTE: do NOT use any   |
 | quotes (single or double) around this value or it will not work.     |
 | Examples:                                                            |
@@ -160,6 +139,24 @@ $use_cache = 1;
 ---------------------------------------------------------*/
 $persistency = false;
 
+#################################################
+# You must un-comment this to enable vimeo SDK  #
+#################################################
+# define('vimeo', 'enabled');                  #
+################################################
+
+####################################################
+# You must un-comment this to enable facebook  SDK #
+####################################################
+# define('facebook', 'enabled');               #
+################################################
+
+######################################################################
+# You must un-comment this to enable The 86it Developers Network SDK #
+######################################################################
+# define('network', 'enabled');                  #
+##################################################
+
 /*********************************************************************/
 /* You have finished configuration of your site. Now you can change  */
 /* all you want in the Administration Section. To enter just launch  */
@@ -170,6 +167,7 @@ $persistency = false;
 /* your new site.                                                    */
 /*                                                                   */
 /* Congratulations! Now you have the webs best portal installed!     */
-/* Thanks for choosing Nuke- Evolution: The Future of the Web!       */
+/* Thanks for choosing PHP-Nuke Titanium: The Future of the Web!     */
 /*********************************************************************/
+
 ?>

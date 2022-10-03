@@ -1,5 +1,5 @@
 <?php
-if(defined('NUKE_TITANIUM')) return;
+if(defined('NUKE_EVO')) return;
 define('NO_DISABLE', true);
 
 define('ROOT', dirname(dirname(__FILE__)) . '/');

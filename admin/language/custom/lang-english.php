@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
@@ -27,15 +28,32 @@
       Database Manager                         v2.0.0       12/17/2005
 	  CalendarMx                               v1.4.0       05/29/2009
 ************************************************************************/
+
 /*    Please put all your custom language or translations here     */
+
+
+
 define('_BOTH', 'Both');
 define('_ERROR_DELETE_CONF','Are you sure that you want to delete %s?');
 define('_BLOCKTOP','Move block to top');
 define('_BLOCKBOTTOM','Move block to bottom');
+
+
 define('_FROM','From');
+
+
+
+
 define('_REVIEWTEXT','Please look over your message and check for typos');
 
-# Mod : Extended Surveys Admin Interface v1.0.0
+
+
+
+
+
+/*****[BEGIN]******************************************
+ [ Mod:  Extended Surveys Admin Interface      v1.0.0 ]
+ ******************************************************/
 define("_POLLADMIN", "Surveys Administration");
 define("_POLLMAIN", "Surveys Admin Index");
 define("_SURVEYSADMIN", "Surveys");
@@ -47,32 +65,79 @@ define("_POLL_OPTIONS", "Extra Options");
 define("_POLL_INFO", "You can change some options here for the Surveys block");
 define("_POLLDAYS", "Number of days between voting");
 define("_POLLRANDOM", "Show a random Survey");
+/*****[END]********************************************
+ [ Mod:  Extended Surveys Admin Interface      v1.0.0 ]
+ ******************************************************/
 
-# Mod : Admin Tracker v1.0.1 
-define("_TRACKER_BACK","Back");
+/*****[BEGIN]******************************************
+ [ Mod:     Admin Tracker                      v1.0.1 ]
+ ******************************************************/
+// define("_ADMIN_LOG","Security Tracker");
+// define("_ADMIN_LOG_EXPLAIN1","The Security Tracker logs the following");
+// define("_ADMIN_LOG_EXPLAIN2","<ul><li>Admin account creation</li><li>Failed admin logins</li><li>Intruder Alert</li><li>MySQL Errors</li></ul>");
+// define("_ADMIN_LOG_CHG","<strong>Your Admin Tracker log <strong>HAS</strong> changed</strong>");
+// define("_ADMIN_LOG_FINE","Your Admin Tracker log has not changed");
+// define("_ADMIN_LOG_CHECKED","The version was last checked on");
+// define("_ADMIN_LOG_VIEW","View Log");
+// define("_ADMIN_LOG_ACK","Acknowledge");
 
-# Mod : Evolution Version Checker v1.0.0
-define("_ADMIN_VER_TITLE","PHP-Nuke Titanium Version Checker");
-define("_ADMIN_VER_ERRCON","Could not connect to hub.86it.us");
-define("_ADMIN_VER_ERRSQL","Could not retrieve version from Database");
-define("_ADMIN_VER_CHG","There is a new version of PHP-Nuke Titanium");
-define("_ADMIN_VER_VIEW","View New Version");
-define("_ADMIN_VER_CUR","Your version is current");
-define("_CHECKVER", "Click Here to check version");
-define("_VER_ERR_CON","Could not connect to <a href='http://hub.86it.us'>PHP-Nuke Titanium</a>");
-define("_VER_ERR_CHG","There was a problem with accessing the Changed Log");
-define("_VER_TITLE","PHP-Nuke Titanium Version");
-define("_VER_VER","The current version is:");
-define("_VER_YOURVER","Your version is:");
-define("_VER_CHGLOG","PHP-Nuke Titanium Version Change Log");
-define('_VERSIONUP2DATE', 'Your installation is up to date, no updates are available for your version of PHP-Nuke Titanium.');
-define('_VERSIONOUTOFDATE', 'Your installation does <strong>not</strong> seem to be up to date. Updates are available for your version of PHP-Nuke Titanium, please visit <a href="http://hub.86it.us/modules.php?name=Downloads" target="_new">http://hub.86it.us/modules.php?name=Downloads</a> to obtain the latest version.');
-define('_VERSIONLATESTINFO', 'The latest available version is <strong>Evolution-Xtreme %s</strong>.');
-define('_VERSIONCURRENTINFO', 'You are running <strong>PHP-Nuke Titanium %s</strong>.');
-define('_VERSIONSOCKETERROR', 'Unable to open connection to PHP-Nuke Titanium Server, reported error is:<br />%s');
-define('_VERSIONFUNCTIONSDISABLED', 'Unable to use socket functions.');
+// define("_ERROR_LOG_CHG","<strong>Your Error Log <strong>HAS</strong> changed</strong>");
+// define("_ERROR_LOG_FINE","Your Error Log has not changed");
+// define("_ERROR_LOG_ERR","<strong>There was a problem checking your log.</strong>");
+// define("_ERROR_LOG_ERRCHMOD","<strong>Your file is not writeable. Did you do the CHMOD?</strong>");
+// define("_ERROR_LOG_ERRFND","The log could not be found");
+// define("_ERROR_ERR_OPEN","Failed to open error.log");
 
-# Mod : Who is Online v0.9.1
+// define("_ADMIN_LOG_ERR","<strong>There was a problem checking your log.</strong>");
+// define("_ADMIN_LOG_ERRCHMOD","<strong>Your file is not writeable. Did you do the CHMOD?</strong>");
+// define("_ADMIN_LOG_ERRFND","The log could not be found");
+
+// define("_TRACKER_HEAD_DATE","Date");
+// define("_TRACKER_HEAD_TIME","Time");
+// define("_TRACKER_HEAD_IP","IP");
+// define("_TRACKER_HEAD_MSG","Message");
+
+// define("_TRACKER_UP","UPDATED");
+// define("_TRACKER_BACK","Back");
+// define("_TRACKER_CLEAR", "Clear Log");
+
+// define("_TRACKER_ERR_OPEN","Failed to open admin.log");
+// define("_TRACKER_ERR_UP","Failed to update");
+
+// define("_TRACKER_CLEARED", "Your Security Tracker has been cleared!");
+/*****[END]********************************************
+ [ Mod:     Admin Tracker                      v1.0.1 ]
+ ******************************************************/
+
+/*****[BEGIN]******************************************
+ [ Mod:     Evolution Version Checker          v1.0.0 ]
+ ******************************************************/
+// define("_ADMIN_VER_TITLE","PHP-Nuke Evolution Xtreme Xtreme Version Checker");
+// define("_ADMIN_VER_ERRCON","Could not connect to www.evolution-xtreme.com");
+// define("_ADMIN_VER_ERRSQL","Could not retrieve version from Database");
+// define("_ADMIN_VER_CHG","There is a new version of Evolution-Xtreme");
+// define("_ADMIN_VER_VIEW","View New Version");
+// define("_ADMIN_VER_CUR","Your version is current");
+// define("_CHECKVER", "Click Here to check version");
+// define("_VER_ERR_CON","Could not connect to <a href='http://www.evolution-xtreme.com'>Evolution-Xtreme</a>");
+// define("_VER_ERR_CHG","There was a problem with accessing the Changed Log");
+// define("_VER_TITLE","PHP-Nuke Evolution Xtreme Xtreme Version");
+// define("_VER_VER","The current version is:");
+// define("_VER_YOURVER","Your version is:");
+// define("_VER_CHGLOG","Evolution-Xtreme Version Changed Log");
+// define('_VERSIONUP2DATE', 'Your installation is up to date, no updates are available for your version of Evolution-Xtreme.');
+// define('_VERSIONOUTOFDATE', 'Your installation does <strong>not</strong> seem to be up to date. Updates are available for your version of Evolution-Xtreme, please visit <a href="http://www.evolution-xtreme.com/modules.php?name=Downloads" target="_new">http://www.evolution-xtreme.com/modules.php?name=Downloads</a> to obtain the latest version.');
+// define('_VERSIONLATESTINFO', 'The latest available version is <strong>Evolution-Xtreme %s</strong>.');
+// define('_VERSIONCURRENTINFO', 'You are running <strong>Evolution-Xtreme %s</strong>.');
+// define('_VERSIONSOCKETERROR', 'Unable to open connection to Evolution-Xtreme Server, reported error is:<br />%s');
+// define('_VERSIONFUNCTIONSDISABLED', 'Unable to use socket functions.');
+/*****[END]********************************************
+ [ Mod:     Evolution Version Checker          v1.0.0 ]
+ ******************************************************/
+
+/*****[BEGIN]******************************************
+ [ Mod:     Who is Online                      v0.9.1 ]
+ ******************************************************/
 define("_4nwho0a","Who is Online");
 define("_4nwho00","<strong>4n Who is Online?</strong><br /><i>Version 0.91</i>");
 define("_4nwho01","Back to ");
@@ -95,15 +160,25 @@ define("_4nwho17","At this time there are");
 define("_4nwho18","Guest(s) and");
 define("_4nwho19","Member(s) online.");
 define("_4nwho20","Delete member");
-
-# 4nWhoIsOnline
+// START - Please do not edit and/or delete this lines - THANKS!
 define("_4nwhocopy","4nWhoIsOnline by <a href=\"http://warpspeed.4thdimension.de\" target=\"_blank\">www.warp-speed.de</a> @ <a href=\"http://www.4thdimension.de\" target=\"_blank\">4thDimension.de</a> Networking.");
+// END - Please do not edit and/or delete this lines - THANKS!
+/*****[END]********************************************
+ [ Mod:     Who is Online                      v0.9.1 ]
+ ******************************************************/
 
-# Other : URL Check v1.0.0
-define("_URL_SERVER_ERROR","The URL you entered (%s) does not match the URL that the server is reporting (%s)");
-define("_URL_CONFIRM_ERROR","Do you want to keep this setting?");
+/*****[BEGIN]******************************************
+ [ Other:   URL Check                          v1.0.0 ]
+ ******************************************************/
+define("_URL_SERVER_ERROR","PROCEED?");
+define("_URL_CONFIRM_ERROR","PROCEED?");
+/*****[END]********************************************
+ [ Other:   URL Check                          v1.0.0 ]
+ ******************************************************/
 
-# Base : Cache v1.0.2
+/*****[BEGIN]******************************************
+ [ Base:    Cache                              v1.0.2 ]
+ ******************************************************/
 define("_CACHE_ENABLED","Enabled");
 define("_CACHE_DISABLED", "Disabled");
 define("_CACHE_HOWTOENABLE", "How to enable?");
@@ -112,7 +187,7 @@ define("_CACHE_NO", "No");
 define("_CACHE_YES", "Yes");
 define("_CACHE_GOOD", "Good");
 define("_CACHE_BAD", "Your cache is NOT chmodded!");
-define("_CACHE_HEADER", "PHP-Nuke Titanium Cache :: Admin Panel");
+define("_CACHE_HEADER", "Admin Cache Panel");
 define("_CACHE_STATUS", "Cache Status:");
 define("_CACHE_DIR_STATUS", "Cache Directory Status:");
 define("_CACHE_NUM_FILES", "Number of cached items:");
@@ -143,16 +218,26 @@ define("_CACHE_MODE", "Cache Mode");
 define("_CACHE_FILEMODE", "File Cache");
 define("_CACHE_SQLMODE", "SQL Cache");
 define("_CACHE_TYPES", "Cache types available:");
+/*****[END]********************************************
+ [ Base:    Cache                              v1.0.2 ]
+ ******************************************************/
 
-# Other : Security Status v1.0.0
+/*****[BEGIN]******************************************
+ [ Other:  Security Status                     v1.0.0 ]
+ ******************************************************/
 define("_SEC_STATUS", "Security Status");
 define("_INPUT_FILTER", "Input Filter");
 define("_SEC_OFF", "Disabled");
 define("_SEC_ON", "Enabled");
 define("_ADMIN_IP_LOCK", "Admin IP Lock");
+/*****[END]********************************************
+ [ Other:  Security Status                     v1.0.0 ]
+ ******************************************************/
 
-# Base : Theme Management v1.0.2
-define("_THEMES_HEADER", "PHP-Nuke Titanium :: Theme Management");
+/*****[BEGIN]******************************************
+ [ Base:    Theme Management                   v1.0.2 ]
+ ******************************************************/
+define("_THEMES_HEADER", "<bold><h1>Theme Management</h1></bold>");
 define("_THEMES_DEFAULT", "Default Theme");
 define("_THEMES_DEFAULT_NOT_FOUND", " was NOT found!");
 define("_THEMES_DEFAULT_MISSING", "Your default theme is missing! ");
@@ -166,7 +251,9 @@ define("_THEMES_MOSTPOPULAR", "Most Popular Theme");
 define("_THEMES_OPTIONS", "Theme Options");
 define("_THEMES_RETURNMAIN", "Return to Main Administration");
 define("_THEMES_MAKEDEFAULT", "Make Default");
+
 define("_THEMES_ISDEFAULT", "This theme is set as Default");
+
 define("_THEMES_DEACTIVATE", "Deactivate");
 define("_THEMES_ACTIVATE", "Activate");
 define("_THEMES_UNINSTALL", "Uninstall");
@@ -230,6 +317,8 @@ define("_THEMES_NOT_COMPAT", "<font color='red'>Your theme is not compatible wit
 define("_THEMES_PERMISSIONS", "Permissions");
 define("_THEMES_LIST", "Return to Theme List");
 define('_THEMES_DOWNLOAD_FILES','Download & Back up Theme');
+
+
 define('_THEMES_USER_OPTIONS', 'User Options');
 define('_THEMES_USERID', 'User ID');
 define('_THEMES_USERNAME', 'Username');
@@ -248,8 +337,16 @@ define('_THEMES_PAGE_LAST', 'Last');
 define('_THEMES_PAGE_OF', 'of');
 define('_THEMES_USER_SELECT', 'Select User Theme');
 
-# Other : Database Manager v2.0.0
-define("_DATABASE_ADMIN_HEADER", "PHP-Nuke Titanium Backup :: Admin Panel");
+/*****[END]********************************************
+ [ Base:    Theme Management                   v1.0.2 ]
+ ******************************************************/
+
+
+
+/*****[BEGIN]******************************************
+ [ Other:    Database Manager                  v2.0.0 ]
+ ******************************************************/
+define("_DATABASE_ADMIN_HEADER", "Database Backup Panel");
 define("_DATABASE_RETURNMAIN", "Return to Main Administration");
 define("_DATABASE", "Database");
 define("_ACTIONRESULTS", "Here are the results of your");
@@ -272,19 +369,24 @@ OPTIMIZE works in the following way:<ul>
 <li>If the table has deleted or split rows, repair the table.</li>
 <li>If the index pages are not sorted, sort them.</li>
 <li>If the statistics are not up to date (and the repair couldn\'t be done by sorting the index), update them.</li>
-</ul><strong>Note:</strong> the table is locked during the time in which OPTIMIZE is running!');
+</ul><strong>Note:</strong> the table is locked during the time in which OPTIMIZE is running!<br /><strong>Note:</strong> This admin backup module has been updated for PHP 7.xx');
 define("_IMPORTFILE","Import SQL File");
 define("_IMPORTSQL", "Import");
 define("_DBACTION", "Action");
+/*****[END]********************************************
+ [ Other:    Database Manager                  v2.0.0 ]
+ ******************************************************/
 
-# Other : System Info v1.0.0
+/*****[BEGIN]******************************************
+ [ Other:    System Info                       v1.0.0 ]
+ ******************************************************/
 define("_PHP_MODULES", "PHP Modules");
 define("_SQL_SRV", "SQL Server");
 define("_PHP_QUICKS", "Quick Stats:");
 define("_PHP_EXT_STATUS", "Extended Status:");
 define("_PHP_SPACER", "&nbsp;");
 define("_INFO_GENERAL", "General");
-define("_INFO_ADMIN_HEADER", "PHP-Nuke Titanium System Info :: Admin Panel");
+define("_INFO_ADMIN_HEADER", "System Info :: Admin Panel");
 define("_INFO_RETURNMAIN", "Return to Main Administration");
 define("_INFO_SERVER_V", "Server Version");
 define("_INFO_CLIENT_V", "Client Version");
@@ -299,19 +401,43 @@ define("_PHP_VER", "PHP Version");
 define("_MYSQL_VER", "MySQL Version");
 define("_OWNER", "Owner");
 define("_GROUP", "Group"); 
+/*****[END]********************************************
+ [ Other:    System Info                       v1.0.0 ]
+ ******************************************************/
 
-# Modules : CalendarMx v1.4.0c
+/*--FNL--*/
+
+/*****[BEGIN]******************************************
+ [ Modules:  CalendarMx                       v1.4.0c ]
+ ******************************************************/
 define("_CALNAME","Event Calendar");
+/*****[END]********************************************
+ [ Modules:  CalendarMx                       v1.4.0c ]
+ ******************************************************/
 
-# Mod : Evolution UserInfo Block v1.0.0
+
+
+/*****[BEGIN]******************************************
+ [ Mod:     Evolution UserInfo Block           v1.0.0 ]
+ ******************************************************/
 define('_EVO_USERINFO','Evo UserInfo Block');
+/*****[END]********************************************
+ [ Mod:     Evolution UserInfo Block           v1.0.0 ]
+ ******************************************************/
 
-# Base : Blocks v.1.0.0
-define('_BLOCK_ADMIN_HEADER', 'PHP-Nuke Titanium Blocks :: Admin Panel');
+
+
+/*****[BEGIN]******************************************
+ [ Base:    Blocks                             v.1.0.0]
+ ******************************************************/
+define('_BLOCK_ADMIN_HEADER', 'Admin Blocks Panel');
 define('_BLOCK_RETURNMAIN', 'Return to Main Administration');
 define('_BLOCK_ADMIN_NOTE', 'Please note that when you activate or deactivate a block here<br />that it will be instant to users but not to you, until you refresh your screen!');
 define('_BLOCK_INACTIVE','Block is not active<br />(Double click to activate/deactivate)');
 define('_BLOCK_LINK_DELETE','Delete a block');
 define('_BLOCK_TITLE','TITLE');
 define('_BLOCK_EDIT','Block Edit');
+/*****[END]********************************************
+ [ Base:    Blocks                             v.1.0.0]
+ ******************************************************/
 ?>

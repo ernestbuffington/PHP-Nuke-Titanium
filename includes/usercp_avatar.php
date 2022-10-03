@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /***************************************************************************
  *                             usercp_avatar.php
@@ -25,302 +26,206 @@
 
 /*****[CHANGES]**********************************************************
 -=[Mod]=-
-      Super Quick Reply                        v1.3.2       09/08/2005
-      Force Word Wrapping - Configurator       v1.0.16      06/15/2005
-      Custom mass PM                           v1.4.7       07/04/2005
-      Advanced Time Management                 v2.2.0       07/26/2005
-      YA Merge                                 v1.0.0       07/28/2005
-      XData                                    v1.0.3       02/08/2007
-      Hide Images                              v1.0.0       09/02/2005
+	  Super Quick Reply                        v1.3.2       09/08/2005
+	  Force Word Wrapping - Configurator       v1.0.16      06/15/2005
+	  Custom mass PM                           v1.4.7       07/04/2005
+	  Advanced Time Management                 v2.2.0       07/26/2005
+	  YA Merge                                 v1.0.0       07/28/2005
+	  XData                                    v1.0.3       02/08/2007
+	  Hide Images                              v1.0.0       09/02/2005
 	  Member Country Flags                     v2.0.7
 	  Gender                                   v1.2.6
 	  Birthdays                                v3.0.0
  ************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
-    die('Hacking attempt');
+	die('ACCESS DENIED');
 }
 
 function check_image_type(&$type, &$error, &$error_msg)
 {
-        global $lang;
+		global $titanium_lang;
 
-        switch( $type )
-        {
-                case 'jpeg':
-                case 'pjpeg':
-                case 'jpg':
-                        return '.jpg';
-                        break;
-                case 'gif':
-                        return '.gif';
-                        break;
-                case 'png':
-                        return '.png';
-                        break;
-                default:
-                        $error = true;
-                        $error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $lang['Avatar_filetype'] : $lang['Avatar_filetype'];
-                        break;
-        }
+		switch( $type )
+		{
+				case 'jpeg':
+				case 'pjpeg':
+				case 'jpg':
+						return '.jpg';
+						break;
+				case 'gif':
+						return '.gif';
+						break;
+				case 'png':
+						return '.png';
+						break;
+				default:
+						$error = true;
+						$error_msg = (!empty($error_msg)) ? $error_msg . '<br />' . $titanium_lang['Avatar_filetype'] : $titanium_lang['Avatar_filetype'];
+						break;
+		}
 
-        return false;
+		return false;
 }
 
 function user_avatar_delete($avatar_type, $avatar_file)
 {
-        global $board_config, $userdata;
-    $avatar_file = basename($avatar_file);
+		global $phpbb2_board_config, $userdata;
+	$avatar_file = basename($avatar_file);
 
-        if ( $avatar_type == USER_AVATAR_UPLOAD && !empty($avatar_file) )
-        {
-                if ( @file_exists(@phpbb_realpath('./' . $board_config['avatar_path'] . '/' . $avatar_file)) )
-                {
-                        @unlink('./' . $board_config['avatar_path'] . '/' . $avatar_file);
-                }
-        }
+		if ( $avatar_type == USER_AVATAR_UPLOAD && !empty($avatar_file) )
+		{
+				if ( @file_exists(@phpbb_realpath('./' . $phpbb2_board_config['avatar_path'] . '/' . $avatar_file)) )
+				{
+						@unlink('./' . $phpbb2_board_config['avatar_path'] . '/' . $avatar_file);
+				}
+		}
 
-        return ", user_avatar = '', user_avatar_type = " . USER_AVATAR_NONE;
+		return ", user_avatar = '', user_avatar_type = " . USER_AVATAR_NONE;
 }
 
 function user_avatar_gallery($mode, &$error, &$error_msg, $avatar_filename, $avatar_category)
 {
-    global $board_config;
+	global $phpbb2_board_config;
 
-    $avatar_filename = phpbb_ltrim(basename($avatar_filename), "'");
-    $avatar_category = phpbb_ltrim(basename($avatar_category), "'");
+	$avatar_filename = phpbb_ltrim(basename($avatar_filename), "'");
+	$avatar_category = phpbb_ltrim(basename($avatar_category), "'");
 
-    if(!preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $avatar_filename))
-    {
-        return '';
-    }
+	if(!preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $avatar_filename))
+	{
+		return '';
+	}
 
-    if (empty($avatar_filename) || empty($avatar_category))
-    {
-        return '';
-    }
+	if (empty($avatar_filename) || empty($avatar_category))
+	{
+		return '';
+	}
 
-    if ( file_exists(@phpbb_realpath($board_config['avatar_gallery_path'] . '/' . $avatar_category . '/' . $avatar_filename)) && ($mode == 'editprofile') )
-    {
-        $return = ", user_avatar = '" . str_replace("\'", "''", $avatar_category . '/' . $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
-    }
-    else
-    {
-        $return = '';
-    }
-    return $return;
+	if ( file_exists(@phpbb_realpath($phpbb2_board_config['avatar_gallery_path'] . '/' . $avatar_category . '/' . $avatar_filename)) && ($mode == 'editprofile') )
+	{
+		$return = ", user_avatar = '" . str_replace("\'", "''", $avatar_category . '/' . $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
+	}
+	else
+	{
+		$return = '';
+	}
+	return $return;
 }
 
 function user_avatar_url($mode, &$error, &$error_msg, $avatar_filename)
 {
-    global $lang;
+	global $titanium_lang;
 
-        if ( !preg_match('#^(http)|(ftp):\/\/#i', $avatar_filename) )
-        {
-                $avatar_filename = 'http://' . $avatar_filename;
-        }
+		if ( !preg_match('#^(http)|(ftp):\/\/#i', $avatar_filename) )
+		{
+				$avatar_filename = 'http://' . $avatar_filename;
+		}
 
-        $avatar_filename = substr($avatar_filename, 0, 100);
+		$avatar_filename = substr($avatar_filename, 0, 100);
 
-         if ( !preg_match("#^((ht|f)tp://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png))$)#is", $avatar_filename) )
-        {
-                $error = true;
-                $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Wrong_remote_avatar_format'] : $lang['Wrong_remote_avatar_format'];
-                return;
-        }
+		 if ( !preg_match("#^((ht|f)tp://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png))$)#is", $avatar_filename) )
+		{
+				$error = true;
+				$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $titanium_lang['Wrong_remote_avatar_format'] : $titanium_lang['Wrong_remote_avatar_format'];
+				return;
+		}
 
-        return ( $mode == 'editprofile' ) ? ", user_avatar = '" . str_replace("\'", "''", $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_REMOTE : '';
+		return ( $mode == 'editprofile' ) ? ", user_avatar = '" . str_replace("\'", "''", $avatar_filename) . "', user_avatar_type = " . USER_AVATAR_REMOTE : '';
 
 }
 
 function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_type, &$error, &$error_msg, $avatar_filename, $avatar_realname, $avatar_filesize, $avatar_filetype)
 {
-        global $file_mode, $board_config, $db, $lang;
+	global $phpbb2_board_config, $titanium_lang;
 
-        $ini_val = ( @phpversion() >= '4.0.0' ) ? 'ini_get' : 'get_cfg_var';
-    $width = $height = 0;
-    $type = '';
+	function getimg($url) 
+	{         
+	    $headers[] = 'Accept: image/gif, image/x-bitmap, image/jpeg, image/pjpeg';              
+	    $headers[] = 'Connection: Keep-Alive';         
+	    $headers[] = 'Content-type: application/x-www-form-urlencoded;charset=UTF-8';         
+	    $titanium_user_agent = 'php';         
+	    $process = curl_init($url);         
+	    curl_setopt($process, CURLOPT_HTTPHEADER, $headers);         
+	    curl_setopt($process, CURLOPT_HEADER, 0);         
+	    curl_setopt($process, CURLOPT_USERAGENT, $titanium_user_agent); //check here         
+	    curl_setopt($process, CURLOPT_TIMEOUT, 30);         
+	    curl_setopt($process, CURLOPT_RETURNTRANSFER, 1);         
+	    curl_setopt($process, CURLOPT_FOLLOWLOCATION, 1);         
+	    $return = curl_exec($process);         
+	    curl_close($process);         
+	    return $return;     
+	}
 
-        if ( $avatar_mode == 'remote' && preg_match('/^(http:\/\/)?([\w\-\.]+)\:?([0-9]*)\/([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))$/', $avatar_filename, $url_ary) )
-        {
-                if ( empty($url_ary[4]) )
-                {
-                        $error = true;
-                        $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Incomplete_URL'] : $lang['Incomplete_URL'];
-                        return;
-                }
+	$error = FALSE;
 
-                $base_get = '/' . $url_ary[4];
-                $port = ( !empty($url_ary[3]) ) ? $url_ary[3] : 80;
+	$allowedAvatarTypes = ['image/gif', 'image/x-bitmap', 'image/jpeg', 'image/pjpeg', 'image/png', 'image/webp'];
 
-                if ( !($fsock = @fsockopen($url_ary[2], $port, $errno, $errstr)) )
-                {
-                        $error = true;
-                        $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['No_connection_URL'] : $lang['No_connection_URL'];
-                        return;
-                }
+	$avatar_image 	= getimagesize( $avatar_filename );
+	$imageMime      = $avatar_image['mime'];
 
-                @fputs($fsock, "GET $base_get HTTP/1.1\r\n");
-                @fputs($fsock, "HOST: " . $url_ary[2] . "\r\n");
-                @fputs($fsock, "Connection: close\r\n\r\n");
+	if ( $avatar_mode == 'remote' ):
 
-                unset($avatar_data);
-                while( !@feof($fsock) )
-                {
-                        $avatar_data .= @fread($fsock, $board_config['avatar_filesize']);
-                }
-                @fclose($fsock);
+		$headers 	   = get_headers( $avatar_filename, TRUE );
+		$imageFilesize = $headers['Content-Length'];
+		// $imageMime     = $headers['Content-Type'];
 
-                if (!preg_match('#Content-Length\: ([0-9]+)[^ /][\s]+#i', $avatar_data, $file_data1) || !preg_match('#Content-Type\: image/[x\-]*([a-z]+)[\s]+#i', $avatar_data, $file_data2))
-                {
-                        $error = true;
-                        $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['File_no_data'] : $lang['File_no_data'];
-                        return;
-                }
+	else:
 
-                $avatar_filesize = $file_data1[1];
-                $avatar_filetype = $file_data2[1];
+		$imageFilesize = filesize( $avatar_filename );
+		// $imageMime     = $avatar_image['mime'];
 
-                if ( !$error && $avatar_filesize > 0 && $avatar_filesize < $board_config['avatar_filesize'] )
-                {
-                        $avatar_data = substr($avatar_data, strlen($avatar_data) - $avatar_filesize, $avatar_filesize);
+	endif;
 
-                        $tmp_path = ( !@$ini_val('safe_mode') ) ? '/tmp' : './' . $board_config['avatar_path'] . '/tmp';
-                        $tmp_filename = tempnam($tmp_path, uniqid(rand()) . '-');
+	# Give the copied avatar a new unique name, Should prevent overwriting other users avatars if named similarly.
+	$new_filename = uniqid(rand()).'.'.get_file_extension($avatar_filename);
 
-                        $fptr = @fopen($tmp_filename, 'wb');
-                        $bytes_written = @fwrite($fptr, $avatar_data, $avatar_filesize);
-                        @fclose($fptr);
+	if ( $imageFilesize <= $phpbb2_board_config['avatar_filesize'] && $imageFilesize > 0 )
+	{
+		if( $avatar_mode == 'remote' ):
 
-                        if ( $bytes_written != $avatar_filesize )
-                        {
-                                @unlink($tmp_filename);
-                                message_die(GENERAL_ERROR, 'Could not write avatar file to local storage. Please contact the board administrator with this message', '', __LINE__, __FILE__);
-                        }
+			// if ( $avatar_image[0] > 0 && $avatar_image[1] > 0 && $avatar_image[0] <= $phpbb2_board_config['avatar_max_width'] && $avatar_image[1] <= $phpbb2_board_config['avatar_max_height'] && in_array($imageMime, $allowedAvatarTypes) ):
+			// if ( $avatar_image[0] > 0 && $avatar_image[1] > 0 && $avatar_image[0] <= $phpbb2_board_config['avatar_max_width'] && $avatar_image[1] <= $phpbb2_board_config['avatar_max_height'] ):
+			if ( $avatar_image[0] > 0 && $avatar_image[1] > 0 && $avatar_image[0] <= $phpbb2_board_config['avatar_max_width'] && $avatar_image[1] <= $phpbb2_board_config['avatar_max_height'] && in_array($imageMime, $allowedAvatarTypes) ):
 
-                        list($width, $height, $type) = @getimagesize($tmp_filename);
-                }
-                else
-                {
-                        $l_avatar_size = sprintf($lang['Avatar_filesize'], round($board_config['avatar_filesize'] / 1024));
+				if ( $mode == 'editprofile' && $current_type == USER_AVATAR_UPLOAD && !empty($current_avatar) )
+				{
+					user_avatar_delete($current_type, $current_avatar);
+				}
 
-                        $error = true;
-                        $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $l_avatar_size : $l_avatar_size;
-                }
-        }
-        else if ( ( file_exists(@phpbb_realpath($avatar_filename)) ) && preg_match('/\.(jpg|jpeg|gif|png)$/i', $avatar_realname) )
-        {
-                if ( $avatar_filesize <= $board_config['avatar_filesize'] && $avatar_filesize > 0 )
-                {
-                        preg_match('#image\/[x\-]*([a-z]+)#', $avatar_filetype, $avatar_filetype);
-                        $avatar_filetype = $avatar_filetype[1];
-                }
-                else
-                {
-                        $l_avatar_size = sprintf($lang['Avatar_filesize'], round($board_config['avatar_filesize'] / 1024));
+				$image = getimg($avatar_filename);
+				file_put_contents('./' . trailingslashit($phpbb2_board_config['avatar_path']).$new_filename, $image);
 
-                        $error = true;
-                        $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $l_avatar_size : $l_avatar_size;
-                        return;
-                }
+			else:
 
-                list($width, $height, $type) = @getimagesize($avatar_filename);
-        }
+				$l_avatar_size = sprintf($titanium_lang['Avatar_imagesize'], $phpbb2_board_config['avatar_max_width'], $phpbb2_board_config['avatar_max_height']);
+				$error = true;
+				$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $l_avatar_size : $l_avatar_size;
 
-        if ( !($imgtype = check_image_type($avatar_filetype, $error, $error_msg)) )
-        {
-                return;
-        }
+			endif;
 
-    switch ($type)
-    {
-        // GIF
-        case 1:
-            if ($imgtype != '.gif')
-            {
-                @unlink($tmp_filename);
-                message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
-            }
-        break;
+		else:
 
-        // JPG, JPC, JP2, JPX, JB2
-        case 2:
-        case 9:
-        case 10:
-        case 11:
-        case 12:
-            if ($imgtype != '.jpg' && $imgtype != '.jpeg')
-            {
-                @unlink($tmp_filename);
-                message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
-            }
-        break;
+			if (!is_uploaded_file($avatar_filename))
+			{
+				message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
+			}
 
-        // PNG
-        case 3:
-            if ($imgtype != '.png')
-            {
-                @unlink($tmp_filename);
-                message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
-            }
-        break;
+			move_uploaded_file($avatar_filename, trailingslashit($phpbb2_board_config['avatar_path']).$new_filename);
 
-        default:
-            @unlink($tmp_filename);
-            message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
-    }
+		endif;
+		$avatar_sql = ( $mode == 'editprofile' ) ? ", user_avatar = '$new_filename', user_avatar_type = " . USER_AVATAR_UPLOAD : "'$new_filename', " . USER_AVATAR_UPLOAD;
+	}
+	else
+	{
+		$l_avatar_size = sprintf($titanium_lang['Avatar_filesize'], round($phpbb2_board_config['avatar_filesize'] / 1024));
+		$error = true;
+		$error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $l_avatar_size : $l_avatar_size;
+		return;
+	}
 
-    if ( $width > 0 && $height > 0 && $width <= $board_config['avatar_max_width'] && $height <= $board_config['avatar_max_height'] )
-        {
-                $new_filename = uniqid(rand()) . $imgtype;
+	return $avatar_sql;
 
-                if ( $mode == 'editprofile' && $current_type == USER_AVATAR_UPLOAD && !empty($current_avatar) )
-                {
-                        user_avatar_delete($current_type, $current_avatar);
-                }
-
-                if( $avatar_mode == 'remote' )
-                {
-                        @copy($tmp_filename, './' . $board_config['avatar_path'] . "/$new_filename");
-                        @unlink($tmp_filename);
-                }
-                else
-                {
-                        if ( @$ini_val('open_basedir') != '' )
-                        {
-                                if ( @phpversion() < '4.0.3' )
-                                {
-                                        message_die(GENERAL_ERROR, 'open_basedir is set and your PHP version does not allow move_uploaded_file', '', __LINE__, __FILE__);
-                                }
-
-                                $move_file = 'move_uploaded_file';
-                        }
-                        else
-                        {
-                                $move_file = 'copy';
-                        }
-            if (!is_uploaded_file($avatar_filename))
-            {
-                message_die(GENERAL_ERROR, 'Unable to upload file', '', __LINE__, __FILE__);
-            }
-
-                        $move_file($avatar_filename, './' . $board_config['avatar_path'] . "/$new_filename");
-                }
-
-                @chmod('./' . $board_config['avatar_path'] . "/$new_filename", $file_mode);
-
-                $avatar_sql = ( $mode == 'editprofile' ) ? ", user_avatar = '$new_filename', user_avatar_type = " . USER_AVATAR_UPLOAD : "'$new_filename', " . USER_AVATAR_UPLOAD;
-        }
-        else
-        {
-                $l_avatar_size = sprintf($lang['Avatar_imagesize'], $board_config['avatar_max_width'], $board_config['avatar_max_height']);
-
-                $error = true;
-                $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $l_avatar_size : $l_avatar_size;
-        }
-
-        return $avatar_sql;
 }
 
 /*****[BEGIN]******************************************
@@ -337,7 +242,7 @@ function user_avatar_upload($mode, $avatar_mode, &$current_avatar, &$current_typ
  [ Mod:     Gender                             v1.2.6 ]
  [ Mod:     Birthdays                          v3.0.0 ]
  ******************************************************/
-function display_avatar_gallery($mode, $category, $user_id, $email, $current_email, $coppa, $username, $new_password, $cur_password, $password_confirm, $website, $location, $user_flag, $occupation, $interests, $glance_show, $signature, $viewemail, $notifypm, $allow_mass_pm, $popup_pm, $notifyreply, $attachsig, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $hideonline, $style, $wrap, $language, $bday_month, $bday_day, $bday_year, $birthday_display, $birthday_greeting, $timezone, $time_mode, $dst_time_lag, $dateformat, $show_quickreply, $quickreply_mode, $user_open_quickreply, $session_id, $xdata = false, $rname, $extra_info, $newsletter, $hide_images, $gender, $facebook)
+function display_avatar_gallery($mode, $category, $titanium_user_id, $email, $current_email, $coppa, $titanium_username, $new_password, $cur_password, $password_confirm, $website, $location, $titanium_user_flag, $occupation, $interests, $glance_show, $signature, $viewemail, $notifypm, $allow_mass_pm, $popup_pm, $notifyreply, $attachsig, $allowhtml, $allowbbcode, $allowsmilies, $showavatars, $showsignatures, $hideonline, $style, $wrap, $titanium_language, $bday_month, $bday_day, $phpbb2_bday_year, $birthday_display, $birthday_greeting, $timezone, $time_mode, $dst_time_lag, $dateformat, $show_quickreply, $quickreply_mode, $titanium_user_open_quickreply, $titanium_session_id, $xdata = false, $rname, $extra_info, $newsletter, $hide_images, $gender, $facebook)
 /*****[END]********************************************
  [ Mod:     Birthdays                          v3.0.0 ]
  [ Mod:     Gender                             v1.2.6 ]
@@ -353,78 +258,78 @@ function display_avatar_gallery($mode, $category, $user_id, $email, $current_ema
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
 {
-        global $board_config, $db, $template, $lang, $images, $theme, $phpbb_root_path, $phpEx, $userdata;
+		global $phpbb2_board_config, $titanium_db, $phpbb2_template, $titanium_lang, $images, $theme, $phpbb2_root_path, $phpEx, $userdata;
 
-        $dir = @opendir($board_config['avatar_gallery_path']);
+		$dir = @opendir($phpbb2_board_config['avatar_gallery_path']);
 
-        $avatar_images = array();
-        while( $file = @readdir($dir) )
-        {
-                if( $file != '.' && $file != '..' && !is_file($board_config['avatar_gallery_path'] . '/' . $file) && !is_link($board_config['avatar_gallery_path'] . '/' . $file) )
-                {
-                        $sub_dir = @opendir($board_config['avatar_gallery_path'] . '/' . $file);
+		$avatar_images = array();
+		while( $file = @readdir($dir) )
+		{
+				if( $file != '.' && $file != '..' && !is_file($phpbb2_board_config['avatar_gallery_path'] . '/' . $file) && !is_link($phpbb2_board_config['avatar_gallery_path'] . '/' . $file) )
+				{
+						$sub_dir = @opendir($phpbb2_board_config['avatar_gallery_path'] . '/' . $file);
 
-                        $avatar_row_count = 0;
-                        $avatar_col_count = 0;
-                        while( $sub_file = @readdir($sub_dir) )
-                        {
-                                if( preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $sub_file) )
-                                {
-                                        $avatar_images[$file][$avatar_row_count][$avatar_col_count] = $sub_file;
-                                        $avatar_name[$file][$avatar_row_count][$avatar_col_count] = ucfirst(str_replace("_", " ", preg_replace('/^(.*)\..*$/', '\1', $sub_file)));
+						$avatar_row_count = 0;
+						$avatar_col_count = 0;
+						while( $sub_file = @readdir($sub_dir) )
+						{
+								if( preg_match('/(\.gif$|\.png$|\.jpg|\.jpeg)$/is', $sub_file) )
+								{
+										$avatar_images[$file][$avatar_row_count][$avatar_col_count] = $sub_file;
+										$avatar_name[$file][$avatar_row_count][$avatar_col_count] = ucfirst(str_replace("_", " ", preg_replace('/^(.*)\..*$/', '\1', $sub_file)));
 
-                                        $avatar_col_count++;
-                                        if( $avatar_col_count == 5 )
-                                        {
-                                                $avatar_row_count++;
-                                                $avatar_col_count = 0;
-                                        }
-                                }
-                        }
-                }
-        }
+										$avatar_col_count++;
+										if( $avatar_col_count == 5 )
+										{
+												$avatar_row_count++;
+												$avatar_col_count = 0;
+										}
+								}
+						}
+				}
+		}
 
-        @closedir($dir);
+		@closedir($dir);
 
-        @ksort($avatar_images);
-        @reset($avatar_images);
+		@ksort($avatar_images);
+		@reset($avatar_images);
 
-        if( empty($category) )
-        {
-                list($category, ) = each($avatar_images);
-        }
-        @reset($avatar_images);
+		if( empty($category) )
+		{
+				list($category, ) = each($avatar_images);
+		}
+		@reset($avatar_images);
 
-        $s_categories = '<select name="avatarcategory">';
-        while( list($key) = each($avatar_images) )
-        {
-                $selected = ( $key == $category ) ? ' selected="selected"' : '';
-                if( count($avatar_images[$key]) )
-                {
-                        $s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
-                }
-        }
-        $s_categories .= '</select>';
+		$s_categories = '<select name="avatarcategory">';
+		while( list($key) = each($avatar_images) )
+		{
+				$selected = ( $key == $category ) ? ' selected="selected"' : '';
+				if( count($avatar_images[$key]) )
+				{
+						$s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
+				}
+		}
+		$s_categories .= '</select>';
 
-        $s_colspan = 0;
-        for($i = 0; $i < count($avatar_images[$category]); $i++)
-        {
-                $template->assign_block_vars("avatar_row", array());
+		$s_colspan = 0;
+		for($i = 0; $i < count($avatar_images[$category]); $i++)
+		{
+				$phpbb2_template->assign_block_vars("avatar_row", array());
 
-                $s_colspan = max($s_colspan, count($avatar_images[$category][$i]));
+				$s_colspan = max($s_colspan, count($avatar_images[$category][$i]));
 
-                for($j = 0; $j < count($avatar_images[$category][$i]); $j++)
-                {
-                        $template->assign_block_vars('avatar_row.avatar_column', array(
-                                "AVATAR_IMAGE" => $board_config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j],
-                                "AVATAR_NAME" => $avatar_name[$category][$i][$j])
-                        );
+				for($j = 0; $j < count($avatar_images[$category][$i]); $j++)
+				{
+						$phpbb2_template->assign_block_vars('avatar_row.avatar_column', array(
+								"AVATAR_IMAGE" => $phpbb2_board_config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j],
+								"AVATAR_NAME" => $avatar_name[$category][$i][$j])
+						);
 
-                        $template->assign_block_vars('avatar_row.avatar_option_column', array(
-                                "S_OPTIONS_AVATAR" => $avatar_images[$category][$i][$j])
-                        );
-                }
-        }
+						$phpbb2_template->assign_block_vars('avatar_row.avatar_option_column', array(
+								"S_OPTIONS_AVATAR" => $avatar_images[$category][$i][$j])
+						);
+				}
+		}
 
 /*****[BEGIN]******************************************
  [ Mod:     Custom mass PM                     v1.4.7 ]
@@ -439,7 +344,7 @@ function display_avatar_gallery($mode, $category, $user_id, $email, $current_ema
  [ Mod:     Gender                             v1.2.6 ]
  [ Mod:     Birthdays                          v3.0.0 ]
  ******************************************************/
-        $params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'cur_password', 'new_password', 'password_confirm', 'website', 'location', 'user_flag', 'occupation', 'interests', 'glance_show', 'signature', 'viewemail', 'notifypm', 'allow_mass_pm', 'popup_pm', 'notifyreply', 'attachsig', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'hideonline', 'style', 'wrap', 'language', 'bday_month', 'bday_day', 'bday_year', 'birthday_display', 'birthday_greeting', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'show_quickreply', 'quickreply_mode', 'rname', 'extra_info', 'newsletter', 'hide_images', 'user_open_quickreply', 'gender', 'facebook');
+		$params = array('coppa', 'user_id', 'username', 'email', 'current_email', 'cur_password', 'new_password', 'password_confirm', 'website', 'location', 'user_flag', 'occupation', 'interests', 'glance_show', 'signature', 'viewemail', 'notifypm', 'allow_mass_pm', 'popup_pm', 'notifyreply', 'attachsig', 'allowhtml', 'allowbbcode', 'allowsmilies', 'showavatars', 'showsignatures', 'hideonline', 'style', 'wrap', 'language', 'bday_month', 'bday_day', 'bday_year', 'birthday_display', 'birthday_greeting', 'timezone', 'time_mode', 'dst_time_lag', 'dateformat', 'show_quickreply', 'quickreply_mode', 'rname', 'extra_info', 'newsletter', 'hide_images', 'user_open_quickreply', 'gender', 'facebook');
 /*****[END]********************************************
  [ Mod:     Birthdays                          v3.0.0 ]
  [ Mod:     Gender                             v1.2.6 ]
@@ -454,49 +359,49 @@ function display_avatar_gallery($mode, $category, $user_id, $email, $current_ema
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
 
-        $s_hidden_vars  = '<input type="hidden" name="sid" value="' . $session_id . '" />';
-        $s_hidden_vars .= '<input type="hidden" name="agreed" value="true" />';
-        $s_hidden_vars .= '<input type="hidden" name="avatarcatname" value="' . $category . '" />';
+		$s_hidden_vars  = '<input type="hidden" name="sid" value="' . $titanium_session_id . '" />';
+		$s_hidden_vars .= '<input type="hidden" name="agreed" value="true" />';
+		$s_hidden_vars .= '<input type="hidden" name="avatarcatname" value="' . $category . '" />';
 
-        for($i = 0; $i < count($params); $i++)
-        {
-            $s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . ${$params[$i]} . '" />';
-        }
+		for($i = 0; $i < count($params); $i++)
+		{
+			$s_hidden_vars .= '<input type="hidden" name="' . $params[$i] . '" value="' . ${$params[$i]} . '" />';
+		}
 
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-        if (!is_array($xdata))
-        {
-            $xdata = array();
-        }
+		if (!is_array($xdata))
+		{
+			$xdata = array();
+		}
 
-        $xd_meta = get_xd_metadata();
-        while ( list($code_name, ) = each($xd_meta) )
-        {
-            if ( isset($xdata[$code_name]) )
-            {
-                $s_hidden_vars .= '<input type="hidden" name="'. $code_name . '" value="' . str_replace('"', '&quot;', $xdata[$code_name]) . '" />';
-            }
-        }
+		$xd_meta = get_xd_metadata();
+		while ( list($code_name, ) = each($xd_meta) )
+		{
+			if ( isset($xdata[$code_name]) )
+			{
+				$s_hidden_vars .= '<input type="hidden" name="'. $code_name . '" value="' . str_replace('"', '&quot;', $xdata[$code_name]) . '" />';
+			}
+		}
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
 
-        $template->assign_vars(array(
-                'L_USERID' => $s_hidden_vars,
-                'L_AVATAR_GALLERY' => $lang['Avatar_gallery'],
-                'L_SELECT_AVATAR' => $lang['Select_avatar'],
-                'L_RETURN_PROFILE' => $lang['Return_profile'],
-                'L_CATEGORY' => $lang['Select_category'],
+		$phpbb2_template->assign_vars(array(
+				'L_USERID' => $s_hidden_vars,
+				'L_AVATAR_GALLERY' => $titanium_lang['Avatar_gallery'],
+				'L_SELECT_AVATAR' => $titanium_lang['Select_avatar'],
+				'L_RETURN_PROFILE' => $titanium_lang['Return_profile'],
+				'L_CATEGORY' => $titanium_lang['Select_category'],
 
-                'S_CATEGORY_SELECT' => $s_categories,
-                'S_COLSPAN' => $s_colspan,
-                'S_PROFILE_ACTION' => append_sid("profile.$phpEx?mode=$mode"),
-                'S_HIDDEN_FIELDS' => $s_hidden_vars)
-        );
+				'S_CATEGORY_SELECT' => $s_categories,
+				'S_COLSPAN' => $s_colspan,
+				'S_PROFILE_ACTION' => append_titanium_sid("profile.$phpEx?mode=$mode"),
+				'S_HIDDEN_FIELDS' => $s_hidden_vars)
+		);
 
-        return;
+		return;
 }
 
 ?>

@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 // $smilies_close = "Close Window";
 // $smilies_more = "More smilies";
@@ -31,7 +32,7 @@
 //     'Mr. Green' => 'Mr. Green',
 // );
 
-// $color_desc = array(
+// $phpbb2_color_desc = array(
 //     'Default' => 'Default',
 //     'Dark Red' => 'Dark Red',
 //     'Red' => 'Red',

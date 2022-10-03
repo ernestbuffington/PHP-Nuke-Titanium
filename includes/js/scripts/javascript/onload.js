@@ -1,10 +1,4 @@
 /*************************************************************
-* CKeditor 4 Base Path
-* Added by Ernest Allen Buffington
-* 09/08/2019
-*************************************************************/
-var CKEDITOR_BASEPATH = 'includes/wysiwyg/ckeditor/';
-/*************************************************************
 * Window Onload Manager (WOM) v1.0
 * Author: Justin Barlow - www.netlobo.com
 *

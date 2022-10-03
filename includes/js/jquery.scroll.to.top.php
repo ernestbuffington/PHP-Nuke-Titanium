@@ -1,12 +1,16 @@
 <?php
-
-/*
-|--------------------------------------------------------------------------
-| UItoTop jQuery Plugin 1.2 by Matt Varone
-| http://www.mattvarone.com/web-design/uitotop-jquery-plugin/
-| Modified by Lonestar of https://lonestar-modules.com
-|--------------------------------------------------------------------------
-*/
+/**
+ * Scroll back to top script.
+ *
+ * A floating button link will appear when you scroll down the page.
+ *
+ * @since 2.0.9e 
+ *
+ * @author Lonestar <https://lonestar-modules.com>
+ * @filename jquery.scroll.to.top.php
+ * @version 1.0.0
+ * @license GPL-3.0
+ */
 
 if(!defined('NUKE_FILE')) 
 	die('Access forbbiden');

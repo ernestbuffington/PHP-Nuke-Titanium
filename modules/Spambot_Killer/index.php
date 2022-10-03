@@ -1,6 +1,6 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************
@@ -43,9 +43,9 @@ if (!defined('MODULE_FILE')) {
 
 global $bgcolor2;
 
-$module_name = basename(dirname(__FILE__));
+$titanium_module_name = basename(dirname(__FILE__));
 include_once(NUKE_BASE_DIR.'header.php');
-get_lang($module_name);
+get_lang($titanium_module_name);
 title(_SBK);
 define('INDEX_FILE', true);
 

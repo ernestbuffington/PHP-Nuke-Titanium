@@ -1,11 +1,12 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /********************************************************/
 /* NukeSentinel(tm)                                     */
-/* By: NukeScripts(tm) (http://www.nukescripts.net)     */
+/* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
 /* See CREDITS.txt for ALL contributors                 */
 /********************************************************/
@@ -34,8 +35,8 @@ if (!isset($ip_addr)) $ip_addr='';
 if(!$column or $column=="") $column = "date";
 if(!$direction or $direction=="") $direction = "desc";
 $tid=intval($tid);
-list($uname) = $db->sql_fetchrow($db->sql_query("SELECT `username` FROM `".$user_prefix."_users` WHERE `user_id`='$tid' LIMIT 0,1"));
-$totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$tid'"));
+list($uname) = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `username` FROM `".$titanium_user_prefix."_users` WHERE `user_id`='$tid' LIMIT 0,1"));
+$totalselected = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_tracked_ips` WHERE `user_id`='$tid'"));
 if($totalselected > 0) {
   echo '<center><strong>'.UsernameColor($uname).' ('.$tid.')</strong></center><br />'."\n";
   // Page Sorting
@@ -67,8 +68,8 @@ if($totalselected > 0) {
   echo '<td bgcolor="'.$bgcolor2.'" width="80%"><strong>'._AB_PAGEVIEWED.'</strong></td>'."\n";
   echo '<td bgcolor="'.$bgcolor2.'" width="20%"><strong>'._AB_DATE.'</strong></td>'."\n";
   echo '</tr>'."\n";
-  $result = $db->sql_query("SELECT `tid`, `user_id`, `page`, `date` FROM `".$prefix."_nsnst_tracked_ips` WHERE `user_id`='$tid' ORDER BY $column $direction LIMIT $min, $perpage");
-  while(list($ltid, $luserid, $page, $date_time) = $db->sql_fetchrow($result)){
+  $result = $titanium_db->sql_query("SELECT `tid`, `user_id`, `page`, `date` FROM `".$titanium_prefix."_nsnst_tracked_ips` WHERE `user_id`='$tid' ORDER BY $column $direction LIMIT $min, $perpage");
+  while(list($ltid, $luserid, $page, $date_time) = $titanium_db->sql_fetchrow($result)){
     $page = htmlentities($page, ENT_QUOTES);
     echo '<tr onmouseover="this.style.backgroundColor=\''.$bgcolor2.'\'" onmouseout="this.style.backgroundColor=\''.$bgcolor1.'\'" bgcolor="'.$bgcolor1.'">'."\n";
     echo '<td><a href="'.$page.'" target="_blank">'.$page.'</a></td>'."\n";

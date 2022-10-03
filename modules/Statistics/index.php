@@ -1,6 +1,6 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -9,7 +9,7 @@
 /*                                                                      */
 /* Copyright (c) 2002 by Francisco Burzi                                */
 /* http://phpnuke.org                                                   */
-/*                                                                      */
+/* v1.0                                                                 */
 /* This program is free software. You can redistribute it and/or modify */
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
@@ -28,10 +28,10 @@ if (!defined('MODULE_FILE')) {
    die('You can\'t access this file directly...');
 }
 
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$titanium_module_name = basename(dirname(__FILE__));
+get_lang($titanium_module_name);
 
-require_once(NUKE_MODULES_DIR.$module_name.'/functions.php');
+require_once(NUKE_MODULES_DIR.$titanium_module_name.'/functions.php');
 
 include_once(NUKE_BASE_DIR.'header.php');
 

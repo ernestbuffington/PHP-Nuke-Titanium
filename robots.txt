@@ -1,3 +1,21 @@
+User-agent: ia_archiver
+Disallow: /admin/
+Disallow: /install/
+Disallow: /blocks/
+Disallow: /cgi-bin/
+Disallow: /images/
+Disallow: /includes/
+Disallow: /language/
+Disallow: /modules/
+Disallow: /themes/
+Disallow: /admin.php
+Disallow: /config.php
+Disallow: /fbconfig.php
+Disallow: /nconfig.php
+Disallow: /vconfig.php
+Disallow: /ips.php
+Disallow: /trap.php
+
 User-agent: Baidu
 Disallow: /
 
@@ -18,5 +36,10 @@ Disallow: /modules/
 Disallow: /themes/
 Disallow: /admin.php
 Disallow: /config.php
+Disallow: /vconfig.php
+Disallow: /fbconfig.php
+Disallow: /nconfig.php
 Disallow: /ips.php
 Disallow: /trap.php
+
+Sitemap: https://php-nuke-titanium.86it.us/xmls/sitemap/sitemap-index.xml

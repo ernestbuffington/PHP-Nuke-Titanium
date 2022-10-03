@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -26,15 +27,15 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $prefix, $db;
+global $titanium_prefix, $titanium_db;
 
-$sql = "SELECT id, title FROM ".$prefix."_reviews ORDER BY id DESC LIMIT 0,10";
-$result = $db->sql_query($sql);
-while (list($id, $title) = $db->sql_fetchrow($result)) {
+$sql = "SELECT id, title FROM ".$titanium_prefix."_reviews ORDER BY id DESC LIMIT 0,10";
+$result = $titanium_db->sql_query($sql);
+while (list($id, $title) = $titanium_db->sql_fetchrow($result)) {
     $id = intval($id);
     $title = stripslashes($title);
     $content .= "<strong><big>&middot;</big></strong>&nbsp;<a href=\"modules.php?name=Reviews&amp;rop=showcontent&amp;id=$id\">$title</a><br />";
 }
-$db->sql_freeresult($result);
+$titanium_db->sql_freeresult($result);
 
 ?>

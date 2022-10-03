@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -30,14 +31,14 @@
       Display Writes                           v1.0.0       10/14/2005
  ************************************************************************/
 
-if (!defined('ADMIN_FILE')) die('Access Denied');
+if (!defined('ADMIN_FILE')) {
+   die('Access Denied');
+}
 
-global $prefix, $db, $admdata, $evoconfig;
+global $titanium_prefix, $titanium_db, $admdata, $titanium_config;
+$titanium_module_name = basename(dirname(dirname(__FILE__)));
+if(is_mod_admin($titanium_module_name)) {
 
-$module_name = basename(dirname(dirname(__FILE__)));
-
-if(is_mod_admin($module_name)) 
-{
 /*********************************************************/
 /* Surveys Functions                                */
 /*********************************************************/
@@ -45,8 +46,7 @@ if(is_mod_admin($module_name))
 /*****[BEGIN]******************************************
  [ Mod:     News BBCodes                       v1.0.0 ]
  ******************************************************/
-    function shownews_home($text) 
-	{
+    function shownews_home($text) {
        /* $news_bbtable = bbcode_table('hometext', 'postnews', 1);
         $smiles = smilies_table('onerow','hometext', 'postnews');
         echo "<br /><br />$news_bbtable"
@@ -58,8 +58,7 @@ if(is_mod_admin($module_name))
        echo "<br />\n";
     }
 
-    function shownews_body($text) 
-	{
+    function shownews_body($text) {
        /* $news_bbtable = bbcode_table('bodytext', 'postnews', 1);
         $smiles = smilies_table('onerow','bodytext', 'postnews');
         echo "<br /><br />$news_bbtable"
@@ -75,8 +74,7 @@ if(is_mod_admin($module_name))
 /*****[BEGIN]******************************************
  [ Mod:    Display Topic Icon                  v1.0.0 ]
  ******************************************************/
-    function topicicon($topic_icon) 
-	{
+    function topicicon($topic_icon) {
         echo "<br /><strong>"._DISPLAY_T_ICON."</strong>&nbsp;&nbsp;";
         if (($topic_icon == 0) OR (empty($topic_icon))) {
             $sel1 = "checked";
@@ -96,8 +94,7 @@ if(is_mod_admin($module_name))
 /*****[BEGIN]******************************************
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
-    function writes($writes) 
-	{
+    function writes($writes) {
         echo "<br /><strong>"._DISPLAY_WRITES."</strong>&nbsp;&nbsp;";
         if (($writes == 1) || (!is_int($writes))) {
             $sel1 = "";
@@ -112,8 +109,8 @@ if(is_mod_admin($module_name))
 /*****[END]********************************************
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
-    function poll_index() 
-	{
+
+    function poll_index() {
       global $admin_file;
         OpenTable();
         echo "<center><span class=\"option\"><strong>" . _POLLADMIN . "</strong></span><br />"
@@ -122,23 +119,21 @@ if(is_mod_admin($module_name))
             ."| <a href=\"".$admin_file.".php?op=DeletePoll\">" . _DELETEPOLL . "</a> "
             ."| <a href=\"".$admin_file.".php?op=EditPoll\">" . _CHANGEPOLL . "</a> "
             ."| <a href=\"".$admin_file.".php?op=CreatePoll\">" . _ADDPOLL . "</a> "
-            ."]</center><br />";
-			echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
+            ."]</center><br /><br />";
         CloseTable();
     }
 
-    function poll_options() 
-	{
-      global $admin_file, $db, $prefix, $evoconfig;
+    function poll_options() {
+      global $admin_file, $titanium_db, $titanium_prefix, $titanium_config;
 
-      # Fetch random poll
-      $make_random = intval($evoconfig['poll_random']);
+      // Fetch random poll
+      $make_random = intval($titanium_config['poll_random']);
 
-      # Fetch number of days in between voting per user
-      $number_of_days = intval($evoconfig['poll_days']);
+      // Fetch number of days in between voting per user
+      $number_of_days = intval($titanium_config['poll_days']);
 
+      echo "<br />";
       OpenTable();
-
       echo "<center><span class='option'><strong>" . _POLL_OPTIONS . "</strong></span><br />"
           ."<br />" . _POLL_INFO . "<br /><br /></center>"
           ."<form action='".$admin_file.".php' method='post'>"
@@ -149,9 +144,7 @@ if(is_mod_admin($module_name))
       if ($make_random) {
           echo "<input type='radio' name='xmake_random' value='1' checked>" . _YES . " &nbsp;"
               ."<input type='radio' name='xmake_random' value='0'>" . _NO . "";
-      } 
-	  else 
-	  {
+      } else {
           echo "<input type='radio' name='xmake_random' value='1'>" . _YES . " &nbsp;"
               ."<input type='radio' name='xmake_random' value='0' checked>" . _NO . "";
       }
@@ -162,9 +155,8 @@ if(is_mod_admin($module_name))
       CloseTable();
     }
 
-    # "borrowed" FROM Credits module and modified
-    function LoadJS() 
-	{
+    // "borrowed" FROM Credits module and modified
+    function LoadJS() {
       echo "<script type=\"text/javascript\">\n"
           ."<!--\n"
           ."function show(id) {\n"
@@ -178,8 +170,7 @@ if(is_mod_admin($module_name))
           ."</script>\n";
     }
 
-    function puthome($ihome, $acomm) 
-	{
+    function puthome($ihome, $acomm) {
         echo "<br /><strong>"._PUBLISHINHOME."</strong>&nbsp;&nbsp;";
         if (($ihome == 0) OR (empty($ihome))) {
             $sel1 = "checked";
@@ -206,10 +197,9 @@ if(is_mod_admin($module_name))
             ."<input type=\"radio\" name=\"acomm\" value=\"1\" $sel2>"._NO."<br /><br />";
     }
 
-    function SelectCategory($cat) 
-	{
-        global $prefix, $db, $admin_file;
-        $selcat = $db->sql_query("SELECT catid, title FROM ".$prefix."_stories_cat ORDER BY title");
+    function SelectCategory($cat) {
+        global $titanium_prefix, $titanium_db, $admin_file;
+        $selcat = $titanium_db->sql_query("SELECT catid, title FROM ".$titanium_prefix."_stories_cat ORDER BY title");
         $a = 1;
         echo "<strong>"._CATEGORY."</strong> ";
         echo "<select name=\"catid\">";
@@ -219,7 +209,7 @@ if(is_mod_admin($module_name))
             $sel = "";
         }
         echo "<option name=\"catid\" value=\"0\" $sel>"._ARTICLES."</option>";
-        while(list($catid, $title) = $db->sql_fetchrow($selcat)) {
+        while(list($catid, $title) = $titanium_db->sql_fetchrow($selcat)) {
             $catid = intval($catid);
             if ($catid == $cat) {
                 $sel = "selected";
@@ -232,12 +222,18 @@ if(is_mod_admin($module_name))
         echo "</select> [ <a href=\"".$admin_file.".php?op=AddCategory\">"._ADD."</a> | <a href=\"".$admin_file.".php?op=EditCategory\">"._EDIT."</a> | <a href=\"".$admin_file.".php?op=DelCategory\">"._DELETE."</a> ]";
     }
 
-    function poll_createPoll() 
-	{
-        global $language, $admin, $multilingual, $prefix, $db, $admin_file;
+    function poll_createPoll() {
+        global $titanium_language, $admin, $multilingual, $titanium_prefix, $titanium_db, $admin_file;
         include_once(NUKE_BASE_DIR.'header.php');
         LoadJS();
+        OpenTable();
+	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
+        echo "<br /><br />";
+	    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
+	    CloseTable();
+	    echo "<br />";
         poll_index();
+        echo "<br />";
         OpenTable();
         echo "<center><span class=\"option\"><strong>" . _CREATEPOLL . "</strong></span></center>"
 /*****[BEGIN]******************************************
@@ -251,16 +247,16 @@ if(is_mod_admin($module_name))
         if ($multilingual == 1) {
             echo "<br />" . _LANGUAGE . ": "
                 ."<select name=\"planguage\">";
-            $languages = lang_list();
-            echo '<option value=""'.(($language == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-            for ($i=0, $j = count($languages); $i < $j; $i++) {
-                if ($languages[$i] != '') {
-                    echo '<option value="'.$languages[$i].'"'.(($language == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            $titanium_languages = lang_list();
+            echo '<option value=""'.(($titanium_language == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
+            for ($i=0, $j = count($titanium_languages); $i < $j; $i++) {
+                if ($titanium_languages[$i] != '') {
+                    echo '<option value="'.$titanium_languages[$i].'"'.(($titanium_language == $titanium_languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($titanium_languages[$i])."</option>\n";
                 }
             }
             echo '</select><br /><br />';
         } else {
-            echo "<input type=\"hidden\" name=\"planguage\" value=\"$language\"><br /><br />";
+            echo "<input type=\"hidden\" name=\"planguage\" value=\"$titanium_language\"><br /><br />";
         }
         echo "<span class=\"content\"><i>" . _POLLEACHFIELD . "</i></span><br />"
         ."<table border=\"0\">";
@@ -299,12 +295,12 @@ if(is_mod_admin($module_name))
         echo "<br />";
         puthome($ihome, $acomm);
         echo "<strong>" . _TOPIC . "</strong> <select name=\"topic\">";
-        $toplist = $db->sql_query("SELECT topicid, topictext FROM " . $prefix . "_topics ORDER BY topictext");
+        $toplist = $titanium_db->sql_query("SELECT topicid, topictext FROM " . $titanium_prefix . "_topics ORDER BY topictext");
         echo "<option value=\"\">" . _SELECTTOPIC . "</option>\n";
-        while ($row = $db->sql_fetchrow($toplist)) {
+        while ($row = $titanium_db->sql_fetchrow($toplist)) {
             $topicid = intval($row['topicid']);
-            $topics = $row['topictext'];
-            echo "<option value=\"$topicid\">$topics</option>\n";
+            $phpbb2_topics = $row['topictext'];
+            echo "<option value=\"$topicid\">$phpbb2_topics</option>\n";
         }
         echo "</select>";
 /*****[BEGIN]******************************************
@@ -331,34 +327,30 @@ if(is_mod_admin($module_name))
  [ Mod:    Display Topic Icon                  v1.0.0 ]
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
-    function poll_createPosted($pollTitle, $optionText, $planguage, $title, $hometext, $topic, $bodytext, $catid, $ihome, $acomm, $topic_icon, $writes) 
-	{
+    function poll_createPosted($pollTitle, $optionText, $planguage, $title, $hometext, $topic, $bodytext, $catid, $ihome, $acomm, $topic_icon, $writes) {
 /*****[END]********************************************
  [ Mod:    Display Topic Icon                  v1.0.0 ]
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
-        global $prefix, $db, $aid, $admin_file;
+        global $titanium_prefix, $titanium_db, $aid, $admin_file;
         $SurveyStory = intval($SurveyStory);
         $timeStamp = time();
         $pollTitle = Fix_Quotes($pollTitle);
-        if(!$db->sql_query("INSERT INTO ".$prefix."_poll_desc VALUES (NULL, '$pollTitle', '$timeStamp', '0', '$planguage', '0')")) 
-		{
+        if(!$titanium_db->sql_query("INSERT INTO ".$titanium_prefix."_poll_desc VALUES (NULL, '$pollTitle', '$timeStamp', '0', '$planguage', '0')")) {
             return;
         }
-        $object = $db->sql_fetchrow($db->sql_query("SELECT pollID FROM ".$prefix."_poll_desc WHERE pollTitle='$pollTitle'"));
+        $object = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT pollID FROM ".$titanium_prefix."_poll_desc WHERE pollTitle='$pollTitle'"));
         $id = $object['pollID'];
         $id = intval($id);
-        for($i = 1, $maxi = count($optionText); $i <= $maxi; $i++) 
-		{
+        for($i = 1, $maxi = count($optionText); $i <= $maxi; $i++) {
             if(!empty($optionText[$i])) {
                 $optionText[$i] = Fix_Quotes($optionText[$i]);
             }
-            if(!$db->sql_query("INSERT INTO ".$prefix."_poll_data (pollID, optionText, optionCount, voteID) VALUES ('$id', '$optionText[$i]', '0', '$i')")) {
+            if(!$titanium_db->sql_query("INSERT INTO ".$titanium_prefix."_poll_data (pollID, optionText, optionCount, voteID) VALUES ('$id', '$optionText[$i]', '0', '$i')")) {
                 return;
             }
         }
-        if (!empty($title) && !empty($hometext)) 
-		{
+        if (!empty($title) && !empty($hometext)) {
             $title = Fix_Quotes($title);
             $hometext = Fix_Quotes($hometext);
             $bodytext = Fix_Quotes($bodytext);
@@ -368,35 +360,62 @@ if(is_mod_admin($module_name))
  ******************************************************/
             $topic_icon = intval($topic_icon);
             $writes = intval($writes);
-            $result = $db->sql_query("INSERT INTO ".$prefix."_stories VALUES (NULL, '$catid', '$aid', '$title', now(), '$hometext', '$bodytext', '0', '0', '$topic', '$aid', '', '$ihome', '$planguage', '$acomm', '0', '0', '0', '0', '', '$topic_icon', '$writes')");
+            $result = $titanium_db->sql_query("INSERT INTO ".$titanium_prefix."_stories VALUES (NULL, 
+			                                                              '$catid', 
+																		    '$aid', 
+																		  '$title', 
+																		     NULL,
+																			 NULL, 
+																	   '$hometext', 
+																	   '$bodytext', 
+																	           '0', 
+																			   '0', 
+																		  '$topic', 
+																		    '$aid', 
+																			    '', 
+																		  '$ihome', 
+																	  '$planguage', 
+																	      '$acomm', 
+																		       '0', 
+																			   '0', 
+																			   '0', 
+																			   '0', 
+																			    '', 
+																	 '$topic_icon', 
+																	     '$writes')");
 /*****[END]********************************************
  [ Mod:    Display Topic Icon                  v1.0.0 ]
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
         }
-        
-		redirect($admin_file.".php?op=Surveys");
+        redirect_titanium($admin_file.".php?op=Surveys");
     }
 
-    function poll_removePoll() 
-	{
-        global $prefix, $db, $admin_file, $multilingual;
+    function poll_removePoll() {
+        global $titanium_prefix, $titanium_db, $admin_file, $multilingual;
 
         include_once(NUKE_BASE_DIR.'header.php');
+        OpenTable();
+	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
+        echo "<br /><br />";
+	    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
+	    CloseTable();
+	    echo "<br />";
         poll_index();
+        echo "<br />";
         OpenTable();
         echo "<center><span class=\"option\"><strong>" . _REMOVEEXISTING . "</strong></span><br /><br />"
         ."" . _POLLDELWARNING . "</center><br /><br />"
         ."<i>" . _CHOOSEPOLL . "</i><br /><br />"
         ."<form action=\"".$admin_file.".php\" method=\"post\">"
         ."<input type=\"hidden\" name=\"op\" value=\"RemovePosted\">";
-        $result = $db->sql_query("SELECT pollID, pollTitle, timeStamp, planguage FROM ".$prefix."_poll_desc ORDER BY timeStamp");
+        $result = $titanium_db->sql_query("SELECT pollID, pollTitle, timeStamp, planguage FROM ".$titanium_prefix."_poll_desc ORDER BY timeStamp");
         if(!$result) {
             return;
         }
-        # cycle through the descriptions until everyone has been fetched 
+        /* cycle through the descriptions until everyone has been fetched */
         echo "<select name=\"id\">";
-        while($object = $db->sql_fetchrow($result)) {
+        while($object = $titanium_db->sql_fetchrow($result)) {
         $object['pollID'] = intval($object['pollID']);
             echo "<option value=\"".$object['pollID']."\">".$object['pollTitle'];
             if($multilingual == 1 && !empty($object['planguage'])) echo " - (".$object['planguage'].")";
@@ -409,33 +428,38 @@ if(is_mod_admin($module_name))
         include_once(NUKE_BASE_DIR.'footer.php');
     }
 
-    function poll_removePosted() 
-	{
-        global $id, $prefix, $db, $admin_file;
+    function poll_removePosted() {
+        global $id, $titanium_prefix, $titanium_db, $admin_file;
 
         $id = intval($id);
-        $db->sql_query("DELETE FROM ".$prefix."_poll_desc WHERE pollID='$id'");
-        $db->sql_query("DELETE FROM ".$prefix."_poll_data WHERE pollID='$id'");
-        redirect($admin_file.".php?op=Surveys");
+        $titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_poll_desc WHERE pollID='$id'");
+        $titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_poll_data WHERE pollID='$id'");
+        redirect_titanium($admin_file.".php?op=Surveys");
     }
 
-    function polledit_select() 
-	{
-        global $prefix, $db, $admin_file, $multilingual;
+    function polledit_select() {
+        global $titanium_prefix, $titanium_db, $admin_file, $multilingual;
         include_once(NUKE_BASE_DIR.'header.php');
+        OpenTable();
+	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
+        echo "<br /><br />";
+	    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
+	    CloseTable();
+	    echo "<br />";
         poll_index();
+        echo "<br />";
         OpenTable();
         echo "<div style='margin: auto;'><span class=\"option\"><strong>" . _EDITPOLL . "</strong></span><br /><br />"
         ."" . _CHOOSEPOLLEDIT . "<br />"
         ."<form action=\"".$admin_file.".php\" method=\"post\">"
         ."<input type=\"hidden\" name=\"op\" value=\"PollEdit\">";
-        $result = $db->sql_query("SELECT pollID, pollTitle, timeStamp, planguage FROM ".$prefix."_poll_desc ORDER BY timeStamp");
+        $result = $titanium_db->sql_query("SELECT pollID, pollTitle, timeStamp, planguage FROM ".$titanium_prefix."_poll_desc ORDER BY timeStamp");
         if(!$result) {
             return;
         }
-        # cycle through the descriptions until everyone has been fetched 
+        /* cycle through the descriptions until everyone has been fetched */
         echo "<select name=\"pollID\">";
-        while($object = $db->sql_fetchrow($result)) {
+        while($object = $titanium_db->sql_fetchrow($result)) {
         $object['pollID'] = intval($object['pollID']);
             echo "<option value=\"".$object['pollID']."\">".$object['pollTitle'];
             if($multilingual == 1) echo " - (".$object['planguage'].")";
@@ -449,55 +473,51 @@ if(is_mod_admin($module_name))
         include_once(NUKE_BASE_DIR.'footer.php');
     }
 
-    function polledit($pollID) 
-	{
-        global $prefix, $db, $multilingual, $admin_file;
+    function polledit($pollID) {
+        global $titanium_prefix, $titanium_db, $multilingual, $admin_file;
 
         include_once(NUKE_BASE_DIR.'header.php');
+        OpenTable();
+	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
+        echo "<br /><br />";
+	    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
+	    CloseTable();
+	    echo "<br />";
         poll_index();
-		$pollID = intval($pollID);
-        $row = $db->sql_fetchrow($db->sql_query("SELECT pollTitle, planguage FROM ".$prefix."_poll_desc WHERE pollID='$pollID'"));
+        $pollID = intval($pollID);
+        $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT pollTitle, planguage FROM ".$titanium_prefix."_poll_desc WHERE pollID='$pollID'"));
         $pollTitle = $row['pollTitle'];
         $planguage = $row['planguage'];
+        echo "<br />";
         OpenTable();
-		
         echo "<center><strong>"._POLLEDIT." $pollTitle</strong></center>";
         echo "<form action=\"".$admin_file.".php\" method=\"post\">";
         echo "<table border=\"0\" align=\"center\"><tr><td align=\"right\">";
         echo "<strong>" . _TITLE . ":</strong></td><td colspan=\"2\"><input type=\"text\" name=\"pollTitle\" value=\"$pollTitle\" size=\"40\" maxlength=\"100\"></td></tr>";
-        
-		if ($multilingual == 1) 
-		{
+        if ($multilingual == 1) {
             echo "<tr><td><strong>" . _LANGUAGE . ":</strong></td><td>"
                 ."<select name=\"planguage\">";
-            $languages = lang_list();
+            $titanium_languages = lang_list();
             echo '<option value=""'.(($planguage == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-        
-		    for ($i=0, $j = count($languages); $i < $j; $i++) 
-			{
-                if ($languages[$i] != '') {
-                    echo '<option value="'.$languages[$i].'"'.(($planguage == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($languages[$i])."</option>\n";
+            for ($i=0, $j = count($titanium_languages); $i < $j; $i++) {
+                if ($titanium_languages[$i] != '') {
+                    echo '<option value="'.$titanium_languages[$i].'"'.(($planguage == $titanium_languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($titanium_languages[$i])."</option>\n";
                 }
             }
             echo '</select><br /><br />';
             echo "</td></tr>";
-        } 
-		else 
-		{
+        } else {
             echo "<input type=\"hidden\" name=\"planguage\" value=\"$planguage\"><br /><br />";
         }
-        $result2 = $db->sql_query("SELECT optionText, optionCount, voteID FROM ".$prefix."_poll_data WHERE pollID='$pollID' ORDER BY voteID");
-        
-		while ($row2 = $db->sql_fetchrow($result2)) 
-		{
+        $result2 = $titanium_db->sql_query("SELECT optionText, optionCount, voteID FROM ".$titanium_prefix."_poll_data WHERE pollID='$pollID' ORDER BY voteID");
+        while ($row2 = $titanium_db->sql_fetchrow($result2)) {
             $optionText = $row2['optionText'];
             $optionCount = intval($row2['optionCount']);
             $voteID = intval($row2['voteID']);
             echo "<tr><td align=\"right\"><strong>" . _OPTION . " $voteID:</strong></td><td><input type=\"text\" name=\"optiontext$voteID\" value=\"$optionText\" size=\"40\" maxlength=\"50\"></td><td align=\"right\">$optionCount "._VOTES."</td></tr>";
         }
-        $db->sql_freeresult($result2);
-        
-		echo "</table><center><input type=\"hidden\" name=\"pollID\" value=\"$pollID\"><input type=\"hidden\" name=\"op\" value=\"SavePoll\">"
+        $titanium_db->sql_freeresult($result2);
+        echo "</table><center><input type=\"hidden\" name=\"pollID\" value=\"$pollID\"><input type=\"hidden\" name=\"op\" value=\"SavePoll\">"
         ."<strong>" . _CLEARVOTES . "</strong>&nbsp;<input type='radio' name='ClearVotes' value='1' />" . _YES . " &nbsp;"
         ."<input type='radio' name='ClearVotes' value='0' checked=\"checked\" />" . _NO . "<br />"
         ."<br /><input type=\"submit\" value=\"" . _SAVECHANGES . "\"><br /><br />" . _GOBACK . "</center><br /><br /></form>";
@@ -505,31 +525,31 @@ if(is_mod_admin($module_name))
         include_once(NUKE_BASE_DIR.'footer.php');
     }
 
-    function savepoll($pollID, $pollTitle, $planguage, $optiontext1, $optiontext2, $optiontext3, $optiontext4, $optiontext5, $optiontext6, $optiontext7, $optiontext8, $optiontext9, $optiontext10, $optiontext11, $optiontext12, $ClearVotes) 
-	{
-        global $prefix, $db, $admin_file;
+    function savepoll($pollID, $pollTitle, $planguage, $optiontext1, $optiontext2, $optiontext3, $optiontext4, $optiontext5, $optiontext6, $optiontext7, $optiontext8, $optiontext9, $optiontext10, $optiontext11, $optiontext12, $ClearVotes) {
+        global $titanium_prefix, $titanium_db, $admin_file;
         $ClearVotes = intval($ClearVotes);
         $pollID = intval($pollID);
-        $db->sql_query("UPDATE ".$prefix."_poll_desc SET pollTitle='$pollTitle', planguage='$planguage' WHERE pollID='$pollID'");
-    
-	    for($i=1;$i<13;$i++) 
-		{
+        $titanium_db->sql_query("UPDATE ".$titanium_prefix."_poll_desc SET pollTitle='$pollTitle', planguage='$planguage' WHERE pollID='$pollID'");
+        for($i=1;$i<13;$i++) {
             $var = "optiontext$i";
-            $db->sql_query("UPDATE ".$prefix."_poll_data SET optionText='".$$var."' WHERE voteID='$i' AND pollID='$pollID'");
-        
-		    if($ClearVotes) 
-			{
-                $db->sql_query("UPDATE ".$prefix."_poll_data SET optionCount='0' WHERE voteID='$i' AND pollID='$pollID'");
+            $titanium_db->sql_query("UPDATE ".$titanium_prefix."_poll_data SET optionText='".$$var."' WHERE voteID='$i' AND pollID='$pollID'");
+            if($ClearVotes) {
+                $titanium_db->sql_query("UPDATE ".$titanium_prefix."_poll_data SET optionCount='0' WHERE voteID='$i' AND pollID='$pollID'");
             }
         }
-        
-		redirect($admin_file.".php?op=Surveys");
+        redirect_titanium($admin_file.".php?op=Surveys");
     }
 
     switch($op) {
 
         case "Surveys";
             include_once(NUKE_BASE_DIR.'header.php');
+            OpenTable();
+	        echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Surveys\">" . _POLL_ADMIN_HEADER . "</a></div>\n";
+            echo "<br /><br />";
+	        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _POLL_RETURNMAIN . "</a> ]</div>\n";
+	        CloseTable();
+	        echo "<br />";
             poll_index();
             poll_options();
             include_once(NUKE_BASE_DIR.'footer.php');
@@ -550,44 +570,51 @@ if(is_mod_admin($module_name))
  [ Mod:    Display Writes                      v1.0.0 ]
  ******************************************************/
         break;
+
         case "ChangePoll":
             ChangePoll($pollID, $pollTitle, $optionText, $voteID);
         break;
+
         case "DeletePoll":
             poll_removePoll();
         break;
+
         case "RemovePosted":
             poll_removePosted();
         break;
+
         case "PollEdit":
             polledit($pollID);
         break;
+
         case "SavePoll":
             savepoll($pollID, $pollTitle, $planguage, $optiontext1, $optiontext2, $optiontext3, $optiontext4, $optiontext5, $optiontext6, $optiontext7, $optiontext8, $optiontext9, $optiontext10, $optiontext11, $optiontext12, $ClearVotes);
         break;
+
         case "EditPoll":
             polledit_select();
         break;
+
         case "PollOptionsSave":
             $xmake_random = intval($xmake_random);
             $xnumber_of_days = intval($xnumber_of_days);
-            $db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$xmake_random."' WHERE evo_field='poll_random'");
-            $db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$xnumber_of_days."' WHERE evo_field='poll_days'");
+            $titanium_db->sql_query("UPDATE ".$titanium_prefix."_evolution SET evo_value='".$xmake_random."' WHERE evo_field='poll_random'");
+            $titanium_db->sql_query("UPDATE ".$titanium_prefix."_evolution SET evo_value='".$xnumber_of_days."' WHERE evo_field='poll_days'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
             global $cache;
-            $cache->delete('evoconfig');
+            $cache->delete('titanium_config');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-            redirect($admin_file.".php?op=Surveys");
+            redirect_titanium($admin_file.".php?op=Surveys");
         break;
+
     }
 
-} 
-else 
-{
-    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"");
+} else {
+    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$titanium_module_name\"");
 }
+
 ?>

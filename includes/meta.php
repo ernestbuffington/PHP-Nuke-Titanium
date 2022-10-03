@@ -1,6 +1,6 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -20,36 +20,39 @@
       Nuke Patched                             v3.1.0       06/26/2005
       Caching System                           v1.0.0       11/19/2005
  ************************************************************************/
+if (!defined('NUKE_EVO')) 
+die("You can't access this file directly...");
 
-if (!defined('NUKE_EVO')) {
-    die("You can't access this file directly...");
-}
-
-global $db, $prefix, $cache;
+global $titanium_db, $titanium_prefix, $cache;
 
 ##################################################
 # Load dynamic meta tags from database           #
 ##################################################
 
-/*****[BEGIN]******************************************
- [ Base:    Caching System                     v3.0.0 ]
- ******************************************************/
-if(($metatags = $cache->load('metatags', 'config')) === false) {
-/*****[END]********************************************
- [ Base:    Caching System                     v3.0.0 ]
- ******************************************************/
+  /*****[BEGIN]******************************************
+   [ Base:    Caching System                     v3.0.0 ]
+   ******************************************************/
+if(($metatags = $cache->load('metatags', 'config')) === false) 
+{
+  /*****[END]********************************************
+   [ Base:    Caching System                     v3.0.0 ]
+   ******************************************************/
   $metatags = array();
-  $sql = 'SELECT meta_name, meta_content FROM '.$prefix.'_meta';
-  $result = $db->sql_query($sql, true);
+  $sql = 'SELECT meta_name, meta_content FROM '.$titanium_prefix.'_meta';
+  $result = $titanium_db->sql_query($sql, true);
   $i=0;
-  while(list($meta_name, $meta_content) = $db->sql_fetchrow($result, SQL_NUM)) {
+
+  while(list($meta_name, $meta_content) = $titanium_db->sql_fetchrow($result, SQL_NUM)) 
+  {
       $metatags[$i] = array();
       $metatags[$i]['meta_name'] = $meta_name;
       $metatags[$i]['meta_content'] = $meta_content;
       $i++;
   }
+  
   unset($i);
-  $db->sql_freeresult($result);
+  
+  $titanium_db->sql_freeresult($result);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -58,21 +61,21 @@ if(($metatags = $cache->load('metatags', 'config')) === false) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
+$metastring .= '<meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests" />'."\n";
 
-##################################################
-# Finally output the meta tags                   #
-##################################################
-
-$metastring  = '<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">';
-$metastring .= '<meta http-equiv="Content-Language" content="'._LANGCODE.'">';
-$metastring .= '<!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"><![endif]-->';
-// $metastring .= '<meta name="viewport" content="width=device-width, initial-scale=1.0">';
-$metastring .= '<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">';
+/**
+ * Only add the meta tag below if the theme is bootstrap made.
+ */
+if(defined('BOOTSTRAP'))
+$metastring .= '<meta name="viewport" content="width=device-width, maximum-scale=1.0; user-scalable=no" />'."\n";
+else
+$metastring .= '<meta name="viewport" content="width=device-width, initial-scale=1.0" />'."\n";
 
 
-for($i=0,$j=count($metatags);$i<$j;$i++) {
+for($i=0,$j=count($metatags);$i<$j;$i++) 
+{
 	$metatag = $metatags[$i];
-    $metastring .= "<meta name=\"".$metatag['meta_name']."\" content=\"".$metatag['meta_content']."\">\n";
+    $metastring .= '<meta name="'.$metatag['meta_name'].'" content="'.$metatag['meta_content'].'" />'."\n";
 }
 
 ###############################################
@@ -82,8 +85,6 @@ for($i=0,$j=count($metatags);$i<$j;$i++) {
 
 // IF YOU REALLY NEED TO REMOVE IT AND HAVE MY WRITTEN AUTHORIZATION CHECK: http://phpnuke.org/modules.php?name=Commercial_License
 // PLAY FAIR AND SUPPORT THE DEVELOPMENT, PLEASE!
-$metastring .= '<meta name="generator" content="PHP-Nuke Copyright (c) 2006 by Francisco Burzi. This is free software, and you may redistribute it under the GPL (http://phpnuke.org/files/gpl.txt). PHP-Nuke comes with absolutely no warranty, for details, see the license (http://phpnuke.org/files/gpl.txt). Powered by Nuke-Evolution (http://www.nuke-evolution.com).">';
+$metastring .= '<meta name="generator" content="The US Version of PHP-Nuke Titanium Copyright (c) 2021 by Brandon Maintenance Management, LLC" />'."\n";
 
 echo $metastring;
-
-?>

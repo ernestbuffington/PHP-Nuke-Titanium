@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /**************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                           */
@@ -112,7 +113,7 @@ define("_LAST","Last");
 define("_GO","Go!");
 define("_CURRENTPOLL","Current Poll");
 define("_STORYID","Story ID");
-define("_BANNERS_ADMIN_HEADER", "Nuke-Evolution Banners :: Modules Admin Panel");
+define("_BANNERS_ADMIN_HEADER", "PHP-Nuke Evolution Xtreme Banners :: Modules Admin Panel");
 define("_BANNERS_RETURNMAIN", "Return to Main Administration");
 define("_ACTIVEBANNERS","Current Active Banners");
 define("_ACTIVEBANNERS2","Active Banners");
@@ -197,7 +198,7 @@ define("_EDITHEADLINE","Edit Headlines");
 define("_SURE2DELHEADLINE","WARNING: Are you sure you want to delete this Headline?");
 define("_CUSTOM","Custom");
 //define("_AUTHORSADMIN","Author's Administration");
-define("_AUTHORS_ADMIN_HEADER", "Nuke-Evolution Edit Admins :: Admin Panel");
+define("_AUTHORS_ADMIN_HEADER", "PHP-Nuke Titanium Edit Admins :: Admin Panel");
 define("_AUTHORS_RETURNMAIN", "Return to Main Administration");
 define("_FAQADMIN","FAQ Administration");
 define("_ACTIVEFAQS","Active FAQs");
@@ -287,7 +288,7 @@ define("_EDITARTICLE","Edit Article");
 define("_NOSUBMISSIONS","No New Submissions");
 define("_NEWSUBMISSIONS","New Stories Submissions");
 define("_NOFUNCTIONS","---------");
-define("_REFERER_ADMIN_HEADER", "Nuke-Evolution HTTP Referers :: Admin Panel");
+define("_REFERER_ADMIN_HEADER", "PHP-Nuke Titanium HTTP Referers :: Admin Panel");
 define("_REFERER_RETURNMAIN", "Return to Main Administration");
 define("_NOTAUTHORIZED1","You aren't authorized to touch this Article!");
 define("_NOTAUTHORIZED2","You can't edit and/or delete articles that you don't published");
@@ -334,7 +335,7 @@ define("_USERUPDATE","Update User");
 define("_USERID","User ID");
 define("_USERNOEXIST","User Doesn't Exist!");
 define("_PASSWDNOMATCH","Sorry, the new passwords doesn't match. Go Back and Try Again");
-define("_SETTINGS_ADMIN_HEADER", "Nuke-Evolution Preferences :: Admin Panel");
+define("_SETTINGS_ADMIN_HEADER", "PHP-Nuke Titanium Preferences :: Admin Panel");
 define("_SETTINGS_RETURNMAIN", "Return to Main Administration");
 define("_DELETEUSER","Delete User");
 define("_SURE2DELETE","Are you sure you want to delete user");
@@ -501,7 +502,7 @@ define("_THANKS4YOURSUBMISSION","Thanks for your submission!");
 define("_TEAM","Team.");
 define("_MESSAGES","Messages");
 define("_MESSAGESADMIN","Messages Administration");
-define("_MESSAGES_ADMIN_HEADER", "Nuke-Evolution Messages :: Admin Panel");
+define("_MESSAGES_ADMIN_HEADER", "PHP-Nuke Titanium Messages :: Admin Panel");
 define("_MESSAGES_RETURNMAIN", "Return to Main Administration");
 define("_MESSAGETITLE","Title");
 define("_MESSAGECONTENT","Content");
@@ -529,7 +530,7 @@ define("_ADDMSG","Add message");
 define("_ALLMESSAGES","Overview messages");
 define("_VIEW","Visible to");
 define("_REMOVEMSG","Are you sure you want to remove this message ? ");
-define("_MODULES_ADMIN_HEADER", "Nuke-Evolution Modules :: Admin Panel");
+define("_MODULES_ADMIN_HEADER", "PHP-Nuke Titanium Modules :: Admin Panel");
 define("_MODULES_BLOCK", "Modules Block EDIT");
 define("_MODULES_RETURNMAIN", "Return to Main Administration");
 define("_ANNOUNCEPOLL","Announce this new Survey in your site");
@@ -541,7 +542,7 @@ define("_MODULES","Modules");
 define("_MODULESADMIN","Modules Administration");
 define("_MODULESADDONS","Modules and Addons");
 define("_MODULESACTIVATION","See your Modules/Addons current status and change it by Activating or Deactivating them.<br />New Modules copied on the <i>/modules/</i> directory will be automaticaly added with <i>Inactive</i> status to the database when you reload this page.<br />If you want to remove a module just delete it from the <i>/modules/</i> directory, the system will automaticaly update your database to show the changes.");
-define("_NEWSLETTER_ADMIN_HEADER", "Nuke-Evolution Newsletter :: Admin Panel");
+define("_NEWSLETTER_ADMIN_HEADER", "Newsletter :: Admin Panel");
 define("_NEWSLETTER_RETURNMAIN", "Return to Main Administration");
 define("_NEWSLETTER","Newsletter");
 define("_MASSMAIL","A Massive e-mail to ALL users");
@@ -736,7 +737,7 @@ define("_MUSTBEINIMG","must be in /images/ directory. Valid only for AvantGo mod
 define("_USERSOPTIONS","Users Options");
 define("_BROADCASTMSG","Activate Broadcast Messages?");
 define("_MYHEADLINES","Activate Headlines Reader?");
-define("_USERSHOMENUM","Let users change News number in Home?");
+define("_USERSHOMENUM","Let users change Blog Posts number in Home?");
 define("_CENSOROPTIONS","Censure Options");
 define("_CENSORMODE","Censor Mode");
 define("_NOFILTERING","No filtering");

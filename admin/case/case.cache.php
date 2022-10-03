@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************
    Nuke-Evolution: Cache Admin Panel
@@ -27,7 +28,7 @@ if (!defined('ADMIN_FILE')) {
 
 switch($op) {
 
-    case "cache_delete":
+    case "titanium_cache_delete":
     case "cache_view":
     case "cache_clear":
     case "usrclearcache":

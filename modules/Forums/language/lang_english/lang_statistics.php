@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /***************************************************************************
  *                            lang_statistics.php [English]
@@ -24,17 +25,17 @@
  ***************************************************************************/
 
 // Statistics Informations
-$lang['Version_info'] = 'Statistics Mod Version %s'; //%s = Version Number (string)
-$lang['Install_info'] = 'Installed on %s'; //%s = date
-$lang['Viewed_info'] = 'Statistics Page Loaded %d Times'; //%d = count
+$titanium_lang['Version_info'] = 'Statistics Mod Version %s'; //%s = Version Number (string)
+$titanium_lang['Install_info'] = 'Installed on %s'; //%s = date
+$titanium_lang['Viewed_info'] = 'Statistics Page Loaded %d Times'; //%d = count
 
 // Statistics Mod Language File
-$lang['Board_statistics'] = 'Board Statistics'; // Page Title
+$titanium_lang['Board_statistics'] = 'Board Statistics'; // Page Title
 
 // Module specific Language Variables
-$lang['Uses'] = 'Uses';
-$lang['Rank'] = 'Rank';
-$lang['Percent'] = 'Percent';
-$lang['Graph'] = 'Graph';
+$titanium_lang['Uses'] = 'Uses';
+$titanium_lang['Rank'] = 'Rank';
+$titanium_lang['Percent'] = 'Percent';
+$titanium_lang['Graph'] = 'Graph';
 
 ?>

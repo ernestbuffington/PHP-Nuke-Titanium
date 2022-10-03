@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+ Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /***************************************************************************
@@ -14,11 +14,11 @@
 
 define('IN_PHPBB', true);
 include(dirname(__FILE__).'/mainfile.php');
-$phpbb_root_path = NUKE_FORUMS_DIR;
-include($phpbb_root_path . 'extension.inc');
-include($phpbb_root_path . 'common.'.$phpEx);
+$phpbb2_root_path = NUKE_FORUMS_DIR;
+include($phpbb2_root_path . 'extension.inc');
+include($phpbb2_root_path . 'common.'.$phpEx);
 include('includes/functions_arcade.' . $phpEx);
-require( $phpbb_root_path . 'gf_funcs/gen_funcs.' . $phpEx );
+require( $phpbb2_root_path . 'gf_funcs/gen_funcs.' . $phpEx );
 include('includes/constants.php');
 
 $userdata = session_pagestart($user_ip, PAGE_GAME, $nukeuser);
@@ -90,5 +90,4 @@ if (!empty($sessdo))
         exit;
     }
 }
-
 ?>

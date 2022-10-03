@@ -1,113 +1,252 @@
 <?php
+/**
+ * Floating Administration Menu
+ *
+ * A floating menu designed for Administration quick links.
+ *
+ * @since 2.0.9e 
+ *
+ * @author Lonestar <https://lonestar-modules.com>
+ * @version 2.0
+ * @license GPL-3.0
+ */
 
-/*
-|-----------------------------------------------------------------------
-|	COPYRIGHT (c) 2016 - 2018 by lonestar-modules.com
-|	AUTHOR 				:	Lonestar	
-|	COPYRIGHTS 			:	lonestar-modules.com
-|	PROJECT 			:	jQuery Floating Administration Menu
-|	VERSION 			:	2.0
-|----------------------------------------------------------------------
-*/
+defined('NUKE_BASE_DIR') or die('Stop, What do you think you are doing!?!');
 
-if(!defined('NUKE_FILE')) 
-    die('Access forbbiden');
-
-# JQUERY FLOATING ADMIN MENU
-if(is_admin())
+if ( is_admin() && !defined('_disable_floating_admin') )
 {
 	global $customlang;
+
+	define('FLOATING_ADMIN_CSS', NUKE_CSS_DIR.'jquery.floating.admin.css');
+	define('FLOATING_ADMIN_JS', NUKE_JQUERY_SCRIPTS_DIR.'jquery.floating.admin.js');
 
 	$admin_log = log_size('admin');
 	$error_log = log_size('error');
 
-	$admin_color = $admin_name = $error_color = $error_name = "";
-
-	if($admin_log == -1 || $admin_log == -2 || $admin_log):
-        $admin_color = " style=\'color: red; !important\'";
-        $admin_name  = " ".$customlang['floating_admin']['has_changed'];     
+	/**
+	 * Check to see there has been any attempted admin logins that have failed.
+	 */
+    if($admin_log == -1 || $admin_log == -2 || $admin_log):  
+    	$customlang['floating_admin']['log_admin'] = '<span style="color: red; !important">'.$customlang['floating_admin']['log_admin'].' '.$customlang['floating_admin']['has_changed'].'</span>'; 
     endif;
 
+    /**
+	 * Check to see there are any SQL errors anywhere on the site.
+	 */
     if($error_log == -1 || $error_log == -2 || $error_log):
-        $error_color .= " style=\'color: red; !important\'";
-        $error_name  .= " ".$customlang['floating_admin']['has_changed'];    
+    	$customlang['floating_admin']['log_error'] = '<span style="color: red; !important">'.$customlang['floating_admin']['log_error'].' '.$customlang['floating_admin']['has_changed'].'</span>'; 
     endif;
 
-    # administration links, this will be getting moved into a json file in the future, so the link scan be updated via the administration panel.
-	$floating_administration  = "<i class=\'fa fa-times fa-times-extend\'></i>";
-	$floating_administration .= "<div class=\'boxed_item_center\'>";
-	$floating_administration .= "  <h1 class=\'boxed_item\'>".$customlang['floating_admin']['admin']."</h1>";
-	$floating_administration .= "</div>";
-	$floating_administration .= "<ul class=\'navigation_section\' style=\'padding: 0;\'>";
-	$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php\'>".$customlang['floating_admin']['main_admin']."</a></li>";
-	if ( is_mod_admin('Forums') )
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=forums\'>".$customlang['floating_admin']['forum_admin']."</a></li>";
+    /**
+	 * Here we have the array with all the most commonly used administration areas.
+	 */
+    $administration_links = array(
+		array(
+			'title' 		=> $customlang['floating_admin']['main_admin'],
+			'url' 			=> $admin_file.'.php',
+			'fa_icon' 		=> 'fa-home',
+			'access_level' 	=> true,
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['forum_admin'],
+			'url' 			=> $admin_file.'.php?op=forums',
+			'fa_icon' 		=> 'fa-comments',
+			'access_level' 	=> is_mod_admin('Forums'),
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> '',
+			'url' 			=> '',
+			'fa_icon' 		=> '',
+			'access_level' 	=> is_mod_admin('super'),
+			'file_exists' 	=> true,
+			'divider'		=> true
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['log_admin'],
+			'url' 			=> $admin_file.'.php?op=viewadminlog&amp;log=admin',
+			'fa_icon' 		=> 'fa-user-shield',
+			'access_level' 	=> is_mod_admin('super'),
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['log_error'],
+			'url' 			=> $admin_file.'.php?op=viewadminlog&amp;log=error',
+			'fa_icon' 		=> 'fa-user-shield',
+			'access_level' 	=> is_mod_admin('super'),
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> '',
+			'url' 			=> '',
+			'fa_icon' 		=> '',
+			'access_level' 	=> true,
+			'file_exists' 	=> true,
+			'divider'		=> true
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['blocks'],
+			'url' 			=> $admin_file.'.php?op=blocks',
+			'fa_icon' 		=> 'fa-cubes',
+			'access_level' 	=> true,
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['modules'],
+			'url' 			=> $admin_file.'.php?op=modules',
+			'fa_icon' 		=> 'fa-boxes',
+			'access_level' 	=> is_mod_admin('super'),
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['modblock'],
+			'url' 			=> $admin_file.'.php?op=modules&area=block',
+			'fa_icon' 		=> 'fa-stream',
+			'access_level' 	=> is_mod_admin('super'),
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['preferences'],
+			'url' 			=> $admin_file.'.php?op=Configure',
+			'fa_icon' 		=> 'fa-cogs',
+			'access_level' 	=> is_mod_admin('super'),
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['themes'],
+			'url' 			=> $admin_file.'.php?op=themes',
+			'fa_icon' 		=> 'fa-object-group',
+			'access_level' 	=> true,
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['blog'],
+			'url' 			=> $admin_file.'.php?op=adminStory',
+			'fa_icon' 		=> 'fa-rss',
+			'access_level' 	=> is_mod_admin('Blog'),
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['users'],
+			'url' 			=> 'modules.php?name=Your_Account&file=admin',
+			'fa_icon' 		=> 'fa-users-cog',
+			'access_level' 	=> is_mod_admin('Your_Account'),
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['whois'],
+			'url' 			=> $admin_file.'.php?op=who',
+			'fa_icon' 		=> 'fa-globe',
+			'access_level' 	=> is_mod_admin('super'),
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['weblinks'],
+			'url' 			=> $admin_file.'.php?op=Links',
+			'fa_icon' 		=> 'fa-link',
+			'access_level' 	=> is_mod_admin('Web_Links'),
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['honeypot'],
+			'url' 			=> $admin_file.'.php?op=honeypot',
+			'fa_icon' 		=> 'fa-stop',
+			'access_level' 	=> is_mod_admin('super'),
+			'file_exists' 	=> file_exists('admin/modules/honeypot.php'),
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['roster'],
+			'url' 			=> $admin_file.'.php?op=clanmanager',
+			'fa_icon' 		=> 'fa-users',
+			'access_level' 	=> is_mod_admin('Clan_Manager'),
+			'file_exists' 	=> file_exists('modules/Clan_Manager/admin/index.php'),
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['downloads'],
+			'url' 			=> $admin_file.'.php?op=file_repository',
+			'fa_icon' 		=> 'fa-download',
+			'access_level' 	=> is_mod_admin('File_Repository'),
+			'file_exists' 	=> file_exists('modules/File_Repository/admin/index.php'),
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['digital_shop'],
+			'url' 			=> $admin_file.'.php?op=digital-shop',
+			'fa_icon' 		=> 'fa-shopping-cart',
+			'access_level' 	=> is_mod_admin('Digital_Shop'),
+			'file_exists' 	=> file_exists('modules/Digital_Shop/admin/index.php'),
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['cache'],
+			'url' 			=> $admin_file.'.php?op=cache_clear',
+			'fa_icon' 		=> 'fa-archive',
+			'access_level' 	=> true,
+			'file_exists' 	=> true,
+			'divider'		=> false
+		),
+		array(
+			'title' 		=> $customlang['floating_admin']['logout'],
+			'url' 			=> $admin_file.'.php?op=logout',
+			'fa_icon' 		=> 'fa-sign-out-alt',
+			'access_level' 	=> true,
+			'file_exists' 	=> true,
+			'divider'		=> false
+		)
+    );
 
-	if ( is_mod_admin('super') ):
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=viewadminlog&amp;log=admin\'".$admin_color.">".$customlang['floating_admin']['log_admin'].$admin_name."</a></li>";
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=viewadminlog&amp;log=error\'".$error_color.">".$customlang['floating_admin']['log_error'].$error_name."</a></li>";
-	endif;
+	/**
+	 * OK, Let's add some inline CSS for the admin menu button.
+	 */
+	$fa_inline__css  = '<!-- Inline CSS for scroll to top v1.0 -->'.PHP_EOL;
+	$fa_inline__css .= '<style type="text/css">'.PHP_EOL;
+	$fa_inline__css .= '.toggle-menu{-webkit-box-shadow: 0px 0px 3px 2px '.$ThemeInfo['uitotophover'].';-moz-box-shadow: 0px 0px 3px 2px '.$ThemeInfo['uitotophover'].';box-shadow: 0px 0px 3px 2px '.$ThemeInfo['uitotophover'].';}';
+	$fa_inline__css .= '.navigation-item a:before {background-color: '.$ThemeInfo['uitotophover'].'}';
+	$fa_inline__css .= '</style>'.PHP_EOL;
+	addCSSToHead($fa_inline__css,'inline');
 
-	$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=blocks\'>".$customlang['floating_admin']['blocks']."</a></li>";
-	if ( is_mod_admin('super') ):
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=modules\'>".$customlang['floating_admin']['modules']."</a></li>";
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=modules&area=block\'>".$customlang['floating_admin']['modblock']."</a></li>";
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=Configure\'>".$customlang['floating_admin']['preferences']."</a></li>";
-	endif;
+	/**
+	 * Add the CSS for the popout admin menu into the header.
+	 *
+	 * The function "filemtime()" merely gets the file modification time,
+	 * So if the author makes changes, the user does not have to clear browser cache in order for new changes to take effect.
+	 *
+	 * @link http://php.net/manual/en/function.filemtime.php
+	 */
+	addCSSToHead(FLOATING_ADMIN_CSS.'?v='.filemtime(FLOATING_ADMIN_CSS),'file');
 
-	$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=themes\'>".$customlang['floating_admin']['themes']."</a></li>";
+	/**
+	 * Add the jQuery for the popout admin menu into the footer.
+	 *
+	 * @see above for function "filemtime()".
+	 */
+    addJSToBody(FLOATING_ADMIN_JS.'?v='.filemtime(FLOATING_ADMIN_JS),'file');  
 
-	if ( is_mod_admin('News') )
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=adminStory\'>".$customlang['floating_admin']['news']."</a></li>";
-
-	if ( is_mod_admin('Your_Account') )
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'modules.php?name=Your_Account&file=admin\'>".$customlang['floating_admin']['users']."</a></li>";
-
-	if ( is_mod_admin('super') )
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=who\'>".$customlang['floating_admin']['whois']."</a></li>";
-
-	if ( is_mod_admin('News') )
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=Links\'>".$customlang['floating_admin']['weblinks']."</a></li>";
-	
-	if ( file_exists('admin/modules/honeypot.php') && is_mod_admin('super') )
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=honeypot\'>".$customlang['floating_admin']['honeypot']."</a></li>";
-
-	if ( file_exists('modules/Clan_Manager/admin/index.php') && is_mod_admin('Clan_Manager') )
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=clanmanager\'>".$customlang['floating_admin']['roster']."</a></li>";
-
-	if ( file_exists('modules/File_Repository/admin/index.php') && is_mod_admin('File_Repository') )
-		$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=file_repository\'>".$customlang['floating_admin']['downloads']."</a></li>";
-
-	$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=cache_clear\'>".$customlang['floating_admin']['cache']."</a></li>";
-	$floating_administration .= "  <li class=\'navigation_item\'><a href=\'".$admin_file.".php?op=logout\'>".$customlang['floating_admin']['logout']."</a></li>";	
-	$floating_administration .= "</ul>";
-
-	$floating_admin_inline_css  = '<!-- Inline CSS for scroll to top v1.0 -->'.PHP_EOL;
-	$floating_admin_inline_css .= '<style type="text/css">'.PHP_EOL;
-	$floating_admin_inline_css .= '.toggle_menu{-webkit-box-shadow: 0px 0px 3px 2px '.$ThemeInfo['uitotophover'].';-moz-box-shadow: 0px 0px 3px 2px '.$ThemeInfo['uitotophover'].';box-shadow: 0px 0px 3px 2px '.$ThemeInfo['uitotophover'].';}';
-	$floating_admin_inline_css .= '</style>'.PHP_EOL;
-	addCSSToHead($floating_admin_inline_css,'inline');
-	addCSSToHead(NUKE_CSS_DIR.'jquery.floating.admin.css','file');
-	$floating_admin_inline_js  = '<!-- Inline CSS for scroll to top v1.0 -->'.PHP_EOL;
-	$floating_admin_inline_js .= '<script type="text/javascript">'.PHP_EOL;
-	$floating_admin_inline_js .= 'nuke_jq(function($)'.PHP_EOL;
-	$floating_admin_inline_js .= '{'.PHP_EOL;
-	$floating_admin_inline_js .= '  $("<i class=\'fa fa-bars toggle_menu opacity_one\'></i><div class=\'sidebar_menu hide_menu\'></div>").prependTo("body");'.PHP_EOL;
-	$floating_admin_inline_js .= '  $(".sidebar_menu").prepend("'.$floating_administration.'")'.PHP_EOL;
-	$floating_admin_inline_js .= '  $(".fa-times").click(function()'.PHP_EOL;
-	$floating_admin_inline_js .= '  {'.PHP_EOL;
-	$floating_admin_inline_js .= '      $(".sidebar_menu").addClass("hide_menu").css({"transition": "margin-left 0.2s", "border-right": ""});'.PHP_EOL;
-	$floating_admin_inline_js .= '      $(".toggle_menu").css("opacity", 0.9);'.PHP_EOL;
-	$floating_admin_inline_js .= '  });'.PHP_EOL;
-	$floating_admin_inline_js .= '  $(".toggle_menu").click(function()'.PHP_EOL;
-	$floating_admin_inline_js .= '  {'.PHP_EOL;
-	$floating_admin_inline_js .= '      $(".sidebar_menu").removeClass("hide_menu").css({"transition": "margin-left 0.3s", "border-right": "2px solid '.$ThemeInfo['uitotophover'].'"});'.PHP_EOL;
-	$floating_admin_inline_js .= '      $(".toggle_menu").css("opacity", 0);'.PHP_EOL;
-	$floating_admin_inline_js .= '  });'.PHP_EOL;
-	$floating_admin_inline_js .= '});'.PHP_EOL;
-    $floating_admin_inline_js .= '</script>'.PHP_EOL;
-    addJSToBody($floating_admin_inline_js,'inline');
-    
+    /**
+	 * Add some inline jQuery variables for getting text hover color and links.
+	 */
+	$fa_inline__js  = "<!-- Inline jQuery for floating admin menu v2.0 -->".PHP_EOL;
+	$fa_inline__js .= "<script type=\"text/javascript\">".PHP_EOL;
+	$fa_inline__js .= '	var uitotophover = "'.$ThemeInfo['uitotophover'].'";'.PHP_EOL;
+	$fa_inline__js .= ' var links_json = "'.addslashes(json_encode($administration_links)).'";';
+    $fa_inline__js .= "</script>".PHP_EOL;
+    addJSToBody($fa_inline__js,'inline');  
 }
 
 ?>

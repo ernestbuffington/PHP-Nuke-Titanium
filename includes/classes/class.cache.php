@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************
    Nuke-Evolution: Caching System
@@ -70,8 +71,8 @@ class cache
 			$this->zend = Zend_Cache::factory('Core', 'Memcached', $frontendOptions);
 			$this->checkPrefix();
         } elseif($this->type == SQL_CACHE) {
-            global $db, $prefix;
-            /*list($saved_cache) = $db->sql_ufetchrow("SELECT cache_data FROM " . $prefix . "_config");
+            global $titanium_db, $titanium_prefix;
+            /*list($saved_cache) = $titanium_db->sql_ufetchrow("SELECT cache_data FROM " . $titanium_prefix . "_config");
             @eval($saved_cache);
             $this->saved = $saved_cache;*/
         }

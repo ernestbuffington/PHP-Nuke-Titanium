@@ -1,11 +1,12 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /********************************************************/
 /* NukeSentinel(tm)                                     */
-/* By: NukeScripts(tm) (http://www.nukescripts.net)     */
+/* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
 /* See CREDITS.txt for ALL contributors                 */
 /********************************************************/
@@ -37,7 +38,7 @@ if(!isset($selcolumn4)) $selcolumn4 = '';
 if(!isset($selcolumn5)) $selcolumn5 = '';
 if(!isset($seldirection1)) $seldirection1 = '';
 if(!isset($seldirection2)) $seldirection2 = '';
-$totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ips`"));
+$totalselected = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_blocked_ips`"));
 if($totalselected > 0) {
   $selcolumn1 = $selcolumn2 = $selcolumn3 = $selcolumn4 = $selcolumn5 = $seldirection1 = $seldirection2 = '';
   if($column == "c2c") { $selcolumn2 = ' selected="selected"'; }
@@ -51,7 +52,7 @@ if($totalselected > 0) {
   echo '<table summary="" align="center" border="0" cellpadding="2" cellspacing="2" width="100%">'."\n";
   echo '<tr>'."\n";
   echo '<td align="right" nowrap="nowrap">'."\n";
-  echo '<form action="'.$admin_file.'.php?op=ABBlockedIPList" method="post" style="padding: 0px; margin: 0px;">'."\n";
+  echo '<form class="nuke-sentinel-blocked-ip-list" action="'.$admin_file.'.php?op=ABBlockedIPList" method="post" style="padding: 0px; margin: 0px;">'."\n";
   echo '<strong>'._AB_SORT.':</strong> <select name="column">'."\n";
   echo '<option value="ip_long"'.$selcolumn1.'>'._AB_IPBLOCKED.'</option>'."\n";
   echo '<option value="expires"'.$selcolumn2.'>'._AB_EXPIRES.'</option>'."\n";
@@ -76,14 +77,14 @@ if($totalselected > 0) {
   echo '<td align="center" width="20%"><strong>'._AB_REASON.'</strong></td>'."\n";
   echo '<td align="center" width="10%"><strong>'._AB_FUNCTIONS.'</strong></td>'."\n";
   echo '</tr>'."\n";
-  $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ips` ORDER BY `$column` $direction LIMIT $min,$perpage");
-  while($getIPs = $db->sql_fetchrow($result)) {
-    list($getIPs['reason']) = $db->sql_fetchrow($db->sql_query("SELECT `reason` FROM `".$prefix."_nsnst_blockers` WHERE `blocker`='".$getIPs['reason']."' LIMIT 0,1"));
+  $result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_blocked_ips` ORDER BY `$column` $direction LIMIT $min,$perpage");
+  while($getIPs = $titanium_db->sql_fetchrow($result)) {
+    list($getIPs['reason']) = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `reason` FROM `".$titanium_prefix."_nsnst_blockers` WHERE `blocker`='".$getIPs['reason']."' LIMIT 0,1"));
     $getIPs['reason'] = str_replace("Abuse-", "", $getIPs['reason']);
     $bdate = date("Y-m-d @ H:i:s", $getIPs['date']);
     $lookupip = str_replace("*", "0", $getIPs['ip_addr']);
     if($getIPs['expires']==0) { $bexpire = _AB_PERMENANT; } else { $bexpire = date("Y-m-d @ H:i:s", $getIPs['expires']); }
-    list($bname) = $db->sql_fetchrow($db->sql_query("SELECT `username` FROM `".$user_prefix."_users` WHERE `user_id`='".$getIPs['user_id']."' LIMIT 0,1"));
+    list($bname) = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `username` FROM `".$titanium_user_prefix."_users` WHERE `user_id`='".$getIPs['user_id']."' LIMIT 0,1"));
     echo '<tr onmouseover="this.style.backgroundColor=\''.$bgcolor2.'\'" onmouseout="this.style.backgroundColor=\''.$bgcolor1.'\'" bgcolor="'.$bgcolor1.'">'."\n";
     $qs = htmlentities(base64_decode($getIPs['query_string']));
     $qs = str_replace("%20", " ", $qs);
@@ -105,10 +106,10 @@ if($totalselected > 0) {
     echo '<td align="center">'.$bdate.'</td>'."\n";
     echo '<td align="center">'.$bexpire.'</td>'."\n";
     echo '<td align="center">'.$getIPs['reason'].'</td>'."\n";
-    echo '<td align="center" nowrap="nowrap"><a href="'.$admin_file.'.php?op=ABBlockedIPViewPrint&amp;xIPs='.$getIPs['ip_addr'].'" target="_blank"><img src="images/nukesentinel/print.png" border="0" alt="'._AB_PRINT.'" title="'._AB_PRINT.'" height="16" width="16" /></a>'."\n";
-    echo '<a href="'.$admin_file.'.php?op=ABBlockedIPView&amp;xIPs='.$getIPs['ip_addr'].'" target="_blank"><img src="images/nukesentinel/view.png" border="0" alt="'._AB_VIEW.'" title="'._AB_VIEW.'" height="16" width="16" /></a>'."\n";
-    echo '<a href="'.$admin_file.'.php?op=ABBlockedIPEdit&amp;xIPs='.$getIPs['ip_addr'].'&amp;min='.$min.'&amp;column='.$column.'&amp;direction='.$direction.'&amp;xop='.$op.'"><img src="images/nukesentinel/edit.png" border="0" alt="'._AB_EDIT.'" title="'._AB_EDIT.'" height="16" width="16" /></a>'."\n";
-    echo '<a href="'.$admin_file.'.php?op=ABBlockedIPDelete&amp;xIPs='.$getIPs['ip_addr'].'&amp;min='.$min.'&amp;column='.$column.'&amp;direction='.$direction.'&amp;xop='.$op.'"><img src="images/nukesentinel/unblock.png" border="0" alt="'._AB_UNBLOCK.'" title="'._AB_UNBLOCK.'" height="16" width="16" /></a></td>'."\n";
+    echo '<td align="center" nowrap="nowrap"><a href="'.$admin_file.'.php?op=ABBlockedIPViewPrint&amp;xIPs='.$getIPs['ip_addr'].'" target="_blank"><img src="modules/NukeSentinel/images/print.png" border="0" alt="'._AB_PRINT.'" title="'._AB_PRINT.'" height="16" width="16" /></a>'."\n";
+    echo '<a href="'.$admin_file.'.php?op=ABBlockedIPView&amp;xIPs='.$getIPs['ip_addr'].'" target="_blank"><img src="modules/NukeSentinel/images/view.png" border="0" alt="'._AB_VIEW.'" title="'._AB_VIEW.'" height="16" width="16" /></a>'."\n";
+    echo '<a href="'.$admin_file.'.php?op=ABBlockedIPEdit&amp;xIPs='.$getIPs['ip_addr'].'&amp;min='.$min.'&amp;column='.$column.'&amp;direction='.$direction.'&amp;xop='.$op.'"><img src="modules/NukeSentinel/images/edit.png" border="0" alt="'._AB_EDIT.'" title="'._AB_EDIT.'" height="16" width="16" /></a>'."\n";
+    echo '<a href="'.$admin_file.'.php?op=ABBlockedIPDelete&amp;xIPs='.$getIPs['ip_addr'].'&amp;min='.$min.'&amp;column='.$column.'&amp;direction='.$direction.'&amp;xop='.$op.'"><img src="modules/NukeSentinel/images/unblock.png" border="0" alt="'._AB_UNBLOCK.'" title="'._AB_UNBLOCK.'" height="16" width="16" /></a></td>'."\n";
     echo '</tr>'."\n";
   }
   echo '</table>'."\n";

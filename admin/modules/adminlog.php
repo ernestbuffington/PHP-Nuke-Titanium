@@ -1,6 +1,6 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************
@@ -27,9 +27,10 @@ if (!defined('ADMIN_FILE')) {
     die ('Illegal File Access');
 }
 
-global $prefix, $db, $admdata;
+global $titanium_prefix, $titanium_db, $admdata;
 
 //Clear log is fine you have to be an admin to gain access to it
+
 $log = ($_GET['log']) ? $_GET['log'] : die("Invalid Operation");
 
 if (is_mod_admin()) 
@@ -88,34 +89,34 @@ if (is_mod_admin())
 
     function log_clear($file) 
     {
-        global $db, $prefix, $admin_file, $cache, $admlang;
+        global $titanium_db, $titanium_prefix, $admin_file, $cache, $admlang;
 
-        echo "<center>";
+        echo "<div align='center'>";
         echo "".$admlang['logs']['cleared']."<br /><br />";
         $filename = NUKE_INCLUDE_DIR."log/" . $file . ".log";
         if(!is_file($filename)) {
-            echo "<center><strong><span style='color:red'>".$admlang['logs']['not_found']."</span></strong></center>";
+            echo "<div align='center'><strong><span style='color:red'>".$admlang['logs']['not_found']."</span></strong></div>";
         } else {
             if(!$handle = fopen($filename,"w")) {
                 echo $admLang['LOGS']['TRACKER_ERR_OPEN'];
             } else {
                 fwrite($handle, "");
                 fclose($handle);
-                $sql_log = "UPDATE ".$prefix."_config SET " . $file . "_log_lines='0'";
-                if(!$db->sql_query($sql_log)) {
+                $sql_log = "UPDATE ".$titanium_prefix."_config SET " . $file . "_log_lines='0'";
+                if(!$titanium_db->sql_query($sql_log)) {
                    die(mysql_error());
                 }
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-                $cache->delete('nukeconfig');
+                $cache->delete('php_nuke_titanium_config');
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
             }
         }
         echo "<br /><br /><a href='".$admin_file.".php'>".$admlang['global']['back']."</a>";
-        echo "</center>";
+        echo "</div>";
     }
 
     if ($admdata['radminsuper'] == 1) {
@@ -137,4 +138,5 @@ if (is_mod_admin())
 } else {
     echo 'Access Denied';
 }
+
 ?>

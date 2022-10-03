@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /**************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                           */
@@ -29,7 +30,7 @@ define("_CATEGORIES","Categories");
 define("_ALL","All");
 define("_FAQ","FAQ");
 define("_CONTENT","Content");
-define("_FAQ_ADMIN_HEADER", "Nuke-Evolution FAQ :: Modules Admin Panel");
+define("_FAQ_ADMIN_HEADER", "FAQ :: Modules Admin Panel");
 define("_FAQ_RETURNMAIN", "Return to Main Administration");
 define("_FAQADMIN","FAQ Administration");
 define("_ACTIVEFAQS","Active FAQs");

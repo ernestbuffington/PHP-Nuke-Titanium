@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /**************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                           */
@@ -20,6 +21,7 @@
 /* And, if you use HTML code, please double check it.                     */
 /**************************************************************************/
 
+define("_ADMIN","Admin");
 define("_REVIEWS","Reviews");
 define("_PREVIOUS","Previous Page");
 define("_NEXT","Next Page");

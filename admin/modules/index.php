@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -39,7 +40,7 @@
 /*********************************************************/
 
 function adminMain() {
-    global $language, $admin, $aid, $prefix, $file, $db, $sitename, $user_prefix, $admin_file, $bgcolor1, $evoconfig, $admdata, $dbtype, $cache, $json, $admincookie, $radminsuper;
+    global $titanium_language, $admin, $aid, $titanium_prefix, $file, $titanium_db, $sitename, $titanium_user_prefix, $admin_file, $bgcolor1, $titanium_config, $admdata, $titanium_dbtype, $cache, $json, $admincookie, $radminsuper;
 /*****[BEGIN]******************************************
  [ Mod:     Admin Icon/Link Pos                 v1.0.0 ]
  ******************************************************/
@@ -62,7 +63,11 @@ function adminMain() {
 /*****[END]********************************************
  [ Other:   Date Fix                           v1.0.0 ]
  ******************************************************/
-    GraphicAdmin();
+    if ( defined('BOOTSTRAP') ):
+      administration_panel();
+    else:
+      GraphicAdmin();
+    endif;
 /*****[END]********************************************
  [ Mod:    Evolution Version Checker           v1.1.0 ]
  ******************************************************/

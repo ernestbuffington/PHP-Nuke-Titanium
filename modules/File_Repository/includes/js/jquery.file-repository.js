@@ -217,7 +217,7 @@ jquery_prefix(function($)
 								content += '    </td>'
 								content += '</tr>'
 							$('#fileupload_submit').before(content);
-							$('.fileupload').attr('disabled','disabled');
+							// $('.fileupload').attr('disabled','disabled');
 						}
 					},			
 					function(prog, value)
@@ -400,7 +400,7 @@ jquery_prefix(function($)
 		$.ajax(
 		{
 			type: 'GET',
-			url: 'https://versions.lonestar-modules.com/file_repository.xml',
+			url: 'https://lonestar-modules.com/versioning/file_repository.xml',
 			cache: true,
 			dataType: 'xml',
 			success: function (xml)

@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -25,8 +26,8 @@ if (!defined('ADMIN_FILE')) {
 }
 
 global $admin_file;
-$module_name = basename(dirname(dirname(__FILE__)));
-get_lang($module_name);
+$titanium_module_name = basename(dirname(dirname(__FILE__)));
+get_lang($titanium_module_name);
 adminmenu($admin_file.'.php?op=FaqAdmin', _FAQ, 'faq.png');
 
 ?>

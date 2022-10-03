@@ -210,10 +210,10 @@
 		
 		const OPERATING_SYSTEM_UNKNOWN = 'unknown';
 
-		public function Browser($useragent="") {
+		public function __construct($titanium_useragent="") {
 			$this->reset();
-			if( $useragent != "" ) {
-				$this->setUserAgent($useragent);
+			if( $titanium_useragent != "" ) {
+				$this->setUserAgent($titanium_useragent);
 			}
 			else {
 				$this->determine();
@@ -319,11 +319,11 @@
 		public function getUserAgent() { return $this->_agent; }
 		/**
 		* Set the user agent value (the construction will use the HTTP header value - this will overwrite it)
-		* @param $agent_string The value for the User Agent
+		* @param $phpbb2_agent_string The value for the User Agent
 		*/
-		public function setUserAgent($agent_string) {
+		public function setUserAgent($phpbb2_agent_string) {
 			$this->reset();
-			$this->_agent = $agent_string;
+			$this->_agent = $phpbb2_agent_string;
 			$this->determine();
 		}
 		/**
@@ -339,10 +339,10 @@
 		* @return string formatted string with a summary of the browser
 		*/
 		public function __toString() {
-			return "<strong>Browser Name:</strong>{$this->getBrowser()}<br/>\n" .
-			       "<strong>Browser Version:</strong>{$this->getVersion()}<br/>\n" .
-			       "<strong>Browser User Agent String:</strong>{$this->getUserAgent()}<br/>\n" .
-			       "<strong>Platform:</strong>{$this->getPlatform()}<br/>";
+			return "<strong>Browser Name : </strong>{$this->getBrowser()}<br/>\n" .
+			       "<strong>Browser Version : </strong>{$this->getVersion()}<br/>\n" .
+			       "<strong>Browser User Agent String : </strong>{$this->getUserAgent()}<br/>\n" .
+			       "<strong>Platform : </strong>{$this->getPlatform()}<br/>";
 		}
 		/**
 		 * Protected routine to calculate and determine what the browser is in use (including platform)
@@ -906,17 +906,20 @@
 			    $this->setBrowser(self::BROWSER_MOZILLA);
 			    return true;
 		    }
-		    else if( stripos($this->_agent,'mozilla') !== false && preg_match('/rv:[0-9]\.[0-9]/i',$this->_agent) && stripos($this->_agent,'netscape') === false ) {
+		    else 
+			if( stripos($this->_agent,'mozilla') !== false && preg_match('/rv:[0-9]\.[0-9]/i',$this->_agent) && stripos($this->_agent,'netscape') === false ) {
 			    $aversion = explode('',stristr($this->_agent,'rv:'));
 			    $this->setVersion(str_replace('rv:','',$aversion[0]));
 			    $this->setBrowser(self::BROWSER_MOZILLA);
 			    return true;
 		    }
-		    else if( stripos($this->_agent,'mozilla') !== false  && preg_match('/mozilla\/([^ ]*)/i',$this->_agent,$matches) && stripos($this->_agent,'netscape') === false ) {
+		    else 
+			if( stripos($this->_agent,'mozilla') !== false  && preg_match('/mozilla\/([^ ]*)/i',$this->_agent,$matches) && stripos($this->_agent,'netscape') === false ) {
 			    $this->setVersion($matches[1]);
 			    $this->setBrowser(self::BROWSER_MOZILLA);
 			    return true;
 		    }
+			
 			return false;
 	    }
 

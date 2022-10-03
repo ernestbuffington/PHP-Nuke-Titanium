@@ -2,30 +2,7 @@
 /*=======================================================================
             PHP-Nuke Titanium (CMS) Enhanced And Advanced
  ========================================================================
- PHP-Nuke Titanium                     :   v3.0.0
- PHP-Nuke Titanium Build               :   2036
- PHP-Nuke Titanium Filename            :   includes/mimetype.php
- PHP-Nuke Titanium File Release Date   :   September 5th, 2017  
- PHP-Nuke Tianium File Author          :   Ernest Allen Buffington
 
- PHP-Nuke Titanium web address         :   https://titanium.86it.network
- 
- PHP-Nuke Titanium is licensed under GNU General Public License v3.0
-
- PHP-Nuke Titanium is Copyright(c) 2002 to 2017 by Ernest Allen Buffington
- of Sebastian Enterprises. 
- 
- ernest.buffington@gmail.com
- Att: Sebastian Enterprises
- 1071 Emerald Dr,
- Brandon, Florida 33511
- ========================================================================
- GNU GENERAL PUBLIC LICENSE Version 3, 29 June 2007
- Copyright (C) 2007 Free Software Foundation, Inc. <http://fsf.org/>
- Everyone is permitted to copy and distribute verbatim copies
- of this license document, but changing it is not allowed.       
- ========================================================================
- 
  /*****[CHANGES]**********************************************************
   The Nuke-Evo Base Engine : v2.1.0 RC3 dated May 4th, 2009 is what we
   used to build our new content management system. To find out more
@@ -77,11 +54,9 @@
  ************************************************************************/
 global $doctype;
 
-$charset = defined('_CHARSET') ? _CHARSET : 'utf-8';
+$charset = defined('_CHARSET') ? _CHARSET : 'UTF-8';
 $mime = defined('_MIME') ? _MIME : 'text/html';
 $is304 = false;
-
-$output = '<?xml version="1.0" encoding="' . $mime . '"?>';
 
 if (empty($doctype)) 
 {
@@ -91,33 +66,36 @@ if (empty($doctype))
 switch ($doctype) 
 {
     case 'strict':
-        $output =  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
+        $output .=  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">';
         define('DOCTYPE', 'strict');
         break;
     case 'transitional':
-        $output = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+        $output .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
         define('DOCTYPE', 'transitional');
         break;
     case 'frameset':
-        $output = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">';
+        $output .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">';
         define('DOCTYPE', 'frameset');
         break;
     case 'math':
-        $output = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">';
+        $output .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1 plus MathML 2.0//EN" "http://www.w3.org/TR/MathML2/dtd/xhtml-math11-f.dtd">';
         define('DOCTYPE', 'math');
         break;
     case 'xhtml11':
-        $output =  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
+        $output .=  '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">';
         define('DOCTYPE', 'xhtml11');
         break;
     case 'default':
-        $output = '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
+        $output .= '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">';
         define('DOCTYPE', 'transitional');
         break;
 }
 
+$output  = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
 $output .= "\n".'<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="'._LANGCODE.'">'."\n";
 $output .= "".'<html xmlns:og="http://opengraphprotocol.org/schema/" xmlns:fb="https://www.facebook.com/2008/fbml">'."\n"; 
+
+$output .= "\n\n<!-- START <head> -->\n\n";
 $output .= "<head>\n";
 
 $output .= '<!--[if IE]>';

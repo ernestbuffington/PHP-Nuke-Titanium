@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -27,14 +28,13 @@
       phpBB User Groups Integration            v1.0.0       08/26/2005
       Messages BBCodes                         v1.0.1       11/14/2005
       Custom Text Area                         v1.0.0       11/23/2005
-	  Titanium Updated                         v3.0.0       08/24/2019
  ************************************************************************/
 
 if (!defined('ADMIN_FILE')) {
    die ("Illegal File Access");
 }
 
-global $prefix, $db, $admdata;
+global $titanium_prefix, $titanium_db, $admdata;
 if ($admdata['radminsuper'] == 1) {
 
 /*********************************************************/
@@ -42,34 +42,37 @@ if ($admdata['radminsuper'] == 1) {
 /*********************************************************/
 
 function MsgDeactive($mid) {
-    global $prefix, $db, $admin_file;
+    global $titanium_prefix, $titanium_db, $admin_file;
     $mid = intval($mid);
-    $db->sql_query("update " . $prefix . "_message set active='0' WHERE mid='$mid'");
+    $titanium_db->sql_query("update " . $titanium_prefix . "_message set active='0' WHERE mid='$mid'");
     Header("Location: ".$admin_file.".php?op=messages");
 }
 
 function messages() {
-    global $admin, $admlanguage, $language, $prefix, $db, $multilingual, $admin_file, $admlang;
+    global $admin, $admlanguage, $titanium_language, $titanium_prefix, $titanium_db, $multilingual, $admin_file, $admlang;
     include(NUKE_BASE_DIR.'header.php');
+    OpenTable();
+    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\">" . $admlang['messages']['header'] . "</a></div>\n";
+    echo "<br /><br />";
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . $admlang['global']['header_return'] . "</a> ]</div>\n";
+    CloseTable();
+    echo "<br />";
     if (empty($admlanguage)) {
-        $admlanguage = $language; /* This to make sure some language is pre-selected */
+        $admlanguage = $titanium_language; /* This to make sure some language is pre-selected */
     }
     OpenTable();
-    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\"><strong>" . $admlang['messages']['header'] . "</strong></a></div>\n";
-    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . $admlang['global']['header_return'] . "</a> ]</div>\n";
-    echo "<br />";
-    echo "<div align=\"center\"><span class=\"title\"><strong>" . $admlang['messages']['all'] . "</strong></span></div><br /><br /><table border=\"1\" width=\"100%\">"
+    echo "<center><span class=\"title\"><strong>" . $admlang['messages']['all'] . "</strong></span><br /><br /><table border=\"1\" width=\"100%\">"
     ."<tr><td align=\"center\"><strong>" . $admlang['global']['ID'] . "</strong></td>"
     ."<td align=\"center\"><strong>" . $admlang['global']['title'] . "</strong></td>"
     ."<td align=\"center\">&nbsp;<strong>" . $admlang['global']['language'] . "</strong>&nbsp;</td>"
-    ."<td align=\"center\" nowrap>&nbsp;<strong>" . $admlang['messages']['view'] . "</strong>&nbsp;</td>"
+    ."<td  align=\"center\" nowrap>&nbsp;<strong>" . $admlang['messages']['view'] . "</strong>&nbsp;</td>"
     ."<td align=\"center\">&nbsp;<strong>" . $admlang['global']['active'] . "</strong>&nbsp;</td>"
     ."<td align=\"center\">&nbsp;<strong>" . $admlang['global']['functions'] . "</strong>&nbsp;</td></tr>";
 /*****[BEGIN]******************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
-    $result = $db->sql_query("SELECT * from " . $prefix . "_message");
-    while ($row = $db->sql_fetchrow($result)) {
+    $result = $titanium_db->sql_query("SELECT * from " . $titanium_prefix . "_message");
+    while ($row = $titanium_db->sql_fetchrow($result)) {
     $groups = $row['groups'];
 /*****[END]********************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
@@ -118,6 +121,7 @@ function messages() {
     }
     echo "</table></center><br />";
     CloseTable();
+    echo "<br />";
     OpenTable();
     echo "<center><span class=\"title\"><strong>" . $admlang['messages']['add'] . "</strong></span></center><br />";
     echo "<form action=\"".$admin_file.".php\" method=\"post\" name=\"message\">"
@@ -137,18 +141,18 @@ function messages() {
     $handle=opendir('language');
     while ($file = readdir($handle)) {
         if (preg_match("/^lang\-(.+)\.php/", $file, $matches)) {
-            $langFound = $matches[1];
-            $languageslist .= $langFound.' ';
+            $titanium_langFound = $matches[1];
+            $titanium_languageslist .= $titanium_langFound.' ';
         }
     }
     closedir($handle);
-    $languageslist = explode(" ", $languageslist);
-    sort($languageslist);
-    for ($i=0; $i < count($languageslist); $i++) {
-        if($languageslist[$i]!="") {
-        echo "<option value=\"$languageslist[$i]\" ";
-        if($languageslist[$i]==$language) echo "selected";
-        echo ">".ucfirst($languageslist[$i])."</option>\n";
+    $titanium_languageslist = explode(" ", $titanium_languageslist);
+    sort($titanium_languageslist);
+    for ($i=0; $i < count($titanium_languageslist); $i++) {
+        if($titanium_languageslist[$i]!="") {
+        echo "<option value=\"$titanium_languageslist[$i]\" ";
+        if($titanium_languageslist[$i]==$titanium_language) echo "selected";
+        echo ">".ucfirst($titanium_languageslist[$i])."</option>\n";
         }
     }
     echo "<option value=\"\">" . _ALL . "</option></select><br /><br />";
@@ -177,8 +181,8 @@ function messages() {
     ."<option value=\"6\">".$admlang['global']['groups_only']."</option>"
      ."</select><br /><br />"
     ."<span class='tiny'>"._WHATGRDESC."</span><br /><strong>"._WHATGROUPS."</strong> <select name='add_groups[]' multiple size='5'>\n";
-     $groupsResult = $db->sql_query("select group_id, group_name from ".$prefix."_bbgroups where group_description <> 'Personal User'");
-     while(list($gid, $gname) = $db->sql_fetchrow($groupsResult)) { echo "<OPTION VALUE='$gid'>$gname</option>\n"; }
+     $groupsResult = $titanium_db->sql_query("select group_id, group_name from ".$titanium_prefix."_bbgroups where group_description <> 'Personal User'");
+     while(list($gid, $gname) = $titanium_db->sql_fetchrow($groupsResult)) { echo "<OPTION VALUE='$gid'>$gname</option>\n"; }
      echo "</select><br /><br />\n"
 /*****[END]********************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
@@ -192,13 +196,19 @@ function messages() {
 }
 
 function editmsg($mid) {
-    global $admin, $prefix, $db, $multilingual, $admin_file, $admlang;
+    global $admin, $titanium_prefix, $titanium_db, $multilingual, $admin_file, $admlang;
     include(NUKE_BASE_DIR.'header.php');
     $mid = intval($mid);
+    OpenTable();
+    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\">" . $admlang['messages']['header'] . "</a></div>\n";
+    echo "<br /><br />";
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . $admlang['global']['header_return'] . "</a> ]</div>\n";
+    CloseTable();
+    echo "<br />";
 /*****[BEGIN]******************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
-    $row = $db->sql_fetchrow($db->sql_query("SELECT * from " . $prefix . "_message WHERE mid='$mid'"));
+    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT * from " . $titanium_prefix . "_message WHERE mid='$mid'"));
     $groups = $row['groups'];
 /*****[END]********************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
@@ -211,10 +221,7 @@ function editmsg($mid) {
     $view = intval($row['view']);
     $mlanguage = $row['mlanguage'];
     OpenTable();
-    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\"><strong>" . $admlang['messages']['header'] . "</strong></a></div>\n";
-    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . $admlang['global']['header_return'] . "</a> ]</div>\n";
-    echo '<br />';
-    echo "<div align=\"center\"><span class=\"title\"><strong>" . $admlang['messages']['edit'] . "</strong></span></div>";
+    echo "<center><span class=\"title\"><strong>" . $admlang['messages']['edit'] . "</strong></span></center>";
     if ($active == 1) {
     $asel1 = "checked";
     $asel2 = "";
@@ -273,18 +280,18 @@ function editmsg($mid) {
     $handle=opendir('language');
     while ($file = readdir($handle)) {
         if (preg_match("/^lang\-(.+)\.php/", $file, $matches)) {
-            $langFound = $matches[1];
-            $languageslist .= "$langFound ";
+            $titanium_langFound = $matches[1];
+            $titanium_languageslist .= "$titanium_langFound ";
         }
     }
     closedir($handle);
-    $languageslist = explode(" ", $languageslist);
-    sort($languageslist);
-    for ($i=0; $i < count($languageslist); $i++) {
-        if(!empty($languageslist[$i])) {
-        echo "<option value=\"$languageslist[$i]\" ";
-        if($languageslist[$i]==$mlanguage) echo "selected";
-        echo ">".ucfirst($languageslist[$i])."</option>\n";
+    $titanium_languageslist = explode(" ", $titanium_languageslist);
+    sort($titanium_languageslist);
+    for ($i=0; $i < count($titanium_languageslist); $i++) {
+        if(!empty($titanium_languageslist[$i])) {
+        echo "<option value=\"$titanium_languageslist[$i]\" ";
+        if($titanium_languageslist[$i]==$mlanguage) echo "selected";
+        echo ">".ucfirst($titanium_languageslist[$i])."</option>\n";
         }
     }
     if (empty($mlanguage)) {
@@ -322,12 +329,12 @@ function editmsg($mid) {
     ."<option name=\"view\" value=\"2\" $sel2>" . $admlang['global']['guests_only'] . "</option>"
     ."<option name=\"view\" value=\"3\" $sel3>" . $admlang['global']['users_only'] . "</option>"
     ."<option name=\"view\" value=\"4\" $sel4>" . $admlang['global']['admins_only'] . "</option>"
-    ."<option name=\"view\" value=\"6\" $sel6>".$admlang['global']['groups_only']."</option>"
+        ."<option name=\"view\" value=\"6\" $sel6>".$admlang['global']['groups_only']."</option>"
     ."</select><br /><br />"
         ."<span class='tiny'>"._WHATGRDESC."</span><br /><strong>"._WHATGROUPS."</strong> <select name='groups[]' multiple size='5'>";
     $ingroups = explode("-",$groups);
-    $groupsResult = $db->sql_query("select group_id, group_name from ".$prefix."_bbgroups where group_description <> 'Personal User'");
-    while(list($gid, $gname) = $db->sql_fetchrow($groupsResult)) {
+    $groupsResult = $titanium_db->sql_query("select group_id, group_name from ".$titanium_prefix."_bbgroups where group_description <> 'Personal User'");
+    while(list($gid, $gname) = $titanium_db->sql_fetchrow($groupsResult)) {
         if(in_array($gid,$ingroups) AND $view > 5) { $sel = " selected"; } else { $sel = ""; }
         echo "<OPTION VALUE='$gid'$sel>$gname</option>";
     }
@@ -347,28 +354,44 @@ function editmsg($mid) {
 /*****[BEGIN]******************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
-function savemsg($mid, $title, $content, $mdate, $expire, $active, $view, $groups, $chng_date, $mlanguage) {
-    global $prefix, $db, $admin_file;
-    if($view == 6) { $ingroups = implode("-",$groups); }
-    if($view < 6) { $ingroups = ""; }
-/*****[END]********************************************
- [ Mod:    phpBB User Groups Integration       v1.0.0 ]
- ******************************************************/
+function savemsg($mid, $title, $content, $mdate, $expire, $active, $view, $groups, $chng_date, $mlanguage) 
+{
+    global $titanium_prefix, $titanium_db, $admin_file;
+
+    if($view == 6) 
+	{ 
+	  $ingroups = implode("-",$groups); 
+	}
+    
+	if($view < 6) 
+	{ 
+	  $ingroups = ""; 
+	}
+
     $mid = intval($mid);
     $title = Fix_Quotes($title);
     $content = Fix_Quotes($content);
-    if ($chng_date == 1) {
+
+    if ($chng_date == 1) 
+	{
         $newdate = time();
-    } elseif ($chng_date == 0) {
+    } 
+	elseif ($chng_date == 0) 
+	{
         $newdate = $mdate;
     }
-/*****[BEGIN]******************************************
- [ Mod:    phpBB User Groups Integration       v1.0.0 ]
- ******************************************************/
-    $result = $db->sql_query("update " . $prefix . "_message set title='$title', content='$content', date='$newdate', expire='$expire', active='$active', view='$view', groups='$ingroups', mlanguage='$mlanguage' WHERE mid='$mid'");
-/*****[END]********************************************
- [ Mod:    phpBB User Groups Integration       v1.0.0 ]
- ******************************************************/
+
+    $result = $titanium_db->sql_query("UPDATE ".$titanium_prefix."_message SET title='$title', 
+	                                                     content='$content', 
+														    date='$newdate', 
+														   expire='$expire', 
+														   active='$active', 
+														       view='$view',
+														 groups='$ingroups', 
+													  mlanguage='$mlanguage' 
+													  WHERE 
+													  mid='$mid'");
+
     Header("Location: ".$admin_file.".php?op=messages");
 }
 
@@ -376,12 +399,12 @@ function savemsg($mid, $title, $content, $mdate, $expire, $active, $view, $group
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
 function addmsg($add_title, $add_content, $add_mdate, $add_expire, $add_active, $add_view, $add_groups, $add_mlanguage) {
-    global $prefix, $db, $admin_file;
+    global $titanium_prefix, $titanium_db, $admin_file;
     if($add_view == 6) { $ingroups = implode("-",$add_groups); }
     if($add_view < 6) { $ingroups = ""; }
     $title = Fix_Quotes($add_title);
     $content = Fix_Quotes($add_content);
-    $result = $db->sql_query("insert into " . $prefix . "_message values (NULL, '$add_title', '$add_content', '$add_mdate', '$add_expire', '$add_active', '$add_view', '$ingroups', '$add_mlanguage')");
+    $result = $titanium_db->sql_query("insert into " . $titanium_prefix . "_message values (NULL, '$add_title', '$add_content', '$add_mdate', '$add_expire', '$add_active', '$add_view', '$ingroups', '$add_mlanguage')");
 /*****[END]********************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
@@ -392,9 +415,9 @@ function addmsg($add_title, $add_content, $add_mdate, $add_expire, $add_active, 
 }
 
 function deletemsg($mid, $ok=0) {
-    global $prefix, $db, $admin_file, $admlang;
+    global $titanium_prefix, $titanium_db, $admin_file, $admlang;
     if($ok) {
-    $result = $db->sql_query("delete from " . $prefix . "_message where mid='$mid'");
+    $result = $titanium_db->sql_query("delete from " . $titanium_prefix . "_message where mid='$mid'");
         if (!$result) {
         return;
         }
@@ -402,11 +425,12 @@ function deletemsg($mid, $ok=0) {
     } else {
     include(NUKE_BASE_DIR.'header.php');
     OpenTable();
-    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\"><strong>" . $admlang['messages']['header'] . "</strong></a></div>\n";
+    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=messages\">" . $admlang['messages']['header'] . "</a></div>\n";
+    echo "<br /><br />";
     echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . $admlang['global']['header_return'] . "</a> ]</div>\n";
+    CloseTable();
     echo "<br />";
-
-
+    OpenTable();
     echo "<center>" . $admlang['messages']['remove'] . "";
     echo "<br /><br />[ <a href=\"".$admin_file.".php?op=messages\">" . $admlang['global']['no'] . "</a> | <a href=\"".$admin_file.".php?op=deletemsg&amp;mid=$mid&amp;ok=1\">" . $admlang['global']['yes'] . "</a> ]</center>";
         CloseTable();
@@ -428,9 +452,11 @@ switch ($op){
     case "messages":
     messages();
     break;
+
     case "editmsg":
     editmsg($mid, $title, $content, $mdate, $expire, $active, $view, $chng_date, $mlanguage);
     break;
+
     case "addmsg":
 /*****[BEGIN]******************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
@@ -440,9 +466,11 @@ switch ($op){
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
     break;
+
     case "deletemsg":
     deletemsg($mid, $ok);
     break;
+
     case "savemsg":
 /*****[BEGIN]******************************************
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
@@ -452,10 +480,11 @@ switch ($op){
  [ Mod:    phpBB User Groups Integration       v1.0.0 ]
  ******************************************************/
     break;
- }
-} 
-else 
-{
+
+}
+
+} else {
     echo "Access Denied";
 }
+
 ?>

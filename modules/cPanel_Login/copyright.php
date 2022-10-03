@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -24,11 +25,11 @@ require_once(CP_INCLUDE_DIR.'/includes/showcp.php');
 
 $author_name = "Ernest Allen Buffington";
 $author_email = "ernest.buffington@gmail.com";
-$author_homepage = "https://hub.86it.us";
+$author_homepage = "https://www.86it.us";
 $license = "GNU/GPL";
-$download_location = "https://hub.86it.us/modules.php?name=File_Repository";
-$module_version = "1.0";
-$module_description = "cPanel Admin Links.";
+$download_location = "https://www.86it.us/modules.php?name=File_Repository";
+$titanium_module_version = "1.0";
+$titanium_module_description = "cPanel Admin Links.";
 
 // DO NOT TOUCH THE FOLLOWING COPYRIGHT CODE. YOU'RE JUST ALLOWED TO CHANGE YOUR "OWN"
 // MODULE'S DATA (SEE ABOVE) SO THE SYSTEM CAN BE ABLE TO SHOW THE COPYRIGHT NOTICE
@@ -37,6 +38,6 @@ $module_description = "cPanel Admin Links.";
 // AND YOU ARE NOT ALLOWED TO DELETE THIS FILE NOR TO CHANGE ANYTHING FROM THIS FILE IF
 // YOU'RE NOT THIS MODULE'S AUTHOR.
 
-show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $module_version, $module_description);
+show_copyright($author_name, $author_email, $author_homepage, $license, $download_location, $titanium_module_version, $titanium_module_description);
 
 ?>

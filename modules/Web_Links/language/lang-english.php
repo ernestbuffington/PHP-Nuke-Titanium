@@ -1,34 +1,34 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-/************************************************************************/
-/* PHP-NUKE: Web Portal System                                          */
-/* ===========================                                          */
-/*                                                                      */
-/* Copyright (c) 2002 by Francisco Burzi                                */
-/* http://phpnuke.org                                                   */
-/*                                                                      */
-/* This program is free software. You can redistribute it and/or modify */
-/* it under the terms of the GNU General Public License as published by */
-/* the Free Software Foundation; either version 2 of the License.       */
-/*                                                                      */
-/************************************************************************/
 
-/*****[CHANGES]**********************************************************
--=[Base]=-
-      Nuke Patched                             v3.1.0       06/26/2005
-	  Titanium Patched                         v3.0.0       08/14/2019
-      Caching System                           v1.0.0       10/31/2005
- ************************************************************************/
+/**************************************************************************/
+/* PHP-NUKE: Advanced Content Management System                           */
+/* ============================================                           */
+/*                                                                        */
+/* This is the language module with all the system messages               */
+/*                                                                        */
+/* If you made a translation, please go to the site and send to me        */
+/* the translated file. Please keep the original text order by modules,   */
+/* and just one message per line, also double check your translation!     */
+/*                                                                        */
+/* You need to change the second quoted phrase, not the capital one!      */
+/*                                                                        */
+/* If you need to use double quotes (") remember to add a backslash (\),  */
+/* so your entry will look like: This is \"double quoted\" text.          */
+/* And, if you use HTML code, please double check it.                     */
+/**************************************************************************/
+
+global $sitename;
 
 define("_WEBLINKS","Web Links");
 define("_URL","URL");
 define("_PREVIOUS","Previous Page");
 define("_NEXT","Next Page");
 define("_YOURNAME","Your Name");
-define("_CATEGORY","Category");
+define("_CATEGORY","Link Category");
 define("_CATEGORIES","Categories");
 define("_LVOTES","votes");
 define("_TOTALVOTES","Total Votes:");
@@ -39,10 +39,10 @@ define("_NOMATCHES","No matches found to your query");
 define("_SCOMMENTS","Comments");
 define("_DESCRIPTION","Description");
 define("_TO","To");
-define("_ADDLINK","Add Link");
-define("_NEW","New");
-define("_POPULAR","Popular");
-define("_TOPRATED","Top Rated");
+define("_ADDLINK","Add A Link");
+define("_NEW","New Links");
+define("_POPULAR","Popular Links");
+define("_TOPRATED","Top Rated Links");
 define("_RANDOM","Random");
 define("_LINKSMAIN","Links Main");
 define("_LINKCOMMENTS","Link Comments");
@@ -101,7 +101,7 @@ define("_SORTLINKSBY","Sort Links by");
 define("_SITESSORTED","Sites currently sorted by");
 define("_POPULARITY","Popularity");
 define("_SELECTPAGE","Select Page");
-define("_MAIN","Main");
+define("_MAIN","Links Main");
 define("_NEWTODAY","New Today");
 define("_NEWLAST3DAYS","New last 3 days");
 define("_NEWTHISWEEK","New This Week");
@@ -151,8 +151,8 @@ define("_WEIGHOUTNOTE","* Note: This Resource weighs Registered vs. Outside vote
 define("_NOOUTSIDEVOTES","No Outside Votes");
 define("_OUTSIDEVOTERS","Outside Voters");
 define("_UNREGISTEREDUSERS","Unregistered Users");
-define("_PROMOTEYOURSITE","Promote Your Website");
-define("_PROMOTE01","Maybe you can be interested in several of the remote 'Rate a Website' options we have available. These allow you to place an image (or even a rating form) on your web site in order to increase the number of votes your resource receive. Please choose from one of the options listed below:");
+define("_PROMOTEYOURSITE","Promote Your Website or Portal");
+define("_PROMOTE01","Maybe you will be interested in several of the remote 'Rate a Website/Portal' options we have available. These allow you to place an image (or even a rating form) on your web site in order to increase the number of votes your website or portal receives. Please choose from one of the options listed below:");
 define("_TEXTLINK","Text Link");
 define("_PROMOTE02","One way to link to the rating form is through a simple text link:");
 define("_HTMLCODE1","The HTML code you should use in this case, is the following:");
@@ -161,7 +161,7 @@ global $anonwaitdays;
 define("_IDREFER","in the HTML source references your site's ID number in $sitename database. Be sure this number is present.");
 define("_BUTTONLINK","Button Link");
 define("_PROMOTE03","If you're looking for a little more than a basic text link, you may wish to use a small button link:");
-define("_RATEIT","Rate this Site!");
+define("_RATEIT","Rate this Portal!");
 define("_HTMLCODE2","The source code for the above button is:");
 define("_REMOTEFORM","Remote Rating Form");
 define("_PROMOTE04","If you cheat on this, we'll remove your link. Having said that, here is what the current remote rating form looks like.");
@@ -189,7 +189,7 @@ define("_YOUAREREGGED","You are a registered user and are logged in.");
 define("_FEELFREE2ADD","Feel free to add a comment about this site.");
 define("_YOUARENOTREGGED","You are not a registered user or you have not logged in.");
 define("_IFYOUWEREREG","If you were registered you could make comments on this website.");
-define("_WEBLINKS","Web Links");
+// define("_WEBLINKS","Web Links");
 define("_TITLE","Title");
 define("_MODIFY","Modify");
 define("_COMPLETEVOTE1","Your vote is appreciated.");
@@ -201,5 +201,5 @@ define("_COMPLETEVOTE5","No rating selected - no vote tallied");
 global $outsidewaitdays;
 define("_COMPLETEVOTE6","Only one vote per IP address allowed every $outsidewaitdays day(s).");
 define("_LINKSDATESTRING","%d-%b-%Y");
-define("_GFX_FAILURE","Please enter the correct GFX code");
+// define("_GFX_FAILURE","Please enter the correct GFX code");
 ?>

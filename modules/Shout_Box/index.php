@@ -1,22 +1,22 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-// ==========================================
-// PHP-NUKE: Shout Box
-// ==========================
-//
-// Copyright (c) 2003-2005 by Aric Bolf (SuperCat)
-// http://www.OurScripts.net
-//
-// Copyright (c) 2002 by Quiecom
-// http://www.Quiecom.com
-//
-// This program is free software. You can redistribute it and/or modify
-// it under the terms of the GNU General Public License as published by
-// the Free Software Foundation
-// ===========================================
+/*======================================================================= 
+ PHP-NUKE: Shout Box
+ ==========================
+
+ Copyright (c) 2003-2005 by Aric Bolf (SuperCat)
+ http://www.OurScripts.net
+ v1.0
+ Copyright (c) 2002 by Quiecom
+ http://www.Quiecom.com
+
+ This program is free software. You can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation
+ =======================================================================*/
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
@@ -30,25 +30,29 @@ if (!defined('MODULE_FILE')) {
    die ("You can't access this file directly...");
 }
 
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$titanium_module_name = basename(dirname(__FILE__));
+get_lang($titanium_module_name);
+
 $pagetitle = "- "._SHOUTHISTORY;
 
-global $db, $user, $prefix, $username, $nsnst_const, $userinfo, $cache;
+global $titanium_db, $user, $titanium_prefix, $titanium_username, $nsnst_const, $userinfo, $cache;
 
-global $username;
-$username = $userinfo['username'];
-if (empty($username)) { $username = "Anonymous"; }
+global $titanium_username;
+
+$titanium_username = $userinfo['username'];
+
+if (empty($titanium_username)) { $titanium_username = "Anonymous"; }
 
 include_once(NUKE_MODULES_DIR.'Shout_Box/shout.php');
 
 global $conf;
+
 if ((($conf = $cache->load('conf', 'shoutbox')) == false) || empty($conf)) {
-    $sql = "SELECT * FROM `".$prefix."_shoutbox_conf`";
-    $result = $db->sql_query($sql);
-    $conf = $db->sql_fetchrow($result);
+    $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_conf`";
+    $result = $titanium_db->sql_query($sql);
+    $conf = $titanium_db->sql_fetchrow($result);
     $cache->save('conf', 'shoutbox', $conf);
-    $db->sql_freeresult($result);
+    $titanium_db->sql_freeresult($result);
 }
 
 $Action = (isset($_REQUEST['Action'])) ? $_REQUEST['Action'] : '';
@@ -64,9 +68,9 @@ $uip = $nsnst_const['remote_ip'];
  [ Base:    NukeSentinel                       v2.4.2 ]
  ******************************************************/
 if($conf['ipblock'] == "yes") {
-    $sql = "SELECT * FROM ".$prefix."_shoutbox_ipblock";
-    $ipresult = $db->sql_query($sql);
-    while ($badips = $db->sql_fetchrow($ipresult)) {
+    $sql = "SELECT * FROM ".$titanium_prefix."_shoutbox_ipblock";
+    $ipresult = $titanium_db->sql_query($sql);
+    while ($badips = $titanium_db->sql_fetchrow($ipresult)) {
         if (preg_match("/\*/i", $badips['name'])) { // Allow for Subnet bans like 123.456.*
             $badipsArray = explode(".",$badips['name']);
             $uipArray = explode(".",$uip);
@@ -84,44 +88,52 @@ if($conf['ipblock'] == "yes") {
 
 //do name test then ban if on list (only applies to registered users)
 if($conf['nameblock'] == "yes" && $Action != "UserBanned") {
-    $sql = "SELECT * FROM ".$prefix."_shoutbox_nameblock";
-    $nameresult = $db->sql_query($sql);
-    while ($badname = $db->sql_fetchrow($nameresult)) {
-        if($username == $badname['name']) { $Action = "UserBanned"; break; }
+    $sql = "SELECT * FROM ".$titanium_prefix."_shoutbox_nameblock";
+    $nameresult = $titanium_db->sql_query($sql);
+    while ($badname = $titanium_db->sql_fetchrow($nameresult)) {
+        if($titanium_username == $badname['name']) { $Action = "UserBanned"; break; }
     }
 }
 
-function searchHistory($where, $sbsearchtext, $results, $style, $order, $page) {
-    global $db, $prefix, $username, $userinfo, $board_config;
+function searchHistory($where, $sbsearchtext, $results, $style, $order, $page) 
+{
+	global $titanium_db, $titanium_prefix, $titanium_username, $userinfo, $board_config;
     include_once(NUKE_BASE_DIR.'header.php');
 
     $sbsearchtext = htmlspecialchars($sbsearchtext, ENT_QUOTES);
-
+    
+	title($sitename.' '._SHOUTHISTORY);
     // search form
     OpenTable();
     showSearchBox($sbsearchtext, $where, $style, $results, $order);
-    echo "<table cellpadding=\"3\" cellspacing=\"0\" width=\"90%\" border=\"0\" align=\"center\">\n";
-    echo "<tr><td align=\"center\"><a href=\"modules.php?name=Shout_Box&amp;page=1\">"._SHOUTHISTORY."</a></td></tr></table>";
-    CloseTable();
-    echo "<br />";
-    // show results
-    OpenTable();
-    if ($results > 50) { $results = 50; }
-    if ($results < 10) { $results = 10; }
+    echo '<br />';
+	echo "<table cellpadding=\"3\" cellspacing=\"0\" width=\"90%\" border=\"0\" align=\"center\">\n";
+    echo "<tr><td align=\"center\"><a href=\"modules.php?name=Shout_Box&amp;page=1\"><strong>"._SHOUTHISTORY."</strong></a></td></tr></table>";
+	CloseTable();
 
-    echo "<table cellpadding=\"3\" cellspacing=\"0\" width=\"90%\" border=\"0\" align=\"center\">\n";
-    echo "<tr><td align=\"center\"><span class=\"title\">"._SEARCHRESULTS."</span></td></tr>\n";
-    //echo "<tr><td><table cellpadding=\"0\" width=\"100%\" cellspacing=\"0\" border=\"0\"><tr><td width=\"50%\" align=\"right\"><img width=\"50\" height=\"39\" src=\"modules/Shout_Box/history.gif\" alt=\"\" /></td><td width=\"50%\" align=\"left\" valign=\"middle\"><span class=\"title\">"._SEARCHRESULTS."</span></td></tr></table></td></tr>\n";
-    // build SQL query based on user choices
-    //$sql = "SELECT * FROM ".$prefix."_shoutbox_shouts WHERE name='$sbsearchtext' ORDER BY id DESC LIMIT $results";
+    OpenTable();
+	echo '<br /><br />';
+	if ($results > 50)  
+	$results = 50; 
+    
+	if ($results < 10) 
+	$results = 10;
+
+    echo "<table cellpadding=\"0\" cellspacing=\"0\" width=\"90%\" border=\"0\" align=\"center\">\n";
+   // echo "<tr><td align=\"center\"><span class=\"title\">"._SEARCHRESULTS."</span></td></tr>\n";
+    
     // search by Nicknames only
-    if ($where == 'Nicknames') {
+    if ($where == 'Nicknames') 
+	{
         $SearchArray = explode(" ",$sbsearchtext);
         $c = count($SearchArray);
         $d = 0;
-        $sql = "SELECT * FROM `".$prefix."_shoutbox_shouts` WHERE `name`";
-        if (is_array($SearchArray)) {
-            foreach($SearchArray as $SearchPart) {
+        $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_shouts` WHERE `name`";
+
+        if (is_array($SearchArray)) 
+		{
+            foreach($SearchArray as $SearchPart) 
+			{
                 $d++;
                 if ($style == 'Exact') {
                     $sql .= "='".$SearchPart."'";
@@ -131,31 +143,43 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page) {
                 if ($d < $c) { $sql .= " AND `name`"; }
             }
         }
-    } elseif ($where == 'Both') {
+    } 
+	elseif ($where == 'Both') {
     // search by Nicknames and Shouts
-        if ($style == 'Exact') {
-            $sql = "SELECT * FROM `".$prefix."_shoutbox_shouts` WHERE `name`='".$sbsearchtext."' OR `comment`='".$sbsearchtext."'";
-        } else {
+        if ($style == 'Exact') 
+		{
+            $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_shouts` WHERE `name`='".$sbsearchtext."' OR `comment`='".$sbsearchtext."'";
+        } 
+		else 
+		{
             $SearchArray = explode(" ", $sbsearchtext);
             $c = count($SearchArray);
             $d = 0;
-            $sql = "SELECT * FROM `".$prefix."_shoutbox_shouts` WHERE `name`";
-            foreach($SearchArray as $SearchPart) {
+            $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_shouts` WHERE `name`";
+        
+		    foreach($SearchArray as $SearchPart) {
                 $d++;
                 $sql .= " LIKE '%".$SearchPart."%' OR comment LIKE '%".$SearchPart."%'";
                 if ($d < $c) { $sql .= " OR `name`"; }
             }
         }
-    } else {
+    } 
+	else 
+	{
     // search by Shouts only
-        if ($style == 'Exact') {
-            $sql = "SELECT * FROM `".$prefix."_shoutbox_shouts` WHERE `comment` LIKE '%".$sbsearchtext."%'";
-        } else {
+        if ($style == 'Exact') 
+		{
+            $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_shouts` WHERE `comment` LIKE '%".$sbsearchtext."%'";
+        } 
+		else 
+		{
             $SearchArray = explode(" ",$sbsearchtext);
             $c = count($SearchArray);
             $d = 0;
-            $sql = "SELECT * FROM `".$prefix."_shoutbox_shouts` WHERE `comment`";
-            foreach($SearchArray as $SearchPart) {
+            $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_shouts` WHERE `comment`";
+        
+		    foreach($SearchArray as $SearchPart) 
+			{
                 $d++;
                 $sql .= " LIKE '%".$SearchPart."%'";
                 if ($d < $c) { $sql .= " AND `comment`"; }
@@ -166,22 +190,26 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page) {
     else { $sql .= " ORDER BY `id` ASC"; }
     $sql .= " LIMIT $results";
     // end building SQL query
-    $result = $db->sql_query($sql);
-    $numrows = $db->sql_numrows($result);
+    $result = $titanium_db->sql_query($sql);
+    $numrows = $titanium_db->sql_numrows($result);
     if ($numrows > 0) {
         global $conf;
         $flag = 1;
 
         $ThemeSel = get_theme();
-        $sql = "SELECT `menuColor1`, `menuColor2` FROM `".$prefix."_shoutbox_themes` WHERE `themeName`='$ThemeSel'";
-        $resultT = $db->sql_query($sql);
-        $rowColor = $db->sql_fetchrow($resultT);
-        $db->sql_freeresult($resultT);
+        $sql = "SELECT `menuColor1`, `menuColor2` FROM `".$titanium_prefix."_shoutbox_themes` WHERE `themeName`='$ThemeSel'";
+        $resultT = $titanium_db->sql_query($sql);
+        $rowColor = $titanium_db->sql_fetchrow($resultT);
+        $titanium_db->sql_freeresult($resultT);
 
-        while ($row = $db->sql_fetchrow($result)) {
-            if ($flag == 1) { $bgcolor = $rowColor['menuColor1']; }
-            if ($flag == 2) { $bgcolor = $rowColor['menuColor2']; }
-            $comment = str_replace('src=', 'src="', $row['comment']);
+        while ($row = $titanium_db->sql_fetchrow($result)) 
+		{
+            if ($flag == 1) 
+			$bgcolor = $rowColor['menuColor1']; 
+            if ($flag == 2) 
+			$bgcolor = $rowColor['menuColor2']; 
+            
+			$comment = str_replace('src=', 'src="', $row['comment']);
             $comment = str_replace('.gif>', '.gif" alt="" />', $comment);
             $comment = str_replace('.jpg>', '.jpg" alt="" />', $comment);
             $comment = str_replace('.png>', '.png" alt="" />', $comment);
@@ -201,166 +229,244 @@ function searchHistory($where, $sbsearchtext, $results, $style, $order, $page) {
                 $comment = str_replace("[/u]","</span>",$comment);
             }
 
-            $sqlN = "SELECT `user_avatar`, `username` FROM `".$prefix."_users` WHERE `username`='".$row['name']."'";
-            $nameresultN = $db->sql_query($sqlN);
-            $rowN = $db->sql_fetchrow($nameresultN);
-            $db->sql_freeresult($nameresultN);
+            $sqlN = "SELECT `user_avatar`, `username` FROM `".$titanium_prefix."_users` WHERE `username`='".$row['name']."'";
+            $nameresultN = $titanium_db->sql_query($sqlN);
+            $rowN = $titanium_db->sql_fetchrow($nameresultN);
+            $titanium_db->sql_freeresult($nameresultN);
 
             // Disallow Anonymous users from seeing links to users' accounts
-            if ($username == "Anonymous") {
-                if (!empty($rowN['user_avatar']) && $rowN['user_avatar'] != "blank.gif" && ($rowN['user_avatar'] != "gallery/blank.gif") && (stristr($rowN['user_avatar'],'.') == TRUE)) {
+            if ($titanium_username == "Anonymous") 
+			{
+                if (!empty($rowN['user_avatar']) && $rowN['user_avatar'] != "blank.gif" && ($rowN['user_avatar'] != "gallery/blank.png") && (stristr($rowN['user_avatar'],'.') == TRUE)) 
+				{
                     echo "<tr><td style=\"background-color: $bgcolor;\">";
                     echo "<table cellpadding=\"1\" cellspacing=\"0\" width=\"100%\" border=\"0\">";
                     echo "<tr><td valign='top' style=\"background-color: $bgcolor;\">";
-                    $row_avatar = $rowN['user_avatar'];
+                    
+					$row_avatar = $rowN['user_avatar'];
                     $av_found = findAvatar($row_avatar);
-                    echo $av_found;
+                    
+					echo ''.$av_found.'&nbsp;&nbsp;';
                     echo "<td valign='top' width='100%' style=\"background-color: $bgcolor;\">";
-                    echo "<strong>$row[name]:</strong> $comment";
-                    if ($conf['date'] == "yes") {
-                        if (!empty($row['timestamp'])) {
+                    echo "&nbsp;<strong>$row[name]&nbsp;<i class=\"bi bi-megaphone\"></i></strong>&nbsp;$comment";
+                
+				    if ($conf['date'] == "yes") 
+					{
+                        if (!empty($row['timestamp'])) 
+						{
                             // reads unix timestamp && formats it to the viewer's timezone
-                            if (is_user()) {
+                            if (is_user()) 
+							{
                                 $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
-                                echo "<br />$unixTime";
-                            } else {
+                                echo "<br />&nbsp;$unixTime";
+
+                            } 
+							else 
+							{
                                 $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
-                                echo "<br />$unixTime";
+                                echo "<br />&nbsp;$unixTime";
+
                             }
-                        } else {
-                            echo "<br />".$row['date']."&nbsp;".$row['time'];
+                        } 
+						else 
+						{
+                            echo "<br />&nbsp;".$row['date']."&nbsp;".$row['time'];
                         }
                     }
-                    echo "</td></tr></table>";
+                    
+					echo "</td></tr></table>";
                     echo "</td></tr>\n";
-                } else {
+                } 
+				
+				# Not Anon
+				else 
+				{
                     echo "<tr><td style=\"background-color: $bgcolor;\">";
-                    echo "<strong>".$row['name'].":</strong> $comment";
-                    if ($conf['date'] == "yes") {
-                        if (!empty($row['timestamp'])) {
+                    echo "<strong>".$row['name']."&nbsp;<i class=\"bi bi-megaphone\"></i></strong>&nbsp;$comment";
+                
+				    if ($conf['date'] == "yes") 
+					{
+                       if (!empty($row['timestamp'])) 
+					   {
                             // reads unix timestamp && formats it to the viewer's timezone
-                            if (is_user()) {
+                            if (is_user()) 
+							{
                                 $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
                                 echo "<br />$unixTime";
-                            } else {
+                            } 
+							else 
+							{
                                 $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
                                 echo "<br />$unixTime";
                             }
-                        } else {
+                        } 
+						else 
+						{
                             echo "<br />".$row['date']."&nbsp;".$row['time'];
                         }
                     }
-                    echo "</td></tr>\n";
+                    
+					echo "</td></tr>\n";
                 }
-            } else {
+            } 
+			else 
+			{
                 // check to see if nickname is a user in the DB && not Anonymous
-                if (is_array($rowN) && $rowN['username'] != "Anonymous") {
-                    if (($rowN['user_avatar']) && ($rowN['user_avatar'] != "blank.gif") && ($rowN['user_avatar'] != "gallery/blank.gif") && (stristr($rowN['user_avatar'],'.') == TRUE)) {
+                if (is_array($rowN) && $rowN['username'] != "Anonymous") 
+				{
+                    if (($rowN['user_avatar']) && ($rowN['user_avatar'] != "blank.gif") && ($rowN['user_avatar'] != "gallery/blank.png") && (stristr($rowN['user_avatar'],'.') == TRUE)) 
+					{
                         echo "<tr><td style=\"background-color: $bgcolor;\">";
                         echo "<table cellpadding=\"1\" cellspacing=\"0\" width=\"100%\" border=\"0\">";
                         echo "<tr><td valign='top' style=\"background-color: $bgcolor;\">";
                         $row_avatar = $rowN['user_avatar'];
                         $av_found = findAvatar($row_avatar);
-                        echo $av_found;
+                        echo ''.$av_found.'&nbsp;&nbsp;';
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                        echo "<td valign='top' width='100%' style=\"background-color: $bgcolor;\"><strong><a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$row[name]\">" . UsernameColor($row['name']) . "</a>:</strong> $comment<br />";
+                        echo "<td valign='top' width='100%' style=\"background-color: $bgcolor;\"><strong>
+						&nbsp;<a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$row[name]\">" . UsernameColor($row['name']) . 
+						"</a>&nbsp;<i class=\"bi bi-megaphone\"></i></strong>&nbsp;$comment<br />";
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                        if ($conf['date'] == "yes") {
-                            if (!empty($row['timestamp'])) {
+                        if ($conf['date'] == "yes") 
+						{
+                            if (!empty($row['timestamp'])) 
+							{
                                 // reads unix timestamp && formats it to the viewer's timezone
-                                if (is_user()) {
+                                if (is_user()) 
+								{
                                     $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
-                                    echo $unixTime;
-                                } else {
+                                    echo '&nbsp;'.$unixTime;
+                                } 
+								else 
+								{
                                     $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
-                                    echo "$unixTime";
+                                    echo '&nbsp;'."$unixTime";
                                 }
-                            } else {
-                                echo $row['date']."&nbsp;".$row['time'];
+                            } 
+							else 
+							{
+                                echo '&nbsp;'.$row['date']."&nbsp;".$row['time'];
                             }
                         }
-                        // registered users edit/delete posts
-                        if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) {
+						// registered users edit/delete posts
+                        if (($conf['delyourlastpost'] == "yes") && ($titanium_username == $row['name'])) {
                             echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                         }
-                        echo "</td></tr></table>";
+                        
+						echo "</td></tr></table>";
                         echo "</td></tr>\n";
-                    } else {
+                    } 
+					else 
+					{
                         echo "<tr><td style=\"background-color: $bgcolor;\">";
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                        echo "<strong><a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$row[name]\">" . UsernameColor($row['name']) . "</a>:</strong> $comment<br />";
+                        echo "<td valign='top' width='100%' style=\"background-color: $bgcolor;\"><strong>
+						&nbsp;<a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$row[name]\">" . UsernameColor($row['name']) . 
+						"</a>&nbsp;<i class=\"bi bi-megaphone\"></i></strong>&nbsp;$comment<br />";
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                        if ($conf['date'] == "yes") {
-                            if (!empty($row['timestamp'])) {
+                        if ($conf['date'] == "yes") 
+						{
+                            if (!empty($row['timestamp'])) 
+							{
                                 // reads unix timestamp && formats it to the viewer's timezone
-                                if (is_user()) {
+                                if (is_user()) 
+								{
                                     $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
-                                    echo $unixTime;
-                                } else {
+                                    echo '&nbsp;'.$unixTime;
+                                } 
+								else 
+								{
                                     $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
-                                    echo $unixTime;
+                                    echo '&nbsp;'.$unixTime;
                                 }
-                            } else {
+                            } 
+							else 
+							{
                                 echo $row['date']."&nbsp;".$row['time'];
                             }
                         }
                         // registered users edit/delete posts
-                        if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) {
+                        if (($conf['delyourlastpost'] == "yes") && ($titanium_username == $row['name'])) 
+						{
                             echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                         }
-                        echo "</td></tr>\n";
+                        
+						echo "</td></tr>\n";
                     }
-                } else {
+                } 
+				else 
+				{
                     echo "<tr><td style=\"background-color: $bgcolor;\">";
-                    echo "<strong>$row[name]:</strong> $comment";
-                    if ($conf['date'] == "yes") {
-                        if (!empty($row['timestamp'])) {
+                    echo "<strong>$row[name]&nbsp;<i class=\"bi bi-megaphone\"></i></strong>&nbsp;$comment";
+                
+				    if ($conf['date'] == "yes") 
+					{
+                        if (!empty($row['timestamp'])) 
+						{
                             // reads unix timestamp && formats it to the viewer's timezone
-                            if (is_user()) {
+                            if (is_user()) 
+							{
                                 $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
                                 echo "<br />$unixTime";
-                            } else {
+								
+                            } 
+							else 
+							{
                                 $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
                                 echo "<br />$unixTime";
                             }
-                        } else {
+                        } 
+						else 
+						{
                             echo "<br />".$row['date']."&nbsp;".$row['time'];
                         }
                     }
-                    echo "</td></tr>\n";
+                    
+					echo "</td></tr>\n";
                 }
             }
-            if ($flag == 1) { $flag = 2; }
-            elseif ($flag == 2) { $flag =1; }
+            
+			if($flag == 1): 
+			$flag = 2;
+            elseif($flag == 2):
+			$flag =1;
+			endif;
         }
-        $db->sql_freeresult($result);
-    } else {
+        
+		$titanium_db->sql_freeresult($result);
+    } 
+	else 
+	{
         echo "<tr><td><table cellpadding=\"3\" cellspacing=\"0\" border=\"1\" align=\"center\">\n";
         echo "<tr><td align=\"center\">"._NORESULTS."</td></tr></table></td></tr>";
     }
-    echo "</table>";
+    
+	echo "</table>";
     CloseTable();
     include_once(NUKE_BASE_DIR.'footer.php');
 }
 
-function showSearchBox($sbsearchtext, $where, $style, $results, $order) {
+function showSearchBox($sbsearchtext, $where, $style, $results, $order) 
+{
     echo "<form name=\"shoutform3\" method=\"post\" action=\"\" style=\"margin-bottom: 0px;\">\n";
     echo "<table cellpadding=\"3\" cellspacing=\"0\" width=\"95%\" border=\"0\" align=\"center\">\n";
-    echo "<tr><td align=\"center\"><span class=\"title\">"._SEARCHBOX."</span></td></tr>\n";
-    //echo "<tr><td width=\"50%\" align=\"right\"><img width=\"50\" height=\"39\" src=\"modules/Shout_Box/search.jpg\" alt=\"\" /></td><td width=\"50%\" align=\"left\" valign=\"middle\"><span class=\"title\">"._SEARCHBOX."</span></td></tr>\n";
-    echo "<tr><td colspan=\"2\" align=\"center\" nowrap=\"nowrap\" valign=\"middle\">";
+    echo "<tr><td align=\"center\"><span class=\"title\"><strong>"._SEARCHBOX."</strong></span></td></tr>\n";
+	echo "<tr><td style=\"padding-top:6px;\"> </td></tr>\n";
+	
+	echo "<tr><td colspan=\"2\" align=\"center\" nowrap=\"nowrap\" valign=\"middle\">";
 
     if (($where == 'Shouts') || (empty($where))) { $wSEL1 = " selected=\"selected\""; } else { $wSEL1 = ''; }
     if ($where == 'Nicknames') { $wSEL2 = " selected=\"selected\""; } else { $wSEL2 = ''; }
     if ($where == 'Both') { $wSEL3 = " selected=\"selected\""; } else { $wSEL3 = ''; }
+
     echo "<select name=\"where\">
     <option value=\"Shouts\"$wSEL1>"._SHOUTS."</option>
     <option value=\"Nicknames\"$wSEL2>"._SBNICKNAMES."</option>
@@ -389,22 +495,23 @@ function showSearchBox($sbsearchtext, $where, $style, $results, $order) {
     <option value=\"newest\"$oSEL1>"._NEWESTFIRST."</option>
     <option value=\"oldest\"$oSEL2>"._OLDESTFIRST."</option></select>";
 
-    echo "</td></tr><tr><td colspan=\"2\" align=\"center\" nowrap=\"nowrap\" valign=\"middle\">";
+    echo "</td></tr><tr><td style=\"padding-top:8px;\" colspan=\"2\" align=\"center\" nowrap=\"nowrap\" valign=\"middle\">";
     echo "<input type=\"text\" name=\"sbsearchtext\" value=\"$sbsearchtext\" size=\"53\" maxlength=\"100\" />&nbsp;&nbsp;";
     echo "<input type=\"hidden\" name=\"Action\" value=\"Search\" /><input type=\"submit\" name=\"button\" value=\""._SBSEARCH."\" /></td></tr>";
+    echo "<tr><td style=\"padding-top:6px;\"> </td></tr>\n";
     echo "</table></form>";
 }
 
 function shoutDelete($page, $shoutID) {
-    global $db, $username, $prefix, $conf;
+    global $titanium_db, $titanium_username, $titanium_prefix, $conf;
     if ($conf['delyourlastpost'] == "yes" && !empty($shoutID)) {
-        $sql = "SELECT `name` FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
-        $nameresult = $db->sql_query($sql);
-        $row = $db->sql_fetchrow($nameresult);
-        $db->sql_freeresult($nameresult);
-        if ($row['name'] == $username) {
-            $sqlD = "DELETE FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
-            $db->sql_query($sqlD);
+        $sql = "SELECT `name` FROM `".$titanium_prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
+        $nameresult = $titanium_db->sql_query($sql);
+        $row = $titanium_db->sql_fetchrow($nameresult);
+        $titanium_db->sql_freeresult($nameresult);
+        if ($row['name'] == $titanium_username) {
+            $sqlD = "DELETE FROM `".$titanium_prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
+            $titanium_db->sql_query($sqlD);
         }
     }
     header("Location: modules.php?name=Shout_Box&page=$page");
@@ -412,15 +519,15 @@ function shoutDelete($page, $shoutID) {
 }
 
 function shoutEdit($page, $shoutID, $ShoutError) {
-    global $db, $prefix, $conf, $username;
+    global $titanium_db, $titanium_prefix, $conf, $titanium_username;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
     if ($conf['delyourlastpost'] == "yes" && !empty($shoutID)) {
-        $sql = "SELECT `name`, `comment` FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
-        $nameresult = $db->sql_query($sql);
-        $row = $db->sql_fetchrow($nameresult);
-        $db->sql_freeresult($nameresult);
-        if ($row['name'] == $username) {
+        $sql = "SELECT `name`, `comment` FROM `".$titanium_prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
+        $nameresult = $titanium_db->sql_query($sql);
+        $row = $titanium_db->sql_fetchrow($nameresult);
+        $titanium_db->sql_freeresult($nameresult);
+        if ($row['name'] == $titanium_username) {
             // strip out link code here (added back in later if saved)
             $ShoutComment = $row['comment'];
             $ShoutComment = str_replace("&#91;<a rel=\"nofollow\" target=\"_blank\" href=\"", "",$ShoutComment);
@@ -458,12 +565,12 @@ function shoutEdit($page, $shoutID, $ShoutError) {
             $ShoutComment = implode(" ",$ShoutNew);
 
             // strip smilies code here (added back in later if saved)
-            $sql = "SELECT * FROM `".$prefix."_shoutbox_emoticons`";
-            $eresult = $db->sql_query($sql);
-            while ($emoticons = $db->sql_fetchrow($eresult)) {
+            $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_emoticons`";
+            $eresult = $titanium_db->sql_query($sql);
+            while ($emoticons = $titanium_db->sql_fetchrow($eresult)) {
                 $ShoutComment = str_replace($emoticons['image'],$emoticons['text'],$ShoutComment);
             }
-            $db->sql_freeresult($eresult);
+            $titanium_db->sql_freeresult($eresult);
 
             echo "<form name=\"shoutedit\" method=\"post\" action=\"\" style=\"margin-bottom: 0px;\">\n";
             echo "<table cellpadding=\"3\" cellspacing=\"0\" width=\"90%\" border=\"0\" align=\"center\">\n";
@@ -486,13 +593,13 @@ function shoutEdit($page, $shoutID, $ShoutError) {
 }
 
 function shoutSave($page, $shoutID, $ShoutComment) {
-    global $db, $username, $prefix, $conf;
+    global $titanium_db, $titanium_username, $titanium_prefix, $conf;
     if ($conf['delyourlastpost'] == "yes" && !empty($shoutID)) {
-        $sql = "SELECT `name` FROM `".$prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
-        $nameresult = $db->sql_query($sql);
-        $row = $db->sql_fetchrow($nameresult);
-        $db->sql_freeresult($nameresult);
-        if ($row['name'] == $username) {
+        $sql = "SELECT `name` FROM `".$titanium_prefix."_shoutbox_shouts` WHERE `id`='$shoutID'";
+        $nameresult = $titanium_db->sql_query($sql);
+        $row = $titanium_db->sql_fetchrow($nameresult);
+        $titanium_db->sql_freeresult($nameresult);
+        if ($row['name'] == $titanium_username) {
             $ShoutComment = trim($ShoutComment); // remove whitespace off ends of shout
             $ShoutComment = preg_replace('/\s+/', ' ', $ShoutComment); // convert double spaces in middle of shout to single space
             $num = strlen($ShoutComment);
@@ -613,9 +720,9 @@ function shoutSave($page, $shoutID, $ShoutComment) {
             //Smilies from database
             $ShoutArrayReplace = explode(" ",$ShoutComment);
             $ShoutArrayScan = $ShoutArrayReplace;
-            $sql = "SELECT * FROM `".$prefix."_shoutbox_emoticons`";
-            $eresult = $db->sql_query($sql);
-            while ($emoticons = $db->sql_fetchrow($eresult)) {
+            $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_emoticons`";
+            $eresult = $titanium_db->sql_query($sql);
+            while ($emoticons = $titanium_db->sql_fetchrow($eresult)) {
                 $i = 0;
                 foreach($ShoutArrayScan as $ShoutPart) {
                     if ($ShoutPart == $emoticons['text']) { $ShoutArrayReplace[$i] = $emoticons['image']; }
@@ -628,9 +735,9 @@ function shoutSave($page, $shoutID, $ShoutComment) {
             if($conf['censor'] == "yes") {
                 $ShoutArrayReplace = explode(" ",$ShoutComment);
                 $ShoutArrayScan = $ShoutArrayReplace;
-                $sql = "SELECT * FROM `".$prefix."_shoutbox_censor`";
-                $cresult = $db->sql_query($sql);
-                while ($censor = $db->sql_fetchrow($cresult)) {
+                $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_censor`";
+                $cresult = $titanium_db->sql_query($sql);
+                while ($censor = $titanium_db->sql_fetchrow($cresult)) {
                     $i = 0;
                     foreach($ShoutArrayScan as $ShoutPart) {
                         $ShoutPart = strtolower($ShoutPart);
@@ -643,17 +750,17 @@ function shoutSave($page, $shoutID, $ShoutComment) {
 
                 /*
                 // Phrase censor - Needs work before implementing
-                $sql = "SELECT * FROM ".$prefix."_shoutbox_emoticons";
-                $eresult = $db->sql_query($sql);
-                while ($emoticons = $db->sql_fetchrow($eresult)) {
+                $sql = "SELECT * FROM ".$titanium_prefix."_shoutbox_emoticons";
+                $eresult = $titanium_db->sql_query($sql);
+                while ($emoticons = $titanium_db->sql_fetchrow($eresult)) {
                     $ShoutComment = str_replace($emoticons[1],$emoticons[2],$ShoutComment);
                 }
                 */
             }
 
             if (!$ShoutError) {
-                $sqlU = "UPDATE `".$prefix."_shoutbox_shouts` set `comment`='$ShoutComment' WHERE `id`='$shoutID'";
-                $db->sql_query($sqlU);
+                $sqlU = "UPDATE `".$titanium_prefix."_shoutbox_shouts` set `comment`='$ShoutComment' WHERE `id`='$shoutID'";
+                $titanium_db->sql_query($sqlU);
             } else {
                 header("Location: modules.php?name=Shout_Box&Action=Edit&shoutID=$shoutID&page=$page&ShoutError=$ShoutError");
                 exit;
@@ -664,46 +771,60 @@ function shoutSave($page, $shoutID, $ShoutComment) {
     exit;
 }
 
-function findAvatar($row_avatar) {
-    global $db, $prefix;
+function findAvatar($row_avatar) 
+{
+    global $titanium_db, $titanium_prefix;
+
     // Find avatar path
     // modules/Forums/images/avatars/gallery
-    $sql = "SELECT * FROM `".$prefix."_bbconfig` WHERE `config_name`='avatar_gallery_path'";
-    $result = $db->sql_query($sql);
-    $avatar_gallery_path = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $sql = "SELECT * FROM `".$titanium_prefix."_bbconfig` WHERE `config_name`='avatar_gallery_path'";
+    $result = $titanium_db->sql_query($sql);
+    $avatar_gallery_path = $titanium_db->sql_fetchrow($result);
+    $titanium_db->sql_freeresult($result);
+
     // modules/Forums/images/avatars
-    $sql = "SELECT * FROM ".$prefix."_bbconfig WHERE config_name='avatar_path'";
-    $result = $db->sql_query($sql);
-    $avatar_path = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
-    if (preg_match('#http://#i',$row_avatar) == TRUE) {
+    $sql = "SELECT * FROM ".$titanium_prefix."_bbconfig WHERE config_name='avatar_path'";
+    $result = $titanium_db->sql_query($sql);
+    $avatar_path = $titanium_db->sql_fetchrow($result);
+    $titanium_db->sql_freeresult($result);
+
+    if (preg_match('#http://#i',$row_avatar) == TRUE) 
+	{
         // offsite avatars
-        $AvatarFound = "<img src=\"$row_avatar\" alt=\"\" /></td>";
-    } else {
+        $AvatarFound = "<img height=\"40\" src=\"$row_avatar\" alt=\"\" /></td>";
+    } 
+	else 
+	{
         $agp = $avatar_gallery_path['config_value'].'/'.$row_avatar;
         $ap = $avatar_path['config_value'].'/'.$row_avatar;
-        if (file_exists($agp) == TRUE) {
-            $AvatarFound = "<img src=\"".$avatar_gallery_path['config_value']."/$row_avatar\" alt=\"\" /></td>";
-        } elseif (file_exists($ap) == TRUE) {
-            $AvatarFound = "<img src=\"".$avatar_path['config_value']."/$row_avatar\" alt=\"\" /></td>";
-        } else {
-            $AvatarFound = "<img src=\"".$avatar_path['config_value']."/blank.gif\" alt=\"\" /></td>";
+        
+		if (file_exists($agp) == TRUE) 
+		{
+            $AvatarFound = "<img height=\"40\" src=\"".$avatar_gallery_path['config_value']."/$row_avatar\" alt=\"\" /></td>";
+        } 
+		elseif (file_exists($ap) == TRUE) 
+		{
+            $AvatarFound = "<img height=\"40\" src=\"".$avatar_path['config_value']."/$row_avatar\" alt=\"\" /></td>";
+        } 
+		else 
+		{
+            $AvatarFound = "<img height=\"40\" src=\"".$avatar_path['config_value']."/blank.png\" alt=\"\" /></td>";
         }
     }
     return $AvatarFound;
 }
 
-function showHistory($page) {
-    global $db, $prefix, $username, $userinfo, $board_config;
+function showHistory($page) 
+{
+    global $titanium_db, $titanium_prefix, $titanium_username, $userinfo, $board_config;
     include_once(NUKE_BASE_DIR.'header.php');
     global $conf;
 
     // count number of shouts in DB
-    $sql = "SELECT id FROM ".$prefix."_shoutbox_shouts";
-    $result = $db->sql_query($sql);
-    $numrows = $db->sql_numrows($result);
-    $db->sql_freeresult($result);
+    $sql = "SELECT id FROM ".$titanium_prefix."_shoutbox_shouts";
+    $result = $titanium_db->sql_query($sql);
+    $numrows = $titanium_db->sql_numrows($result);
+    $titanium_db->sql_freeresult($result);
     $shout_pages = 1;
     $shoutsViewed = $conf['shoutsperpage'];
     while ($numrows >= $shoutsViewed) {
@@ -719,7 +840,8 @@ function showHistory($page) {
         $offset1 = ($offset - $shoutsViewed);
     } else { $offset1 = 0; }
 
-    // search form
+   	title($sitename.' '._SHOUTHISTORY);
+	// search form
     OpenTable();
     $sbsearchtext = '';
     $where = '';
@@ -728,23 +850,28 @@ function showHistory($page) {
     $order = '';
     showSearchBox($sbsearchtext, $where, $style, $results, $order);
     CloseTable();
-    echo "<br />";
+
     OpenTable();
     $flag = 1;
 
     $ThemeSel = get_theme();
-    $sql = "SELECT `menuColor1`, `menuColor2` FROM `".$prefix."_shoutbox_themes` WHERE `themeName`='$ThemeSel'";
-    $result = $db->sql_query($sql);
-    $rowColor = $db->sql_fetchrow($result);
-    $db->sql_freeresult($result);
+    $sql = "SELECT `menuColor1`, `menuColor2` FROM `".$titanium_prefix."_shoutbox_themes` WHERE `themeName`='$ThemeSel'";
+    $result = $titanium_db->sql_query($sql);
+    $rowColor = $titanium_db->sql_fetchrow($result);
+
+    $titanium_db->sql_freeresult($result);
 
     echo "<form name=\"shoutform2\" method=\"post\" action=\"\" style=\"margin-bottom: 0px;\">\n";
     echo "<table cellpadding=\"3\" cellspacing=\"0\" width=\"90%\" border=\"0\" align=\"center\">\n";
-    echo "<tr><td align=\"center\"><span class=\"title\">"._SHOUTBOXHISTORY."</span></td></tr>\n";
-    //echo "<tr><td><table cellpadding=\"0\" width=\"100%\" cellspacing=\"0\" border=\"0\"><tr><td width=\"45%\" align=\"right\"><img width=\"50\" height=\"39\" src=\"modules/Shout_Box/history.gif\" alt=\"\" /></td><td width=\"55%\" align=\"left\" valign=\"middle\"><span class=\"title\">"._SHOUTBOXHISTORY."</span></td></tr></table></td></tr>\n";
-    $sql = "SELECT * FROM `".$prefix."_shoutbox_shouts` ORDER BY `id` DESC LIMIT ".$offset1.",$shoutsViewed";
-    $resultt = $db->sql_query($sql);
-    while ($row = $db->sql_fetchrow($resultt)) {
+    //echo "<tr><td align=\"center\"><span class=\"title\">"._SHOUTBOXHISTORY."</span></td></tr>\n";
+    
+	echo '<br /><br />';
+	 
+	$sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_shouts` ORDER BY `id` DESC LIMIT ".$offset1.",$shoutsViewed";
+
+    $resultt = $titanium_db->sql_query($sql);
+	while ($row = $titanium_db->sql_fetchrow($resultt)) 
+	{
         if ($flag == 1) { $bgcolor = $rowColor['menuColor1']; }
         if ($flag == 2) { $bgcolor = $rowColor['menuColor2']; }
         $comment = str_replace('src=', 'src="', $row['comment']);
@@ -767,42 +894,58 @@ function showHistory($page) {
             $comment = str_replace("[/u]","</span>",$comment);
         }
 
-        $sqlN = "SELECT `user_avatar`, `username` FROM `".$prefix."_users` WHERE username='$row[name]'";
-        $nameresultN = $db->sql_query($sqlN);
-        $rowN = $db->sql_fetchrow($nameresultN);
-        $db->sql_freeresult($nameresultN);
+        $sqlN = "SELECT `user_avatar`, `username` FROM `".$titanium_prefix."_users` WHERE username='$row[name]'";
+        $nameresultN = $titanium_db->sql_query($sqlN);
+        $rowN = $titanium_db->sql_fetchrow($nameresultN);
+        $titanium_db->sql_freeresult($nameresultN);
 
         // Disallow Anonymous users from seeing links to users' accounts
-        if ($username == "Anonymous") {
-            if (!empty($rowN['user_avatar']) && ($rowN['user_avatar'] != "blank.gif") && ($rowN['user_avatar'] != "gallery/blank.gif") && (stristr($rowN['user_avatar'],'.') == TRUE)) {
+        if ($titanium_username == "Anonymous") 
+		{
+            if (!empty($rowN['user_avatar']) && ($rowN['user_avatar'] != "blank.gif") && ($rowN['user_avatar'] != "gallery/blank.png") && (stristr($rowN['user_avatar'],'.') == TRUE)) 
+			{
                 echo "<tr><td style=\"background-color: $bgcolor;\">";
                 echo "<table cellpadding=\"1\" cellspacing=\"0\" width=\"100%\" border=\"0\">";
                 echo "<tr><td valign='top' style=\"background-color: $bgcolor;\">";
-                $row_avatar = $rowN['user_avatar'];
+            
+			    $row_avatar = $rowN['user_avatar'];
                 $av_found = findAvatar($row_avatar);
-                echo "$av_found";
+			    echo ''.$av_found.'&nbsp;&nbsp;';
+
                 echo "<td valign='top' width='100%' style=\"background-color: $bgcolor;\">";
-                echo "<strong>$row[name]:</strong> $comment";
-                if ($conf['date'] == "yes") {
-                    if (!empty($row['timestamp'])) {
+                echo "<strong>&nbsp;$row[name]&nbsp;<i class=\"bi bi-megaphone\"></i></strong>&nbsp;$comment";
+            
+			    if ($conf['date'] == "yes") 
+				{
+                    if (!empty($row['timestamp'])) 
+					{
                         // reads unix timestamp && formats it to the viewer's timezone
-                        if (is_user()) {
+                        if (is_user()) 
+						{
                             $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
-                            echo "<br />$unixTime";
-                        } else {
+                            echo "<br />&nbsp;$unixTime";
+                        } 
+						else 
+						{
                             $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
-                            echo "<br />$unixTime";
+                            echo "<br />&nbsp;$unixTime";
                         }
-                    } else {
-                        echo "<br />".$row['date']."&nbsp;".$row['time'];
+                    } 
+					else 
+					{
+                        echo "<br />&nbsp;".$row['date']."&nbsp;".$row['time'];
                     }
                 }
-                echo "</td></tr></table>";
+                
+				echo "</td></tr></table>";
                 echo "</td></tr>\n";
-            } else {
+            } 
+			else 
+			{
                 echo "<tr><td style=\"background-color: $bgcolor;\">";
-                echo "<strong>$row[name]:</strong> $comment";
-                if ($conf['date'] == "yes") {
+                echo "<strong>$row[name]&nbsp;<i class=\"bi bi-megaphone\"></i></strong>&nbsp;$comment";
+            
+			    if ($conf['date'] == "yes") {
                     if (!empty($row['timestamp'])) {
                         // reads unix timestamp && formats it to the viewer's timezone
                         if (is_user()) {
@@ -821,17 +964,19 @@ function showHistory($page) {
         } else {
             // check to see if nickname is a user in the DB && not Anonymous
             if (is_array($rowN) && ($rowN['username'] != "Anonymous")) {
-                if (!empty($rowN['user_avatar']) && ($rowN['user_avatar'] != "blank.gif") && ($rowN['user_avatar'] != "gallery/blank.gif") && (stristr($rowN['user_avatar'],'.') == TRUE)) {
+                if (!empty($rowN['user_avatar']) && ($rowN['user_avatar'] != "blank.gif") && ($rowN['user_avatar'] != "gallery/blank.png") && (stristr($rowN['user_avatar'],'.') == TRUE)) {
                     echo "<tr><td style=\"background-color: $bgcolor;\">";
                     echo "<table cellpadding=\"1\" cellspacing=\"0\" width=\"100%\" border=\"0\">";
                     echo "<tr><td valign='top' style=\"background-color: $bgcolor;\">";
                     $row_avatar = $rowN['user_avatar'];
                     $av_found = findAvatar($row_avatar);
-                    echo "$av_found";
+                    echo ''.$av_found.'&nbsp;&nbsp;';
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                    echo "<td valign='top' width='100%' style=\"background-color: $bgcolor;\"><strong><a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$row[name]\">" . UsernameColor($row['name']) . "</a>:</strong> $comment<br />";
+                        echo "<td valign='top' width='100%' style=\"background-color: $bgcolor;\"><strong>
+						&nbsp;<a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$row[name]\">" . UsernameColor($row['name']) . 
+						"</a>&nbsp;<i class=\"bi bi-megaphone\"></i></strong>&nbsp;$comment<br />";
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -840,17 +985,17 @@ function showHistory($page) {
                             // reads unix timestamp && formats it to the viewer's timezone
                             if (is_user()) {
                                 $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
-                                echo $unixTime;
+                                echo '&nbsp;'.$unixTime;
                             } else {
                                 $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
-                                echo $unixTime;
+                                echo '&nbsp;'.$unixTime;
                             }
                         } else {
-                            echo $row['date']."&nbsp;".$row['time'];
+                            echo '&nbsp;'.$row['date']."&nbsp;".$row['time'];
                         }
                     }
                     // registered users edit/delete posts
-                    if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) {
+                    if (($conf['delyourlastpost'] == "yes") && ($titanium_username == $row['name'])) {
                         echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                     }
                     echo "</td></tr></table>";
@@ -860,7 +1005,9 @@ function showHistory($page) {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                    echo "<strong><a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=".$row['name']."\">" . UsernameColor($row['name']) . "</a>:</strong> $comment<br />";
+                        echo "<td valign='top' width='100%' style=\"background-color: $bgcolor;\"><strong>
+						&nbsp;<a href=\"modules.php?name=Your_Account&amp;op=userinfo&amp;username=$row[name]\">" . UsernameColor($row['name']) . 
+						"</a>&nbsp;<i class=\"bi bi-megaphone\"></i></strong>&nbsp;$comment<br />";
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -869,24 +1016,24 @@ function showHistory($page) {
                             // reads unix timestamp && formats it to the viewer's timezone
                             if (is_user()) {
                                 $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
-                                echo "$unixTime";
+                                echo '&nbsp;'."$unixTime";
                             } else {
                                 $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
-                                echo $unixTime;
+                                echo '&nbsp;'.$unixTime;
                             }
                         } else {
                             echo "$row[date]&nbsp;$row[time]";
                         }
                     }
                     // registered users edit/delete posts
-                    if (($conf['delyourlastpost'] == "yes") && ($username == $row['name'])) {
+                    if (($conf['delyourlastpost'] == "yes") && ($titanium_username == $row['name'])) {
                         echo " &#91; <a title=\""._EDIT."\" href=\"modules.php?name=Shout_Box&amp;Action=Edit&amp;shoutID=".$row['id']."&amp;page=$page\">"._EDIT."</a> | <a title=\""._DELETE."\" href=\"modules.php?name=Shout_Box&amp;Action=Delete&amp;shoutID=".$row['id']."&amp;page=$page\">"._DELETE."</a> &#93;";
                     }
                     echo "</td></tr>\n";
                 }
             } else {
                 echo "<tr><td style=\"background-color: $bgcolor;\">";
-                echo "<strong>$row[name]:</strong> $comment";
+                echo "<strong>$row[name]&nbsp;<i class=\"bi bi-megaphone\"></i></strong>&nbsp;$comment";
                 if ($conf['date'] == "yes") {
                     if (!empty($row['timestamp'])) {
                             // reads unix timestamp && formats it to the viewer's timezone
@@ -948,6 +1095,13 @@ function showHistory($page) {
     echo "</td></tr></table></form>";
     // End menu build
     CloseTable();
+	
+	OpenTable();
+	?>
+
+    <?
+	CloseTable();
+	
     include_once(NUKE_BASE_DIR.'footer.php');
 }
 

@@ -1,14 +1,13 @@
 <?php
-
-/*
-|-----------------------------------------------------------------------
-|	COPYRIGHT (c) 2007, 2015
-|	AUTHOR 				:	Lokesh Dhakar	
-|	COPYRIGHTS 			:	http://lokeshdhakar.com/projects/lightbox2
-|	PROJECT 			:	jQuery lightbox
-|	VERSION 			:	2.9.0
-|----------------------------------------------------------------------
-*/
+/**
+ * Lightweight, accessible and responsive lightbox.
+ *
+ * @package lity
+ * @author  Jan Sorgalla
+ * @version 2.3.1
+ * @license MIT
+ * @link    http://sorgalla.com/lity/
+ */
 
 if(!defined('NUKE_FILE')) 
 	die('Access forbbiden');

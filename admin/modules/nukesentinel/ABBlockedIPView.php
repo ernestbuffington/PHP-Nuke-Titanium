@@ -1,11 +1,12 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /********************************************************/
 /* NukeSentinel(tm)                                     */
-/* By: NukeScripts(tm) (http://www.nukescripts.net)     */
+/* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
 /* See CREDITS.txt for ALL contributors                 */
 /********************************************************/
@@ -24,9 +25,9 @@ CloseMenu();
 CloseTable();
 echo '<br />'."\n";
 OpenTable();
-$getIPs = $db->sql_fetchrow($db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ips` WHERE `ip_addr`='$xIPs' LIMIT 0,1"));
+$getIPs = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_blocked_ips` WHERE `ip_addr`='$xIPs' LIMIT 0,1"));
 $getIPs['date'] = date("Y-m-d H:i:s",$getIPs['date']);
-list($getIPs['reason']) = $db->sql_fetchrow($db->sql_query("SELECT `reason` FROM `".$prefix."_nsnst_blockers` WHERE `blocker`='".$getIPs['reason']."' LIMIT 0,1"));
+list($getIPs['reason']) = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `reason` FROM `".$titanium_prefix."_nsnst_blockers` WHERE `blocker`='".$getIPs['reason']."' LIMIT 0,1"));
 $lookupip = str_replace("*", "0", $xIPs);
 $getIPs['query_string'] = htmlentities(base64_decode($getIPs['query_string']));
 $getIPs['query_string'] = str_replace("%20", " ", $getIPs['query_string']);

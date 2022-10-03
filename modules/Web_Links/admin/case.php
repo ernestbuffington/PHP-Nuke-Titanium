@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -13,22 +14,19 @@
 /* This program is free software. You can redistribute it and/or modify */
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
-/*                                                                      */
 /************************************************************************/
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
-	  Titanium Patched                         v3.0.0       08/14/2019
-      Caching System                           v1.0.0       10/31/2005
  ************************************************************************/
 
 if (!defined('ADMIN_FILE')) {
    die('Access Denied');
 }
 
-$module_name = basename(dirname(dirname(__FILE__)));
-include_once(NUKE_MODULES_DIR.$module_name.'/admin/language/lang-'.$currentlang.'.php');
+$titanium_module_name = basename(dirname(dirname(__FILE__)));
+include_once(NUKE_MODULES_DIR.$titanium_module_name.'/admin/language/lang-'.$currentlang.'.php');
 
 switch($op) {
 
@@ -59,8 +57,9 @@ switch($op) {
     case "LinksDelVote":
     case "LinksDelComment":
     case "LinksTransfer":
-        include(NUKE_MODULES_DIR.$module_name.'/admin/index.php');
+        include(NUKE_MODULES_DIR.$titanium_module_name.'/admin/index.php');
     break;
 
 }
+
 ?>

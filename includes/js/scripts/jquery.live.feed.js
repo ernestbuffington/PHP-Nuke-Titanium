@@ -12,7 +12,7 @@ nuke_jq(function($)
 	$.ajax(
 	{
 		type: 'GET',
-		url: 'https://versions.evolution-xtreme.co.uk/evolution-xtreme-live-feed.json',
+		url: 'https://evolution-xtreme.co.uk/Evo-Live-Feed.php',
 		cache: false,
 		dataType: 'json',
 		success: function (data)
@@ -29,7 +29,8 @@ nuke_jq(function($)
 					var feed  = '<tr>'
 						feed += '  <td>'
 						feed += '    <dt style="border-bottom: 1px dashed #cccccc; padding-bottom: 1px;"><span'+((news['color']) ? ' style="color:'+news['color']+'"' : '')+'>'+news['title']+'</span>&nbsp;'+news['timestamp']+'</dt>'
-						feed += '    <dd style="padding: 0; margin: 0 0 1em 1.5em;">'+news['message']+'</dd>'
+						// feed += '    <dd style="padding: 0; margin: 0 0 1em 1.5em;">'+news['message']+'</dd>'
+						feed += '    <dd style="padding: 0;">'+news['message']+'</dd>'
 						feed += '  </td>'
 						feed += '</tr>'
 					$('.exnewsfeed').prepend(feed);

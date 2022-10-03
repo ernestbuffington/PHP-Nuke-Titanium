@@ -1,11 +1,12 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /********************************************************/
 /* NukeSentinel(tm)                                     */
-/* By: NukeScripts(tm) (http://www.nukescripts.net)     */
+/* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
 /* See CREDITS.txt for ALL contributors                 */
 /********************************************************/
@@ -15,12 +16,12 @@ if (!defined('NUKESENTINEL_ADMIN')) {
 }
 
 function abget_country($tempip){
-  global $prefix, $db;
+  global $titanium_prefix, $titanium_db;
   $tempip = str_replace(".*", ".0", $tempip);
   $tempip = sprintf("%u", ip2long($tempip));
-  $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_ip2country` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip' LIMIT 0,1");
-  $countryinfo = $db->sql_fetchrow($result);
-  $db->sql_freeresult($result);
+  $result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_ip2country` WHERE `ip_lo`<='$tempip' AND `ip_hi`>='$tempip' LIMIT 0,1");
+  $countryinfo = $titanium_db->sql_fetchrow($result);
+  $titanium_db->sql_freeresult($result);
   $ctitle = abget_countrytitle($countryinfo['c2c']);
   $countryinfo['country'] = $ctitle['country'];
   if(!$countryinfo) {
@@ -33,10 +34,10 @@ function abget_country($tempip){
 }
 
 function abget_countrytitle($c2c){
-  global $prefix, $db;
-  $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_countries` WHERE `c2c`='$c2c' LIMIT 0,1");
-  $countrytitleinfo = $db->sql_fetchrow($result);
-  $db->sql_freeresult($result);
+  global $titanium_prefix, $titanium_db;
+  $result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_countries` WHERE `c2c`='$c2c' LIMIT 0,1");
+  $countrytitleinfo = $titanium_db->sql_fetchrow($result);
+  $titanium_db->sql_freeresult($result);
   if(!$countrytitleinfo) {
     $countrytitleinfo['c2c'] = "00";
     $countrytitleinfo['country'] = _AB_UNKNOWN;
@@ -47,16 +48,16 @@ function abget_countrytitle($c2c){
 }
 
 function absave_config($config_name, $config_value){
-  global $prefix, $db, $cache;
+  global $titanium_prefix, $titanium_db, $cache;
   if(!get_magic_quotes_runtime()) {
     $config_name = addslashes($config_name);
     $config_value = addslashes($config_value);
   }
-  $resultnum = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_config` WHERE `config_name`='$config_name' LIMIT 0,1"));
+  $resultnum = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_config` WHERE `config_name`='$config_name' LIMIT 0,1"));
   if($resultnum < 1) {
-    $db->sql_query("INSERT INTO `".$prefix."_nsnst_config` (`config_name`, `config_value`) VALUES ('$config_name', '$config_value')");
+    $titanium_db->sql_query("INSERT INTO `".$titanium_prefix."_nsnst_config` (`config_name`, `config_value`) VALUES ('$config_name', '$config_value')");
   } else {
-    $db->sql_query("UPDATE `".$prefix."_nsnst_config` SET `config_value`='$config_value' WHERE `config_name`='$config_name'");
+    $titanium_db->sql_query("UPDATE `".$titanium_prefix."_nsnst_config` SET `config_value`='$config_value' WHERE `config_name`='$config_name'");
   }
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -72,11 +73,21 @@ function blankmenu() {
   echo '<center><br /><img src="modules/NukeSentinel/images/welcome.png" height="132" width="120" alt="" title="" /></center>'."\n";
 }
 
-function mastermenu() {
-  global $ab_config, $getAdmin, $prefix, $db, $op, $admin, $admin_file;
+function mastermenu() 
+{
+  global $ab_config, $getAdmin, $titanium_prefix, $titanium_db, $op, $admin, $admin_file;
+
   $sapi_name = strtolower(php_sapi_name());
-  $checkrow = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_ip2country`"));
-  if($checkrow > 0) { $tableexist = 1; } else { $tableexist = 0; }
+  $checkrow = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_nsnst_ip2country"));
+  
+  if($checkrow > 0) 
+  { 
+    $tableexist = 1; 
+  } 
+  else 
+  { 
+    $tableexist = 0; 
+  }
   echo '<table summary="" align="center" border="0" cellpadding="2" cellspacing="2" width="90%">'."\n";
   echo '<tr>'."\n";
   echo '<td valign="top" width="50%">'."\n";
@@ -350,9 +361,9 @@ function trackedmenu() {
 }
 
 function flag_img($c2c) {
-  global $prefix, $db;
+  global $titanium_prefix, $titanium_db;
   $c2c = strtolower($c2c);
-  list($xcountry) = $db->sql_fetchrow($db->sql_query("SELECT `country` FROM `".$prefix."_nsnst_countries` WHERE `c2c`='$c2c' LIMIT 0,1"));
+  list($xcountry) = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `country` FROM `".$titanium_prefix."_nsnst_countries` WHERE `c2c`='$c2c' LIMIT 0,1"));
   if(!file_exists("images/nukesentinel/countries/".$c2c.".png")) {
     return '<img src="images/nukesentinel/countries/00.png" border="0" height="15" width="25" alt="('.$c2c.') '.$xcountry.'" title="('.$c2c.') '.$xcountry.'" />';
   } else {
@@ -383,25 +394,25 @@ function info_img($abinfo) {
   }
 }
 
-function templatemenu($template="") {
+function templatemenu($phpbb2_template="") {
   global $nuke_config, $ab_config, $nsnst_const, $admin_file;
   echo '<form action="'.$admin_file.'.php" method="post" target="templateview">'."\n";
   echo '<input type="hidden" name="op" value="ABTemplateView" />'."\n";
   echo '<table summary="" align="center" border="0" cellpadding="2" cellspacing="2">'."\n";
   echo '<tr><td>'._AB_TEMPLATE.':</td><td><select name="template">'."\n";
-  $templatelist = "";
-  $templatedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
-  while($func=$templatedir->read()) {
-    if(substr($func, -4) == ".tpl") { $templatelist .= "$func "; }
+  $phpbb2_templatelist = "";
+  $phpbb2_templatedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
+  while($func=$phpbb2_templatedir->read()) {
+    if(substr($func, -4) == ".tpl") { $phpbb2_templatelist .= "$func "; }
   }
-  closedir($templatedir->handle);
-  $templatelist = explode(" ", $templatelist);
-  sort($templatelist);
-  for($i=0; $i < sizeof($templatelist); $i++) {
-    if($templatelist[$i]!="") {
-      $bl = str_replace(".tpl","",$templatelist[$i]);
+  closedir($phpbb2_templatedir->handle);
+  $phpbb2_templatelist = explode(" ", $phpbb2_templatelist);
+  sort($phpbb2_templatelist);
+  for($i=0; $i < sizeof($phpbb2_templatelist); $i++) {
+    if($phpbb2_templatelist[$i]!="") {
+      $bl = str_replace(".tpl","",$phpbb2_templatelist[$i]);
       $bl = str_replace("_"," ",$bl);
-      echo '<option value="'.$templatelist[$i].'">'.$bl.'</option>'."\n";
+      echo '<option value="'.$phpbb2_templatelist[$i].'">'.$bl.'</option>'."\n";
     }
   }
   echo '</select></td></tr>'."\n";
@@ -412,19 +423,19 @@ function templatemenu($template="") {
   echo '<input type="hidden" name="op" value="ABTemplateSource" />'."\n";
   echo '<table summary="" align="center" border="0" cellpadding="2" cellspacing="2">'."\n";
   echo '<tr><td>'._AB_TEMPLATE.':</td><td><select name="template">'."\n";
-  $templatelist = "";
-  $templatedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
-  while($func=$templatedir->read()) {
-    if(substr($func, -4) == ".tpl") { $templatelist .= "$func "; }
+  $phpbb2_templatelist = "";
+  $phpbb2_templatedir = dir(NUKE_INCLUDE_DIR.'nukesentinel/abuse');
+  while($func=$phpbb2_templatedir->read()) {
+    if(substr($func, -4) == ".tpl") { $phpbb2_templatelist .= "$func "; }
   }
-  closedir($templatedir->handle);
-  $templatelist = explode(" ", $templatelist);
-  sort($templatelist);
-  for($i=0; $i < sizeof($templatelist); $i++) {
-    if($templatelist[$i]!="") {
-      $bl = str_replace(".tpl","",$templatelist[$i]);
+  closedir($phpbb2_templatedir->handle);
+  $phpbb2_templatelist = explode(" ", $phpbb2_templatelist);
+  sort($phpbb2_templatelist);
+  for($i=0; $i < sizeof($phpbb2_templatelist); $i++) {
+    if($phpbb2_templatelist[$i]!="") {
+      $bl = str_replace(".tpl","",$phpbb2_templatelist[$i]);
       $bl = str_replace("_"," ",$bl);
-      echo '<option value="'.$templatelist[$i].'">'.$bl.'</option>'."\n";
+      echo '<option value="'.$phpbb2_templatelist[$i].'">'.$bl.'</option>'."\n";
     }
   }
   echo '</select></td></tr>'."\n";
@@ -432,16 +443,16 @@ function templatemenu($template="") {
   echo '</table>'."\n".'</form>'."\n";
 }
 
-function abview_template($template="") {
-  global $nuke_config, $ab_config, $nsnst_const, $db, $prefix, $ip;
-  if(empty($template)) { $template = "abuse_default.tpl"; }
+function abview_template($phpbb2_template="") {
+  global $nuke_config, $ab_config, $nsnst_const, $titanium_db, $titanium_prefix, $ip;
+  if(empty($phpbb2_template)) { $phpbb2_template = "abuse_default.tpl"; }
   $sitename = $nuke_config['sitename'];
   $adminmail = $nuke_config['adminmail'];
   $adminmail = str_replace("@", "(at)", $adminmail);
   $adminmail = str_replace(".", "(dot)", $adminmail);
   $adminmail2 = urlencode($nuke_config['adminmail']);
   $querystring = get_query_string();
-  $filename = NUKE_INCLUDE_DIR.'nukesentinel/abuse/'.$template;
+  $filename = NUKE_INCLUDE_DIR.'nukesentinel/abuse/'.$phpbb2_template;
   if(!file_exists($filename)) { $filename = NUKE_INCLUDE_DIR.'nukesentinel/abuse/abuse_default.tpl'; }
   $handle = @fopen($filename, "r");
   $display_page = fread($handle, filesize($filename));
@@ -463,7 +474,7 @@ function abview_template($template="") {
 }
 
 function OpenMenu($adsection="") {
-  global $bgcolor1, $bgcolor2, $textcolor1, $ab_config, $getAdmin, $prefix, $db, $op, $admin;
+  global $bgcolor1, $bgcolor2, $textcolor1, $ab_config, $getAdmin, $titanium_prefix, $titanium_db, $op, $admin;
   echo '<script type="text/javascript" src="includes/nukesentinel/nukesentinel1.js"><!-- overLIB (c) Erik Bosrup --></script>'."\n";
   echo '<script type="text/javascript" src="includes/nukesentinel/nukesentinel2.js"><!-- overLIB_hideform (c) Erik Bosrup --></script>'."\n";
   echo '<script type="text/javascript" src="includes/nukesentinel/nukesentinel3.js"><!-- overLIB_centerpopup (c) Erik Bosrup --></script>'."\n";
@@ -471,12 +482,12 @@ function OpenMenu($adsection="") {
   echo '<table summary="" width="100%" border="0" cellspacing="1" cellpadding="4">'."\n";
   $nsnstcopy  = "<strong>Module's Name:</strong> NukeSentinel(tm)<br />";
   $nsnstcopy .= "<strong>License:</strong> Copyright &#169; 2000-2008 NukeSentinel(tm) Team<br />";
-  $nsnstcopy .= "<strong>Author's Name:</strong> <a href='http://www.nukescripts.net' title='NukeSentinel(tm) available at NukeScripts(tm)' target='_blank'>NukeScripts(tm)</a><br />";
+  $nsnstcopy .= "<strong>Author's Name:</strong> <a href='https://nukescripts.86it.us' title='NukeSentinel(tm) available at NukeScripts(tm)' target='_blank'>NukeScripts(tm)</a><br />";
   $nsnstcopy .= "<strong>Module's Description:</strong> Advanced site security proudly produced by: NukeScripts(tm), Raven PHPScripts, &amp; NukeResources.";
   if($ab_config['disable_switch'] == 1) { $nsnststatus = _AB_DISABLED; } else { $nsnststatus = _AB_ENABLED; }
   if(!empty($adsection)) { $adsection = ": ".$adsection; }
   echo '<tr>'."\n";
-  echo '<td align="center" colspan="2"><a href="http://www.nukescripts.net/modules.php?name=Downloads" target="_blank"><span class="title"><strong>'._AB_NUKESENTINEL.'</strong></span></a><span class="title"><strong> '.$ab_config['version_number'].': '.$nsnststatus.$adsection.'</strong></span> ';
+  echo '<td align="center" colspan="2"><a href="https://nukescripts.86it.us/modules.php?name=File_Repository" target="_blank"><span class="title"><strong>'._AB_NUKESENTINEL.'</strong></span></a><span class="title"><strong> '.$ab_config['version_number'].': '.$nsnststatus.$adsection.'</strong></span> ';
   if($ab_config['help_switch'] > 0) {
     echo "<a href=\"javascript:void(0);\" onclick=\"return overlib('".addslashes($nsnstcopy)."', STICKY, CENTERPOPUP, CAPTION, 'Module Copyright &#169; Information', STATUS, 'NukeSentinel(tm): Copyright Information', WIDTH, 400, FGCOLOR, '#ffffff', BGCOLOR, '#000000', TEXTCOLOR, '#000000', CAPCOLOR, '#ffffff', CLOSECOLOR, '#ffffff', CAPICON, 'modules/NukeSentinel/images/copyicon.png', BORDER, '2', TEXTFONT, 'Lucida Sans, Arial', TEXTSIZE, '12px', CLOSEFONT, 'Lucida Sans, Arial', CLOSESIZE, '12px', CAPTIONFONT, 'Lucida Sans, Arial', CAPTIONSIZE, '12px');\"><img src='modules/NukeSentinel/images/copyicon.png' border='0' height='16' width='16' alt='' title='' /></a>";
   } else {
@@ -484,7 +495,7 @@ function OpenMenu($adsection="") {
   }
   echo '</td>'."\n";
   echo '</tr>'."\n";
-  echo '<tr><td align="center" colspan="3"><strong><a href="http://www.nukescripts.net/versions/nsnst.txt" target="new">'._AB_NEWVER.'</a></strong></td></tr>'."\n";
+  echo '<tr><td align="center" colspan="3"><strong><a href="https://nukescripts.86it.us/versions/nsnst.txt" target="new">'._AB_NEWVER.'</a></strong></td></tr>'."\n";
   echo '<tr><td align="center" valign="top" width="66%">'."\n";
 }
 

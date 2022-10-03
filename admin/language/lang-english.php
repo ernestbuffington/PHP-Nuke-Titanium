@@ -1,6 +1,6 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
 /**************************************************************************/
@@ -22,7 +22,6 @@
 
 global $admin_file, $sitename, $nukeurl, $admlang;
 
-define("_DOWNLOAD","Downloads");
 /**
  * Language Defines: Live Feed
  * @since 2.0.9d
@@ -37,36 +36,7 @@ $admlang['livefeed']['type']                 = 'News type';
 $admlang['livefeed']['message']              = 'Message';
 $admlang['livefeed']['save']                 = 'Save Live Feed Data';
 $admlang['livefeed']['title']				 = 'Title';
-
-// define("_ADMPOLLS","Survey / Polls");
-// define("_REQUIRED","(required)");
-// define("_OK","Ok!");
-// define("_SAVE","Save");
-// define("_WHOSONLINE","Who's Online");
-// define("_ARTICLES","Articles");
-// define("_EXTRAINFO","Extra Info");
-/*****[BEGIN]******************************************
- [ Base:    Modules                            v.1.0.0]
- ******************************************************/
-// define('_MOD_CAT_TITLE','Category Title');
-// define('_MOD_CAT_IMG','Category Image Filename');
-// define('_MOD_CAT_IMG_NOTE','<strong>NOTE:</strong> Category Images must be placed in <i>images/blocks/modules/</i> folder.');
-// define('_MOD_CAT_LINK_TITLE','Link Title');
-// define('_MOD_CAT_EDIT','Edit category');
-// define('_MOD_INACTIVE','Module is not active<br />(Double click to activate/deactivate)');
-// define('_MOD_LINK','Is a link');
-// define('_MOD_LINK_DELETE','Delete a link');
-// define('_MOD_CAT_DELETE','Delete a category');
-// define('_MOD_CAT_ORDER','Change category order');
-// define('_MOD_TITLE','TITLE');
-
-// define('_MOD_EXPLAIN','Please note that when you activate or deactivate a module here<br />that it will be instant to users but not to you, until you refresh your screen!');
-// define('_MOD_EXPLAIN2','Also you <strong>MUST</strong> hit submit before the category order changes are saved.<br />The changes are not automatically saved!');
-// define('_MOD_NF_VALUES','Could Not Get Values');
-// define('_MOD_ERROR_TITLE','You must provide a title and link');
-// define('_MOD_ERROR_GROUPS','You must select at least 1 group');
-// define('_MOD_ERROR_CAT_NF','Category not found');
-
+$admlang['livefeed']['refresh']				 = 'Refresh feed';
 
 $admlang['modblock']['delete'] = 'Delete category';
 $admlang['modblock']['edit'] = 'Edit category';
@@ -92,46 +62,15 @@ $admlang['modblock']['sort_down'] = 'Move Category Down';
  [ Base:    Modules                            v.1.0.0]
  ******************************************************/
 
-
-$admlang['logged_out'] = 'You are now logged out!';
-// define("_YOUARELOGGEDOUT","You are now logged out!");
-// define("_HOMECONFIG","Home Configuration");
-// define("_DESCRIPTION","Description");
-// define("_HOMEPAGE","Home Page");
-// define("_NAME","Name");
-// define("_FROM","From");
-// define("_TO","To");
-
-
-
-// define("_STAFF","Staff");
-
-$admlang['admin_id'] = 'Admin ID';
-// define("_ADMINID","Admin ID");
-
-$admlang['admin_login_header'] = 'Administration System Login';
-// define("_ADMINLOGIN","Administration System Login");
-
-$admlang['admin_login_persistent'] = 'Log me on automatically each visit';
-
-$admlang['edit_admins'] = 'Edit Admins';
-
-// define("_ADMINLOGOUT","Logout / Exit");
-
-
-// define("_CURRENTPOLL","Current Poll");
-
-// define("_TYPE","Type");
-
+$admlang['logged_out']                  = 'You are now logged out!';
+$admlang['admin_id']                    = 'Admin ID';
+$admlang['admin_login_header']          = 'Administration System Login';
+$admlang['admin_login_persistent']      = 'Log me on automatically each visit';
+$admlang['edit_admins']                 = 'Edit Admins';
 $admlang['blocks']['link'] 				= 'Blocks';
-$admlang['blocks']['header'] = 'Blocks Administration';
-// define("_BLOCKSADMIN","Blocks Administration");
-
+$admlang['blocks']['header']            = 'Blocks Administration';
 $admlang['blocks']['new'] 				= 'Add a New Block';
-// define("_ADDNEWBLOCK","Add a New Block");
-
 $admlang['blocks']['visible'] 			= 'Visible Blocks';
-// define("_BLOCKSSHOW","Visible Blocks");
 $admlang['blocks']['centerup'] 			= 'Center Up';
 $admlang['blocks']['centerdown'] 		= 'Center Down';
 $admlang['blocks']['left_block'] 		= 'Left Block';
@@ -145,91 +84,34 @@ $admlang['blocks']['headlines_setup'] 	= '(Select Custom and write the URL or ju
 $admlang['blocks']['create'] 			= 'Create Block';
 $admlang['blocks']['save'] 				= 'Save Block';
 
-// //define("_HOUR","Hour");
-// define("_UGROUPS", "User Groups");
-
-
-
-// define("_BLOCKACTIVATION","Block Activation");
-// define("_BLOCKPREVIEW","This is the preview for Block");
-// define("_WANT2ACTIVATE","Do you want to Activate this block?");
-// define("_ARESUREDELBLOCK","Are you sure you want to remove Block");
-// define("_RSSFAIL","There is a problem with the RSS file URL");
-// define("_RSSTRYAGAIN","Please check the URL and RSS file name, then try again.");
-// define("_RSSCONTENT","(RSS/RDF Content)");
-
-// define("_BLOCKUP","Block UP");
-// define("_BLOCKDOWN","Block DOWN");
-
 $admlang['headlines']['header'] = 'Headlines Administration';
-// define("_HEADLINESADMIN","Headlines Administration");
-
 $admlang['headlines']['add'] = 'Add Headline';
-// define("_ADDHEADLINE","Add Headline");
-
 $admlang['headlines']['edit'] = 'Edit Headlines';
-// define("_EDITHEADLINE","Edit Headlines");
-
 $admlang['headlines']['delete_warn'] = 'WARNING: Are you sure you want to delete this Headline?';
-// define("_SURE2DELHEADLINE","WARNING: Are you sure you want to delete this Headline?");
 
-// define("_AUTHORSADMIN","Author's Administration");
-// define("_AUTHORS_ADMIN_HEADER", "PHP-Nuke Titanium Edit Admins :: Admin Panel");
-// define("_AUTHORS_RETURNMAIN", "Return to Main Administration");
-// define("_MODIFYINFO","Modify Info");
-// define("_DELAUTHOR","Delete Author");
-// define("_ADDAUTHOR","Add a New Administrator");
-// define("_PERMISSIONS","Permissions");
-// define("_USERS","Users");
-
-// define("_SUPERWARNING","WARNING: If Super Admin is checked, the user will get full access! (excludes Edit Admins and Nuke Sentinel)");
-// define("_ADDAUTHOR2","Add Author");
-
-
-// define("_COMPLETEFIELDS","You must complete all compulsory fields");
-// define("_CREATIONERROR","Author's Creation Error");
-// define("_AUTHORDELSURE","Are you sure you want to delete");
-
-// define("_AUTHORS_EDITINFO","Edit Info");
-// define("_AUTHORS_GODADMIN","God Admin?");
-// define("_AUTHORS_CHOOSEUSER","Please choose a user");
-// define("_AUTHORS_PREVIOUS","<< Previous");
-// define("_AUTHORS_NEXT","Next >>");
-
-// define("_AUTHORS_DENIED","Unauthorized editing of authors detected<br /><br />");
-// define("_AUTHORS_NOADMINS","No more users left to add as an administrator!");
-// define("_AUTHORS_NOTADMIN","The selected user is NOT an administrator. Access denied for editing!<br /><br />");
-// define("_AUTHORS_GODACCESS","You do not have permission to edit god admin accounts!<br /><br />");
-// define("_AUTHORS_GODEDIT","You cannot edit your own god admin account due to security reasons!<br /><br />");
-
-// define("_PUBLISHEDSTORIES","This administrator has published stories");
-// define("_SELECTNEWADMIN","Please select a new admin to re-assign them");
-
-
-
-
-$admlang['authors']['header'] 			= 'Author\'s Administration';
-$admlang['authors']['author'] 			= 'Author';
+$admlang['authors']['header'] 			= 'Admin Author\'s Panel';
+$admlang['authors']['author'] 			= 'Blog Author\'s Name';
 $admlang['authors']['add'] 				= 'Add a New Administrator';
 $admlang['authors']['delete'] 			= 'Delete Author';
-$admlang['authors']['delete_sure'] 		= 'Are you sure you want to delete';
 $admlang['authors']['changes'] 			= '(For Changes Only)';
 $admlang['authors']['god'] 				= '* (GOD account can\'t be deleted)';
 $admlang['authors']['main'] 			= 'God Admin *';
 $admlang['authors']['modify']			= 'Modify Info';
 $admlang['authors']['can_not'] 			= 'Can not be changed later.';
+$admlang['authors']['can'] 			    = 'This can be changed later.';
+$admlang['authors']['email']		    = 'Enter Authors Email Here!';
+$admlang['authors']['www']		        = 'Enter Authors Home Page Here!'; # tool tip adds
 $admlang['authors']['option1'] 			= 'Option';
 $admlang['authors']['required'] 		= 'Required field';
-$admlang['authors']['submit'] 			= 'Add new Author';
+$admlang['authors']['submit'] 			= 'Add new Administrator';
 $admlang['authors']['superadmin']		= 'Super Admin';
 $admlang['authors']['superwarn']		= 'WARNING: If Super Admin is checked, the user will get full access! (excludes Edit Admins and Nuke Sentinel)';
-
 
 // define("_NOFUNCTIONS","---------");
 // define("_PASSWDNOMATCH","Sorry, the new passwords doesn't match. Go Back and Try Again");
 
-$admlang['referers']['header']			= 'PHP-Nuke Titanium HTTP Referers :: Admin Panel';
-$admlang['referers']['linking']			= 'Who\'s linking our site?';
+$admlang['referers']['header']			= 'HTTP Referers Admin Panel';
+$admlang['referers']['linking']			= 'Who\'s linking to ';
 $admlang['referers']['delete']			= 'Delete Referers';
 $admlang['referers']['date']			= 'Visited Date';
 $admlang['referers']['link']			= 'URL of Referer';
@@ -237,7 +119,7 @@ $admlang['referers']['none']			= 'There are no %s to display';
 
 
 $admlang['preferences']['link'] 		= 'Preferences';
-$admlang['preferences']['header']		= 'PHP-Nuke Titanium Preferences :: Admin Panel';
+$admlang['preferences']['header']		= 'Admin Panel';
 
 $admlang['preferences']['plugins'] 		= 'Plugins';
 $admlang['plugins']['header'] 			= 'Custom Plugin Administration';
@@ -352,6 +234,12 @@ $admlang['misc']['image_resize'] 		= 'Image Resize';
 $admlang['misc']['image_resize_width'] 	= 'Max Image Width';
 $admlang['misc']['image_resize_height'] = 'Max Image Height';
 $admlang['misc']['collapse'] 			= 'Collapsible categories?';
+
+$admlang['misc']['cache_time'] 			= 'Minutes or Hours before Blockcontents will be refreshed (cached)';
+$admlang['misc']['cache_deactivated']	= 'Block Cache Deactivated';
+$admlang['misc']['cache_minutes']		= 'Minutes';
+$admlang['misc']['cache_hours']			= 'Hours';
+
 $admlang['misc']['analytics'] 			= 'Google Analytics';
 
 // define("_LOCK_MODULES_TITLE","Force Users to Login");
@@ -373,7 +261,7 @@ $admlang['preferences']['meta'] 		= 'Meta Tags';
 $admlang['meta']['title'] 				= 'Meta Tags Administration';
 
 $admlang['messages']['link'] 			= 'Messages';
-$admlang['messages']['header'] 			= 'PHP-Nuke Titanium Messages :: Admin Panel';
+$admlang['messages']['header'] 			= '<strong><h1>Admin Panel</h1></strong>';
 $admlang['messages']['change_date']		= 'Change start date to today';
 $admlang['messages']['active']			= '(If you Active this Message now, the start date will be today)';
 $admlang['messages']['edit'] 			= 'Edit message';
@@ -383,7 +271,7 @@ $admlang['messages']['view'] 			= 'Visible to';
 $admlang['messages']['remove'] 			= 'Are you sure you want to remove this message?';
 
 
-$admlang['newsletter']['header'] 		= 'PHP-Nuke Titanium Newsletter :: Admin Panel';
+$admlang['newsletter']['header'] 		= 'Newsletter :: Admin Panel';
 $admlang['newsletter']['regards'] 		= 'Best Regards';
 $admlang['newsletter']['subscribed'] 	= 'Subscribed Users';
 $admlang['newsletter']['nousers'] 		= 'The group selected to receive this newsletter has zero users<br />Please go back and select a different group';
@@ -401,98 +289,7 @@ $admlang['modules']['block'] 			= 'Modules Block EDIT';
 $admlang['modules']['inhome'] 			= 'In Home';
 $admlang['modules']['inmenu'] 			= 'Visible in Modules Block?';
 
-// define("_MASSMAIL","A Mass e-mail to ALL users");
-// define("_ANEWSLETTER","A Newsletter to subscribed users only");
-// define("_WHATTODO","What do you want to send?");
-
-
-// define("_CENSOROPTIONS","Censor Options");
-// define("_CENSORMODE","Censor Mode");
-// define("_NOFILTERING","No filtering");
-// define("_EXACTMATCH","Exact match");
-// define("_MATCHBEG","Match word at the beginning");
-// define("_MATCHANY","Match anywhere in the text");
-// define("_CENSORREPLACE","Replace Censored Words with:");
-
-// define("_PASSWDLEN","Minimum users password length");
-
-// define("_NYOUAREABOUTTOSEND","You're about to send a Newsletter to subscribed users.");
-
-
-// define("_ADMIN_ACCESS_DENIED", "<h3>Access Denied</h3><br />You do not have administrator rights there for you cannot access this area!");
-
-// define("_BLOCKFILE","(Block File)");
-
-
-// define("_REVIEWTEXT","Please review and check your text:");
-// define("_NAREYOUSURE2SEND","Are you sure to send this Newsletter now?");
-// define("_MYOUAREABOUTTOSEND","You're about to send a Mass e-mail to ALL registered users.");
-// define("_MUSERWILLRECEIVE","Users will receive this Mail.");
-
-
-
-// define("_MAREYOUSURE2SEND","Are you sure to send this Mass Email now?");
-// define("_POSSIBLESPAM","Please note that some users may feel disturbed by mass email and may consider this as Spam!");
-// define("_MASSEMAIL","Mass Email");
-
-
-// define("_NEWSLETTERSENT","The Newsletter has been sent.");
-// define("_MASSEMAILSENT","Mass Email to all registered users has been sent.");
-// define("_MASSEMAILMSG","=========================================================<br />You're receiving this email because you're a registered user of $sitename. We hope that this email didn't disturbed you and in some manner contributes to improve our services.");
-// define("_FIXBLOCKS","Fix Block's Weight Conflicts");
-
-// define("_CHANGEMODNAME","Change Module Name");
-// define("_CUSTOMMODNAME","Custom Module Name:");
-
-// define("_BLOCKFILE2","FILE");
-// define("_BLOCKSYSTEM","SYSTEM");
-// define("_DEFHOMEMODULE","Default Homepage Module");
-// define("_MODULEINHOME","Module Loaded in the Homepage:");
-// define("_CHANGE","Change");
-
-// define("_MODULEHOMENOTE","<strong>-= WARNING =-</strong><br />Bold module's title represents the module you have in the Homepage.<br />You can't Deactivate or Restrict this module while it's the default one!<br />If you delete the module's directory you'll see an error in the Homepage.<br />Also, this module has been replaced with <i>Home</i> link in the modules block.");
-// define("_PUTINHOME","Put in Home");
-// define("_SURETOCHANGEMOD","Are you sure you want to change your Homepage from");
-// define("_CENTERBLOCK","Center Block");
-// define("_ADMINISTRATION","Administration");
-// define("_NOADMINYET","There are no Administrators Accounts yet, proceed to create the Super User:");
-// define("_CREATEUSERDATA","Do you want to create a normal user with the same data?");
-// define("_NORMAL","Normal");
-
-
-// define("_NOTINMENU","[ <big><strong>&middot;</strong></big> ] means a module which name and link will not be visible in Modules Block");
-
-
-// define("_ALTTEXT","Alternate Text");
-// define("_MUSTBEINIMG","must be in /images/ directory. Valid only for AvantGo module");
-// define("_USERSOPTIONS","Users Options");
-// define("_BROADCASTMSG","Activate Broadcast Messages?");
-
-// define("_USERSHOMENUM","Let users change News number in Home?");
-
-
-// define("_SECURITYCODE","Security Code");
-// define("_TYPESECCODE","Type Security Code Here");
-// define("_VALIDIFREG","Valid only if Registered Users are selected above");
-// define("_AFTEREXPIRATION","After Expiration");
-// define("_SUBUSERS","Subscribed Users");
-// define("_SUBVISIBLE","Visible to Subscribers?");
-// define("_IMAGESWFURL","Image URL");
-
 $admlang['donations'] 					= 'Donations';
-// define("_DONATORS","Donations");
-// define("_DEFAULT","Default");
-
-/*****[BEGIN]******************************************
- [ Mod:     Password Strength Meter            v1.0.0 ]
- ******************************************************/
-// define("_PSM_NOTRATED","Not Rated");
-// define("_PSM_CLICK","Click");
-// define("_PSM_HERE","here");
-// define("_PSM_HELP","for help creating a strong password");
-/*****[END]********************************************
- [ Mod:     Password Strength Meter            v1.0.0 ]
- ******************************************************/
 
 $admlang['logs']['header'] 				= 'Security Tracker';
 $admlang['logs']['not_found'] 			= 'The log could not be found';
@@ -508,9 +305,9 @@ $admlang['logs']['admin_chmod'] 		= 'Your file is not writeable. Did you do the 
 $admlang['logs']['admin_fine'] 			= 'Admin log has not changed';
 // define('_ADMIN_LOG_FINE','Admin log has not changed');
 
-$admlang['logs']['error_chmod'] 				= 'Your file is not writeable. Did you do the CHMOD?';
+$admlang['logs']['error_chmod'] 		= 'Your file is not writeable. Did you do the CHMOD?';
 // define('_ERROR_LOG_CHMOD','Your file is not writeable. Did you do the CHMOD?');
-$admlang['logs']['error_changed'] 			= 'Error log %sHAS%s changed';
+$admlang['logs']['error_changed'] 		= 'Error log %sHAS%s changed';
 // define('_ERROR_LOG_CHANGED','Error log <strong>HAS</strong> changed');
 $admlang['logs']['error_fine'] 			= 'Error log has not changed';
 // define('_ERROR_LOG_FINE','Error log has not changed');
@@ -537,7 +334,7 @@ $admlang['global']['disabled']			= 'Disabled';
 $admlang['global']['discard']			= 'Discard';
 $admlang['global']['down'] 				= 'Down';
 $admlang['global']['edit']				= 'Edit';
-$admlang['global']['email']				= 'Email';
+$admlang['global']['email']				= 'Email Address';
 $admlang['global']['enabled']			= 'Enabled';
 $admlang['global']['expiration']		= 'Expiration';
 $admlang['global']['filename']			= 'Filename';
@@ -545,7 +342,7 @@ $admlang['global']['functions']			= 'Functions';
 $admlang['global']['go']				= 'Go';
 $admlang['global']['goback']			= 'Go Back';
 $admlang['global']['header_return']		= 'Return to Main Administration';
-$admlang['global']['header_top_return'] = 'PHP-Nuke Titanium %s :: Modules Admin Panel';
+$admlang['global']['header_top_return'] = 'Modules Admin Panel';
 $admlang['global']['home'] 				= 'Home';
 $admlang['global']['hour'] 				= 'Hour';
 $admlang['global']['hours'] 			= 'Hours';
@@ -555,7 +352,7 @@ $admlang['global']['language'] 			= 'Language';
 $admlang['global']['left'] 				= 'Left';
 $admlang['global']['login'] 			= 'Login';
 $admlang['global']['name']				= 'Name';
-$admlang['global']['nickname']			= 'Nickname';
+$admlang['global']['nickname']			= 'Forum/Board Nickname';
 $admlang['global']['no']				= 'No';
 $admlang['global']['none'] 				= 'None';
 $admlang['global']['not_set'] 			= '%s was not set';
@@ -579,10 +376,13 @@ $admlang['global']['title'] 			= 'Title';
 $admlang['global']['title_custom'] 		= 'Custom Title';
 $admlang['global']['unlimited']			= 'Unlimited';
 $admlang['global']['up'] 				= 'Up';
-$admlang['global']['url'] 				= 'Url';
+$admlang['global']['url'] 				= 'Website Address';
 $admlang['global']['view'] 				= 'View';
 $admlang['global']['warning'] 			= 'Warning';
 $admlang['global']['yes'] 				= 'Yes';
+
+$admlang['global']['is_up_to_date'] 	= 'Up to date';
+$admlang['global']['is_out_of_date']	= 'Out of date - Update Required';
 
 # Groups selection defines (I grouped these together to make them easier to find in the future)
 $admlang['global']['who_view'] 			= 'Who can View This';
@@ -592,45 +392,55 @@ $admlang['global']['guests_only'] 		= 'Anonymous Users Only';
 $admlang['global']['all_visitors'] 		= 'All Visitors';
 $admlang['global']['groups_only'] 		= 'Groups Only';
 
-$admlang['admin']['administration_header'] 	= '<strong>Administration Menu</strong>';
-$admlang['admin']['modules_header'] 	= '<strong>Modules Administration</strong>';
+$admlang['admin']['administration_header'] 	= 'Administration Menu';
+$admlang['admin']['modules_header'] 	= 'Modules Administration';
+$admlang['admin']['themes_header'] 		= 'Theme Administraton';
 
-$admlang['admin']['important'] 			= '<strong>Important Information</strong>';
+$admlang['admin']['important'] 			= 'Important Information';
 // define('_IMPORTANT_INFO','Important Information');
 $admlang['admin']['ip_lock'] 			= 'Admin IP Lock';
 // define('_IP_LOCK','Admin IP Lock');
 $admlang['admin']['filter'] 			= 'Input Filter';
 // define('_INPUT_FILTER','Input Filter');
 $admlang['admin']['waiting_users'] 		= 'Waiting Users';
+$admlang['admin']['registered_users'] 	= 'Registered Users';
+
+$admlang['admin']['forums_overview'] 	= 'Forums Overview';
+$admlang['admin']['total_forums'] 		= 'Forums';
+$admlang['admin']['total_forum_topics'] = 'Topics';
+$admlang['admin']['total_forum_posts'] 	= 'Posts';
+
+$admlang['admin']['users_overview'] 	= 'Users Overview';
+$admlang['admin']['total_users'] 		= 'Registered';
+$admlang['admin']['total_waiting'] 		= 'Waiting';
+$admlang['admin']['total_deactivated'] 	= 'Deactivated';
+
+$admlang['admin']['downloads_overview'] = 'Downloads Overview';
+$admlang['admin']['broken_downloads'] 	= 'Broken';
+$admlang['admin']['total_categories'] 	= 'Categories';
+$admlang['admin']['total_downloads'] 	= 'Downloads';
+
+$admlang['admin']['admin_intrusion'] 	= 'Admin Intrusion';
+$admlang['admin']['admin_error_log'] 	= 'Error Log';
+$admlang['admin']['admin_honey_pot'] 	= 'Honey Pot';
+$admlang['admin']['honey_pot_bots_stopped'] = 'stopped %s bots!';
+$admlang['admin']['version_is_current'] = '(Up To Date)';
+$admlang['admin']['version_is_out-of-date'] = 'New Version Available';
 
 # VERSION CHECKER
 $admlang['admin']['version_check_run'] 	= 'Run Now';
 // define('_RUNNOW','Run Now');
-$admlang['admin']['version_check'] 		= 'PHP-Nuke Titanium Version Checker';
+$admlang['admin']['version_check'] 		= 'Version Checker';
 // define('_VERSION_CHECK','Evolution Xtreme Version Checker');
 $admlang['admin']['no_rights'] 	= 'Sorry %s but you have been given no administration rights. Please contact the site administrator if you feel this is a mistake!';
 // define("_NO_ADMIN_RIGHTS","Sorry %s but you have been given no administration rights. Please contact the site administrator if you feel this is a mistake!");
 
-$admlang['authors']['header'] 			= 'Author\'s Administration';
-$admlang['authors']['author'] 			= 'Author';
-$admlang['authors']['add'] 				= 'Add a New Administrator';
-$admlang['authors']['delete'] 			= 'Delete Author';
-$admlang['authors']['changes'] 			= '(For Changes Only)';
-$admlang['authors']['god'] 				= '* (GOD account can\'t be deleted)';
-$admlang['authors']['main'] 			= 'God Admin *';
-$admlang['authors']['modify']			= 'Modify Info';
-$admlang['authors']['can_not'] 			= 'Can not be changed later.';
-$admlang['authors']['option1'] 			= 'Option';
-$admlang['authors']['required'] 		= 'Required field';
-$admlang['authors']['submit'] 			= 'Add new Author';
-$admlang['authors']['superadmin']		= 'Super Admin';
-$admlang['authors']['superwarn']		= 'WARNING: If Super Admin is checked, the user will get full access! (excludes Edit Admins and Nuke Sentinel)';
 
 /**
  * Mod: Live feed (Live news directly from Evolution Xtreme project site.)
  * @since 2.0.9e
  */
-$admlang['livefeed']['header'] 				= '<strong>Live Feed from The 86it Developers Hub</strong>';
+$admlang['livefeed']['header'] 				= 'PHP-Nuke Titanium Developer Feed';
 
 /**
  * Mod: reCaptcha (Complete replacement for the GD2 captcha system.)
@@ -668,7 +478,7 @@ $admlang['iphub']['key'] 					= 'IpHub API Key';
 $admlang['iphub']['key_explain'] 			= '<strong>INFO:</strong> <a href=\'https://iphub.info\' target=\'_blank\'>CLICK HERE</a> to signup and get your key.';
 $admlang['iphub']['api_warn'] 				= 'The API must be submitted before you can configure the options for '.$admlang['iphub']['title'].'';
 
-// $lang['Date_format_explain'] = 'The syntax used is identical to the PHP <a href=\'http://www.php.net/date\' target=\'_other\'>date()</a> function.';
+// $titanium_lang['Date_format_explain'] = 'The syntax used is identical to the PHP <a href=\'http://www.php.net/date\' target=\'_other\'>date()</a> function.';
 
 // $admlang['iphub']['add_explain'] 			= '<strong>Additional Note:</strong> There are paid and a free plan available.<br />If your site is high traffic, you may need ot look into a paid plan.';
 $admlang['iphub']['add_explain'] 			= '<strong>Additional Note:</strong> There are paid and a free plan available.<br />If you use the free API key, You will be restricted to 1000 queries a day.<br />If your site is high traffic, you may need to look into a paid plan.';
@@ -693,4 +503,10 @@ $admlang['adminfail']['timeout'] 				= 'Cooldown Time, (min)';
 $admlang['adminfail']['timeout_explain'] 		= 'How long should they be blocked for.';
 
 
+$admlang['versions']['title'] 					= "PHP-Nuke Titanium Version Checker";
+$admlang['versions']['version'] 				= "The current version is:";
+$admlang['versions']['your_version'] 			= "Your version is:";
+$admlang['versions']['version_checked']			= "The version was last checked on";
+$admlang['versions']['version_current']			= "Your version is current";
+$admlang['versions']['curl_connection_error']	= "Connection Error";
 ?>

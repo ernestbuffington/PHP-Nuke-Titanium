@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -26,43 +27,65 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $cookie, $prefix, $multilingual, $currentlang, $db, $user, $userinfo;
+global $cookie, $titanium_prefix, $multilingual, $currentlang, $titanium_db, $titanium_user, $userinfo;
 
 $querylang = ($multilingual) ? "AND (alanguage='$currentlang' OR alanguage='')" : '';
 
 $today = getdate();
+
 $day = $today['mday'];
-if ($day < 10) {
+
+if ($day < 10) 
+{
     $day = "0$day";
 }
+
 $month = $today['mon'];
-if ($month < 10) {
+
+if ($month < 10) 
+{
     $month = "0$month";
 }
+
 $year = $today['year'];
+
 $tdate = "$year-$month-$day";
-list($sid, $title) = $db->sql_ufetchrow("SELECT sid, title FROM ".$prefix."_stories WHERE (time LIKE '%$tdate%') $querylang ORDER BY counter DESC LIMIT 0,1", SQL_NUM);
+
+list($sid, $title) = $titanium_db->sql_ufetchrow("SELECT sid, title FROM ".$titanium_prefix."_stories WHERE (datePublished LIKE '%$tdate%') $querylang ORDER BY counter DESC LIMIT 0,1", SQL_NUM);
+
 $fsid = intval($sid);
+
 $ftitle = stripslashes($title);
+
 $content = "<span class=\"content\">";
-if ((!$fsid) AND (!$ftitle)) {
+
+if ((!$fsid) AND (!$ftitle)) 
+{
     $content .= _NOBIGSTORY."</span>";
-} else {
+} 
+else 
+{
     $content .= _BIGSTORY."<br /><br />";
-    if (!isset($mode) OR empty($mode)) {
+
+    if (!isset($mode) OR empty($mode)) 
+	{
         $mode = (!empty($userinfo['umode'])) ? $userinfo['umode'] : "thread";
     }
-    if (!isset($order) OR empty($order)) {
+    
+	if (!isset($order) OR empty($order)) 
+	{
         $order = (!empty($userinfo['uorder'])) ? $userinfo['uorder'] : 0;
     }
-    if (!isset($thold) OR empty($thold)) {
+    
+	if (!isset($thold) OR empty($thold)) 
+	{
         $thold = (!empty($userinfo['thold'])) ? $userinfo['thold'] : 0;
     }
-    $r_options = '';
+    
+	$r_options = '';
     $r_options .= "&amp;mode=".$mode;
     $r_options .= "&amp;order=".$order;
     $r_options .= "&amp;thold=".$thold;
     $content .= "<a href=\"modules.php?name=Blog&amp;file=article&amp;sid=$fsid$r_options\">$ftitle</a></span>";
 }
-
 ?>

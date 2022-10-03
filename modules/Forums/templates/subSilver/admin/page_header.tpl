@@ -13,7 +13,7 @@
         obj.value=obj.value.substring(0,mlength) 
     } 
   </script>
-  <script type="text/javascript" src="../../../includes/js/scripts/jquery-3.3.1.min.js"></script>
+  <script type="text/javascript" src="../../../includes/js/scripts/jquery.min.js"></script>
   <script type="text/javascript">
     var nuke_jq = jQuery.noConflict();
   </script>
@@ -49,6 +49,36 @@
             var selectedCountry = $(this).children("option:selected").val();
             country_class = selectedCountry.replace(/(.*)\.(.*?)$/, "$1");
             $('.countries').removeClass().addClass('countries '+country_class);
+        });
+
+        $(".smtp_encryption").change(function()
+        {
+            if ( this.value == 'none' )
+            {
+                $( "input#smtp_port" ).val('25');
+            }
+            else if ( this.value == 'ssl' )
+            {
+                $( "input#smtp_port" ).val('465');
+            }
+            else if ( this.value == 'tls' )
+            {
+                $( "input#smtp_port" ).val('587');
+            }
+        });
+
+        $('input[name="smtp_auth"]').change(function()
+        {
+            console.log($("input[name='smtp_auth']:checked").val());
+
+            if( $("input[name='smtp_auth']:checked").val() == 1 ) /* && $('.smtp_auth_settings').is(':visible') */
+            {
+                $(".smtp_auth_settings").css("display", "");
+            }
+            else
+            {
+                $(".smtp_auth_settings").css("display", "none");
+            }
         });
 	 });
   </script>

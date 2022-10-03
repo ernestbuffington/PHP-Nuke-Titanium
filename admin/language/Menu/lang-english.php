@@ -16,10 +16,10 @@
 /************************************************************************/
 /* Titanium Portal Menu                                                 */
 /* By: The 86it Developers Network                                      */
-/* https://hub.86it.us                                                  */
+/* https://www.86it.us                                                  */
 /* Copyright (c) 2019 Ernest Buffington                                 */
 /************************************************************************/
-define('_MENU_THANKS', '<br><br>Thanks for using this script. This mod was created by Ernest Allen Buffington, &copy; <a href="https://hub.86it.us" target="_blank">The 86it Developers Network</a>.');
+define('_MENU_THANKS', '<br><br>Thanks for using this script. This mod was created by Ernest Allen Buffington, &copy; <a href="https://www.86it.us" target="_blank">The 86it Developers Network</a>.');
 define('_MENU_INSTALL','I see that you don\'t have the Menu Tables installed yet!<br>With your permission, let us proceed to install the Menu Tables.<br>All you need to do is agree by checking the box below and clicking install, the script will do the rest.');
 define('_MENU_INSTALL2','This is the auto install for the Portal Menu v5.01');
 define('_MENU_INSTALL3','');
@@ -154,4 +154,5 @@ define("_MENU_CLOSE","Close the window");
 define("_MENU_TARGETBLANK","Link opened in a new window. To open in the same window, begin url with HTTP:// (uppercase)");
 define("_MENU_TARGETNONE","Link opened in the same window. To open in a new window, begin url with http:// (lowercase)");
 define("_MENU_NOTABLEPB","Titanium Portal Menu is unable to access its database tables.Please verify that you have installed correctly, and READ THE FAQ !");
+define("_MENU_ATTNSUPPRCAT","<strong>Portal Menu</strong>");
 ?>

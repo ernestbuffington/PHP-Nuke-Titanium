@@ -15,7 +15,7 @@ if ( !defined('ADMIN_FILE') )
 }
 global $admin_file;
 if ($radminsuper==1) {
-    adminmenu("".$admin_file.".php?op=site_map", "Site Map", "sitemap.png");
+    adminmenu("".$admin_file.".php?op=site_map", "Google Site Map", "sitemap.png");
 }
 
 ?>

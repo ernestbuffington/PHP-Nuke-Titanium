@@ -1,8 +1,10 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
- =======================================================================*/
-
+######################################################################
+# PHP-Nuke Titanium : Enhanced PHP-Nuke Web Portal System            #
+######################################################################
+# CHANGES                                                            #
+# Dynamic facebook meta tagging                    v1.0 Jan 1st 2012 #
+###################################################################### 
 /********************************************************************/
 /* SN Dynamic Titles Addon                                          */
 /* ===========================                                      */
@@ -21,156 +23,210 @@
 /* Credit to unknown author of original forums code in              */
 /* includes/dynamic_titles.php.                                     */
 /********************************************************************/
+/*==================================================================
+ PHP-Nuke Titanium Network : Enhanced PHP-Nuke Web Portal System
+ ===================================================================*/
+if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) { exit('Access Denied'); }
 
-/*****[CHANGES]**********************************************************
--=[Base]=-
-      Nuke Patched                             v3.1.0       06/26/2005
- ************************************************************************/
+            global $name, 
+                      $u, 
+             $admin_file, 
+                 $titanium_prefix, 
+	        $musicprefix, 
+	                $titanium_db3, 
+			         $titanium_db, 
+         $network_prefix, 
+            $titanium_user_prefix, 
+	             $cookie, 
+		         $slogan, 
+	          $pagetitle, 
+       $facebook_ogimage,
+$facebook_ogimage_normal,
+ $facebook_ogimage_width,
+$facebook_ogimage_height,
+	           $sitename, 
+	             $domain;
 
-if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
-    exit('Access Denied');
-}
-
-// Item Delimiter
+// Item Delimiters
+$spacer = "-]";
+$lft = "-]";
+$rgt = "[-";
+$dash = "-";
 $item_delim = "&raquo;";
-$newpagetitle = '';
 
-global $name, $admin_file, $prefix, $db, $user_prefix, $cookie, $slogan, $pagetitle, $sitename;
+// new page title
+$newpagetitle = "-] Page Title Is Missing [-";
 
-// Forums
-if ($name == 'Forums') {
-    global $p, $t, $forum, $f;
-    $newpagetitle = "$item_delim $name";
-    if (isset($p) && is_numeric($p)) {
-        $p = (int)$p;
-        list($title, $post) = $db->sql_ufetchrow("SELECT `post_subject`, `post_id` FROM `".$prefix."_bbposts_text` WHERE `post_id`='$p'", SQL_NUM);
-        $newpagetitle = "$name $item_delim Post $post $item_delim $title";
-    } else if (isset($t) && is_numeric($t)) {
-        list($title, $forum) = $db->sql_ufetchrow("SELECT `topic_title`, `forum_id` FROM `".$prefix."_bbtopics` WHERE `topic_id`='$t'", SQL_NUM);
-        list($forum) = $db->sql_ufetchrow("SELECT `forum_name` FROM `".$prefix."_bbforums` WHERE `forum_id`='$forum'", SQL_NUM);
-        $newpagetitle = "$item_delim $name $item_delim $forum $item_delim $title";
-    }
-    else if (isset($f) && is_numeric($f)) {
-        list($forum) = $db->sql_ufetchrow("SELECT `forum_name` FROM `".$prefix."_bbforums` WHERE `forum_id`='$f'", SQL_NUM);
-        $newpagetitle = "$item_delim $name $item_delim $forum";
-    }
-} else
-// News
-if ($name == 'News') {
-    global $file, $sid, $new_topic;
-    $newpagetitle= "$item_delim $name";
-    if (isset($new_topic) && is_numeric($new_topic)) {
-        list($top) = $db->sql_ufetchrow("SELECT `topictext` FROM `".$prefix."_topics` WHERE `topicid`='$new_topic'", SQL_NUM);
-        $newpagetitle= "$item_delim $top";
-    } else if ($file == 'article' && isset($sid) && is_numeric($sid)){
-        list($art, $top) = $db->sql_ufetchrow("SELECT `title`, `topic` FROM `".$prefix."_stories` WHERE `sid`='$sid'", SQL_NUM);
-        if ($top) {
-            list($top) = $db->sql_ufetchrow("SELECT `topictext` FROM `".$prefix."_topics` WHERE `topicid`='$top'", SQL_NUM);
-            $newpagetitle= "$item_delim $top $item_delim $art";
-        } else {
-            $newpagetitle= "$item_delim $art";
-        }
-    }
-} else
-// Topics
-if ($name == 'Topics') {
-      $newpagetitle = $item_delim.' '._ACTIVETOPICS;
-} else
-// Web Links
-if ($name == 'Web_Links') {
-    global $l_op, $cid, $lid, $module_title;
-    $name = $module_title;
-    $newpagetitle = "$item_delim $name";
-    if($l_op == 'viewlink' && is_numeric($cid)) {
-        list($cat, $parent) = $db->sql_ufetchrow("SELECT `title`, `parentid` FROM `".$prefix."_links_categories` WHERE `cid`='$cid'", SQL_NUM);
-        if ($parent == 0) {
-            $newpagetitle = "$item_delim $name $item_delim $cat";
-        } else {
-            list($parent) = $db->sql_ufetchrow("SELECT `title` FROM `".$prefix."_links_categories` WHERE `cid`='$parent'", SQL_NUM);
-            $newpagetitle = "$item_delim $name $item_delim $parent $item_delim $cat";
-        }
-    }
-} else
-// Downloads
-if ($name == 'Downloads') {
-    global $l_op, $cid, $lid, $module_title;
-    $name = $module_title;
-    $newpagetitle = "$item_delim $name";
-    if(isset($cid) && is_numeric($cid)) {
-        list($cat, $parent) = $db->sql_ufetchrow("SELECT `title`, `parentid` FROM `".$prefix."_downloads_categories` WHERE `cid`='$cid'", SQL_NUM);
-        if ($parent == 0) {
-            $newpagetitle = "$item_delim $name $item_delim $cat";
-        } else {
-            list($parent) = $db->sql_ufetchrow("SELECT `title` FROM `".$prefix."_downloads_categories` WHERE `cid`='$parent'", SQL_NUM);
-            $newpagetitle = "$item_delim $name $item_delim $parent $item_delim $cat";
-        }
-    }
-} else
-// Content
-if ($name == 'Content') {
-    global $pa, $cid, $pid;
-    $newpagetitle = "$item_delim $name";
-    if ($pa == 'list_pages_categories' && is_numeric($cid)) {
-        list($cat) = $db->sql_ufetchrow("SELECT `title` FROM `".$prefix."_pages_categories` WHERE `cid`='$cid'", SQL_NUM);
-        $newpagetitle = "$item_delim $name $item_delim $cat";
-    } else if ($pa == 'showpage' && is_numeric($pid)) {
-        list($page, $cid) = $db->sql_ufetchrow("SELECT `title`, `cid` FROM `".$prefix."_pages` WHERE `pid`='$pid'", SQL_NUM);
-        list($cat) = $db->sql_ufetchrow("SELECT `title` FROM `".$prefix."_pages_categories` WHERE `cid`='$cid'", SQL_NUM);
-        $newpagetitle = "$item_delim $name $item_delim $cat $item_delim $page";
-    }
-} else
-// Reviews
-if ($name == 'Reviews') {
-    global $rop, $id;
-    $newpagetitle = "$item_delim $name";
-    if ($rop == "showcontent" && is_numeric($id)) {
-        list($rev) = $db->sql_ufetchrow("SELECT `title` FROM `".$prefix."_reviews` WHERE `id`='$id'", SQL_NUM);
-        $newpagetitle = "$item_delim $name $item_delim $rev";
-    }
-} else
-// Stories Archive
-if ($name == 'Stories_Archive') {
-    global $sa, $year, $month_l, $module_title;
-    $name = $module_title;
-    $newpagetitle = "$item_delim $name";
-    if($sa == 'show_month') {
-        $newpagetitle = "$item_delim $name $item_delim $month_l, $year";
-    }
-} else
-// Profile
-if ($name == 'Profile') {
-    global $mode, $u, $user_prefix, $userinfo;
-    $newpagetitle = "$item_delim $name";
-    if ($mode == 'viewprofile'  && is_numeric($u)) {
-        list($username) = $db->sql_ufetchrow('SELECT `username` FROM `'.$user_prefix.'_users` WHERE `user_id`='.$u);
-        $sec = 'Viewing '.$username.'\'s Profile';
-        $newpagetitle = "$item_delim $name $item_delim $sec";
-    } else if ($mode == 'editprofile') {
-        $sec = 'Editing '.$userinfo['user_name'].'\'s Profile';
-        $newpagetitle = "$item_delim $name $item_delim $sec";
-    }
+//facebook page image
+global $portaladmin;
+
+$facebook_ogimage_normal = "<meta property=\"og:image\" content=\"".HTTP."images/$portaladmin.png\" />\n";
+$facebook_ogimage = "<meta property=\"og:image:secure_url\" content=\"".HTTPS."images/$portaladmin.png\" />\n";
+$facebookimagetype = "<meta property=\"og:image:type\" content=\"image/png\" />\n";
+$facebook_ogimage_width = "<meta property=\"og:image:width\" content=\"200\" />\n";
+$facebook_ogimage_height = "<meta property=\"og:image:height\" content=\"200\" />\n";
+
+//facebook link to current page
+$facebook_ogurl = "<meta property=\"og:url\" content=\"$newpagetitle\" />\n";
+//facebook pagetitle 	 	 
+$facebook_ogtitle = "<meta property=\"og:title\" content=\"$newpagetitle\" />\n";
+//facebook description
+$facebook_ogdescription = "<meta property=\"og:description\" content=\"$newpagetitle\" />\n";
+
+if ($name == 'facebook_SandBox')
+{ 
+  include_once(NUKE_TITLES_DIR.'facebook_SandBox.php');   	  
+  $facebook_ogimage_normal = "<meta property=\"og:image\" content=\"".HTTP."modules/facebook_SandBox/images/sandbox.png\" />\n";
+  $facebook_ogimage = "<meta property=\"og:image:secure_url\" content=\"".HTTPS."modules/facebook_SandBox/images/sandbox.png\" />\n";
+  $facebookimagetype = "<meta property=\"og:image:type\" content=\"image/png\" />\n";
+}
+else
+if ($name == 'Private_Messages')
+{ 
+  include_once(NUKE_TITLES_DIR.'Private_Messages.php');
+}
+else
+if ($name == 'Network_Members')
+{ 
+  include_once(NUKE_TITLES_DIR.'Members_List.php');   	  
+}
+else
+if ($name == 'Profile')
+{ 
+  include_once(NUKE_TITLES_DIR.'Profile.php');   	  
+}
+else
+if ($name == 'Network_Groups')
+{ 
+  include_once(NUKE_TITLES_DIR.'Groups.php');   	  
+}
+else
+if ($name == 'Your_Account')
+{ 
+  include_once(NUKE_TITLES_DIR.'Your_Account.php');   	  
+}
+else
+if ($name == 'FAQ')
+{ 
+  include_once(NUKE_TITLES_DIR.'FAQ.php');   	  
+}
+else
+if ($name == 'Site_Map')
+{ 
+  include_once(NUKE_TITLES_DIR.'Site_Map.php');   	  
+}
+else
+if ($name == 'Diamond_Mine')
+{ 
+  include_once(NUKE_TITLES_DIR.'Diamond_Mine.php');   	  
+}
+else
+if ($name == 'Forums')
+{ 
+  include_once(NUKE_TITLES_DIR.'Forums.php');   	  
+}
+else
+if ($name == 'Blog')
+{ 
+  include_once(NUKE_TITLES_DIR.'Blog.php');   	  
+}
+else
+if ($name == 'Blog_Topics')
+{ 
+  include_once(NUKE_TITLES_DIR.'Blog_Topics.php');   	  
+}
+else
+if ($name == 'Blog_Top_100')
+{ 
+  include_once(NUKE_TITLES_DIR.'Blog_Top_100.php');   	  
+}
+else
+if ($name == 'Blog_Search')
+{ 
+  include_once(NUKE_TITLES_DIR.'Blog_Search.php');   	  
+}
+else
+if ($name == 'CHANGELOG')
+{ 
+  include_once(NUKE_TITLES_DIR.'CHANGELOG.php');   
+  $facebook_ogimage_normal = "<meta property=\"og:image\" content=\"".HTTP."modules/$name/images/changelog.png\" />\n";
+  $facebook_ogimage = "<meta property=\"og:image:secure_url\" content=\"".HTTPS."modules/$name/images/changelog.png\" />\n";
+  $facebookimagetype = "<meta property=\"og:image:type\" content=\"image/png\" />\n";
+  $facebook_ogimage_width = "<meta property=\"og:image:width\" content=\"200\" />\n";
+  $facebook_ogimage_height = "<meta property=\"og:image:height\" content=\"200\" />\n";
+}
+else
+if ($name == 'Music')
+{
+  include_once(NUKE_TITLES_DIR.'Music.php');
+}
+else
+if ($name == 'Music_Topics_Extended')
+{ 
+  include_once(NUKE_TITLES_DIR.'Music_Topics_Extended.php');
+}
+else
+if ($name == 'Music_Topics')
+{ 
+  include_once(NUKE_TITLES_DIR.'Music_Topics.php');
+}
+else
+if ($name == 'Music_Archive')
+{ 
+  include_once(NUKE_TITLES_DIR.'Music_Archive.php');
+}
+else
+if ($name == 'Music_Top')
+{ 
+  include_once(NUKE_TITLES_DIR.'Music_Top_100.php');
+}
+else
+if ($name == 'Web_Links')
+{ 
+  include_once(NUKE_TITLES_DIR.'Web_Links.php');
+}
+else
+if ($name == 'Downloads') 
+{
+  include_once(NUKE_TITLES_DIR.'Downloads.php');
+}
+else
+if ($name == 'Reviews')
+{
+  include_once(NUKE_TITLES_DIR.'Reviews.php');
+}
+else
+if ($name == 'Blog_Archive')
+{
+  include_once(NUKE_TITLES_DIR.'Blog_Archive.php');
+}
+else
+{
+  //catch all 	
+  include_once(NUKE_TITLES_DIR.'default.php');
 }
 
-// Catch all for anything we don't have custom coding for
-if (empty($newpagetitle)) {
-    global $pagetitle, $module_title;
-    if(isset($pagetitle)) {
-        $newpagetitle = $pagetitle;
-    } else {
-        $newpagetitle = "$item_delim $module_title";
-    }
+if(defined('ADMIN_FILE'))
+{ 
+  include_once(NUKE_TITLES_DIR.'admin_file.php');
+}
+else
+if (defined('HOME_FILE'))
+{ 
+    include_once(NUKE_TITLES_DIR.'home_file.php');
+}
+else
+{
+  $facebook_ogtitle = "<meta property=\"og:title\" content=\"$newpagetitle\" />\n";
 }
 
-// Admin Pages
-if (defined('ADMIN_FILE')) {
-    $newpagetitle = "$item_delim Administration";
-}
-// If we're on the main page let's use our site slogan
-if (defined('HOME_FILE')) {
-    $newpagetitle = "$item_delim $slogan";
-}
-
-// We're Done! Place the Title on the page
-echo "<title>$sitename $newpagetitle</title>\n";
-
+echo $facebook_ogdescription;
+echo $facebook_ogimage_normal;
+echo $facebook_ogimage; 
+echo $facebookimagetype;
+echo $facebook_ogimage_width;
+echo $facebook_ogimage_height;
+echo $facebook_ogurl;
+echo $facebook_ogtitle;
+echo "<title>$newpagetitle</title>\n";
 ?>

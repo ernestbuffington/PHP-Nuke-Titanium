@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -34,12 +35,12 @@ if (!defined('ADMIN_FILE')) {
    die ("Access Denied");
 }
 
-$module_name = basename(dirname(dirname(__FILE__)));
+$titanium_module_name = basename(dirname(dirname(__FILE__)));
 
 switch($op) {
 
     case "forums":
-        include("modules/$module_name/admin/forums.php");
+        include("modules/$titanium_module_name/admin/forums.php");
     break;
  
 }

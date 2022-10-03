@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
@@ -76,7 +77,7 @@ $customlang['private_msg']['cookie_msg2']       = 'This Alert will only display 
  * Language Defines: Floating Administration Menu
  * @since 2.0.9e
  */
-$customlang['floating_admin']['admin']          = 'ADMINISTRATION';
+// $customlang['floating_admin']['admin']          = 'ADMINISTRATION';
 $customlang['floating_admin']['main_admin']     = 'Main Administration';
 $customlang['floating_admin']['forum_admin']    = 'Forum Administration';
 $customlang['floating_admin']['blocks']         = 'Blocks';
@@ -84,13 +85,14 @@ $customlang['floating_admin']['modules']        = 'Modules';
 $customlang['floating_admin']['modblock']       = 'Module Block';
 $customlang['floating_admin']['preferences']    = 'Preferences';
 $customlang['floating_admin']['themes']         = 'Themes';
-$customlang['floating_admin']['news']           = 'News';
+$customlang['floating_admin']['blog']           = 'Blog';
 $customlang['floating_admin']['users']          = 'Users Configuration';
 $customlang['floating_admin']['whois']          = 'Who is Online';
 $customlang['floating_admin']['weblinks']       = 'Web Links';
-$customlang['floating_admin']['honeypot']       = 'Honey Pot Admin';
-$customlang['floating_admin']['roster']         = 'Clan Manager Admin';
-$customlang['floating_admin']['downloads']      = 'File Repository Admin';
+$customlang['floating_admin']['honeypot']       = 'Honey Pot';
+$customlang['floating_admin']['roster']         = 'Clan Manager';
+$customlang['floating_admin']['downloads']      = 'File Repository';
+$customlang['floating_admin']['digital_shop']   = 'Digital Shop';
 $customlang['floating_admin']['cache']          = 'Clear Cache';
 $customlang['floating_admin']['logout']         = 'Logout';
 
@@ -322,5 +324,4 @@ define("_THEMES_QUNINSTALLED", "Uninstalled");
 define("_THEMES", "Themes");
 define("_THEMES_DEFAULT", "Default Theme");
 define("_THEMES_BACKUP", "Backup");
-
 ?>

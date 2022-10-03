@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /**************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                           */
@@ -26,7 +27,7 @@ define("_SAVECHANGES","Save Changes");
 define("_OPTION","Option");
 define("_TITLE","Title");
 define("_ADD","Add");
-define("_POLL_ADMIN_HEADER", "Nuke-Evolution Surveys :: Modules Admin Panel");
+define("_POLL_ADMIN_HEADER", "Surveys :: Modules Admin Panel");
 define("_POLL_RETURNMAIN", "Return to Main Administration");
 define("_POLLSADMIN","Surveys");
 define("_CREATEPOLL","Create a New Poll");

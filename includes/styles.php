@@ -1,8 +1,9 @@
 <?php
 
-/*=======================================================================
-  Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
-  =======================================================================*/
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
+ =======================================================================*/
+
 
 /************************************************************************
 	Nuke-Evolution: Evolution CSS
@@ -36,7 +37,7 @@ if (defined('ADMIN_FILE'))
 
     $core_css .= 'ul.sortable li { position: relative; }' . "\n";
     $core_css .= 'ul.boxy { list-style-type: none; padding: 4px 4px 0 4px; margin: 0px; width: 13em; font-size: 13px; border: 1px solid #ccc; text-align: left; }' . "\n";
-    $core_css .= 'li.active { cursor: move; margin-bottom: 4px; padding: 2px 2px; border: 1px solid #ccc; }' . "\n";
+    // $core_css .= 'li.active { cursor: move; margin-bottom: 4px; padding: 2px 2px; border: 1px solid #ccc; }' . "\n";
     $core_css .= 'li.inactive { cursor: move; margin-bottom: 4px; padding: 2px; border: 1px solid #ccc; background-color: #bf0909; }' . "\n";
     $core_css .= 'ul.boxy li { cursor: move; margin-bottom: 4px; padding: 2px 2px; border: 1px solid #ccc; }' . "\n";
     $core_css .= '#left_col { width: 180px; float: left; margin-left: 5px; }' . "\n";

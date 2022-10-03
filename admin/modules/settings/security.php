@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
 /* ===========================                                          */
@@ -46,18 +47,24 @@ echo '        <tr>'.PHP_EOL;
 echo '          <td class="catHead acenter" colspan="2">'.$admlang['adminfail']['title'].'</td>'.PHP_EOL;
 echo '        </tr>'.PHP_EOL;
 echo '        <tr>';
-echo '          <td class="row1"><span title="'.$admlang['adminfail']['status_explain'].'">'.$admlang['adminfail']['status'].'</span></td>';
+echo '          <td class="row1">';
+echo '            <span title="'.$admlang['adminfail']['status_explain'].'">'.$admlang['adminfail']['status'].'</span>';
+echo '            <span class="tooltip-html evo-sprite about float-right" title="'.$admlang['adminfail']['status_explain'].'"></span>';
+echo '          </td>';
 echo '          <td class="row1">'.yesno_option('admin_fc_status', get_evo_option('admin_fc_status', 'int')).'</td>';
 echo '        </tr>';
 echo '        <tr>';
 echo '          <td class="row1" style="width: 50%;">';
-echo '            <span style="display: inline-block; float: left; margin-top: 2px;">'.$admlang['adminfail']['max_attempts'].'</span>'.PHP_EOL;
+echo '            <span title="'.$admlang['adminfail']['max_attempts_explain'].'">'.$admlang['adminfail']['max_attempts'].'</span>'.PHP_EOL;
 echo '            <span class="tooltip-html evo-sprite about float-right" title="'.$admlang['adminfail']['max_attempts_explain'].'"></span>';
 echo '          </td>'.PHP_EOL;
 echo '          <td class="row1"><input type="text" name="admin_fc_attempts" value="'.get_evo_option('admin_fc_attempts', 'int').'" size="5" maxlength="2" /></td>';
 echo '        </tr>';
 echo '        <tr>';
-echo '          <td class="row1"><span title="'.$admlang['adminfail']['status_explain'].'">'.$admlang['adminfail']['status'].'</span></td>';
+echo '          <td class="row1">';
+echo '            <span title="'.$admlang['adminfail']['status_explain'].'">'.$admlang['adminfail']['timeout'].'</span>';
+echo '            <span class="tooltip-html evo-sprite about float-right" title="'.$admlang['adminfail']['timeout_explain'].'"></span>';
+echo '          </td>';
 echo '          <td class="row1"><input type="text" name="admin_fc_timeout" value="'.get_evo_option('admin_fc_timeout', 'int').'" size="5" maxlength="3" /></td>';
 echo '        </tr>';
 

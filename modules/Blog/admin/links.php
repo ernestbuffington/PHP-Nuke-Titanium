@@ -16,7 +16,7 @@
 /************************************************************************/
 /* Titanium Blog                                                        */
 /* By: The 86it Developers Network                                      */
-/* https://hub.86it.us                                                  */
+/* https://www.86it.us                                                  */
 /* Copyright (c) 2019 Ernest Buffington                                 */
 /************************************************************************/
  
@@ -34,9 +34,9 @@ if (!defined('ADMIN_FILE')) die('Access Denied');
 
 global $admin_file;
 
-$module_name = basename(dirname(dirname(__FILE__)));
+$titanium_module_name = basename(dirname(dirname(__FILE__)));
 
-get_lang($module_name);
+get_lang($titanium_module_name);
 
 adminmenu($admin_file.'.php?op=adminStory', _NEWS, 'logo_red.png');
 adminmenu($admin_file.'.php?op=submissions', _SUBMISSIONS, 'logo_blue2.png');

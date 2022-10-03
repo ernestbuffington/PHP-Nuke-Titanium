@@ -16,7 +16,7 @@
 /************************************************************************/
 /* Titanium Blog                                                        */
 /* By: The 86it Developers Network                                      */
-/* https://hub.86it.us                                                  */
+/* https://www.86it.us                                                  */
 /* Copyright (c) 2019 Ernest Buffington                                 */
 /************************************************************************/
 
@@ -32,7 +32,7 @@
  ************************************************************************/
 if(!defined('NUKE_EVO')) exit;
 
-global $admin_file, $db, $prefix, $cache;
+global $admin_file, $titanium_db, $titanium_prefix, $cache;
 
 if(is_active('Submit_Blog')) 
 {
@@ -40,7 +40,7 @@ if(is_active('Submit_Blog'))
 
     if(($numwaits = $cache->load('numwaits', 'submissions')) === false) 
 	{
-        list($numwaits) = $db->sql_fetchrow($db->sql_query("SELECT COUNT(*) FROM ".$prefix."_queue"), SQL_NUM);
+        list($numwaits) = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT COUNT(*) FROM ".$titanium_prefix."_queue"), SQL_NUM);
         $cache->save('numwaits', 'submissions', $numwaits);
     }
     

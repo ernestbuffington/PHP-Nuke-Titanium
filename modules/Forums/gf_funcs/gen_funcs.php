@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /***************************************************************************
  *                               gen_funcs.php
@@ -12,9 +13,9 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
-    die('Hacking attempt');
+    die('ACCESS DENIED');
 }
 
 function get_var_gf($variable) {

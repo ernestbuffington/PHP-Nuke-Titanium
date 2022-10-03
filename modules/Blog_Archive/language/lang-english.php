@@ -19,19 +19,17 @@
 /* so your entry will look like: This is \"double quoted\" text.          */
 /* And, if you use HTML code, please double check it.                     */
 /**************************************************************************/
-
-define("_PRINTER","Printer Friendly Page");
-define("_FRIEND","Send this Story to a Friend");
-define("_ARTICLES","Articles");
+define("_PRINTER","Printer Friendly Blog Post View");
+define("_FRIEND","Send this Blog post to a Friend");
+define("_ARTICLES","Blog Posts");
 define("_USCORE","Score");
 define("_DATE","Date");
 define("_SELECTMONTH2VIEW","Please select the month you want to see:");
-define("_SHOWALLSTORIES","Show ALL Stories");
-define("_STORIESARCHIVE","Stories Archive");
+define("_SHOWALLSTORIES","Show ALL Blog Posts");
+define("_STORIESARCHIVE","Blog Posts Archive");
 define("_ACTIONS","Actions");
-define("_ARCHIVESINDEX","Stories Archive Index");
-define("_ALLSTORIESARCH","All Stories");
-define("_NEXTPAGE","Next Page");
-define("_PREVIOUSPAGE","Previous Page");
-
+define("_ARCHIVESINDEX","Blog Posts Archive Index");
+define("_ALLSTORIESARCH","All Blog Posts");
+define("_NEXTPAGE","Next Blog Post");
+define("_PREVIOUSPAGE","Previous Blog Post");
 ?>

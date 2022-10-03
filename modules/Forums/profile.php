@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************
    Nuke-Evolution: Enhanced Forum Block
@@ -36,6 +37,6 @@ if($pos !== false && $pos != strlen($_SERVER['QUERY_STRING'])) {
 } else {
     $redirector = "modules.php?name=Profile";
 }
-redirect($redirector);
+redirect_titanium($redirector);
 
 ?>

@@ -24,12 +24,11 @@ if (!defined('ADMIN_FILE')) {
     die ('Illegal File Access');
 }
 
-switch($op) {
-
-    case "menu":
+switch($op) 
+{
+    case 'menu':
         include(NUKE_ADMIN_MODULE_DIR.'menu.php');
     break;
 
 }
-
 ?>

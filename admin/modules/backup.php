@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************
    Nuke-Evolution: SQL Control System
@@ -25,95 +26,276 @@ if (!defined('ADMIN_FILE')) {
    die ("Illegal File Access");
 }
 
-global $prefix, $db, $admdata, $dbname, $cache;
-if (is_mod_admin()) {
+global $titanium_prefix, $titanium_db, $admdata, $titanium_dbname, $cache;
+
+function ABCoolSize($size) {
+  $kb = 1024;
+  $mb = 1024*1024;
+  $gb = 1024*1024*1024;
+  if( $size > $gb ) {
+    $mysize = sprintf ("%01.2f",$size/$gb)." "._AB_GB;
+  } elseif( $size > $mb ) {
+    $mysize = sprintf ("%01.2f",$size/$mb)." "._AB_MB;
+  } elseif( $size >= $kb ) {
+    $mysize = sprintf ("%01.2f",$size/$kb)." "._AB_KB;
+  } else {
+    $mysize = $size." "._AB_BYTES;
+  }
+  return $mysize;
+}
+
+if (is_mod_admin()) 
+{
   
 $crlf = "\n";
-$filename = $dbname.'_'.date('d-m-Y').'.sql';
-$tablelist = (isset($_POST['tablelist'])) ? $_POST['tablelist'] : $db->sql_fetchtables($dbname);
+$filename = $titanium_dbname.'_'.date('d-m-Y').'.sql';
+$tablelist = (isset($_POST['tablelist'])) ? $_POST['tablelist'] : $titanium_db->sql_fetchtables($titanium_dbname);
 @set_time_limit(0);
 
 switch ($op) {
-
     case 'BackupDB':
         if (empty($tablelist)) { echo('No tables found'); }
         require_once(NUKE_CLASSES_DIR.'class.database.php');
-        DB::backup($dbname, $tablelist, $filename, isset($_POST['dbstruct']), isset($_POST['dbdata']), isset($_POST['drop']), isset($_POST['gzip']));
+        DB::backup($titanium_dbname, $tablelist, $filename, isset($_POST['dbstruct']), isset($_POST['dbdata']), isset($_POST['drop']), isset($_POST['gzip']));
         break;
-
-    case 'OptimizeDB':
+    
+	case 'OptimizeDB':
     case 'optimize':
+	  include_once(NUKE_BASE_DIR.'header.php');
+
+      OpenTable();
+      echo "<div align=\"center\">\n[ <a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a> ]</div>\n";
+      echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _DATABASE_RETURNMAIN . "</a> ]</div>\n";
+      CloseTable();
+
+	  OpenTable();
+	  echo '<table summary="" width="100%" border="0" cellpadding="2" cellspacing="2" align="center" bgcolor="'.$bgcolor2.'">'."\n";
+      echo '<tr>'."\n";
+      echo '<td width="40%"><strong>'._AB_TABLE.'</strong></td>'."\n";
+      echo '<td align="center" width="10%"><strong>'._AB_TYPE.'</strong></td>'."\n";
+      echo '<td align="center" width="10%"><strong>'._AB_STATUS.'</strong></td>'."\n";
+      echo '<td align="right" width="10%"><strong>'._AB_RECORDS.'</strong></td>'."\n";
+      echo '<td align="right" width="15%"><strong>'._AB_SIZE.'</strong></td>'."\n";
+      echo '<td align="right" width="15%"><strong>'._AB_GAINED.'</strong></td>'."\n";
+      echo '</tr>'."\n";
+     $tot_data = $tot_idx = $tot_all = $tot_records = 0;
+     $result = $titanium_db->sql_query("SHOW TABLE STATUS FROM `".$titanium_dbname."`");
+     $tables = $titanium_db ->sql_numrows($result);
+     if($tables > 0) {
+       $total_phpbb2_total = $total_phpbb2_gain = 0;
+       while($row = $titanium_db->sql_fetchrow($result)) {
+         $checkrow = $titanium_db->sql_fetchrow($titanium_db->sql_query("CHECK TABLE $row[0]"));
+         $records = $row['Rows'];
+         $tot_records += $records;
+         $total = ($row['Data_length'] + $row['Index_length']) - $row['Data_free'];
+         $total_phpbb2_total += $total;
+         $gain = $row['Data_free'];
+         if($gain>0) {
+           $optimizerow = $titanium_db->sql_fetchrow($titanium_db->sql_query("OPTIMIZE TABLE $row[0]"));
+           $status = _AB_OPTIMIZED;
+         } else {
+           $status = $checkrow['Msg_text'];
+         }
+         $total_phpbb2_gain += $gain;
+         $total = ABCoolSize($total);
+         if($gain < 1) { $gain = "--"; } else { $gain = ABCoolSize($gain); }
+         if(!$row['Engine']) { $etype = $row['Type']; } else { $etype = $row['Engine']; }
+         echo '<tr onmouseover="this.style.backgroundColor=\''.$bgcolor2.'\'" onmouseout="this.style.backgroundColor=\''.$bgcolor1.'\'" bgcolor="'.$bgcolor1.'">'."\n";
+         echo '<td>'.$row['Name'].'</td>'."\n";
+         echo '<td align="center">'.$etype.'</td>'."\n";
+         echo '<td align="center">'.$status.'</td>'."\n";
+         echo '<td align="right">'.number_format($records).'</td>'."\n";
+         echo '<td align="right">'.$total.'</td>'."\n";
+         echo '<td align="right">'.$gain.'</td>'."\n";
+         echo '</tr>'."\n";
+       }
+       $total_phpbb2_total = ABCoolSize($total_phpbb2_total);
+       $total_phpbb2_gain = ABCoolSize($total_phpbb2_gain);
+       echo '<tr>'."\n";
+       echo '<td><strong>'.$tables.' '._AB_TABLES.'</strong></td>'."\n";
+       echo '<td align="center"><strong>&nbsp;</strong></td>'."\n";
+       echo '<td align="right"><strong>&nbsp;</strong></td>'."\n";
+       echo '<td align="right"><strong>'.number_format($tot_records).'</strong></td>'."\n";
+       echo '<td align="right"><strong>'.$total_phpbb2_total.'</strong></td>'."\n";
+       echo '<td align="right"><strong>'.$total_phpbb2_gain.'</strong></td>'."\n";
+       echo '</tr>'."\n";
+     }
+     echo '</table>'."\n";
+	 CloseTable();
+
+      OpenTable();
+      echo "<div align=\"center\">\n[ <a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a> ]</div>\n";
+      echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _DATABASE_RETURNMAIN . "</a> ]</div>\n";
+      CloseTable();
+
+     include_once(NUKE_BASE_DIR.'footer.php');
+     break;
     case 'CheckDB':
     case 'AnalyzeDB':
     case 'RepairDB':
+	include_once(NUKE_BASE_DIR.'header.php');
+
+    OpenTable();
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a> ]</div>\n";
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _DATABASE_RETURNMAIN . "</a> ]</div>\n";
+    CloseTable();
+
+    OpenTable();
+    echo '<table summary="" width="100%" border="0" cellpadding="2" cellspacing="2" align="center" bgcolor="'.$bgcolor2.'">'."\n";
+    echo '<tr>'."\n";
+    echo '<td width="40%"><strong>'._AB_TABLE.'</strong></td>'."\n";
+    echo '<td align="center" width="15%"><strong>'._AB_TYPE.'</strong></td>'."\n";
+    echo '<td align="center" width="15%"><strong>'._AB_STATUS.'</strong></td>'."\n";
+    echo '<td align="right" width="15%"><strong>'._AB_RECORDS.'</strong></td>'."\n";
+    echo '<td align="right" width="15%"><strong>'._AB_SIZE.'</strong></td>'."\n";
+    echo '</tr>'."\n";
+    $tot_data = $tot_idx = $tot_all = $tot_records = 0;
+    $result = $titanium_db->sql_query("SHOW TABLE STATUS FROM `".$titanium_dbname."`");
+    $tables = $titanium_db ->sql_numrows($result);
+    if($tables > 0) {
+      $total_phpbb2_total = 0;
+      while($row = $titanium_db->sql_fetchrow($result)) {
+        $checkrow = $titanium_db->sql_fetchrow($titanium_db->sql_query("CHECK TABLE $row[0]"));
+        if($checkrow['Msg_text'] != "OK") {
+          $repairrow = $titanium_db->sql_fetchrow($titanium_db->sql_query("REPAIR TABLE $row[Table] EXTENDED"));
+          $status = $repairrow['Msg_text'];
+        } else {
+          $status = $checkrow['Msg_text'];
+        }
+        $records = $row['Rows'];
+        $tot_records += $records;
+        $total = $row['Data_length'] + $row['Index_length'];
+        $total_phpbb2_total += $total;
+        $total = ABCoolSize($total);
+        if(!$row['Engine']) { $etype = $row['Type']; } else { $etype = $row['Engine']; }
+        echo '<tr onmouseover="this.style.backgroundColor=\''.$bgcolor2.'\'" onmouseout="this.style.backgroundColor=\''.$bgcolor1.'\'" bgcolor="'.$bgcolor1.'">'."\n";
+        echo '<td>'.$row['Name'].'</td>'."\n";
+        echo '<td align="center">'.$etype.'</td>'."\n";
+        echo '<td align="center">'.$status.'</td>'."\n";
+        echo '<td align="right">'.number_format($records).'</td>'."\n";
+        echo '<td align="right">'.$total.'</td>'."\n";
+        echo '</tr>'."\n";
+      }
+      $total_phpbb2_total = ABCoolSize($total_phpbb2_total);
+      echo '<tr>'."\n";
+      echo '<td><strong>'.$tables.' '._AB_TABLES.'</strong></td>'."\n";
+      echo '<td align="center"><strong>&nbsp;</strong></td>'."\n";
+      echo '<td align="right"><strong>&nbsp;</strong></td>'."\n";
+      echo '<td align="right"><strong>'.number_format($tot_records).'</strong></td>'."\n";
+      echo '<td align="right"><strong>'.$total_phpbb2_total.'</strong></td>'."\n";
+      echo '</tr>'."\n";
+    }
+    echo '</table>'."\n";
+    CloseTable();	
+
+    OpenTable();
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a> ]</div>\n";
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _DATABASE_RETURNMAIN . "</a> ]</div>\n";
+    CloseTable();
+
+    include_once(NUKE_BASE_DIR.'footer.php');
+    break;
     case 'StatusDB':
-        if($op == 'optimize') $op = 'OptimizeDB';
-        $type = strtoupper(substr($op,0,-2));
-        include_once(NUKE_BASE_DIR.'header.php');
+	    include_once(NUKE_BASE_DIR.'header.php');
+
         OpenTable();
-        echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a></div>\n";
-        echo "<br /><br />";
+        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a> ]</div>\n";
         echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _DATABASE_RETURNMAIN . "</a> ]</div>\n";
         CloseTable();
-        echo "<br />";
-        OpenTable();
-        if (count($tablelist)) {
-            if ($type == 'STATUS') {
-                $query = 'SHOW TABLE STATUS FROM '.$dbname;
-            } else {
-                $query = "$type TABLE $dbname.".implode(", $dbname.", $tablelist);
-            }
-            $result = $db->sql_query($query);
-            $numfields = $db->sql_numfields($result);
-            echo '<span><strong>'._DATABASE.':</strong> '.$dbname.'</span><br /><br />'._ACTIONRESULTS.' '.strtolower($type).'<br /><br />
-            <table border="0" cellpadding="2"><tr bgcolor="'.$bgcolor2.'">';
-            for ($j=0; $j<$numfields; $j++) {
-                echo '<td><strong>'.$db->sql_fieldname($j, $result).'</strong></td>';
-            }
-            echo '</tr>';
-            $bgcolor = $bgcolor3;
-            while ($row = $db->sql_fetchrow($result)) {
-                $bgcolor = ($bgcolor == '') ? ' bgcolor="'.$bgcolor3.'"' : '';
-                echo '<tr'.$bgcolor.'>';
-                for($j=0; $j<$numfields; $j++) {
-                    echo '<td>'.$row[$j].'</td>';
-                }
-                echo '</tr>';
-            }
-            echo '</table>';
-        }
-        CloseTable();
-        include_once(NUKE_BASE_DIR.'footer.php');
-        break;
 
+        OpenTable();
+        echo '<table summary="" width="100%" border="0" cellpadding="2" cellspacing="2" align="center" bgcolor="'.$bgcolor2.'">'."\n";
+        echo '<tr>'."\n";
+        echo '<td width="40%"><strong>'._AB_TABLE.'</strong></td>'."\n";
+        echo '<td align="center" width="10%"><strong>'._AB_TYPE.'</strong></td>'."\n";
+        echo '<td align="center" width="10%"><strong>'._AB_STATUS.'</strong></td>'."\n";
+        echo '<td align="right" width="10%"><strong>'._AB_RECORDS.'</strong></td>'."\n";
+        echo '<td align="right" width="15%"><strong>'._AB_SIZE.'</strong></td>'."\n";
+        echo '<td align="right" width="15%"><strong>'._AB_OVERHEAD.'</strong></td>'."\n";
+        echo '</tr>'."\n";
+        $tot_data = $tot_idx = $tot_all = $tot_records = 0;
+        $result = $titanium_db->sql_query("SHOW TABLE STATUS FROM `".$titanium_dbname."`");
+        $tables = $titanium_db ->sql_numrows($result);
+        if($tables > 0) {
+          $total_phpbb2_total = $total_phpbb2_gain = 0;
+          while($row = $titanium_db->sql_fetchrow($result)) {
+            $checkrow = $titanium_db->sql_fetchrow($titanium_db->sql_query("CHECK TABLE $row[0]"));
+            $status = $checkrow['Msg_text'];
+            $records = $row['Rows'];
+            $tot_records += $records;
+            $total = $row['Data_length'] + $row['Index_length'];
+            $total_phpbb2_total += $total;
+            $gain= $row['Data_free'];
+            $total_phpbb2_gain += $gain;
+            $total = ABCoolSize($total);
+            if($gain < 1) { $gain = '--'; } else { $gain = ABCoolSize($gain); }
+            if(!$row['Engine']) { $etype = $row['Type']; } else { $etype = $row['Engine']; }
+            echo '<tr onmouseover="this.style.backgroundColor=\''.$bgcolor2.'\'" onmouseout="this.style.backgroundColor=\''.$bgcolor1.'\'" bgcolor="'.$bgcolor1.'">'."\n";
+            echo '<td>'.$row['Name'].'</td>'."\n";
+            echo '<td align="center">'.$etype.'</td>'."\n";
+            echo '<td align="center">'.$status.'</td>'."\n";
+            echo '<td align="right">'.number_format($records).'</td>'."\n";
+            echo '<td align="right">'.$total.'</td>'."\n";
+            echo '<td align="right">'.$gain.'</td>'."\n";
+            echo '</tr>'."\n";
+          }
+          $total_phpbb2_total = ABCoolSize($total_phpbb2_total);
+          $total_phpbb2_gain = ABCoolSize($total_phpbb2_gain);
+          echo '<tr>'."\n";
+          echo '<td><strong>'.$tables.' '._AB_TABLES.'</strong></td>'."\n";
+          echo '<td align="center"><strong>&nbsp;</strong></td>'."\n";
+          echo '<td align="center"><strong>&nbsp;</strong></td>'."\n";
+          echo '<td align="right"><strong>'.number_format($tot_records).'</strong></td>'."\n";
+          echo '<td align="right"><strong>'.$total_phpbb2_total.'</strong></td>'."\n";
+          echo '<td align="right"><strong>'.$total_phpbb2_gain.'</strong></td>'."\n";
+          echo '</tr>'."\n";
+        }
+    echo '</table>'."\n";
+    CloseTable();	
+
+    OpenTable();
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a> ]</div>\n";
+    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _DATABASE_RETURNMAIN . "</a> ]</div>\n";
+    CloseTable();
+
+    include_once(NUKE_BASE_DIR.'footer.php');
+    break;
     case 'RestoreDB':
         include_once(NUKE_BASE_DIR.'header.php');
+
         OpenTable();
-        echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a></div>\n";
-        echo "<br /><br />";
+        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a> ]</div>\n";
         echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _DATABASE_RETURNMAIN . "</a> ]</div>\n";
         CloseTable();
-        echo "<br />";
+
         require_once(NUKE_CLASSES_DIR.'class.database.php');
+
         if (!DB::query_file($_FILES['sqlfile'], $error)) { echo($error); }
         $cache->clear();
         OpenTable();
-        echo '<span><strong>'._DATABASE.': '.$dbname.'</strong></span><br /><br />'.sprintf(_IMPORTSUCCESS, $_FILES['sqlfile']['name']);
+        echo '<span><strong>'._DATABASE.': '.$titanium_dbname.'</strong></span><br /><br />'.sprintf(_IMPORTSUCCESS, $_FILES['sqlfile']['name']);
         CloseTable();
-        include_once(NUKE_BASE_DIR.'footer.php');
+        
+        OpenTable();
+        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a> ]</div>\n";
+        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _DATABASE_RETURNMAIN . "</a> ]</div>\n";
+        CloseTable();
+		
+		include_once(NUKE_BASE_DIR.'footer.php');
         break;
 
     case 'backup':
     case 'database':
         include_once(NUKE_BASE_DIR.'header.php');
+
         OpenTable();
-        echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a></div>\n";
-        echo "<br /><br />";
+        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a> ]</div>\n";
         echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _DATABASE_RETURNMAIN . "</a> ]</div>\n";
         CloseTable();
-        echo "<br />";
+
         OpenTable();
-        echo '<form method="post" name="backup" action="'.$admin_file.'.php" enctype="multipart/form-data">';
+        echo '<br />';
+		echo '<form method="post" name="backup" action="'.$admin_file.'.php" enctype="multipart/form-data">';
         echo "<script language=\"JavaScript\" type=\"text/javascript\">
         <!--
         function setSelectOptions(the_form, the_select, do_check)
@@ -153,25 +335,40 @@ switch ($op) {
         <input type="checkbox" value="1" name="dbdata" checked="checked" style="margin-left: 10px;" />'._SAVEDATA.'<br />
         <input type="checkbox" value="1" name="dbstruct" checked="checked" style="margin-left: 10px;" />'.sprintf(_INCLUDESTATEMENT, 'CREATE').'<br />
         <input type="checkbox" value="1" name="drop" checked="checked" style="margin-left: 10px;" />'.sprintf(_INCLUDESTATEMENT, 'DROP').'<br />';
+
         if (GZIPSUPPORT) {
             echo '<input type="checkbox" value="1" name="gzip" checked="checked" style="margin-left: 10px;" />'._GZIPCOMPRESS;
         }
         echo '</div></td><td valign="top" width="50%">';
 
-        OpenTable();
+        //OpenTable();
+echo '<fieldset style="border-color: white; border-width: '.$fieldset_border_width.'; border-style: solid;">';
+echo '<legend align="center" id="Legend5" runat="server" visible="true" style="width:auto; margin-bottom: 0px; font-weight: bold;"><font color="green">OPTIMIZE INFORMATION</font></strong></legend>';
+echo '<br />';
         echo '<div align="center">'._OPTIMIZETEXT;
-        CloseTable();
+        echo '</fieldset>';
+		//CloseTable();
+
         echo '</td></tr></table></form><br /><br />
         <span><strong>'._IMPORTFILE.'</strong></span><br /><br />
         <form method="post" action="'.$admin_file.'.php" name="restore" enctype="multipart/form-data">
         <input type="file" name="sqlfile" size="100" /> <input type="hidden" name="op" value="RestoreDB" /><input type="submit" value="'._IMPORTSQL.'" />
         </form>';
         CloseTable();
-        include_once(NUKE_BASE_DIR.'footer.php');
+       
+        OpenTable();
+        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php?op=database\">" . _DATABASE_ADMIN_HEADER . "</a> ]</div>\n";
+        echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _DATABASE_RETURNMAIN . "</a> ]</div>\n";
+        CloseTable();
+				
+		include_once(NUKE_BASE_DIR.'footer.php');
         break;
-}
+  }
 
-} else {
+} 
+else 
+{
     echo "Access Denied";
 }
+
 ?>

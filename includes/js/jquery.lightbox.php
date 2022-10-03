@@ -1,14 +1,16 @@
 <?php
-
-/*
-|-----------------------------------------------------------------------
-|	COPYRIGHT (c) 2007, 2015
-|	AUTHOR 				:	Lokesh Dhakar	
-|	COPYRIGHTS 			:	http://lokeshdhakar.com/projects/lightbox2
-|	PROJECT 			:	jQuery lightbox
-|	VERSION 			:	2.9.0
-|----------------------------------------------------------------------
-*/
+/**
+ * The original Lightbox script.
+ *
+ * This lightbox script require a slideshow name to be provided at all times, so i have used gallery as the default, 
+ * Can still be changes via the function call.
+ *
+ * @package Lightbox2
+ * @author  Lokesh Dhakar <lokesh.dhakar@gmail.com>
+ * @version 2.10.0
+ * @license https://raw.githubusercontent.com/lokesh/lightbox2/master/LICENSE  MIT
+ * @link    https://lokeshdhakar.com/projects/lightbox2/
+ */
 
 if(!defined('NUKE_FILE')) 
 	die('Access forbbiden');

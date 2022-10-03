@@ -1,4 +1,12 @@
 <?php
+/**
+ * jQuery lightbox and modal window plugin.
+ *
+ * @package Color picker
+ * @author  Stefan Petre
+ * @license MIT and GPL-3.0
+ * @link    https://www.eyecon.ro/
+ */
 
 if(!defined('NUKE_FILE')) 
 	die('Access forbbiden');

@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /*********************************************************************************/
 /* CNB Your Account: An Advanced User Management System for phpnuke             */
@@ -37,8 +38,8 @@ if (!defined('CNBYA')) {
 }
 
     // Last 10 Weblinks Approved
-    $result10 = $db->sql_query("SELECT lid, title, cid FROM ".$prefix."_links_links where submitter='$usrinfo[username]' order by date DESC limit 0,10");
-    if (($db->sql_numrows($result10) > 0)) {
+    $result10 = $titanium_db->sql_query("SELECT lid, title, cid FROM ".$titanium_prefix."_links_links where submitter='$usrinfo[username]' order by date DESC limit 0,10");
+    if (($titanium_db->sql_numrows($result10) > 0)) {
         echo "<br />";
         OpenTable();
 /*****[BEGIN]******************************************
@@ -49,7 +50,7 @@ if (!defined('CNBYA')) {
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-        while(list($lid, $title, $cid) = $db->sql_fetchrow($result10)) {
+        while(list($lid, $title, $cid) = $titanium_db->sql_fetchrow($result10)) {
             echo "<li><a href=\"modules.php?op=modload&amp;name=Web_Links&amp;file=index&l_op=viewlink&amp;cid=$cid\">$title</a><br />";
         }
         CloseTable();

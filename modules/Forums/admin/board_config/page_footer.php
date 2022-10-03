@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************
    Nuke-Evolution: DHTML Forum Config Admin
@@ -20,15 +21,15 @@ if (!defined('BOARD_CONFIG')) {
     die('Access Denied');
 }
 
-$template->set_filenames(array(
+$phpbb2_template->set_filenames(array(
     "footer" => "admin/board_config/page_footer.tpl")
 );
 
-$template->assign_vars(array(
-    "L_SUBMIT" => $lang['Submit'],
-    "L_RESET" => $lang['Reset'],
+$phpbb2_template->assign_vars(array(
+    "L_SUBMIT" => $titanium_lang['Submit'],
+    "L_RESET" => $titanium_lang['Reset'],
 ));
 
-$template->pparse("footer");
+$phpbb2_template->pparse("footer");
 
 ?>

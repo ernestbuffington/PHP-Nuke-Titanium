@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /***************************************************************************
  *                        lang_extend_ranks.php [English]
@@ -23,20 +24,20 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
-    die('Hacking attempt');
+    die('ACCESS DENIED');
 }
 
 // admin part
-if ( $lang_extend_admin )
+if ( $titanium_lang_extend_admin )
 {
-    $lang['Lang_extend_ranks'] = 'Ranks';
+    $titanium_lang['Lang_extend_ranks'] = 'Ranks';
 }
 
-$lang['Ranks'] = 'Ranks';
-$lang['Special_ranks'] = 'Special ranks';
-$lang['Rank_minimum'] = 'Minimum Posts';
-$lang['Total_users'] = 'Total of users';
+$titanium_lang['Ranks'] = 'Ranks';
+$titanium_lang['Special_ranks'] = 'Special ranks';
+$titanium_lang['Rank_minimum'] = 'Minimum Posts';
+$titanium_lang['Total_users'] = 'Total of users';
 
 ?>

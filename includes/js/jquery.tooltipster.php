@@ -1,12 +1,13 @@
 <?php
-
-/*
-|-----------------------------------------------------------------------
-|	AUTHOR 				:	Lonestar	
-|	COPYRIGHTS 			:	iamceege.github.io/tooltipster/
-|	PROJECT 			:	jQuery News Feed
-|----------------------------------------------------------------------
-*/
+/**
+ * A flexible and extensible jQuery plugin for modern tooltips.
+ *
+ * @package tooltipster
+ * @author  Caleb Jacob <hello@calebjacob.com>
+ * @version 4.2.6
+ * @license MIT
+ * @link    https://github.com/iamceege/tooltipster
+ */
 
 if(!defined('NUKE_FILE')) die('Access forbbiden');
 

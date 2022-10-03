@@ -1,6 +1,6 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -9,7 +9,7 @@
 /*                                                                      */
 /* Copyright (c) 2005 by Francisco Burzi                                */
 /* http://phpnuke.org                                                   */
-/*                                                                      */
+/* v1.0                                                                 */
 /* This program is free software. You can redistribute it and/or modify */
 /* it under the terms of the GNU General Public License as published by */
 /* the Free Software Foundation; either version 2 of the License.       */
@@ -20,10 +20,10 @@ if (!defined('MODULE_FILE')) {
 }
 
 $instory = '';
-$module_name = basename(dirname(__FILE__));
-get_lang($module_name);
+$titanium_module_name = basename(dirname(__FILE__));
+get_lang($titanium_module_name);
 
-global $admin, $prefix, $db, $module_name, $articlecomm, $multilingual, $admin_file;
+global $admin, $titanium_prefix, $titanium_db, $titanium_module_name, $articlecomm, $multilingual, $admin_file;
 if ($multilingual == 1) {
     $queryalang = "AND (s.alanguage='$currentlang' OR s.alanguage='')"; /* stories */
     $queryrlang = "AND rlanguage='$currentlang' "; /* reviews */
@@ -56,44 +56,60 @@ switch($op) {
         $max = intval($max);
         $pagetitle = "- "._SEARCH."";
         include_once(NUKE_BASE_DIR.'header.php');
-        $topic = intval($topic);
+        title($sitename.' '._SEARCH);
+		$topic = intval($topic);
         if ($topic>0) {
-            $result = $db->sql_query("SELECT `topicimage`, `topictext` FROM `".$prefix."_topics` WHERE `topicid`='$topic'");
-            $row = $db->sql_fetchrow($result);
+            $result = $titanium_db->sql_query("SELECT `topicimage`, `topictext` FROM `".$titanium_prefix."_topics` WHERE `topicid`='$topic'");
+            $row = $titanium_db->sql_fetchrow($result);
             $topicimage = stripslashes($row['topicimage']);
             $topictext = stripslashes(check_html($row['topictext'], "nohtml"));
-            if (file_exists("themes/$ThemeSel/images/Blog_Topics/$topicimage")) {
-                $topicimage = "themes/$ThemeSel/images/Blog_Topics/$topicimage";
-            } else {
+            
+			if (file_exists("themes/$ThemeSel/modules/images/topics/$topicimage")) 
+			{
+                $topicimage = "themes/$ThemeSel/modules/images/topics/$topicimage";
+            } 
+			else 
+			{
                 $topicimage = $tipath.$topicimage;
             }
-        } else {
+        } 
+		else 
+		{
             $topictext = _ALLTOPICS;
-            if (file_exists("themes/$ThemeSel/images/Blog_Topics/AllTopics.png")) {
-                $topicimage = "themes/$ThemeSel/images/Blog_Topics/AllTopics.png";
-            } else {
+        
+		    if (file_exists("themes/$ThemeSel/modules/images/topics/AllTopics.png")) 
+			{
+                $topicimage = "themes/$ThemeSel/modules/images/topics/AllTopics.png";
+            } 
+			else 
+			{
                 $topicimage = $tipath.'AllTopics.png';
             }
         }
-        if (file_exists("themes/$ThemeSel/images/Blog_Topics/AllTopics.png")) {
-            $alltop = "themes/$ThemeSel/images/Blog_Topics/AllTopics.png";
-        } else {
+        
+		if (file_exists("themes/$ThemeSel/modules/images/topics/AllTopics.png")) 
+		{
+            $alltop = "themes/$ThemeSel/modules/images/topics/AllTopics.png";
+        } 
+		else 
+		{
             $alltop = $tipath.'AllTopics.png';
         }
-        OpenTable();
+        
+		OpenTable();
         if ($type == 'users') {
-            echo "<center><span class=\"title\"><strong>"._SEARCHUSERS."</strong></span></center><br />\n";
+            echo "<div align=\"center\"><span class=\"title\"><strong>"._SEARCHUSERS."</strong></span></div><br />\n";
         } elseif ($type == 'reviews') {
-            echo "<center><span class=\"title\"><strong>"._SEARCHREVIEWS."</strong></span></center><br />\n";
+            echo "<div align=\"center\"><span class=\"title\"><strong>"._SEARCHREVIEWS."</strong></span></div><br />\n";
         } elseif ($type == 'comments' AND isset($sid)) {
-            $res = $db->sql_query("SELECT `title` FROM ".$prefix."_stories WHERE `sid`='$sid'");
-            list($st_title) = $db->sql_fetchrow($res);
-            $db->sql_freeresult($res);
+            $res = $titanium_db->sql_query("SELECT `title` FROM ".$titanium_prefix."_stories WHERE `sid`='$sid'");
+            list($st_title) = $titanium_db->sql_fetchrow($res);
+            $titanium_db->sql_freeresult($res);
             $st_title = stripslashes(check_html($st_title, "nohtml"));
             $instory = "AND sid='$sid'";
-            echo "<center><span class=\"title\"><strong>"._SEARCHINSTORY." $st_title</strong></span></center><br />\n";
+            echo "<div align=\"center\"><span class=\"title\"><strong>"._SEARCHINSTORY." $st_title</strong></span></div><br />\n";
         } else {
-            echo "<center><span class=\"title\"><strong>"._SEARCHIN." $topictext</strong></span></center><br />\n";
+            echo "<div align=\"center\"><span class=\"title\"><strong>"._SEARCHIN." $topictext</strong></span></div><br />\n";
         }
 
         echo "<table width=\"100%\" border=\"0\"><TR><TD>";
@@ -102,47 +118,47 @@ switch($op) {
         } else {
             echo "<img src=\"$topicimage\" align=\"right\" border=\"0\" alt=\"$topictext\">";
         }
-        echo "<form action=\"modules.php?name=$module_name\" method=\"POST\">"
+        echo "<form action=\"modules.php?name=$titanium_module_name\" method=\"POST\">"
         ."<input size=\"25\" type=\"text\" name=\"query\" value=\"".stripslashes($query)."\">&nbsp;&nbsp;"
         ."<input type=\"submit\" value=\""._SEARCH."\"><br /><br />";
         if (isset($sid)) {
             echo "<input type='hidden' name='sid' value='$sid'>";
         }
         echo "<!-- Topic Selection -->\n";
-        $toplist = $db->sql_query("SELECT `topicid`, `topictext` FROM `".$prefix."_topics` ORDER BY `topictext`");
+        $toplist = $titanium_db->sql_query("SELECT `topicid`, `topictext` FROM `".$titanium_prefix."_topics` ORDER BY `topictext`");
         echo "<select name=\"topic\">";
         echo "<option value=\"\">"._ALLTOPICS."</option>\n";
-        while($row2 = $db->sql_fetchrow($toplist)) {
+        while($row2 = $titanium_db->sql_fetchrow($toplist)) {
             $topicid = intval($row2['topicid']);
-            $topics = stripslashes(check_html($row2['topictext'], "nohtml"));
+            $phpbb2_topics = stripslashes(check_html($row2['topictext'], "nohtml"));
             if ($topicid == $topic) { $sel = 'selected '; } else { $sel = ''; }
-            echo "<option $sel value=\"$topicid\">$topics</option>\n";
+            echo "<option $sel value=\"$topicid\">$phpbb2_topics</option>\n";
         }
-        $db->sql_freeresult($toplist);
+        $titanium_db->sql_freeresult($toplist);
         echo "</select>\n";
         /* Category Selection */
         $category = intval($category);
         echo "&nbsp;<select name=\"category\">";
         echo "<option value=\"0\">"._ARTICLES."</option>\n";
-        $result3 = $db->sql_query("SELECT `catid`, `title` FROM `".$prefix."_stories_cat` ORDER BY `title`");
-        while ($row3 = $db->sql_fetchrow($result3)) {
+        $result3 = $titanium_db->sql_query("SELECT `catid`, `title` FROM `".$titanium_prefix."_stories_cat` ORDER BY `title`");
+        while ($row3 = $titanium_db->sql_fetchrow($result3)) {
             $catid = intval($row3['catid']);
             $title = stripslashes(check_html($row3['title'], "nohtml"));
             if ($catid==$category) { $sel = 'selected '; } else { $sel = ''; }
             echo "<option $sel value=\"$catid\">$title</option>\n";
         }
-        $db->sql_freeresult($result3);
+        $titanium_db->sql_freeresult($result3);
         echo "</select>\n";
         /* Authors Selection */
-        $thing = $db->sql_query("SELECT `aid` FROM `".$prefix."_authors` ORDER BY `aid`");
+        $thing = $titanium_db->sql_query("SELECT `aid` FROM `".$titanium_prefix."_authors` ORDER BY `aid`");
         echo "&nbsp;<select name=\"author\">";
         echo "<option value=\"\">"._ALLAUTHORS."</option>\n";
-        while($row4 = $db->sql_fetchrow($thing)) {
+        while($row4 = $titanium_db->sql_fetchrow($thing)) {
             $authors = stripslashes($row4['aid']);
             if ($authors==$author) { $sel = 'selected '; } else { $sel = ''; }
             echo "<option value=\"$authors\" $sel>$authors</option>\n";
         }
-        $db->sql_freeresult($thing);
+        $titanium_db->sql_freeresult($thing);
         echo "</select>\n";
         /* Date Selection */
                     ?>
@@ -165,7 +181,7 @@ switch($op) {
             } elseif ($type == 'reviews') {
                 $sel4 = 'checked';
             }
-            $num_rev = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_reviews`"));
+            $num_rev = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_reviews`"));
             echo _SEARCHON;
             echo "<input type=\"radio\" name=\"type\" value=\"stories\" $sel1> "._SSTORIES;
             if ($articlecomm == 1) {
@@ -184,35 +200,45 @@ switch($op) {
                 } else {
                     $categ = '';
                 }
-                $q = "SELECT s.sid, s.aid, s.informant, s.title, s.time, s.hometext, s.bodytext, a.url, s.comments, s.topic FROM ".$prefix."_stories s, ".$prefix."_authors a WHERE s.aid=a.aid $queryalang $categ";
-                if (isset($query)) $q .= "AND (s.title LIKE '%$query%' OR s.hometext LIKE '%$query%' OR s.bodytext LIKE '%$query%' OR s.notes LIKE '%$query%') ";
+                $q = "SELECT s.sid, 
+				             s.aid, 
+					   s.informant, 
+					       s.title, 
+				   s.datePublished, 
+				        s.hometext, 
+						s.bodytext, 
+						     a.url, 
+						s.comments, 
+						   s.topic FROM ".$titanium_prefix."_stories s, ".$titanium_prefix."_authors a WHERE s.aid=a.aid $queryalang $categ";
+                
+				if (isset($query)) $q .= "AND (s.title LIKE '%$query%' OR s.hometext LIKE '%$query%' OR s.bodytext LIKE '%$query%' OR s.notes LIKE '%$query%') ";
                 if (!empty($author)) $q .= "AND s.aid='".Fix_Quotes($author)."' ";
                 if (!empty($topic)) $q .= "AND s.topic='".Fix_Quotes($topic)."' ";
-                if (!empty($days) && $days!=0) $q .= "AND TO_DAYS(NOW()) - TO_DAYS(time) <= '".Fix_Quotes($days)."' ";
-                $q .= " ORDER BY s.time DESC LIMIT $min,$offset";
+                if (!empty($days) && $days!=0) $q .= "AND TO_DAYS(NOW()) - TO_DAYS(datePublished) <= '".Fix_Quotes($days)."' ";
+                $q .= " ORDER BY s.datePublished DESC LIMIT $min,$offset";
                 $t = $topic;
-                $result5 = $db->sql_query($q);
-                $nrows = $db->sql_numrows($result5);
+                $result5 = $titanium_db->sql_query($q);
+                $nrows = $titanium_db->sql_numrows($result5);
                 $x=0;
                 if (!empty($query)) {
-                    echo "<br /><hr noshade size=\"1\"><center><strong>"._SEARCHRESULTS."</strong></center><br /><br />";
+                    echo "<br /><hr noshade size=\"1\"><div align=\"center\"><strong>"._SEARCHRESULTS."</strong></div><br /><br />";
                     echo "<table width=\"99%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
                     if ($nrows>0) {
-                        while($row5 = $db->sql_fetchrow($result5)) {
+                        while($row5 = $titanium_db->sql_fetchrow($result5)) {
                             $sid = intval($row5['sid']);
                             $aid = stripslashes($row5['aid']);
                             $informant = stripslashes($row5['informant']);
                             $title = stripslashes(check_html($row5['title'], "nohtml"));
-                            $time = $row5['time'];
+                            $time = $row5['datePublished'];
                             $hometext = stripslashes($row5['hometext']);
                             $bodytext = stripslashes($row5['bodytext']);
                             $url = stripslashes($row5['url']);
                             $comments = intval($row5['comments']);
                             $topic = intval($row5['topic']);
-                            $row6 = $db->sql_fetchrow($db->sql_query("SELECT `topictext` FROM `".$prefix."_topics` WHERE `topicid`='$topic'"));
+                            $row6 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `topictext` FROM `".$titanium_prefix."_topics` WHERE `topicid`='$topic'"));
                             $topictext = stripslashes(check_html($row6['topictext'], "nohtml"));
 
-                            $furl = "modules.php?name=News&amp;file=article&amp;sid=$sid";
+                            $furl = "modules.php?name=Blog&amp;file=article&amp;sid=$sid";
                             $datetime = formatTimestamp($time);
                             $query = stripslashes(htmlentities($query, ENT_QUOTES));
                             if (empty($informant)) {
@@ -247,7 +273,7 @@ switch($op) {
                             printf("<tr><td><img src=\"images/folders.gif\" border=\"0\" alt=\"\">&nbsp;<span class=\"option\"><a href=\"%s\"><strong>%s</strong></a></span><br /><span class=\"content\">"._CONTRIBUTEDBY." $informant<br />"._POSTEDBY." <a href=\"%s\">%s</a>",$furl,$title,$url,$aid,$informant);
                             echo " "._ON." $datetime<br />"
                             .$match
-                            ._TOPIC.": <a href=\"modules.php?name=$module_name&amp;query=&amp;topic=$topic\">$topictext</a> ";
+                            ._TOPIC.": <a href=\"modules.php?name=$titanium_module_name&amp;query=&amp;topic=$topic\">$topictext</a> ";
                             if ($comments == 0) {
                                 echo '('._NOCOMMENTS.')';
                             } elseif ($comments == 1) {
@@ -255,50 +281,50 @@ switch($op) {
                             } elseif ($comments >1) {
                                 echo "($comments "._UCOMMENTS.")";
                             }
-                            if (is_mod_admin($module_name)) {
+                            if (is_mod_admin($titanium_module_name)) {
                                 echo " [ <a href=\"".$admin_file.".php?op=EditStory&amp;sid=$sid\">"._EDIT."</a> | <a href=\"".$admin_file.".php?op=RemoveStory&amp;sid=$sid\">"._DELETE."</a> ]";
                             }
                             echo "</span><br /><br /><br /></td></tr>\n";
                             $x++;
                         }
-                        $db->sql_freeresult($result5);
+                        $titanium_db->sql_freeresult($result5);
                         echo "</table>\n";
                     } else {
-                        echo "<tr><td><center><span class=\"option\"><strong>"._NOMATCHES."</strong></span></center><br /><br />";
+                        echo "<tr><td><div align=\"center\"><span class=\"option\"><strong>"._NOMATCHES."</strong></span></div><br /><br />";
                         echo "</td></tr></table>\n";
                     }
 
                     $prev = $min-$offset;
                     if ($prev>=0) {
-                        print "<br /><br /><center><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type&amp;category=$category\">";
-                        print "<strong>$min "._PREVMATCHES."</strong></a></center>";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$titanium_module_name&amp;author=$author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type&amp;category=$category\">";
+                        print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next = $min+$offset;
                     if ($x>=9) {
-                        print "<br /><br /><center><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type&amp;category=$category\">";
-                        print "<strong>"._NEXTMATCHES."</strong></a></center>";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$titanium_module_name&amp;author=$author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type&amp;category=$category\">";
+                        print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }
 
             } elseif ($type == 'comments') {
-                $result8 = $db->sql_query("SELECT `tid`, `sid`, `subject`, `date`, `name` FROM `".$prefix."_comments` WHERE (`subject` LIKE '%$query%' OR `comment` LIKE '%$query%') ORDER BY `date` DESC LIMIT $min,$offset");
-                $nrows = $db->sql_numrows($result8);
+                $result8 = $titanium_db->sql_query("SELECT `tid`, `sid`, `subject`, `datePublished`, `name` FROM `".$titanium_prefix."_comments` WHERE (`subject` LIKE '%$query%' OR `comment` LIKE '%$query%') ORDER BY `datePublished` DESC LIMIT $min,$offset");
+                $nrows = $titanium_db->sql_numrows($result8);
                 $x=0;
                 if (!empty($query)) {
-                    echo "<br /><hr noshade size=\"1\"><center><strong>"._SEARCHRESULTS."</strong></center><br /><br />";
+                    echo "<br /><hr noshade size=\"1\"><div align=\"center\"><strong>"._SEARCHRESULTS."</strong></div><br /><br />";
                     echo "<table width=\"99%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
                     if ($nrows>0) {
-                        while($row8 = $db->sql_fetchrow($result8)) {
+                        while($row8 = $titanium_db->sql_fetchrow($result8)) {
                             $tid = intval($row8['tid']);
                             $sid = intval($row8['sid']);
                             $subject = stripslashes(check_html($row8['subject'], "nohtml"));
                             $date = $row8['date'];
                             $name = stripslashes($row8['name']);
-                            $row_res = $db->sql_fetchrow($db->sql_query("SELECT `title` FROM `".$prefix."_stories` WHERE `sid`='$sid'"));
+                            $row_res = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `title` FROM `".$titanium_prefix."_stories` WHERE `sid`='$sid'"));
                             $title = stripslashes(check_html($row_res['title'], "nohtml"));
-                            $reply = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_comments WHERE pid='$tid'"));
-                            $furl = "modules.php?name=News&amp;file=article&amp;thold=-1&amp;mode=flat&amp;order=1&amp;sid=$sid#$tid";
+                            $reply = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_comments WHERE pid='$tid'"));
+                            $furl = "modules.php?name=Blog&amp;file=article&amp;thold=-1&amp;mode=flat&amp;order=1&amp;sid=$sid#$tid";
                             if(!$name) {
                                 $name = $anonymous;
                             } else {
@@ -310,47 +336,47 @@ switch($op) {
                             ._ATTACHART.": $title<br />";
                             if ($reply == 1) {
                                 echo "($reply "._SREPLY.")";
-                                if (is_mod_admin($module_name)) {
+                                if (is_mod_admin($titanium_module_name)) {
                                     echo " [ <a href=\"".$admin_file.".php?op=RemoveComment&amp;tid=$tid&amp;sid=$sid\">"._DELETE."</a> ]";
                                 }
                                 echo "<br /><br /><br /></td></tr>\n";
                             } else {
                                 echo "($reply "._SREPLIES.")";
-                                if (is_mod_admin($module_name)) {
+                                if (is_mod_admin($titanium_module_name)) {
                                     echo " [ <a href=\"".$admin_file.".php?op=RemoveComment&amp;tid=$tid&amp;sid=$sid\">"._DELETE."</a> ]";
                                 }
                                 echo "<br /><br /><br /></td></tr>\n";
                             }
                             $x++;
                         }
-                        $db->sql_freeresult($result8);
+                        $titanium_db->sql_freeresult($result8);
                         echo "</table>";
                     } else {
-                        echo "<tr><td><center><span class=\"option\"><strong>"._NOMATCHES."</strong></span></center><br /><br />";
+                        echo "<tr><td><div align=\"center\"><span class=\"option\"><strong>"._NOMATCHES."</strong></span></div><br /><br />";
                         echo "</td></tr></table>";
                     }
 
                     $prev = $min-$offset;
                     if ($prev>=0) {
-                        print "<br /><br /><center><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$topic&amp;min=$prev&amp;query=$query&amp;type=$type\">";
-                        print "<strong>$min "._PREVMATCHES."</strong></a></center>";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$titanium_module_name&amp;author=$author&amp;topic=$topic&amp;min=$prev&amp;query=$query&amp;type=$type\">";
+                        print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next = $min+$offset;
                     if ($x>=9) {
-                        print "<br /><br /><center><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$topic&amp;min=$max&amp;query=$query&amp;type=$type\">";
-                        print "<strong>"._NEXTMATCHES."</strong></a></center>";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$titanium_module_name&amp;author=$author&amp;topic=$topic&amp;min=$max&amp;query=$query&amp;type=$type\">";
+                        print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }
             } elseif ($type == 'reviews') {
-                $res_n = $db->sql_query("SELECT id, title, text, reviewer, score FROM ".$prefix."_reviews WHERE (title LIKE '%$query%' OR text LIKE '%$query%') $queryrlang ORDER BY date DESC LIMIT $min,$offset");
-                $nrows = $db->sql_numrows($res_n);
+                $res_n = $titanium_db->sql_query("SELECT id, title, text, reviewer, score FROM ".$titanium_prefix."_reviews WHERE (title LIKE '%$query%' OR text LIKE '%$query%') $queryrlang ORDER BY date DESC LIMIT $min,$offset");
+                $nrows = $titanium_db->sql_numrows($res_n);
                 $x=0;
                 if (!empty($query)) {
-                    echo "<br /><hr noshade size=\"1\"><center><strong>"._SEARCHRESULTS."</strong></center><br /><br />";
+                    echo "<br /><hr noshade size=\"1\"><div align=\"center\"><strong>"._SEARCHRESULTS."</strong></div><br /><br />";
                     echo "<table width=\"99%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
                     if ($nrows > 0) {
-                        while($rown = $db->sql_fetchrow($res_n)) {
+                        while($rown = $titanium_db->sql_fetchrow($res_n)) {
                             $id = intval($rown['id']);
                             $title = stripslashes(check_html($rown['title'], "nohtml"));
                             $text = stripslashes($rown['text']);
@@ -366,40 +392,40 @@ switch($op) {
                             } else {
                                 echo "($pages "._PAGES.")";
                             }
-                            if (is_mod_admin($module_name)) {
+                            if (is_mod_admin($titanium_module_name)) {
                                 echo " [ <a href=\"modules.php?name=Reviews&amp;op=mod_review&amp;id=$id\">"._EDIT."</a> | <a href=\"modules.php?name=Reviews.php&amp;op=del_review&amp;id_del=$id\">"._DELETE."</a> ]";
                             }
                             print "<br /><br /><br /></span></td></tr>\n";
                             $x++;
                         }
-                        $db->sql_freeresult($res_n);
+                        $titanium_db->sql_freeresult($res_n);
                         echo "</table>\n";
                     } else {
-                        echo "<tr><td><center><span class=\"option\"><strong>"._NOMATCHES."</strong></span></center><br /><br />";
+                        echo "<tr><td><div align=\"center\"><span class=\"option\"><strong>"._NOMATCHES."</strong></span></div><br /><br />";
                         echo "</td></tr></table>\n";
                     }
 
                     $prev = $min-$offset;
                     if ($prev >= 0) {
-                        print "<br /><br /><center><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
-                        print "<strong>$min "._PREVMATCHES."</strong></a></center>";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$titanium_module_name&amp;author=$author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
+                        print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next=$min+$offset;
                     if ($x >= 9) {
-                        print "<br /><br /><center><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
-                        print "<strong>"._NEXTMATCHES."</strong></a></center>";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$titanium_module_name&amp;author=$author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
+                        print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }
             } elseif ($type == 'users') {
-                $res_n3 = $db->sql_query("SELECT user_id, username, name FROM ".$user_prefix."_users WHERE (username LIKE '%$query%' OR name LIKE '%$query%' OR bio LIKE '%$query%') ORDER BY username ASC LIMIT $min,$offset");
-                $nrows = $db->sql_numrows($res_n3);
+                $res_n3 = $titanium_db->sql_query("SELECT user_id, username, name FROM ".$titanium_user_prefix."_users WHERE (username LIKE '%$query%' OR name LIKE '%$query%' OR bio LIKE '%$query%') ORDER BY username ASC LIMIT $min,$offset");
+                $nrows = $titanium_db->sql_numrows($res_n3);
                 $x=0;
                 if (!empty($query)) {
-                    echo "<br /><hr noshade size=\"1\"><center><strong>"._SEARCHRESULTS."</strong></center><br /><br />";
+                    echo "<br /><hr noshade size=\"1\"><div align=\"center\"><strong>"._SEARCHRESULTS."</strong></div><br /><br />";
                     echo "<table width=\"99%\" cellspacing=\"0\" cellpadding=\"0\" border=\"0\">\n";
                     if ($nrows > 0) {
-                        while($rown3 = $db->sql_fetchrow($res_n3)) {
+                        while($rown3 = $titanium_db->sql_fetchrow($res_n3)) {
                             $uid = intval($rown3['user_id']);
                             $uname = stripslashes($rown3['username']);
                             $name = stripslashes($rown3['name']);
@@ -408,54 +434,53 @@ switch($op) {
                                 $name = ""._NONAME."";
                             }
                             echo "<tr><td><img src=\"images/folders.gif\" border=\"0\" alt=\"\">&nbsp;<span class=\"option\"><a href=\"$furl\"><strong>$uname</strong></a></span><span class=\"content\"> ($name)";
-                            if (is_mod_admin($module_name)) {
+                            if (is_mod_admin($titanium_module_name)) {
                                 echo " [ <a href=\"".$admin_file.".php?chng_uid=$uid&amp;op=modifyUser\">"._EDIT."</a> | <a href=\"".$admin_file.".php?op=delUser&amp;chng_uid=$uid\">"._DELETE."</a> ]";
                             }
                             echo "</span></td></tr>\n";
                             $x++;
                         }
-                        $db->sql_freeresult($res_n3);
+                        $titanium_db->sql_freeresult($res_n3);
                         echo "</table>\n";
                     } else {
-                        echo "<tr><td><center><span class=\"option\"><strong>"._NOMATCHES."</strong></span></center><br /><br />";
+                        echo "<tr><td><div align=\"center\"><span class=\"option\"><strong>"._NOMATCHES."</strong></span></div><br /><br />";
                         echo "</td></tr></table>\n";
                     }
 
                     $prev = $min-$offset;
                     if ($prev >= 0) {
-                        print "<br /><br /><center><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
-                        print "<strong>$min "._PREVMATCHES."</strong></a></center>";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$titanium_module_name&amp;author=$author&amp;topic=$t&amp;min=$prev&amp;query=$query&amp;type=$type\">";
+                        print "<strong>$min "._PREVMATCHES."</strong></a></div>";
                     }
 
                     $next = $min+$offset;
                     if ($x >= 9) {
-                        print "<br /><br /><center><a href=\"modules.php?name=$module_name&amp;author=$author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
-                        print "<strong>"._NEXTMATCHES."</strong></a></center>";
+                        print "<br /><br /><div align=\"center\"><a href=\"modules.php?name=$titanium_module_name&amp;author=$author&amp;topic=$t&amp;min=$max&amp;query=$query&amp;type=$type\">";
+                        print "<strong>"._NEXTMATCHES."</strong></a></div>";
                     }
                 }
             }
             CloseTable();
             $mod1 = $mod2 = $mod3 = '';
             if (isset($query) AND !empty($query)) {
-                echo "<br />";
                 if (is_active('Downloads')) {
-                    $dcnt = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_downloads_downloads` WHERE `title` LIKE '%$query%' OR `description` LIKE '%$query%'"));
+                    $dcnt = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_downloads_downloads` WHERE `title` LIKE '%$query%' OR `description` LIKE '%$query%'"));
                     $mod1 = "<li> <a href=\"modules.php?name=Downloads&amp;d_op=search&amp;query=$query\">"._DOWNLOADS."</a> ($dcnt "._SEARCHRESULTS.")";
                 }
                 if (is_active('Web_Links')) {
-                    $lcnt = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_links_links` WHERE `title` LIKE '%$query%' OR `description` LIKE '%$query%'"));
+                    $lcnt = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_links_links` WHERE `title` LIKE '%$query%' OR `description` LIKE '%$query%'"));
                     $mod2 = "<li> <a href=\"modules.php?name=Web_Links&amp;l_op=search&amp;query=$query\">"._WEBLINKS."</a> ($lcnt "._SEARCHRESULTS.")";
                 }
                 if (is_active('Encyclopedia')) {
-                    $ecnt1 = $db->sql_query("SELECT `eid` FROM `".$prefix."_encyclopedia` WHERE `active`='1'");
+                    $ecnt1 = $titanium_db->sql_query("SELECT `eid` FROM `".$titanium_prefix."_encyclopedia` WHERE `active`='1'");
                     $ecnt = 0;
-                    while($row_e = $db->sql_fetchrow($ecnt1)) {
+                    while($row_e = $titanium_db->sql_fetchrow($ecnt1)) {
                         $eid = intval($row_e['eid']);
-                        $ecnt2 = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_encyclopedia WHERE title LIKE '%$query%' OR description LIKE '%$query%' AND eid='$eid'"));
-                        $ecnt3 = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_encyclopedia_text WHERE title LIKE '%$query%' OR text LIKE '%$query%' AND eid='$eid'"));
+                        $ecnt2 = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_encyclopedia WHERE title LIKE '%$query%' OR description LIKE '%$query%' AND eid='$eid'"));
+                        $ecnt3 = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_encyclopedia_text WHERE title LIKE '%$query%' OR text LIKE '%$query%' AND eid='$eid'"));
                         $ecnt = $ecnt+$ecnt2+$ecnt3;
                     }
-                    $db->sql_freeresult($ecnt1);
+                    $titanium_db->sql_freeresult($ecnt1);
                     $mod3 = "<li> <a href=\"modules.php?name=Encyclopedia&amp;file=search&amp;query=$query\">"._ENCYCLOPEDIA."</a> ($ecnt "._SEARCHRESULTS.")";
                 }
                 OpenTable();

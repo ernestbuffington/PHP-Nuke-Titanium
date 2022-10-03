@@ -1,5 +1,5 @@
 ##########################################################################
-# PHP- Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System             #
+# PHP- Titanium v4.0.2 : Enhanced PHP-Nuke Web Portal System             #
 ##########################################################################
 
 # ------------------------------------------- 
@@ -28,6 +28,13 @@ RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
 RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
 RewriteRule (.*) https://%{HTTP_HOST}:443%{REQUEST_URI}
 
+##################################################################################################
+# Force WWW - this is only needed for root domains...                                            ##### Added By Ernest Allen Buffington 03/16/2021
+##################################################################################################
+RewriteCond %{HTTP_HOST} !=""
+RewriteCond %{HTTP_HOST} !^www\. [NC]
+RewriteCond %{HTTPS}s ^on(s)|
+RewriteRule ^ http%1://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 ##################################################################################################
 
 # -------------------------------------------
@@ -109,6 +116,25 @@ RewriteRule ^.*$ http://127.0.0.1 [R,L]
     Satisfy All
 </files>
 
+
+# vimeo SDK API version 3.4
+# Disable vconfig.php viewing from browser
+<files ~ "\vconfig.php$">
+    deny from all
+</files>
+
+# Network Titanium SDK v5
+# Disable fbconfig.php viewing from browser
+<files ~ "\nconfig.php$">
+    deny from all
+</files>
+
+# facebook Titanium SDK v5
+# Disable fbconfig.php viewing from browser
+<files ~ "\fbconfig.php$">
+    deny from all
+</files>
+
 # Disable config.php viewing from browser
 <files ~ "\config.php$">
     deny from all
@@ -158,3 +184,11 @@ Header append Cache-Control "public"
 # -------------------------------------------
 
 # Banned Bad Bots
+
+# php -- BEGIN cPanel-generated handler, do not edit
+# Set the “ea-php74” package as the default “PHP” programming language.
+<IfModule mime_module>
+  AddHandler application/x-httpd-ea-php74 .php .php7 .phtml
+</IfModule>
+# php -- END cPanel-generated handler, do not edit
+AddHandler application/x-wasm .wasm

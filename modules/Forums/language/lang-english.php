@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 ######################################################################
 # Modulo Splatt Forum per PHP-NUKE
@@ -336,5 +337,4 @@ define("_HSH7","Here you can see any restrictions setted in this forum.");
 define("_LOCALDATE","%d-%m-%Y");
 
 // define('_EMPTY_MESSAGE','You must enter a message when posting.');
-
 ?>

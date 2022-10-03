@@ -1,12 +1,13 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /********************************************************/
 /* NSN Supporters                                       */
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
-/* http://www.nukescripts.net                           */
+/* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2005 by NukeScripts Network         */
 /********************************************************/
 
@@ -21,8 +22,8 @@ if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
 }
 
 function spsave_config($config_name, $config_value){
-  global $prefix, $db, $cache;
-  $db->sql_query("UPDATE `".$prefix."_nsnsp_config` SET `config_value`='$config_value' WHERE `config_name`='$config_name'");
+  global $titanium_prefix, $titanium_db, $cache;
+  $titanium_db->sql_query("UPDATE `".$titanium_prefix."_nsnsp_config` SET `config_value`='$config_value' WHERE `config_name`='$config_name'");
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -33,7 +34,7 @@ function spsave_config($config_name, $config_value){
 }
 
 function spget_configs(){
-  global $prefix, $db, $cache;
+  global $titanium_prefix, $titanium_db, $cache;
   static $config;
   if(isset($config)) return $config;
 /*****[BEGIN]******************************************
@@ -43,11 +44,11 @@ function spget_configs(){
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-      $configresult = $db->sql_query("SELECT `config_name`, `config_value` FROM `".$prefix."_nsnsp_config`");
-      while(list($config_name, $config_value) = $db->sql_fetchrow($configresult)) {
+      $configresult = $titanium_db->sql_query("SELECT `config_name`, `config_value` FROM `".$titanium_prefix."_nsnsp_config`");
+      while(list($config_name, $config_value) = $titanium_db->sql_fetchrow($configresult)) {
         $config[$config_name] = $config_value;
       }
-      $db->sql_freeresult($configresult);
+      $titanium_db->sql_freeresult($configresult);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/

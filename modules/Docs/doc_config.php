@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /*********************************************
   CPG-NUKE: Advanced Content Management System
@@ -62,7 +63,7 @@ $questions = 2;
 #                                                              #
 ################################################################
 function ns_doc_questions() {
-    global $questions, $module_name, $sitename;
+    global $questions, $titanium_module_name, $sitename;
   if ((is_active("Feedback")) && $questions == 2) {
         echo _NSFEEDBACK;
     } else if ((is_active("Contact")) && $questions == 1) {
@@ -72,31 +73,35 @@ function ns_doc_questions() {
     }
 }
 
+// 86it: A dEVELOPER Network
 function ns_doc_links() {
-    global $aboutus, $disclaimer, $privacy, $terms, $module_name;
-    echo "<center>";
+    global $aboutus, $disclaimer, $privacy, $terms, $titanium_module_name;
+    echo "<div align='center'>";
     if ($aboutus == 1) {
-         echo "[ <a href=\"modules.php?name=$module_name&amp;file=about\">"._NSABOUTUS."</a> ]";
+		
+         $aboutus_html_string = '[ <a href=modules.php?name='.$titanium_module_name.'&amp;file=about>'._NSABOUTUS.'</a> ] - ';
+		 //$aboutus = htmlspecialchars($aboutus);
+		 echo $aboutus_html_string;
   }
     if ($aboutus == 1 && $disclaimer == 1) {
          echo " - ";
     }
     if ($disclaimer == 1) {
-         echo "[ <a href=\"modules.php?name=$module_name&amp;file=disclaimer\">"._NSDISCLAIMER."</a> ]";
+         echo "[ <a href=\"modules.php?name=$titanium_module_name&amp;file=disclaimer\">"._NSDISCLAIMER."</a> ]";
     }
     if ($disclaimer == 1 && $privacy == 1) {
          echo " - ";
     }
     if ($privacy == 1) {
-         echo "[ <a href=\"modules.php?name=$module_name&amp;file=privacy\">"._NSPRIVACY."</a> ]";
+         echo "[ <a href=\"modules.php?name=$titanium_module_name&amp;file=privacy\">"._NSPRIVACY."</a> ]";
     }
     if (($privacy == 1 || $aboutus == 1 || $disclaimer ==1) AND ($terms == 1)) {
          echo " - ";
     }
     if ($terms == 1) {
-         echo "[ <a href=\"modules.php?name=$module_name&amp;file=terms\">"._NSTERMS."</a> ]";
+         echo "[ <a href=\"modules.php?name=$titanium_module_name&amp;file=terms\">"._NSTERMS."</a> ]";
     }
-         echo "</center>";
+         echo "</div>";
          echo "<br /><br />";
 }
 

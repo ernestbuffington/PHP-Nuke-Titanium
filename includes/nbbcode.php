@@ -20,9 +20,10 @@
     on other sites.
 */
 
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /*****[CHANGES]**********************************************************
 -=[Base]=-
@@ -33,7 +34,7 @@ if (!defined('NUKE_EVO')) {
     die("You can't access this file directly...");
 }
 
-global $db, $prefix, $smilies_path, $bbbttns_path, $bb_codes, $smilies_close, $bbcode_common, $currentlang, $nukeurl;
+global $titanium_db, $titanium_prefix, $smilies_path, $bbbttns_path, $bb_codes, $smilies_close, $bbcode_common, $currentlang, $nukeurl;
 
 if(file_exists(NUKE_LANGUAGE_DIR.'bbcode/lang-'.$currentlang.'.php')) {
     include_once(NUKE_LANGUAGE_DIR.'bbcode/lang-'.$currentlang.'.php');
@@ -55,7 +56,7 @@ function get_codelang($var, $array) {
 
 function smilies_table($mode, $field='message', $form='post')
 {
-    global $board_config;
+    global $phpbb2_board_config;
     $smilies = '';
     $smilies = get_smilies();
 
@@ -83,7 +84,7 @@ function smilies_table($mode, $field='message', $form='post')
         if ($num_smilies):
 
             foreach( $rowset as $smile_url => $data ):
-                $smilies_row .= '<img class="forum-emoticon tooltip pointer" data-id="'.$data['code'].'" data-field="'.$field.'" src="'.$board_config['smilies_path'].'/'.$smile_url.'" border="0" alt="'.$data['emoticon'].'" title="'.$data['emoticon'].'" />&nbsp;';
+                $smilies_row .= '<img class="forum-emoticon" data-id="'.$data['code'].'" data-field="'.$field.'" src="'.$phpbb2_board_config['smilies_path'].'/'.$smile_url.'" border="0" alt="'.$data['emoticon'].'" title="'.$data['emoticon'].'" />&nbsp;';
             endforeach;
 
         endif;
@@ -132,6 +133,7 @@ if(!function_exists('bbcode_table'))
         $JStoBody .= '  var message_help    = "'.$bbcode_help['default'].'";';
         $JStoBody .= '  var must_select     = "'.$bbcode_help['must_select'].'";';
         $JStoBody .= '  var font_family     = "'.$bbcode_help['font_family'].'";';
+        $JStoBody .= '  var fontsize        = "'.$bbcode_help['fontsize'].'";';
         $JStoBody .= '  var desc_label      = "'.$bbcode_help['description_optional'].'";';
         $JStoBody .= '  var buttonCancel    = "'.$bbcode_help['buttonCancel'].'";';
         $JStoBody .= '</script>'.PHP_EOL;
@@ -148,6 +150,9 @@ if(!function_exists('bbcode_table'))
         $bbcode_table .= '      <i class="bbcode bbc-right bbcalignment" data-field="'.$field.'" data-form="'.$form.'" data-bbcode="right" data-type="align" data-helpline="'.$bbcode_help['right'].'"></i>';
         $bbcode_table .= '      <i class="bbcode bbc-justify bbcalignment" data-field="'.$field.'" data-form="'.$form.'" data-bbcode="justify" data-type="align" data-helpline="'.$bbcode_help['justify'].'"></i>&nbsp;';
         $bbcode_table .= '      <i class="bbcode bbc-font bbcfont" data-field="'.$field.'" data-form="'.$form.'" data-helpline="'.$bbcode_help['fonttype'].'"></i>';
+
+        $bbcode_table .= '      <i class="bbcode bbc-font-size bbcfontsize" data-field="'.$field.'" data-form="'.$form.'" data-helpline="'.$bbcode_help['fontsize'].'"></i>';
+
         $bbcode_table .= '      <i class="bbcode bbc-color bbccolor" data-field="'.$field.'" data-form="'.$form.'" data-helpline="'.$bbcode_help['fontcolor'].'"></i>';
         $bbcode_table .= '      <i class="bbcode bbc-highlight bbchighlight" data-field="'.$field.'" data-form="'.$form.'" data-helpline="'.$bbcode_help['highlight'].'"></i>&nbsp;';
         $bbcode_table .= '      <i class="bbcode bbc-hr bcchorizontalrule" data-field="'.$field.'" data-form="'.$form.'" data-helpline="'.$bbcode_help['horizontalrule'].'"></i>';
@@ -169,7 +174,7 @@ if(!function_exists('bbcode_table'))
 }
 
 function get_smilies() {
-   global $db, $prefix, $cache;
+   global $titanium_db, $titanium_prefix, $cache;
    static $smilies;
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -178,7 +183,7 @@ function get_smilies() {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-        $smilies = $db->sql_ufetchrowset('SELECT * FROM '.$prefix.'_bbsmilies');
+        $smilies = $titanium_db->sql_ufetchrowset('SELECT * FROM '.$titanium_prefix.'_bbsmilies');
         if(count($smilies))
         {
             usort($smilies, 'sort_smiley');
@@ -194,21 +199,34 @@ function get_smilies() {
     return $smilies;
 }
 
-function set_smilies($message, $url='') {
+function set_smilies($message, $url='') 
+{
     static $orig, $repl;
-    if (!isset($orig)) {
+
+    if (!isset($orig)) 
+	{
         global $smilies_path, $smilies_desc, $nukeurl;
-        $orig = $repl = array();
+    
+	    $orig = $repl = array();
         $smilies = get_smilies();
         $url = (empty($url)) ? $nukeurl : $url;
-        if (!empty($url) && substr($url, -1) != '/') { $url .= '/'; }
-        for ($i = 0; $i < count($smilies); $i++) {
+    
+	    if (!empty($url) && substr($url, -1) != '/') 
+		{ 
+		  $url .= '/modules/Forums/images/smiles/'; # this had only a forward slash / and was not displaying the smilies on the main page correctly.
+		                                            # TheGhost fixed this 03/19/2021 at 5:55pm
+		}
+        
+		for ($i = 0; $i < count($smilies); $i++) 
+		{
             $smilies[$i]['code'] = str_replace('#', '\#', preg_quote($smilies[$i]['code']));
             $orig[] = "#([\s])".$smilies[$i]['code']."([\s<])#si";
             $repl[] = '\\1<img src="' . $url . $smilies_path . $smilies[$i]['smile_url'] . '" alt="'.get_codelang($smilies[$i]['emoticon'],$smilies_desc).'" title="'.get_codelang($smilies[$i]['emoticon'],$smilies_desc).'" border="0" />\\2';
         }
     }
-    if (count($orig)) {
+    
+	if (count($orig)) 
+	{
         $message = preg_replace($orig, $repl, " $message ");
         $message = substr($message, 1, -1);
     }
@@ -249,13 +267,19 @@ function makeclickable($text)
     return($ret);
 }
 
-function htmlprepare($str, $nl2br=false, $spchar=ENT_QUOTES, $nohtml=false) {
-    if ($nohtml) { $str = strip_tags($str, $nohtml); } # $nohtml : <a><br><strong><i><img><li><ol><p><strong><u><ul>
-    $str = htmlspecialchars($str,$spchar,'utf-8'); # htmlentities sucks cos it converts all chars
-    if ($nl2br) 
-    { 
-        $str = nl2br($str); 
-    }
+function htmlprepare($str, $nl2br=false, $spchar=ENT_QUOTES, $nohtml=false) 
+{
+    if ($nohtml) 
+	$str = strip_tags($str, $nohtml); 
+	
+	# $nohtml : <a><br><strong><i><img><li><ol><p><strong><u><ul>
+	# htmlentities sucks cos it converts all chars <- not TheGhost's opinion becuase it does what it is written to do.
+	
+    $str = htmlspecialchars($str,$spchar,'utf-8');     
+    
+	if ($nl2br) 
+    $str = nl2br($str); 
+
     return trim($str);
 }
 
@@ -288,83 +312,53 @@ function html2bb($text)
 # prepare_message(
 function message_prepare($message, $html_on, $bbcode_on)
 {
-    global $board_config;
+    global $phpbb2_board_config;
     #
     # Clean up the message
     #
-	
-# ALL 128 TAGS ENABLED - NOW PICK THE ONES YOU DO NOT WANT FOR THE HARD CODE
-$AllowableCK4HTML = '--,!DOCTYPE,a,abbr,acronym,address,applet,area,article,aside,audio,b,base,basefont,bdi,bdo,big,blockquote,body,br,button,canvas,caption,
-                   center,cite,code,col,colgroup,data,datalist,dd,del,details,dfn,dialog,dir,div,dl,dt,em,embed,fieldset,figcaption,figure,font,footer,form,
-                    frame,frameset,h1,h2,h3,h4,h5,h6,head,header,hr,html,i,iframe,img,input,ins,kbd,label,legend,li,link,main,map,mark,meta,meter,nav,noframes,
-                 noscript,object,ol,optgroup,option,output,p,param,picture,pre,progress,q,rp,rt,ruby,s,samp,script,section,select,small,source,video,audio,span,
-                   strike,del,s,strong,style,sub,summary,details,sup,svg,table,tbody,td,template,textarea,tfoot,th,thead,time,title,tr,track,tt,u,ul,var,wbr';
-	
-	
     $message = trim($message);
     if ($html_on) 
     {
-        //$allowed_html_tags = split(',', $board_config['allow_html_tags']);
-		$allowed_html_tags = split(',', $AllowableCK4HTML);
-        $end_html = 0;
-        $start_html = 1;
+        $allowed_html_tags = split(',', $phpbb2_board_config['allow_html_tags']);
+        $phpbb2_end_html = 0;
+        $phpbb2_start_html = 1;
         $tmp_message = '';
         $message = ' ' . $message . ' ';
-        
-		while ($start_html = strpos($message, '<', $start_html)) 
-		{
-            $tmp_message .= BBCode::encode_html(substr($message, $end_html + 1, ($start_html - $end_html - 1)));
-        
-		    if ($end_html = strpos($message, '>', $start_html)) 
-			{
-                $length = $end_html - $start_html + 1;
-                $hold_string = substr($message, $start_html, $length);
-            
-			    if (($unclosed_open = strrpos(' ' . $hold_string, '<')) != 1) 
-				{
+        while ($phpbb2_start_html = strpos($message, '<', $phpbb2_start_html)) {
+            $tmp_message .= BBCode::encode_html(substr($message, $phpbb2_end_html + 1, ($phpbb2_start_html - $phpbb2_end_html - 1)));
+            if ($phpbb2_end_html = strpos($message, '>', $phpbb2_start_html)) {
+                $length = $phpbb2_end_html - $phpbb2_start_html + 1;
+                $hold_string = substr($message, $phpbb2_start_html, $length);
+                if (($unclosed_open = strrpos(' ' . $hold_string, '<')) != 1) {
                     $tmp_message .= BBCode::encode_html(substr($hold_string, 0, $unclosed_open - 1));
                     $hold_string = substr($hold_string, $unclosed_open - 1);
                 }
                 $tagallowed = false;
-                
-				for ($i = 0; $i < count($allowed_html_tags); $i++) 
-				{
+                for ($i = 0; $i < count($allowed_html_tags); $i++) {
                     $match_tag = trim($allowed_html_tags[$i]);
-                
-				    if (preg_match('#^<\/?' . $match_tag . '[> ]#i', $hold_string)) 
-					{
+                    if (preg_match('#^<\/?' . $match_tag . '[> ]#i', $hold_string)) {
                         $tagallowed = (preg_match('#^<\/?' . $match_tag . ' .*?(style[ ]*?=|on[\w]+[ ]*?=)#i', $hold_string)) ? false : true;
                     }
                 }
                 $tmp_message .= ($length && !$tagallowed) ? BBCode::encode_html($hold_string) : $hold_string;
-                $start_html += $length;
-            } 
-			else 
-			{
-                $tmp_message .= BBCode::encode_html(substr($message, $start_html));
-                $start_html = strlen($message);
-                $end_html = $start_html;
+                $phpbb2_start_html += $length;
+            } else {
+                $tmp_message .= BBCode::encode_html(substr($message, $phpbb2_start_html));
+                $phpbb2_start_html = strlen($message);
+                $phpbb2_end_html = $phpbb2_start_html;
             }
         }
-        
-		if ($end_html != strlen($message) && $tmp_message != '') 
-		{
-            $tmp_message .= BBCode::encode_html(substr($message, $end_html + 1));
+        if ($phpbb2_end_html != strlen($message) && $tmp_message != '') {
+            $tmp_message .= BBCode::encode_html(substr($message, $phpbb2_end_html + 1));
         }
-    
-	    $message = ($tmp_message != '') ? trim($tmp_message) : trim($message);
-    } 
-	else 
-	{
+        $message = ($tmp_message != '') ? trim($tmp_message) : trim($message);
+    } else {
         $message = BBCode::encode_html($message);
     }
-    
-	if ($bbcode_on) 
-	{
+    if ($bbcode_on) {
         $message = BBCode::encode($message);
     }
-    
-	return $message;
+    return $message;
 }
 
 ?>

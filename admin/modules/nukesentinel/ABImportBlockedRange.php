@@ -1,12 +1,13 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /********************************************************/
 /* NukeSentinel(tm)                                     */
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
-/* http://www.nukescripts.net                           */
+/* http://nukescripts.86it.us                           */
 /* Copyright (c) 2000-2008 by NukeScripts Network       */
 /* See CREDITS.txt for ALL contributors                 */
 /********************************************************/
@@ -43,15 +44,15 @@ if(isset($importer) AND $importer > "") {
       if($import_data[$i] > "") {
         $grabline = explode("||", $import_data[$i]);
         if($grabline[0] == "--") {
-          $db->sql_query("DELETE FROM `".$prefix."_nsnst_blocked_ranges` WHERE `c2c`='".$grabline[3]."'");
-          $db->sql_query("OPTIMIZE TABLE `".$prefix."_nsnst_blocked_ranges`");
+          $titanium_db->sql_query("DELETE FROM `".$titanium_prefix."_nsnst_blocked_ranges` WHERE `c2c`='".$grabline[3]."'");
+          $titanium_db->sql_query("OPTIMIZE TABLE `".$titanium_prefix."_nsnst_blocked_ranges`");
         } else {
           $datainserted = False;
           $importby = _AB_IMPORTBY." "._AB_NUKESENTINEL;
           $datetime = time();
-          $datainserted = $db->sql_query("INSERT INTO `".$prefix."_nsnst_blocked_ranges` VALUES('$grabline[0]', '$grabline[1]', '$datetime', '$importby', 0, 0, '$grabline[3]')");
+          $datainserted = $titanium_db->sql_query("INSERT INTO `".$titanium_prefix."_nsnst_blocked_ranges` VALUES('$grabline[0]', '$grabline[1]', '$datetime', '$importby', 0, 0, '$grabline[3]')");
           if(!$datainserted) {
-            echo '<strong>'.long2ip($grabline[0]).' - '.long2ip($grabline[1])._AB_NOTINSERTED.$prefix.'_nsnst_blocked_ranges</strong><br />'."\n";
+            echo '<strong>'.long2ip($grabline[0]).' - '.long2ip($grabline[1])._AB_NOTINSERTED.$titanium_prefix.'_nsnst_blocked_ranges</strong><br />'."\n";
             $importmess = "";
           }
         }

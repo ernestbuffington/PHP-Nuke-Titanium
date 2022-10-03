@@ -1,8 +1,7 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
-
 /*********************************************************************************/
 /* CNB Your Account: An Advanced User Management System for phpnuke             */
 /* ============================================                                 */
@@ -20,38 +19,30 @@
 /*********************************************************************************/
 /* CNB Your Account it the official successor of NSN Your Account by Bob Marion    */
 /*********************************************************************************/
-
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Nuke Patched                             v3.1.0       06/26/2005
  ************************************************************************/
+if (!defined('MODULE_FILE')) 
+exit ("You can't access this file directly...");
 
-if (!defined('MODULE_FILE')) {
-   die ("You can't access this file directly...");
-}
-
-if (!defined('CNBYA')) {
-    die('CNBYA protection');
-}
+if (!defined('CNBYA')) 
+exit('CNBYA protection');
 
     global $cookie, $userinfo;
-    if ((is_user()) AND (strtolower($userinfo['username']) == strtolower($cookie[1])) AND ($userinfo['user_password'] == $cookie[2])) {
+    if((is_user()) AND (strtolower($userinfo['username']) == strtolower($cookie[1])) AND ($userinfo['user_password'] == $cookie[2])):
         include_once(NUKE_BASE_DIR.'header.php');
         title(_HOMECONFIG);
-        // OpenTable();
-        // nav();
-        // CloseTable();
-        // echo "<br />";
         if(empty($userinfo['theme'])) { $userinfo['theme'] = "$Default_Theme"; }
         OpenTable();
-        echo "<form action=\"modules.php?name=$module_name\" method=\"post\">";
-        if ($user_news == 1) {
-            echo "<strong>"._NEWSINHOME."</strong> "._MAX127." ";
+        echo "<form action=\"modules.php?name=$titanium_module_name\" method=\"post\">";
+        if ($titanium_user_news == 1):
+            echo "<strong>"._BLOGPOSTSINHOME."</strong> "._MAX127." ";
             echo "<input type=\"text\" name=\"storynum\" size=\"4\" maxlength=\"3\" value=\"$userinfo[storynum]\">";
             echo "<br /><br />";
-        } else {
+        else:
             echo "<input type=\"hidden\" name=\"storynum\" value=\"$storyhome\">";
-        }
+        endif;
         echo "<input type=\"hidden\" name=\"username\" value=\"$userinfo[username]\">";
         echo "<input type=\"hidden\" name=\"user_id\" value=\"$userinfo[user_id]\">";
         echo "<input type=\"hidden\" name=\"op\" value=\"savehome\">";
@@ -59,8 +50,7 @@ if (!defined('CNBYA')) {
         echo "</form>";
         CloseTable();
         include_once(NUKE_BASE_DIR.'footer.php');
-    } else {
-        mmain($user);
-    }
-
+    else: 
+        mmain($titanium_user);
+    endif;
 ?>

@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /*********************************************************************************/
 /* CNB Your Account: An Advanced User Management System for phpnuke             */
@@ -38,26 +39,12 @@ if (!defined('CNBYA')) {
     die('CNBYA protection');
 }
 
-if(is_mod_admin($module_name)) {
-
-    //$pagetitle = ": "._USERADMIN." - "._ACCTDENY;
-    //include_once(NUKE_BASE_DIR.'header.php');
-	//OpenTable();
-	//echo "<div align=\"center\">\n<a href=\"modules.php?name=Your_Account&file=admin\">" . _USER_ADMIN_HEADER . "</a></div>\n";
-    //echo "<br /><br />";
-	//echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _USER_RETURNMAIN . "</a> ]</div>\n";
-	//CloseTable();
-	//echo "<br />";
-    //amain();
-    //echo "<br />\n";        echo "tes44te";
-    //OpenTable();
-    $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_field WHERE fid='$fid'");
-    $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value WHERE fid='$fid'");
-    $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value_temp WHERE fid='$fid'");
-    //CloseTable();
-    //include_once(NUKE_BASE_DIR.'footer.php');
-    header("Location:modules.php?name=$module_name&file=admin&op=addField");
-
+if(is_mod_admin($titanium_module_name)) 
+{
+    $titanium_db->sql_query("DELETE FROM ".$titanium_user_prefix."_cnbya_field WHERE fid='$fid'");
+    $titanium_db->sql_query("DELETE FROM ".$titanium_user_prefix."_cnbya_value WHERE fid='$fid'");
+    $titanium_db->sql_query("DELETE FROM ".$titanium_user_prefix."_cnbya_value_temp WHERE fid='$fid'");
+    header("Location:modules.php?name=$titanium_module_name&file=admin&op=addField");
 }
 
 ?>

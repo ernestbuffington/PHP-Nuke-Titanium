@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -10,18 +11,6 @@
 /* Copyright (c) 2002 by Francisco Burzi                                */
 /* http://phpnuke.org                                                   */
 /*                                                                      */
-/* This program is free software. You can redistribute it and/or modify */
-/* it under the terms of the GNU General Public License as published by */
-/* the Free Software Foundation; either version 2 of the License.       */
-/*                                                                      */
-/************************************************************************/
-
-/*****[CHANGES]**********************************************************
--=[Base]=-
-      Nuke Patched                             v3.1.0       06/26/2005
-	  Titanium Patched                         v3.0.0       08/14/2019
- ************************************************************************/
-/************************************************************************/
 /* Based on Journey Links Hack                                          */
 /* Copyright (c) 2000 by James Knickelbein                              */
 /* Journey Milwaukee (http://www.journeymilwaukee.com)                  */
@@ -34,19 +23,25 @@
 /*                           2003 chatserv                              */
 /*      http://www.nukefixes.com -- http://www.nukeresources.com        */
 /************************************************************************/
+
+/*****[CHANGES]**********************************************************
+-=[Base]=-
+      Nuke Patched                             v3.1.0       06/26/2005
+ ************************************************************************/
+
 if (!defined('MODULE_FILE')) {
    die('You can\'t access this file directly...');
 }
 
-$module_name = basename(dirname(__FILE__));
-require(NUKE_MODULES_DIR.$module_name.'/l_config.php');
+$titanium_module_name = basename(dirname(__FILE__));
+require(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
 $outsidevotes = 0;
 $anonvotes = 0;
 $outsidevoteval = 0;
 $anonvoteval = 0;
 $regvoteval = 0;
 $truecomments = $totalvotesDB;
-while($vrow = $db->sql_fetchrow($voteresult)) {
+while($vrow = $titanium_db->sql_fetchrow($voteresult)) {
     $ratingDB = intval($vrow['rating']);
     $ratinguserDB = $vrow['ratinguser'];
     $ratingcommentsDB = stripslashes($vrow['ratingcomments']);
@@ -126,4 +121,5 @@ if ($totalvotesDB == 0) {
     $finalrating = (($avgRU * $impactRU) + ($avgAU * $impactAU) + ($avgOU * $impactOU)) / ($impactRU + $impactAU + $impactOU);
     $finalrating = number_format($finalrating, 4);
 }
+
 ?>

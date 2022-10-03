@@ -8,7 +8,7 @@ global $admlang;
  [ Mod:     Private Message Alert              v1.0.0 ]
  ******************************************************/
 
-$color_datalist = array(
+$phpbb2_color_datalist = array(
 	'#7A7474', '#555151', '#464444', '#302E2E', '#000000',
 	'#e90000', '#d40000', '#bf0000', '#aa0000', '#940000',
 	'#ff6600', '#e95d00', '#d45500', '#bf4c00', '#aa4400',
@@ -48,13 +48,13 @@ echo '          <td class="row1 col-6">'.$admlang['pm_alert']['sound'].'</td>';
 echo '          <td class="row1 col-6">'.yesno_option('pm_alert_sound', get_evo_option('pm_alert_sound','int'), true).'</td>';
 echo '        </tr><tr>';
 echo '          <td class="row1 col-6">'.$admlang['pm_alert']['background'].'</td>';
-echo '          <td class="row1 col-6">'.__inputfield(array('type' => 'color', 'name' => 'pm_overlay_color', 'value' => get_evo_option('pm_overlay_color'), 'list' => true, 'datalist' => $color_datalist, 'custom_style' => 'padding: 0px')).'</td>';
+echo '          <td class="row1 col-6"><input type="color" name="pm_overlay_color" style="padding: 0px; width: 56px; height: 28px;" value="'.get_evo_option('pm_overlay_color').'"></td>';
 echo '        </tr><tr>';
 echo '          <td class="row1 col-6">'.$admlang['pm_alert']['color'].'</td>';
-echo '          <td class="row1 col-6">'.__inputfield(array('type' => 'color', 'name' => 'pm_button_color', 'value' => get_evo_option('pm_button_color'), 'list' => true, 'datalist' => $color_datalist, 'custom_style' => 'padding: 0px')).'</td>';
+echo '          <td class="row1 col-6"><input type="color" name="pm_button_color" style="padding: 0px; width: 56px; height: 28px;" value="'.get_evo_option('pm_button_color').'"></td>';
 echo '        </tr><tr>';
 echo '          <td class="row1 col-6">'.$admlang['pm_alert']['hover'].'</td>';
-echo '          <td class="row1 col-6">'.__inputfield(array('type' => 'color', 'name' => 'pm_button_color2', 'value' => get_evo_option('pm_button_color2'), 'list' => true, 'datalist' => $color_datalist, 'custom_style' => 'padding: 0px')).'</td>';
+echo '          <td class="row1 col-6"><input type="color" name="pm_button_color2" style="padding: 0px; width: 56px; height: 28px;" value="'.get_evo_option('pm_button_color2').'"></td>';
 echo '        </tr>';
 
 

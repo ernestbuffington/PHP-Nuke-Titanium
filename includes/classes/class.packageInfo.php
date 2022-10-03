@@ -15,8 +15,8 @@ namespace titanium\fileLogger {
             'authors' => array(
                 'gehaxelt' => array(
                     'github' => 'https://github.com/ernestbuffington/',
-                    'email' => 'github@hub.86it.us',
-                    'site' => 'https://hub.86it.us'
+                    'email' => 'github@www.86it.us',
+                    'site' => 'https://www.86it.us'
                 ),
                 
                 'pedzed' => array(

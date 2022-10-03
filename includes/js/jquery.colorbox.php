@@ -1,13 +1,13 @@
 <?php
-
-/*
-|-----------------------------------------------------------------------
-|	AUTHOR 				:	Jack Moore	
-|	COPYRIGHTS 			:	http://www.jacklmoore.com/colorbox
-|	PROJECT 			:	jQuery colorbox
-|	VERSION 			:	1.6.4
-|----------------------------------------------------------------------
-*/
+/**
+ * jQuery lightbox and modal window plugin.
+ *
+ * @package jquery-colorbox
+ * @author  Jack Moore <hello@jacklmoore.com>
+ * @version 1.6.4
+ * @license GPL-3.0
+ * @link    http://www.jacklmoore.com/colorbox
+ */
 
 if(!defined('NUKE_FILE')) 
 	die('Access forbbiden');

@@ -1,16 +1,7 @@
 <?php
-
 /*=======================================================================
  Nuke-Evolution		: 	Enhanced Web Portal System
  ========================================================================
- 
- Nuke-Evo Base          :		#$#BASE
- Nuke-Evo Version       :		#$#VER
- Nuke-Evo Build         :		#$#BUILD
- Nuke-Evo Patch         :		#$#PATCH
- Nuke-Evo Filename      :		#$#FILENAME
- Nuke-Evo Date          :		#$#DATE
-
  (c) 2007 - 2008 by DarkForgeGFX - http://www.darkforgegfx.com
  ========================================================================
 
@@ -28,21 +19,34 @@
 -=[Base]=-
 -=[Mod]=-
  ************************************************************************/
-
 if(!defined('NUKE_EVO')) exit;
 
-global $prefix, $db, $sitename, $nukeurl;
+global $titanium_prefix, $titanium_db, $sitename, $nukeurl;
 
-
-
-$row = $db->sql_fetchrow($db->sql_query("SELECT * FROM ".$prefix."_link_us"));
-$config = $db->sql_fetchrow($db->sql_query("SELECT * FROM ".$prefix."_link_us_config LIMIT 0,1"));
+$config = dburow("SELECT * FROM ".$titanium_prefix."_link_us_config LIMIT 1");
 	
-// if($config['fade_effect'] == 1){
-// 	$settings = 'width="88" height="31" border="0" style="filter:alpha(opacity=60);-moz-opacity:0.6" onMouseOver="makevisible(this,0)" onMouseOut="makevisible(this,1)"';	
-// } else {
-// 	$settings = 'width="88" height="31" border="0"';	
-// }
+function block_Link_Us_cache($block_cachetime) 
+{
+	global $titanium_prefix;
+	if ((($blockcache = titanium_cache_load('link_us', 'blocks')) === false) 
+	|| empty($blockcache) 
+	|| intval($blockcache[0]['stat_created']) < (time() - intval($block_cachetime))) 
+	{
+		$sql = "SELECT `id`, 
+		        `site_name`, 
+				 `site_url`, 
+			   `site_image`, 
+			    `site_hits` FROM `".$titanium_prefix."_link_us` WHERE `site_status` = 1 ORDER BY `id` DESC";
+		
+		$result = dbquery($sql);
+		$blockcache = dbrowset($result);
+		dbfree($result);
+		titanium_cache_set('link_us', 'blocks', $blockcache);
+	}
+	return $blockcache;
+}
+
+$blocksession = block_Link_Us_cache( get_evo_option('block_cachetime') );
 
 $settings = 'width="88" height="31" border="0"';
 	
@@ -51,11 +55,11 @@ elseif($config['marquee_direction'] == 2){ $direction = "down"; }
 elseif($config['marquee_direction'] == 3){ $direction = "left"; }
 elseif($config['marquee_direction'] == 4){ $direction = "right"; }
 
-	if ($config['button_seperate'] == 1){ $seperation ="<span style='width=100px; size=5;'><hr /></span>"; }
-elseif ($config['button_seperate'] == 2){ $seperation ="<center>-------------------</center>"; }
+	if ($config['button_seperate'] == 1){ $seperation ="<span style='width=100px; size=5;'><br /></span>"; }
+elseif ($config['button_seperate'] == 2){ $seperation ="<div align=\"center\">-------------------</div>"; }
 elseif ($config['button_seperate'] == 0){ $seperation =""; }
 
-	if($config['show_clicks'] == 1){ $clicks = "<br />(Visits ".$site_hits." )"; }
+	if($config['show_clicks'] == 1){ $clicks = "<br />( Visits ".$site_hits." )"; }
 elseif($config['show_clicks'] == 0){ $clicks = ""; }
 
 	if($config['block_height'] == 1){ $height = "100"; }
@@ -67,46 +71,40 @@ elseif($config['block_height'] == 5){ $height = "300"; }
 	if($config['marquee_scroll'] == 1){ $amount = 3; }
 elseif($config['marquee_scroll'] == 2){ $amount = 2; }
 
-/****[START]******************************
- [Block: Settings                        ]
-******************************************/
-$my_image = '<img src="'.$config['my_image'].'" alt="'.$sitename.'" title="'.$sitename.'" width="88" height="31"><br>';
-$linkus_settings = '<a href="'.$nukeurl.'" target="_blank"><img src="'.$config['my_image'].'" alt="'.$sitename.'" title="'.$sitename.'" width="88" height="31"></a><br>';
-/****[END]********************************
- [Block: Settings                        ]
-******************************************/
 
-$content .= '<center>'.$my_image.'</center><br />';
+$my_image = '<br /><img src="'.$config['my_image'].'" alt="'.$sitename.'" title="'.$sitename.'" width="88" height="31">';
+$linkus_settings = '<a href="'.$nukeurl.'" target="_blank"><img src="'.$config['my_image'].'" alt="'.$sitename.'" title="'.$sitename.'" width="88" height="31">lol</a><br>';
+
+$content = '<div align="center" style="padding-top:6px;">';
+$content = '</div>';
+
+$content  = '<div class="center">'.$my_image.'</div><br />';
 $content .= '<div class="acenter">';
-$content .= '<span class="content"><textarea name="text" rows="3" cols="15">'.$linkus_settings.'</textarea></span>';
+$content .= '<span class="content"><textarea style="resize: none; font-size: 13px" name="text" rows="3" cols="15">'.$linkus_settings.'</textarea></span>';
 $content .= '<br /><br />';
 $content .= '<a href="modules.php?name=Link_Us">View All Buttons</a><br />';
 
-if($config['user_submit'] == 1){ $content .= '<a href="modules.php?name=Link_Us&op=submitbutton">Submit Button</a><br />'; }
+if($config['user_submit'] == 1)
+$content .= '<div align=\"center\"><a href="modules.php?name=Link_Us&op=submitbutton">Submit Button</a></div><br /><br />'; 
 
+$content .= '';
 
-$content .= '<hr noshade>';
-
-
-if($config['marquee'] == 1){
+if($config['marquee'] == 1)
 $content .= "<marquee direction='".$direction."' scrollamount='".$amount."' height='".$height."' onMouseover='this.stop()' onMouseout='this.start()'>";
-}
 
-$result = $db->sql_query("SELECT `id`, `site_name`, `site_url`, `site_image`, `site_hits` FROM ".$prefix."_link_us WHERE `site_status` = '1' AND `button_type`='1' OR `button_type`='3' ORDER BY id DESC");
-while (list($id, $site_name, $site_url, $site_image, $site_hits) = $db->sql_fetchrow($result)) {
+foreach( $blocksession as $friends ):
 
-$content .= "<br /><center><a href='modules.php?name=Link_Us&amp;op=visit&amp;id=$id' target='_blank'><img src='".$site_image."' ".$settings." title='".$site_name."' /></a>";
+	$content .= "<div class='center'><a href='modules.php?name=Link_Us&amp;op=visit&amp;id=".$friends['id']."' target='_blank'><img src='".$friends['site_image']."' ".$settings." title='".$friends['site_name']."' /></a>";
 
-	if($config['show_clicks'] == 1){$clicks = "<br />(Clicks ".$site_hits." )";}
-elseif($config['show_clicks'] == 0){$clicks = "";}
+		if($config['show_clicks'] == 1){$clicks = "<br /><strong><font size=\"2\">".$friends['site_name']."</font></strong><br /><strong><font size=\"2\">( ".$friends['site_hits']." CLICKS )</font></strong>";}
+	elseif($config['show_clicks'] == 0){$clicks = "";}
 
-$content .= "".$clicks."";
-$content .= "<br>".$seperation."</center>";}
+	$content .= "".$clicks."";
+	$content .= "<br>".$seperation."</div>";
 
-if($config['marquee'] == 1){
+endforeach;
+
+if($config['marquee'] == 1)
 $content .= "</marquee>";
-}
 $content .= '</div>';
-
-
 ?>

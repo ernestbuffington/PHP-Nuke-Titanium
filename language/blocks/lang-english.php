@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /**************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                           */
@@ -26,7 +27,7 @@ global $blockslang;
  * Language Defines: block-Honey_Pot.php
  * @since 2.0.9e
  */
-$blockslang['honeypot']['bots_stopped'] = 'We have %s[%s]%s bots stopped!';
+$blockslang['honeypot']['bots_stopped'] = '<font color="#feac00">We have %s <font color="#fe8e01">%s</font> %s Bots<br /> in the Honey Pot!</font>';
 $blockslang['honeypot']['bots_in_pot'] = 'Bots in the pot!';
 
 /**

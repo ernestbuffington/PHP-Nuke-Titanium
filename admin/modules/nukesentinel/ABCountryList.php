@@ -1,11 +1,12 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /********************************************************/
 /* NukeSentinel(tm)                                     */
-/* By: NukeScripts(tm) (http://www.nukescripts.net)     */
+/* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
 /* See CREDITS.txt for ALL contributors                 */
 /********************************************************/
@@ -30,7 +31,7 @@ if(!isset($min)) $min=0;
 if(!isset($max)) $max=$min+$perpage;
 if(!isset($column) or !$column or $column=="") $column = "country";
 if(!isset($direction) or !$direction or $direction=="") $direction = "asc";
-$totalselected = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_countries`"));
+$totalselected = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_countries`"));
 if($totalselected > 0) {
   $selcolumn1=$selcolumn2='';
   $seldirection1=$seldirection2='';
@@ -60,8 +61,8 @@ if($totalselected > 0) {
   echo '<td align="center" width="10%"><strong>'._AB_C2CODE.'</strong></td>'."\n";
   echo '<td width="80%"><strong>'._AB_COUNTRY.'</strong></td>'."\n";
   echo '</tr>'."\n";
-  $result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_countries` ORDER BY $column $direction LIMIT $min,$perpage");
-  while($getIPs = $db->sql_fetchrow($result)) 
+  $result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_countries` ORDER BY $column $direction LIMIT $min,$perpage");
+  while($getIPs = $titanium_db->sql_fetchrow($result)) 
   {
     // $getIPs['flag'] = flag_img($getIPs['c2c']);
     if ( in_array($getIPs['c2c'], array('00','01','02')) ):

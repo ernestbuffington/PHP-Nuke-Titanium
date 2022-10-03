@@ -1,14 +1,13 @@
 <?php
-
-/*
-|-----------------------------------------------------------------------
-|	COPYRIGHT (c) 2017 by fancyApps
-|	AUTHOR 				:	fancyapps
-|	COPYRIGHTS 			:	fancyapps
-|	PROJECT 			:	http://fancyapps.com/fancybox/
-|	VERSION 			:	v3.1.20
-|----------------------------------------------------------------------
-*/
+/**
+ * Touch enabled, responsive and fully customizable jQuery lightbox script.
+ *
+ * @package @fancyapps/fancybox
+ * @author  fancyApps
+ * @version 3.5.7
+ * @license GPL-3.0
+ * @link    https://fancyapps.com/fancybox/3/
+ */
 
 if(!defined('NUKE_FILE')) die('Access forbbiden');
 

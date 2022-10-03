@@ -16,26 +16,24 @@
    Notes         : Evo User Block Username Module
 ************************************************************************/
 
-if(!defined('NUKE_EVO')) {
-   die ("Illegal File Access");
-}
+if(!defined('NUKE_EVO')) 
+exit ("Illegal File Access");
 
 global $evouserinfo_addons, $evouserinfo_username;
 
-if (is_user()) {
+if(is_user()):
     global $userinfo;
     $evouserinfo_uname = UsernameColor($userinfo['username']);
-} else {
-    global $lang_evo_userblock;
-    $evouserinfo_uname = $lang_evo_userblock['BLOCK']['ANON'];
-}
+else: 
+    global $titanium_lang_evo_userblock;
+    $evouserinfo_uname = $titanium_lang_evo_userblock['BLOCK']['ANON'];
+endif;
 
-if ($evouserinfo_addons['username_center'] == 'yes') {
+if($evouserinfo_addons['username_center'] == 'yes'):
     $evouserinfo_username = "<div align=\"center\">";
     $evouserinfo_username .= $evouserinfo_uname;
     $evouserinfo_username .= "<br /><br /></div>";
-} else {
+else: 
     $evouserinfo_username = $evouserinfo_uname;
-}
-
+endif;
 ?>

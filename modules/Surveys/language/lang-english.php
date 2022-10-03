@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /**************************************************************************/
 /* PHP-NUKE: Advanced Content Management System                           */
@@ -19,6 +20,7 @@
 /* so your entry will look like: This is \"double quoted\" text.          */
 /* And, if you use HTML code, please double check it.                     */
 /**************************************************************************/
+
 define("_YOURNAME","Your Name");
 define("_OK","Ok!");
 define("_COMMENT","comment");
@@ -69,4 +71,5 @@ define("_ATTACHEDTOARTICLE","- Attached to article:");
 define("_SURVEYSATTACHED","Surveys Attached to Articles");
 define("_LAST5POLLS", "Last 5 Surveys at");
 define("_MOREPOLLS", "...more polls");
+
 ?>

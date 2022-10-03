@@ -1,11 +1,12 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /********************************************************/
 /* NukeSentinel(tm)                                     */
-/* By: NukeScripts(tm) (http://www.nukescripts.net)     */
+/* By: NukeScripts(tm) (http://nukescripts.86it.us)     */
 /* Copyright (c) 2000-2008 by NukeScripts(tm)           */
 /* See CREDITS.txt for ALL contributors                 */
 /********************************************************/
@@ -24,7 +25,7 @@ CloseMenu();
 CloseTable();
 echo '<br />'."\n";
 OpenTable();
-$getIPs = $db->sql_fetchrow($db->sql_query("SELECT * FROM `".$prefix."_nsnst_blocked_ips` WHERE `ip_addr`='$xIPs' LIMIT 0,1"));
+$getIPs = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_blocked_ips` WHERE `ip_addr`='$xIPs' LIMIT 0,1"));
 $getIPs['date'] = date("Y-m-d H:i:s",$getIPs['date']);
 $getIPs['expires'] = round(($getIPs['expires'] - time()) / 86400);
 echo '<form action="'.$admin_file.'.php" method="post">'."\n";
@@ -64,8 +65,8 @@ echo _AB_EXPIRESINS.'</td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'"><strong>'._AB_COUNTRY.':</strong></td>'."\n";
 echo '<td><select name="xc2c">'."\n";
 echo '<option value="00">'._AB_SELECTCOUNTRY.'</option>'."\n";
-$result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_countries` ORDER BY `c2c`");
-while($countryrow = $db->sql_fetchrow($result)) {
+$result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_countries` ORDER BY `c2c`");
+while($countryrow = $titanium_db->sql_fetchrow($result)) {
   echo '<option value="'.$countryrow['c2c'].'"';
   if($countryrow['c2c'] == $getIPs['c2c']) { echo ' selected="selected"'; }
   echo '>'.strtoupper($countryrow['c2c']).' - '.$countryrow['country'].'</option>'."\n";
@@ -73,8 +74,8 @@ while($countryrow = $db->sql_fetchrow($result)) {
 echo '</select></td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'" valign="top"><strong>'._AB_NOTES.':</strong></td><td><textarea name="xnotes" rows="10" cols="60">'.$getIPs['notes'].'</textarea></td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'"><strong>'._AB_REASON.':</strong></td><td><select name="xreason">'."\n";
-$result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_blockers` ORDER BY `block_name`");
-while($blockerrow = $db->sql_fetchrow($result)) {
+$result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_blockers` ORDER BY `block_name`");
+while($blockerrow = $titanium_db->sql_fetchrow($result)) {
   echo '<option value="'.$blockerrow['blocker'].'"';
   if($getIPs['reason']==$blockerrow['blocker']) { echo ' selected="selected"'; }
   echo '>'.$blockerrow['reason'].'</option>'."\n";

@@ -16,7 +16,7 @@
 /************************************************************************/
 /* Titanium Blog                                                        */
 /* By: The 86it Developers Network                                      */
-/* https://hub.86it.us                                                  */
+/* https://www.86it.us                                                  */
 /* Copyright (c) 2019 Ernest Buffington                                 */
 /************************************************************************/
 
@@ -30,26 +30,37 @@
  ************************************************************************/
 if (!defined('MODULE_FILE')) { die('You can\'t access this file directly...'); }
 
-$module_name = basename(dirname(__FILE__));
+$titanium_module_name = basename(dirname(__FILE__));
 
-get_lang($module_name);
+get_lang($titanium_module_name);
 
 if(!isset($sid)) 
 exit();
 
 function PrintPage($sid) 
 {
-    global $site_logo, $nukeurl, $sitename, $datetime, $prefix, $db, $module_name;
+    global $site_logo, $nukeurl, $sitename, $datetime, $titanium_prefix, $titanium_db, $titanium_module_name;
+    
+	// Ernest Buffington 0/31/2022 12:45am Wednesday
+	// I took the image out as this is a print page and wastes ink!!!
+	//<img src=\"images/$site_logo\" alt=\"$sitename\" title=\"$sitename\" /><br /><br />
 
     $sid = intval($sid);
-    $row = $db->sql_fetchrow($db->sql_query("SELECT title, time, hometext, bodytext, topic, notes FROM ".$prefix."_stories WHERE sid='$sid'"));
+    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT aid, title, datePublished, dateModified, hometext, bodytext, topic, notes FROM ".$titanium_prefix."_stories WHERE sid='$sid'"));
     $title = stripslashes(check_html($row["title"], "nohtml"));
-    $time = $row["time"];
-    $hometext = decode_bbcode(set_smilies(stripslashes($row["hometext"])), 1, true);
+    
+	// START Ernest Buffington 0/31/2022 12:45am Wednesday
+	$aid = $row["aid"];
+	// END Ernest Buffington 0/31/2022 12:45am Wednesday
+	
+	$time = $row["datePublished"];
+    $modified = $row["dateModified"];
+	
+	$hometext = decode_bbcode(set_smilies(stripslashes($row["hometext"])), 1, true);
     $bodytext = decode_bbcode(set_smilies(stripslashes($row["bodytext"])), 1, true);
     $topic = intval($row["topic"]);
     $notes = stripslashes($row["notes"]);
-    $row2 = $db->sql_fetchrow($db->sql_query("SELECT topictext FROM ".$prefix."_topics WHERE topicid='$topic'"));
+    $row2 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT topictext FROM ".$titanium_prefix."_topics WHERE topicid='$topic'"));
     $topictext = stripslashes($row2["topictext"]);
 
     formatTimestamp($time);
@@ -65,30 +76,38 @@ function PrintPage($sid)
 
         <table border=\"0\" width=\"640\" cellpadding=\"0\" cellspacing=\"1\" bgcolor=\"#000000\"><tr><td>
         <table border=\"0\" width=\"640\" cellpadding=\"20\" cellspacing=\"1\" bgcolor=\"#ffffff\"><tr><td>
-        <center>
-        <img src=\"images/$site_logo\" alt=\"$sitename\" title=\"$sitename\" /><br /><br />
+        <div align=\"center\">
         <span class=\"content\">
-        <strong>$title</strong></span><br />
+        <strong><font size=\"6\">$sitename</strong></font> <br />
+		<strong>$title</strong></span><br />
         <span class=\"tiny\"><strong>"._PDATE."</strong> $datetime<br /><strong>"._PTOPIC."</strong> $topictext</span><br /><br />
-        </center>
+        </div>
         <span class=\"content\">
-        $hometext<br /><br />
-        $bodytext<br /><br />
-        $notes<br /><br />
-        </span>
+        $hometext";
+		
+		// START Ernest Buffington 0/31/2022 12:45am Wednesday
+		if (!empty($bodytext)) :
+        echo '<br />$bodytext<br />';
+        endif;
+		/*$notes<br />*/
+		//SIGNATTURE GOES HERE
+   print blog_signature($aid);
+		// END Ernest Buffington 0/31/2022 12:45am Wednesday
+
+   
+   echo "</span>
         </td></tr></table></td></tr></table>
         <br /><br /><center>
         <span class=\"content\">
         "._COMESFROM." $sitename<br />
-        <a href=\"$nukeurl\">$nukeurl</a><br /><br />
+        <a href=\"https://$nukeurl\">$nukeurl</a><br /><br />
         "._THEURL."<br />
-        <a href=\"$nukeurl/modules.php?name=$module_name&amp;file=article&amp;sid=$sid\">$nukeurl/modules.php?name=$module_name&amp;file=article&amp;sid=$sid</a>
+        <a href=\"$nukeurl/modules.php?name=$titanium_module_name&amp;file=article&amp;sid=$sid\">$nukeurl/modules.php?name=$titanium_module_name&amp;file=article&amp;sid=$sid</a>
         </span></center>
         </td></tr></table>
         </body>
         </html>";
     exit;
 }
-
 PrintPage($sid);
 ?>

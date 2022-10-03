@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /*********************************************************************************/
 /* CNB Your Account: An Advanced User Management System for phpnuke             */
@@ -33,7 +34,7 @@ if (!defined('ADMIN_FILE')) {
 switch($op) {
 
     case "mod_users":
-        redirect("modules.php?name=Your_Account&file=admin");
+        redirect_titanium("modules.php?name=Your_Account&file=admin");
     break;
 
 }

@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -29,7 +30,7 @@ if (!defined('ADMIN_FILE')) {
    die ("Illegal File Access");
 }
 
-global $prefix, $db;
+global $titanium_prefix, $titanium_db;
 if (is_mod_admin()) {
 
     include_once(NUKE_ADMIN_MODULE_DIR.'settings/functions.php');

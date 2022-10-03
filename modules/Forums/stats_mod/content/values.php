@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /***************************************************************************
  *                                values.php
@@ -23,9 +24,9 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB'))
+if (!defined('IN_PHPBB2'))
 {
-    die('Hacking attempt');
+    die('ACCESS DENIED');
 }
 
 class Content_values
@@ -125,7 +126,7 @@ class Content_values
 
     function iterate_values()
     {
-        global $core, $stats_template, $phpbb_root_path, $phpEx, $stat_functions, $lang;
+        global $core, $stats_template, $phpbb2_root_path, $phpEx, $stat_functions, $titanium_lang;
 
         // make global...
         if (count($core->global_array) > 0)

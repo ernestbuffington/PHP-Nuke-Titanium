@@ -22,28 +22,37 @@ if(!defined('NUKE_EVO')) {
 
 global $evouserinfo_addons, $evouserinfo_members;
 
+# group memberships
 function evouserinfo_members () 
 {
-    global $userinfo, $db, $prefix, $user_prefix, $evouserinfo_members, $lang_evo_userblock;
+    global $userinfo, $titanium_db, $titanium_prefix, $titanium_user_prefix, $evouserinfo_members, $titanium_lang_evo_userblock;
     
-    $evouserinfo_members = '<div style="font-weight: bold">'.$lang_evo_userblock['BLOCK']['MEMBERS']['MEMBERS'].'</div>';
+    $evouserinfo_members = '<div style="font-weight: bold">'.$titanium_lang_evo_userblock['BLOCK']['MEMBERS']['MEMBERS'].'</div>';
 
     $in_group = array();
     
 	# Select all groups where the user is a member
-    if (isset($userinfo['groups'])) 
+    if(isset($userinfo['groups'])) 
 	{
-	   foreach ($userinfo['groups'] as $id => $name) 
+	   foreach ($userinfo['groups'] as $id1 => $name) 
 	   {
-          $in_group[] = $id;
+          $in_group[] = $id1;
     
-	      if (!empty($name))
+	      if(!empty($name))
 		  {
 		    $group_name = GroupColor($name);
 			$evouserinfo_members .= '<div style="padding-left: 10px;">';
-		    $evouserinfo_members .= '<img title="'.$id.'" src="images/titanium_user_info/orange.png" align="bottom" alt="'.$id.'">';
-            $evouserinfo_members .= ' <a title="'.$name.'" href="modules.php?name=Groups&amp;g='.$id . '"><strong>' . $group_name . '</strong></a><br />';
+		    $evouserinfo_members .= '<font title="'.$id1.'" class="tooltip-html-side-interact tooltipstered" 
+			color="lime"><i title="'.$id1.'" alt="'.$id1.'" class="fas fa-users"></i></font> ';
+            $evouserinfo_members .= '<a class="tooltip-html-side-interact tooltipstered" 
+			title="'.$name.'" href="modules.php?name=Groups&amp;g='.$id1 . '"><strong>' . $group_name . '</strong></a><br />';
 			$evouserinfo_members .= '</div>';
+            
+			# Group Cookie Control START
+			$groupcookie = str_replace(" ", "_", $name);
+			if(!isset($_COOKIE[$groupcookie]))
+			setcookie($groupcookie, $id1, time()+2*24*60*60);  
+			# Group Cookie Control END
         
 		  }
        }
@@ -53,12 +62,12 @@ function evouserinfo_members ()
     # Select all groups where the user has a pending membership.
     if(is_user()) 
 	{
-	   $result = $db->sql_query('SELECT g.group_id, 
+	   $result = $titanium_db->sql_query('SELECT g.group_id, 
 	                                  g.group_name, 
 								      g.group_type
             
-			               FROM '.$prefix.'_bbgroups g, 
-			               '.$prefix.'_bbuser_group ug
+			               FROM '.$titanium_prefix.'_bbgroups g, 
+			               '.$titanium_prefix.'_bbuser_group ug
             
 			               WHERE ug.user_id = '.$userinfo['user_id'].'
 				           AND ug.group_id = g.group_id
@@ -66,25 +75,27 @@ function evouserinfo_members ()
 				           AND g.group_single_user = 0
 			               ORDER BY g.group_name, ug.user_id'); 
     
-	   if ($db->sql_numrows($result)) 
+	   if ($titanium_db->sql_numrows($result)) 
 	   {
 
-	      $evouserinfo_members .= '<div style="font-weight: bold">'.$lang_evo_userblock['BLOCK']['MEMBERS']['PENDING'].'</div>';
+	      $evouserinfo_members .= '<div style="font-weight: bold">'.$titanium_lang_evo_userblock['BLOCK']['MEMBERS']['PENDING'].'</div>'; 
        
-	      while( $row = $db->sql_fetchrow($result) ) 
+	      while( $row = $titanium_db->sql_fetchrow($result) ) 
 		  {
             $in_group[] = $row['group_id'];
 
 		    $group_name = GroupColor($row['group_name']);
 		    $evouserinfo_members .= '<div style="padding-left: 10px;">';
-			$evouserinfo_members .= '<img title="'.$row['group_id'].'" src="images/titanium_user_info/blue.png" align="bottom" alt="'.$row['group_id'].'">';
-		    $evouserinfo_members .= ' <a title="'.$row['group_name'].'" href="modules.php?name=Groups&amp;g='.$row['group_id'] . '"><strong>' . $group_name . '</strong></a><br />';
+			$evouserinfo_members .= '<font title="'.$row['group_id'].'" class="tooltip-html-side-interact tooltipstered" 
+			color="lightgrey"><i title="'.$row['group_id'].'" alt="'.$row['group_id'].'" class="fas fa-users"></i></font> ';
+		    $evouserinfo_members .= '<a class="tooltip-html-side-interact tooltipstered" title="'.$row['group_name'].'" 
+			href="modules.php?name=Groups&amp;g='.$row['group_id'] . '"><strong>' . $group_name . '</strong></a><br />';
 			$evouserinfo_members .= '</div>';
           }
         
        }
 	    
-		$db->sql_freeresult($result);
+		$titanium_db->sql_freeresult($result);
    }
 }
 
@@ -94,3 +105,4 @@ else:
     $evouserinfo_members = '';
 endif;
 ?>
+

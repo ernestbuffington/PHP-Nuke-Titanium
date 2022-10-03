@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /*********************************************************************************/
 /* CNB Your Account: An Advanced User Management System for phpnuke             */
@@ -38,8 +39,8 @@ if (!defined('CNBYA')) {
 }
 
 // Group Memberships
-$result = $db->sql_query("SELECT ug.group_id, g.group_name FROM ".$prefix."_bbuser_group ug INNER JOIN ".$prefix."_bbgroups g ON (g.group_id = ug.group_id AND g.group_single_user = 0) WHERE ug.user_pending = 0 AND ug.user_id = ".$usrinfo['user_id']);
-if ($db->sql_numrows($result) > 0) {
+$result = $titanium_db->sql_query("SELECT ug.group_id, g.group_name FROM ".$titanium_prefix."_bbuser_group ug INNER JOIN ".$titanium_prefix."_bbgroups g ON (g.group_id = ug.group_id AND g.group_single_user = 0) WHERE ug.user_pending = 0 AND ug.user_id = ".$usrinfo['user_id']);
+if ($titanium_db->sql_numrows($result) > 0) {
     echo "<br />";
     OpenTable();
 /*****[BEGIN]******************************************
@@ -50,7 +51,7 @@ if ($db->sql_numrows($result) > 0) {
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    while(list($gid, $gname) = $db->sql_fetchrow($result)) {
+    while(list($gid, $gname) = $titanium_db->sql_fetchrow($result)) {
 /*****[BEGIN]******************************************
  [ Mod:    Group Colors                        v1.0.0 ]
  ******************************************************/
@@ -59,7 +60,7 @@ if ($db->sql_numrows($result) > 0) {
 /*****[END]********************************************
  [ Mod:    Group Colors                        v1.0.0 ]
  ******************************************************/
-        if(is_mod_admin($module_name)) { echo "&nbsp;($gid)"; }
+        if(is_mod_admin($titanium_module_name)) { echo "&nbsp;($gid)"; }
     }
     CloseTable();
 }

@@ -27,7 +27,7 @@ if (!defined('ADMIN_FILE')) {
 global $admin_file;
 
 if ( $radminsuper==1 ) {
-    adminmenu($admin_file.'.php?op=menu', 'Main Menu', 'menu.png');
+    adminmenu($admin_file.'.php?op=menu', 'Portal Menu', 'menu.png');
 }
 
 ?>

@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
@@ -26,7 +27,7 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $locale, $oldnum, $storynum, $storyhome, $cookie, $categories, $cat, $prefix, $multilingual, $currentlang, $db, $new_topic, $user_news, $userinfo, $user;
+global $locale, $oldnum, $blognum, $storyhome, $cookie, $categories, $cat, $titanium_prefix, $multilingual, $currentlang, $titanium_db, $new_topic, $titanium_user_news, $userinfo, $titanium_user;
 
 if ($multilingual == 1) {
     if ($categories == 1) {
@@ -47,15 +48,15 @@ if ($multilingual == 1) {
     }
     }
 }
-if (isset($userinfo['storynum']) AND $user_news == 1) {
-    $storynum = $userinfo['storynum'];
+if (isset($userinfo['storynum']) AND $titanium_user_news == 1) {
+    $blognum = $userinfo['storynum'];
 } else {
-    $storynum = $storyhome;
+    $blognum = $storyhome;
 }
 $boxstuff = "<table border=\"0\" width=\"100%\">";
 $boxTitle = _PASTARTICLES;
-$sql = "SELECT sid, title, time, comments FROM ".$prefix."_stories $querylang ORDER BY time DESC LIMIT $storynum, $oldnum";
-$result = $db->sql_query($sql);
+$sql = "SELECT sid, title, datePublished, comments FROM ".$titanium_prefix."_stories $querylang ORDER BY datePublished DESC LIMIT $blognum, $oldnum";
+$result = $titanium_db->sql_query($sql);
 $vari = 0;
 
 if (!isset($mode) OR empty($mode)) {
@@ -84,7 +85,7 @@ $r_options .= "&amp;mode=".$mode;
 $r_options .= "&amp;order=".$order;
 $r_options .= "&amp;thold=".$thold;
 
-while (list($sid, $title, $time, $comments) = $db->sql_fetchrow($result)) {
+while (list($sid, $title, $time, $comments) = $titanium_db->sql_fetchrow($result)) {
     $sid = intval($sid);
     $title = stripslashes($title);
     $see = 1;
@@ -98,32 +99,32 @@ while (list($sid, $title, $time, $comments) = $db->sql_fetchrow($result)) {
     $comments = "";
     }
     if($time2==$datetime2) {
-        $boxstuff .= "<tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=Blog&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
+        $boxstuff .= "<tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=News&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
     } else {
         if(empty($a)) {
-            $boxstuff .= "<tr><td colspan=\"2\"><strong>$datetime2</strong></td></tr><tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=Blog&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
+            $boxstuff .= "<tr><td colspan=\"2\"><strong>$datetime2</strong></td></tr><tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=News&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
         $time2 = $datetime2;
         $a = 1;
     } else {
-        $boxstuff .= "<tr><td colspan=\"2\"><strong>$datetime2</strong></td></tr><tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=Blog&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
+        $boxstuff .= "<tr><td colspan=\"2\"><strong>$datetime2</strong></td></tr><tr><td valign=\"top\"><strong><big>&middot;</big></strong></td><td> <a href=\"modules.php?name=News&amp;file=article&amp;sid=$sid$r_options\">$title</a> $comments</td></tr>\n";
         $time2 = $datetime2;
     }
     }
     $vari++;
     if ($vari==$oldnum) {
     if (isset($userinfo['storyhome'])) {
-        $storynum = $userinfo['storyhome'];
+        $blognum = $userinfo['storyhome'];
     } else {
-        $storynum = $storyhome;
+        $blognum = $storyhome;
     }
-    $min = $oldnum + $storynum;
+    $min = $oldnum + $blognum;
     $dummy = 1;
     }
 }
-$db->sql_freeresult($result);
+$titanium_db->sql_freeresult($result);
 
-if ($dummy == 1 AND is_active("Blog_Archive")) {
-    $boxstuff .= "</table><br /><a href=\"modules.php?name=Blog_Archive\"><strong>"._OLDERARTICLES."</strong></a>\n";
+if ($dummy == 1 AND is_active("Stories_Archive")) {
+    $boxstuff .= "</table><br /><a href=\"modules.php?name=Stories_Archive\"><strong>"._OLDERARTICLES."</strong></a>\n";
 } else {
     $boxstuff .= "</table>";
 }

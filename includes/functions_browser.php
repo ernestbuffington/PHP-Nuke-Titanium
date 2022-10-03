@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************
    Nuke-Evolution: Evolution Functions
@@ -508,12 +509,12 @@ if(!function_exists('mime_content_type'))
     }
 }
 
-global $browser, $agent;
+global $browser, $phpbb2_agent;
 
-if($agent['engine'] == 'bot') {
+if($phpbb2_agent['engine'] == 'bot') {
     $browser = 'Bot';
-} elseif(!empty($agent['ua'])) {
-    $browser = $agent['ua'];
+} elseif(!empty($phpbb2_agent['ua'])) {
+    $browser = $phpbb2_agent['ua'];
 } else {
     $browser = 'Other';
 }

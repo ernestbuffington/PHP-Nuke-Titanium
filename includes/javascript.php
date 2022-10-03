@@ -1,8 +1,20 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
-
+echo "<!--                                                                                
+@@@@@@@  @@@  @@@  @@@@@@@@   @@@@@@@@  @@@  @@@   @@@@@@    @@@@@@   @@@@@@@  
+@@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@@@  @@@  @@@  @@@@@@@@  @@@@@@@   @@@@@@@  
+  @@!    @@!  @@@  @@!       !@@        @@!  @@@  @@!  @@@  !@@         @@!    
+  !@!    !@!  @!@  !@!       !@!        !@!  @!@  !@!  @!@  !@!         !@!    
+  @!!    @!@!@!@!  @!!!:!    !@! @!@!@  @!@!@!@!  @!@  !@!  !!@@!!      @!!    
+  !!!    !!!@!!!!  !!!!!:    !!! !!@!!  !!!@!!!!  !@!  !!!   !!@!!!     !!!    
+  !!:    !!:  !!!  !!:       :!!   !!:  !!:  !!!  !!:  !!!       !:!    !!:    
+  :!:    :!:  !:!  :!:       :!:   !::  :!:  !:!  :!:  !:!      !:!     :!:    
+   ::    ::   :::   :: ::::   ::: ::::  ::   :::  ::::: ::  :::: ::      ::    
+   :      :   : :  : :: ::    :: :: :    :   : :   : :  :   :: : :       :     
+                                                                                -->\n";
+echo "\n<!-- LOADING JAVASCRIPT START includes/javascript.php -->\n\n";
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
 /* ===========================                                          */
@@ -40,7 +52,7 @@
       Theme Management                         v1.0.2       12/14/2005
 -=[Mod]=-
       Anti-Spam                                v1.1.0       06/18/2005
-      IE PNG Fix                               v1.0.0       06/24/2005
+      Arcade                                   v1.0.0       09/07/2022
       Password Strength Meter                  v1.0.0       07/12/2005
       ToolManDHTML                             v0.0.2       03/20/2005
       Switch Content Script                    v2.0.0       03/29/2006
@@ -48,22 +60,16 @@
       IE Embed Fix                             v1.0.0       04/24/2006
 	  jQuery Lightbox Resize Images            v0.5
  ************************************************************************/
-
-
-//Note due to all the windows.onload use womAdd('function_name()'); instead
-
-if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
-    exit('Access Denied');
-}
+# Note due to all the windows.onload use womAdd('function_name()'); instead
+if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {exit('Access Denied');}
 
 include_once(NUKE_INCLUDE_DIR.'styles.php');
 
 ##################################################
 # Include for some common javascripts functions  #
 ##################################################
-
 addJSToHead(NUKE_JQUERY_SCRIPTS_DIR.'javascript/onload.js','file');
-
+echo "<!-- LOADED ".NUKE_JQUERY_SCRIPTS_DIR."javascript/onload.js FROM includes/javascript.php -->\n";
 /*****[BEGIN]******************************************
  [ Base:    NukeSentinel                       v2.4.1 ]
  ******************************************************/
@@ -71,22 +77,140 @@ global $sentineladmin;
 if(!defined('FORUM_ADMIN')) 
 {
     addJSToHead('includes/nukesentinel/overlib.js','file');
+    echo "<!-- LOADED includes/nukesentinel/overlib.js FROM FROM includes/javascript.php -->\n";
     addJSToHead('includes/nukesentinel/overlib_hideform.js','file');
+    echo "<!-- LOADED includes/nukesentinel/overlib_hideform.js FROM FROM includes/javascript.php -->\n";
     addJSToHead('includes/nukesentinel/nukesentinel3.js','file');
+    echo "<!-- LOADED includes/nukesentinel/nukesentinel3.js FROM FROM includes/javascript.php -->\n";
 }
 /*****[END]********************************************
  [ Base:    NukeSentinel                       v2.4.1 ]
  ******************************************************/
 
 /*****[BEGIN]******************************************
- [ Mod:     IE Embed Fix                       v1.0.0 ]
+ [ Mod:     Facebook Mod                       v1.0.0 ]
  ******************************************************/
-echo "<!--[if IE]><script defer=\"defer\" type=\"text/javascript\" src=\"includes/embed_fix.js\"></script>\n<![endif]-->";
+global $fb, $portaladmin, $appID, $api_version, $appSecret, $my_url, $connected;
+if ($appID > 0) { # This will not load if there is not a facebook app id.
+echo "\n<script type=\"text/javascript\">\n";
+echo "<!--\n";
+##################################################################################################################
+## titaniumAPI                                                                                                  ##
+##################################################################################################################
+echo "function titaniumAPI() {\n";                   // Testing Graph API after login.  See statusChangeCallback() for when this call is made.
+echo "console.log('Welcome!  Fetching your information.... ');\n";
+echo "FB.api('/me', function(response) {\n";
+echo "console.log('Successful login for: ' + response.name);\n";
+
+
+
+
+echo "});\n";
+echo "}\n";
+##################################################################################################################
+## statusChangeCallback                                                                                         ##
+##################################################################################################################
+echo "function statusChangeCallback(response) {\n";  // Called with the results from FB.getLoginStatus().
+echo "console.log('statusChangeCallback');\n";
+echo "console.log(response);\n";                   // The current login status of the person.
+echo "if (response.status === 'connected') {\n";   // Logged into your webpage and Facebook.
+echo "titaniumAPI();\n";  
+echo "} else {\n";                                 // Not logged into your webpage or we are unable to tell.
+echo "document.getElementById('status').innerHTML = 'Please log ' +\n";
+echo "'into this webpage.';\n";
+echo "}\n";
+echo "}\n\n";
+##################################################################################################################
+## checkLoginState                                                                                              ##
+##################################################################################################################
+echo "function checkLoginState() {\n";               // Called when a person is finished with the Login Button.
+echo "FB.getLoginStatus(function(response) {\n";     // See the onlogin handler
+echo "statusChangeCallback(response);\n";
+echo "});\n";
+echo "}\n\n";
+
+
+
+##################################################################################################################
+## Facebook Init                                                                                                ##
+##################################################################################################################
+echo "window.fbAsyncInit = function() {\n";
+echo "FB.init({\n";
+echo "appId      : '{$appID}',\n"; # the value for this comes from the config.php file in the root.
+echo "cookie     : true,\n";
+echo "xfbml      : true,\n";
+echo "version    : '{$api_version}'\n";  # the value for this comes from the config.php file in the root.
+echo "});\n";
+##################################################################################################################
+### Facebook Login Status                                                                                       ##
+##################################################################################################################
+echo "FB.getLoginStatus(function(response)\n"; 
+echo "{\n";
+ 
+   echo "statusChangeCallback(response);\n";
+   
+   echo "if (response.status === 'connected')\n";
+   echo "{\n";
+			 // connected
+             echo "var uid = response.authResponse.userID;\n";
+             echo "var accessToken = response.authResponse.accessToken;\n";
+             echo "console.log(response.authResponse.accessToken);\n";
+  echo "}\n";
+   echo "else\n"; 
+   echo "if (response.status === 'not_authorized')\n";
+   echo "{\n";
+             // not_authorized
+   echo "}\n";
+   echo "else\n";
+   echo "{\n";
+             // not_logged_in
+   echo "}\n";
+echo "});\n";
+##################################################################################################################
+## Facebook Log Page View                                                                                       ##
+##################################################################################################################
+echo "FB.AppEvents.logPageView();\n";   
+##################################################################################################################
+##################################################################################################################
+##################################################################################################################
+echo "};\n";
+
+
+
+echo "(function(d, s, id){\n";
+echo "var js, fjs = d.getElementsByTagName(s)[0];\n";
+echo "if (d.getElementById(id)) {return;}\n";
+echo "js = d.createElement(s); js.id = id;\n";
+echo "js.src = 'https://connect.facebook.net/en_US/sdk.js';\n";
+
+echo "fjs.parentNode.insertBefore(js, fjs);\n";
+echo "}(document, 'script', 'facebook-jssdk'));\n";
+
+
+echo "//-->\n";
+echo "</script>\n\n";
+
+  # Check for user facebook cookie? Are you logged in with our facebook app or not!
+  if(isset($_COOKIE['fbsr_' . $appID]))
+  $connected = '::: Thanks for logging into our facebook app :::';
+  else	
+  $connected = '::: You aren\'t logged into our facebook app :::';
+
+echo "<!-- LOADED TITANIUM FACEBOOK v5 FROM FROM includes/javascript.php -->\n";
+}
+else
+{
+echo "<!-- NOT LOADED TITANIUM FACEBOOK v5 FROM FROM includes/javascript.php -->\n";
+}
+/* echo "\n<script type=\"text/javascript\">\n"; */
+/* echo "<!--\n";                                */
+/* echo "//-->\n";                               */
+/* echo "</script>\n\n";                         */
 /*****[END]********************************************
- [ Mod:     IE Embed Fix                       v1.0.0 ]
+ [ Mod:     Facebook Mod                       v1.0.0 ]
  ******************************************************/
 
-if (isset($userpage)) {
+if (isset($titanium_userpage)) {
     echo "<script type=\"text/javascript\">\n";
     echo "<!--\n";
     echo "function showimage() {\n";
@@ -104,8 +228,9 @@ if (defined('MODULE_FILE') && !defined("HOME_FILE") AND file_exists("modules/".$
     echo "<script type=\"text/javascript\">\n";
     echo "<!--\n";
     echo "function openwindow(){\n";
-    echo "    window.open (\"modules/".$name."/copyright.php\",\"Copyright\",\"toolbar=no,location=no,directories=no,status=no,scrollbars=yes,resizable=no,copyhistory=no,width=400,height=200\");\n";
-    echo "}\n";
+    echo "window.open (\"modules/".$name."/copyright.php\",\"Copyright\",\"toolbar=no,
+	      location=no,directories=no,status=no,scrollbars=yes,resizable=no,copyhistory=no,width=400,height=200\");\n";
+    echo "}\n\n";
     echo "//-->\n";
     echo "</script>\n\n";
 }
@@ -124,28 +249,28 @@ if (!defined('ADMIN_FILE'))
 /*****[BEGIN]******************************************
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
  ******************************************************/
-if ( get_evo_option('recap_site_key') && get_evo_option('recap_priv_key') )
+if(get_evo_option('recap_site_key') && get_evo_option('recap_priv_key'))
+{
     echo "<script src='https://www.google.com/recaptcha/api.js".(!empty(get_evo_option('recap_lang')) ? "?hl=".get_evo_option('recap_lang') : "")."' defer></script>";
+}
  /*****[END]*******************************************
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
  ******************************************************/
 
+echo "<script src=\"https://kit.fontawesome.com/5a71e91c84.js\" crossorigin=\"anonymous\"></script>";
+
 /*****[BEGIN]******************************************
- [ Mod:     IE PNG Fix                         v1.0.0 ]
+ [ Mod:     Arcade                             v1.0.0 ]
  ******************************************************/
-$arcade_on = (isset($_GET['file']) && $_GET['file'] == 'arcade_games') ? true : (isset($_POST['file']) && $_POST['file'] == 'arcade_games') ? true : false;
+$arcade_on = ((isset($_GET['file']) && $_GET['file'] == 'arcade_games') ? true : ((isset($_POST['file']) && $_POST['file'] == 'arcade_games') ?  true : false)); //Fixed
 
 if (!$arcade_on) {
-    $arcade_on = (isset($_GET['do']) && $_GET['do'] == 'newscore') ? true : (isset($_POST['do']) && $_POST['do'] == 'newscore') ? true : false;
-}
-
-if (!$arcade_on) {
-    echo "<!--[if lt IE 7]><script type=\"text/javascript\" src=\"".NUKE_JQUERY_SCRIPTS_DIR."javascript/pngfix.js\"></script><![endif]-->\n";
+    $arcade_on = ((isset($_GET['do']) && $_GET['do'] == 'newscore') ? true : ((isset($_POST['do']) && $_POST['do'] == 'newscore') ? true : false)); //Fixed
 }
 /*****[END]********************************************
- [ Mod:     IE PNG Fix                         v1.0.0 ]
+ [ Mod:     Arcade                             v1.0.0 ]
  ******************************************************/
-
+ 
 /*****[BEGIN]******************************************
  [ Mod:     Password Strength Meter            v1.0.0 ]
  ******************************************************/
@@ -263,46 +388,176 @@ if ($collapse)
  ******************************************************/
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.php');
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.reimg.image.resizer.php');
-include(NUKE_JQUERY_INCLUDE_DIR.'jquery.messagebox.php');               # v2.2.1 (https://gasparesganga.com)
+
+/**
+ * A jQuery Plugin to replace Javascript's window.alert(), window.confirm() and window.prompt() functions
+ *
+ * @package gasparesganga-jquery-message-box
+ * @author  Gaspare Sganga <contact@gasparesganga.com> (https://gasparesganga.com)
+ * @version 3.0.0
+ * @license MIT
+ * @link    https://gasparesganga.com/labs/jquery-message-box/
+ */
+include(NUKE_JQUERY_INCLUDE_DIR.'jquery.messagebox.php');
+
+/**
+ * jQuery lightbox and modal window plugin.
+ *
+ * @package Color picker
+ * @author  Stefan Petre
+ * @license MIT and GPL-3.0
+ * @link    https://www.eyecon.ro/
+ */
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.colorpicker.php');
 
-include(NUKE_JQUERY_INCLUDE_DIR.'jquery.fancybox.php');                 # v3.1.20
-include(NUKE_JQUERY_INCLUDE_DIR.'jquery.lightbox.php');                 # v2.9.0
-include(NUKE_JQUERY_INCLUDE_DIR.'jquery.colorbox.php');                 # v1.6.4
+/**
+ * Touch enabled, responsive and fully customizable jQuery lightbox script.
+ *
+ * @package @fancyapps/fancybox
+ * @author  fancyApps
+ * @version 3.5.7
+ * @license GPL-3.0
+ * @link    https://fancyapps.com/fancybox/3/
+ */
+include(NUKE_JQUERY_INCLUDE_DIR.'jquery.fancybox.php');
+
+/**
+ * The original Lightbox script.
+ *
+ * This lightbox script require a slideshow name to be provided at all times, so i have used gallery as the default, 
+ * Can still be changes via the function call.
+ *
+ * @package Lightbox2
+ * @author  Lokesh Dhakar <lokesh.dhakar@gmail.com>
+ * @version 2.10.0
+ * @license https://raw.githubusercontent.com/lokesh/lightbox2/master/LICENSE  MIT
+ * @link    https://lokeshdhakar.com/projects/lightbox2/
+ */
+include(NUKE_JQUERY_INCLUDE_DIR.'jquery.lightbox.php');
+
+/**
+ * jQuery lightbox and modal window plugin.
+ *
+ * @package jquery-colorbox
+ * @author  Jack Moore <hello@jacklmoore.com>
+ * @version 1.6.4
+ * @license GPL-3.0
+ * @link    http://www.jacklmoore.com/colorbox
+ */
+include(NUKE_JQUERY_INCLUDE_DIR.'jquery.colorbox.php');
+
+/**
+ * Lightweight, accessible and responsive lightbox.
+ *
+ * @package lity
+ * @author  Jan Sorgalla
+ * @version 2.3.1
+ * @license MIT
+ * @link    http://sorgalla.com/lity/
+ */
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.lightbox-lite.php');
 
+/**
+ * Live feed from Evolution Xtreme.
+ *
+ * Shows the latest live news coming from the Evolution Xtreme site,
+ * It is designed to keep you up to date on changes to the CMS, Blocks, Modules & Themes.
+ *
+ * @since 2.0.9e 
+ *
+ * @author Lonestar <https://lonestar-modules.com>
+ * @version 1.0.0
+ * @license GPL-3.0
+ */
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.live.feed.php');
 
+/**
+ * Scroll back to top script.
+ *
+ * A floating button link will appear when you scroll down the page.
+ *
+ * @since 2.0.9e 
+ *
+ * @author Lonestar <https://lonestar-modules.com>
+ * @version 1.0.0
+ * @license GPL-3.0
+ */
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.scroll.to.top.php');            # add in option to change icon per theme
-include(NUKE_JQUERY_INCLUDE_DIR.'jquery.private.messages.alert.php');   # v1.0 - https://lonestar-modules.com
-include(NUKE_JQUERY_INCLUDE_DIR.'jquery.floating.admin.php');           # v2.0 - floating administration menu
-include(NUKE_JQUERY_INCLUDE_DIR.'jquery.username.availability.php');    # Username Avalibility Check
+
+/**
+ * New Private message alert
+ *
+ * Original concept came from coRpSE, This is a modification/re-write of the original mod.
+ *
+ * @since 2.0.9e 
+ *
+ * @author Lonestar <https://lonestar-modules.com>
+ * @author coRpSE <https://www.headshotdomain.net>
+ * @version 1.0.0
+ * @license GPL-3.0
+ */
+include(NUKE_JQUERY_INCLUDE_DIR.'jquery.private.messages.alert.php');
+
+/**
+ * Floating Administration Menu
+ *
+ * A floating menu designed for Administration quick links.
+ *
+ * @since 2.0.9e 
+ *
+ * @author Lonestar <https://lonestar-modules.com>
+ * @version 2.0
+ * @license GPL-3.0
+ */
+include(NUKE_JQUERY_INCLUDE_DIR.'jquery.floating.admin.php');
+
+/**
+ * Username Avalibility Check.
+ *
+ * Does a check via AJAX to check if the username a new registered user enters is in use.
+ *
+ * @since 2.0.9e 
+ *
+ * @author coRpSE <https://www.headshotdomain.net>
+ * @version 1.0
+ * @license GPL-3.0
+ */
+include(NUKE_JQUERY_INCLUDE_DIR.'jquery.username.availability.php');
+
+/**
+ * A flexible and extensible jQuery plugin for modern tooltips.
+ *
+ * @package tooltipster
+ * @author  Caleb Jacob <hello@calebjacob.com>
+ * @version 4.2.6
+ * @license MIT
+ * @link    https://github.com/iamceege/tooltipster
+ */
 include(NUKE_JQUERY_INCLUDE_DIR.'jquery.tooltipster.php');
 /*****[END]********************************************
  [ Mod:     jQuery                             v1.5.0 ]
  ******************************************************/
+global $analytics;
 
-addJSToBody(NUKE_JQUERY_SCRIPTS_DIR.'Evo.EE.js','file');
-addJSToBody(NUKE_JQUERY_SCRIPTS_DIR.'Evo.EE.CMD.js','file');
-
-global  $analytics;
+/* This is garbage as far as I can see - to much fucking work to get it working.
 if (!empty($analytics)) {
-    echo "<script type=\"text/javascript\">
-            var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");
-            document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));
-          </script>
-          <script type=\"text/javascript\">
-            var pageTracker = _gat._getTracker(\"".$analytics."\");
-            pageTracker._initData();
-            pageTracker._trackPageview();
-          </script>";
+   echo "<script type=\"text/javascript\">
+           var gaJsHost = ((\"https:\" == document.location.protocol) ? \"https://ssl.\" : \"http://www.\");
+           document.write(unescape(\"%3Cscript src='\" + gaJsHost + \"google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E\"));
+         </script>
+         <script type=\"text/javascript\">
+           var pageTracker = _gat._getTracker(\"".$analytics."\");
+           pageTracker._initData();
+           pageTracker._trackPageview();
+         </script>";
 }
+*/
 
 global $more_js;
 if (!empty($more_js)) {
     echo $more_js;
 }
-
 //DO NOT PUT ANYTHING AFTER THIS LINE
 echo "<!--[if IE]><script type=\"text/javascript\">womOn();</script><![endif]-->\n";
+echo "\n<!-- LOADING JAVASCRIPT END includes/javascript.php -->\n";
 ?>

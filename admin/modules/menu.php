@@ -1,89 +1,53 @@
 <?php
-/*=======================================================================
- PHP-Nuke Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System
- =======================================================================*/
+/********************************************************/
+/* Titanium Portal Menu  v3.01b - 01 November 2012      */
+/* This file displays the administration console        */
+/* to edit your Portal Menu                             */
+/*                                                      */
+/* Titanium Portal Menu                                 */
+/* ernest.buffington@gmail.com                          */
+/* ---------------------------------------------------- */
+/* This program's license is General Public License     */
+/* http://www.gnu.org/licenses/gpl.txt                  */
+/********************************************************/
+global $admin_file, $admin, $key, $deletecat, $titanium_db, $titanium_prefix, $sql, $upgrade_test, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $bgcolorhide, $zetheme;
 
-/************************************************************************/
-/* PHP-NUKE: Web Portal System                                          */
-/* ===========================                                          */
-/*                                                                      */
-/* Copyright (c) 2002 by Francisco Burzi                                */
-/* http://phpnuke.org                                                   */
-/*                                                                      */
-/* This program is free software. You can redistribute it and/or modify */
-/* it under the terms of the GNU General Public License as published by */
-/* the Free Software Foundation; either version 2 of the License.       */
-/************************************************************************/
-/* Titanium Portal Menu                                                 */
-/* By: The 86it Developers Network                                      */
-/* https://hub.86it.us                                                  */
-/* Copyright (c) 2019 Ernest Buffington                                 */
-/************************************************************************/
-
-/*****[CHANGES]**********************************************************
--=[Base]=-
-      Nuke Patched                             v3.1.0       06/26/2005
--=[Mod]=-
-	  Titanium Patched                         v3.0.0       08/28/2019
- ************************************************************************/
- global $admin_file, 
-             $admin, 
-			   $key, 
-		 $deletecat, 
-		        $db, 
-			$prefix, 
-			   $sql, 
-	  $upgrade_test, 
-	      $bgcolor1, 
-		  $bgcolor2, 
-		  $bgcolor3, 
-		  $bgcolor4, 
-	   $bgcolorhide, 
-	       $zetheme;
-
-# fixed by Ernest Allen Buffington PHP 5
+//fixed by Ernest Allen Buffington PHP 5
 if (!preg_match("/".$admin_file.".php/", $_SERVER['PHP_SELF'])) 
 {
 	die ("You can't access this file directly...");
 }
-# fixed by Ernest Allen Buffington PHP 5
+//fixed by Ernest Allen Buffington PHP 5
 
 $aid = trim($aid);
 
-$result = $db->sql_query("select name, radminsuper from ".$prefix."_authors where aid='$aid'");
+$result = $titanium_db->sql_query("select name, radminsuper from ".$titanium_prefix."_authors where aid='$aid'");
 
-$row = $db->sql_fetchrow($result);
+$row = $titanium_db->sql_fetchrow($result);
 
 if ($row['radminsuper']!=1) 
-die ("You Are Not A Network Admin"); 
+{
+	die ("You Are Not A Network Admin"); 
+}
 
-$zetheme = get_theme();
+$zetheme=get_theme();
 
-global $use_theme_image_dir_for_portal_menu;
-
-if ($use_theme_image_dir_for_portal_menu == true)
-$urlofimages = "themes/$zetheme/images/menu";
-else
-$urlofimages = "images/menu";
+$urlofimages="images/menu";
 
 if (file_exists(NUKE_ADMIN_DIR.'language/Menu/lang-'.$currentlang.'.php')) 
-include_once(NUKE_ADMIN_DIR.'language/Menu/lang-'.$currentlang.'.php');
+{
+    include_once(NUKE_ADMIN_DIR.'language/Menu/lang-'.$currentlang.'.php');
+} 
 else 
-include_once(NUKE_ADMIN_DIR.'language/Menu/lang-english.php');
+{
+    include_once(NUKE_ADMIN_DIR.'language/Menu/lang-english.php');
+}
 
 $bgcolorhide='#c0c0c0';
 $bgcolorhidefallback='#909090';
 
-function menu_js_code() { # this php function will send all the java script functions.
-	global $urlofimages, 
-	           $zetheme, 
-			  $bgcolor1, 
-			  $bgcolor2, 
-			  $bgcolor3, 
-			  $bgcolor4, 
-		   $bgcolorhide, 
-   $bgcolorhidefallback, 
-            $admin_file;
+function menu_js_code() { //this php function will send all java script functions.
+	global $urlofimages, $zetheme, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $bgcolorhide, $bgcolorhidefallback, $admin_file;
 ?>
 <script type="text/javascript" language="Javascript">
 function menuadminshowhide(zenom, numero) {
@@ -196,7 +160,7 @@ function envoiedit(keymenu, z, type) {
 		var image = document.forms.form_menu.elements["menuformmoduleimage["+keymenu+"]["+z+"]"].value;
 		var lienclass = document.forms.form_menu.elements["menuformmoduleclass["+keymenu+"]["+z+"]"].value;
 		var new_days = document.forms.form_menu.elements["menuformmodulenew_days["+keymenu+"]["+z+"]"].value;
-		// for schedule
+		// pour schedule
 		var date_debut = document.forms.form_menu.elements["menu_schedule_date_debut["+keymenu+"]["+z+"]"].value;
 		var date_fin = document.forms.form_menu.elements["menu_schedule_date_fin["+keymenu+"]["+z+"]"].value;
 		var days = document.forms.form_menu.elements["menu_schedule_days["+keymenu+"]["+z+"]"].value;
@@ -261,7 +225,7 @@ function menu_manage_sublevels(keymenu, z, sens) {
 	}
 	else {
 		var previousz=parseInt(z)-1;
-		
+		// Si le sublevel est déjà supérieur au sublevel d'au-dessus, on ne fait rien !
 		if (parseInt(document.forms.form_menu.elements["sublevel["+keymenu+"]["+z+"]"].value)<=parseInt(document.forms.form_menu.elements["sublevel["+keymenu+"]["+previousz+"]"].value)) {
 			document.forms.form_menu.elements["sublevel["+keymenu+"]["+z+"]"].value=parseInt(document.forms.form_menu.elements["sublevel["+keymenu+"]["+z+"]"].value)+1;
 			document.images["sublevelspacer1["+keymenu+"]["+z+"]"].width=document.forms.form_menu.elements["sublevel["+keymenu+"]["+z+"]"].value*15;
@@ -383,6 +347,8 @@ function menu_move_updown(keymenu,z,lastz,sens) {
 		}
 	}
 }
+
+
 
 function findPosX(obj)
 {
@@ -615,41 +581,29 @@ function menu_hidelink(keymenu,z,sens,zedoc) {
 
 } 
 //end of js code.
-
 $zetheme=get_theme();
 
 function index() 
 {
 	       global $admin_file, 
-		                  $db, 
+		                  $titanium_db, 
 						 $sql, 
-				      $prefix, 
+				      $titanium_prefix, 
 					$bgcolor1, 
 					$bgcolor2, 
 					$bgcolor3, 
 					$bgcolor4, 
 				 $bgcolorhide, 
 		 $bgcolorhidefallback, 
-		         $currentlang,
 		          $textcolor1, 
 				         $key, 
 				   $deletecat, 
 				$upgrade_test, 
 				 $urlofimages;
 	
-	$result = $db->sql_query("SHOW TABLES LIKE '".$prefix."_menu'");
-	$tableExists = $db->sql_numrows($result);
-
-	if ($tableExists == 0)
-	{
-      MenuInstall();
-	  return;	
-    }	
-	
 	include_once("header.php");
 	
-	if ($bgcolor2=='silver' || $bgcolor2=='#c0c0c0' || $bgcolor3=='silver' || $bgcolor3=='#c0c0c0') 
-	{
+	if ($bgcolor2=='silver' || $bgcolor2=='#c0c0c0' ||$bgcolor3=='silver' || $bgcolor3=='#c0c0c0') {
 		$bgcolorhide=$bgcolorhidefallback;
 	}
 		
@@ -698,8 +652,7 @@ if ($old_school_imagedropdown==0)
 	  }
 		
         echo "<td><a href=\"javascript:menu_changeimageform('".$file[$i]."');\"><img src=\"".$urlofimages."/".$file[$i]."\" onmouseover=\"this.style.outline='1px outset ".$bgcolor2."'\" onmouseout=\"this.style.outline='none'\"></a></td>";
-     
-	 $imgcounter++;
+  $imgcounter++;
   }
 }
 	echo "</tr></table>";
@@ -736,6 +689,7 @@ if ($old_school_imagedropdown==0)
 		echo "<script type=\"text/javascript\">oldschool=0;</script>"; 
 		echo "<div id=\"menu_imagelist_cat\" style=\"display: none; z-index:2; position: absolute; padding: 15px;\">";
 		echo "<div id=\"imagelist_wrapper_cat\" style=\"z-index:3; background-color: ".$bgcolor3."; border: 1px solid black;\">";
+		//display: none; z-index:2; position: absolute;
 		echo "<table cellpadding=2 style=\"background-color: ".$bgcolor3.";\" title=\""._MENU_JSFIXFORIE1."\" id=\"menu_imagelist_cat_table\">";
 		$imgcounter=1;
 		echo "<tr><td><a href=\"javascript:menu_changeimageform_cat('middot.gif');\"><img src=\"".$urlofimages."/admin/middot.gif\" onmouseover=\"this.style.outline='1px outset ".$bgcolor2."'\" onmouseout=\"this.style.outline='none'\"></a></td>";
@@ -763,31 +717,33 @@ if ($old_school_imagedropdown==0)
 		echo "<script type=\"text/javascript\">oldschool=1;</script>";
 	}
 	
-	$sql = "SELECT title FROM ".$prefix."_modules ORDER BY title ASC";
+	$sql = "SELECT title FROM ".$titanium_prefix."_modules ORDER BY title ASC";
 	
-	$modulesaffiche= $db->sql_query($sql);
+	$titanium_modulesaffiche= $titanium_db->sql_query($sql);
 	
 	$menu_counter=0;
 	
-	while ($tempo = $db->sql_fetchrow($modulesaffiche)) 
+	while ($tempo = $titanium_db->sql_fetchrow($titanium_modulesaffiche)) 
 	{
-		$modules[$menu_counter]= $tempo['title'];
+		$titanium_modules[$menu_counter]= $tempo['title'];
 		$menu_counter++;
 	}
 
-	$sql2= "SELECT id, groupmenu, module, url, url_text, image, new, new_days, class, bold, sublevel, date_debut, date_fin, days FROM ".$prefix."_menu_categories ORDER BY id ASC";
+	$sql2= "SELECT id, groupmenu, module, url, url_text, image, new, new_days, class, bold, sublevel, date_debut, date_fin, days FROM ".$titanium_prefix."_menu_categories ORDER BY id ASC";
 	
-	$result2= $db->sql_query($sql2);
+	$result2= $titanium_db->sql_query($sql2);
 
 	$menu_counter=0;
 	
-	$row2=$db->sql_fetchrow($result2); 
+	$row2=$titanium_db->sql_fetchrow($result2); 
 	
 	$categorie=$row2['groupmenu'];
 	
-	$moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5 2012
-	$linkinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url'])); //fixed by Ernest Allen Buffington PHP 5 2012
-	$linktextinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url_text'])); //fixed by Ernest Allen Buffington PHP 5 2012
+	$titanium_moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5
+	
+	$linkinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url'])); //fixed by Ernest Allen Buffington PHP 5
+	 
+	$linktextinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url_text'])); //fixed by Ernest Allen Buffington PHP 5
 	
 	$imageinthisgroup[$categorie][$menu_counter]=$row2['image'];
 	
@@ -811,7 +767,7 @@ if ($old_school_imagedropdown==0)
 
 	$menu_counter2=$categorie;
 
-	while ($row2 = $db->sql_fetchrow($result2)) 
+	while ($row2 = $titanium_db->sql_fetchrow($result2)) 
 	{ 
 	  $categorie=$row2['groupmenu'];
 	  
@@ -824,9 +780,9 @@ if ($old_school_imagedropdown==0)
 		$menu_counter=0;
 	  }
 
-	 $moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5 2012
-	 $linkinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url'])); //fixed by Ernest Allen Buffington PHP 5 2012
-	 $linktextinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url_text'])); //fixed by Ernest Allen Buffington PHP 5 2012
+	 $titanium_moduleinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['module'])); //fixed by Ernest Allen Buffington PHP 5
+	 $linkinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url'])); //fixed by Ernest Allen Buffington PHP 5
+	 $linktextinthisgroup[$categorie][$menu_counter]=(stripslashes($row2['url_text'])); //fixed by Ernest Allen Buffington PHP 5 
 	 
 	 $imageinthisgroup[$categorie][$menu_counter]=$row2['image'];
 	 $newinthisgroup[$categorie][$menu_counter]=$row2['new'];
@@ -859,27 +815,22 @@ if ($old_school_imagedropdown==0)
 	."</style>";
 
 	//nuke_menu
-	$sql = "SELECT groupmenu, name, image, lien, hr, center, bgcolor, invisible, class, new, bold, listbox, dynamic, date_debut, date_fin, days FROM ".$prefix."_menu ORDER BY groupmenu ASC";
+	$sql = "SELECT groupmenu, name, image, lien, hr, center, bgcolor, invisible, class, new, bold, listbox, dynamic, date_debut, date_fin, days FROM ".$titanium_prefix."_menu ORDER BY groupmenu ASC";
 	
-	$result = $db->sql_query($sql);
+	$result = $titanium_db->sql_query($sql);
 	
 	if (!$result) {die("<div class=\"red\" align=\"center\" style=\"font-size:16px\"><strong><br>"._MENU_NOTABLEPB."<br></strong></div>");}
 
     global $admin_file;
 	
-	echo"<div align=\"center\"><a href=\"$admin_file.php?op=menu\"><strong>Titanium Portal Menu</strong></a></div>";
-	echo"<div align=\"center\">[ <a href=\"$admin_file.php\">Back To Main Admin Area</a> ]</div>";
-	
+	echo"<div align=\"center\">[<a href=\"$admin_file.php\"> Back To Main Admin Area</a>]</div>";
 
 	echo ""
 	."<form action=\"".$admin_file.".php?op=menu&amp;go=send\" method=\"post\" name=\"form_menu\">"
-	."<table class=\"row1\" width=\"100%\" align=\"center\"><tr><td colspan=\"2\">"
-	."<table class=\"row2\" width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=$bgcolor1><tr>"
-	."<td class=\"row1\">"
-	."<table class=\"row1\" width=\"100%\" align=\"center\" cellspacing=\"1\" cellpadding=\"4\"  bordercolor=\"$bgcolor1\">"
-	."<tr align=\"center\">"
-	."<td class=\"row2\">"
-	."<strong>"._MENU_WEIGHT."</strong></td><td class=\"row2\"><strong>"._MENU_CATEGORIES."</strong></td><td class=\"row2\"><strong>"._MENU_ACTION."</strong></td></tr>";
+	."<table width=\"100%\" align=\"center\"><tr><td colspan=\"2\">"
+	."<table width=\"100%\" align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"0\" bordercolor=$bgcolor1><tr><td bgcolor=\"#000000\">"
+	."<table width=\"100%\" align=\"center\" cellspacing=\"1\" cellpadding=\"4\"  bordercolor=\"$bgcolor1\">"
+	."<tr align=\"center\"><td bgcolor=\"$bgcolor2\"><strong>"._MENU_WEIGHT."</strong></td><td bgcolor=\"$bgcolor2\" ><strong>"._MENU_CATEGORIES."</strong></td><td bgcolor=\"$bgcolor2\" ><strong>"._MENU_ACTION."</strong></td></tr>";
 
 	$now=time();
 	$key=0;
@@ -889,7 +840,7 @@ if ($old_school_imagedropdown==0)
 	   echo "<tr><td colspan=4>"._MENU_NOTABLEPB."</td></tr>";
 	}
 	
-	while ($row = $db->sql_fetchrow($result)) 
+	while ($row = $titanium_db->sql_fetchrow($result)) 
 	{  
 	   $groupmenu[$key] = $row['groupmenu'];
 	   $catname[$key] = $row['name'];
@@ -910,7 +861,7 @@ if ($old_school_imagedropdown==0)
 
 	if ($groupmenu[$key]==99) 
 	{ 
-	   echo "<tr align=\"center\"><td class=\"row3\" colspan=3><strong><br>"._MENU_NEWCATEGORY."<br><br></strong></td></tr>";
+	   echo "<tr align=\"center\"><td bgcolor=\"$bgcolor1\" colspan=3><strong><br>"._MENU_NEWCATEGORY."<br><br></strong></td></tr>";
 	   $checkshowadmin=($catname[$key]=='menunoadmindisplay') ? "" : "checked" ; 
 	   $catname[$key]=$row['name']=""; 
 	   $key99=$groupmenu[$key];
@@ -934,14 +885,14 @@ if ($old_school_imagedropdown==0)
 
 	echo""
 	."<tr align=\"center\">"
-	."<td class=\"row1\" rowspan=\"2\" id=\"showhide_weight_$key\"><center>"
+	."<td bgcolor=\"$bgcolor2\"".$catclass." rowspan=\"2\" id=\"showhide_weight_$key\"><center>"
 	."<input type=\"text\" class=\"select\" name=\"menuformgroupmenu[$key]\" size=\"3\" maxlength=2 value=\"$groupmenu[$key]\" onchange='check_numeric(this,$groupmenu[$key])'></center><br>";
 	echo "<input type=\"hidden\" name=\"menu_schedule_date_debut_cat[".$key."]\" value=\"".$date_debut_cat[$key]."\">";
 	echo "<input type=\"hidden\" name=\"menu_schedule_date_fin_cat[".$key."]\" value=\"".$date_fin_cat[$key]."\">";
 	echo "<input type=\"hidden\" name=\"menu_schedule_days_cat[".$key."]\" value=\"".$days_cat[$key]."\">";
 	echo "<a href=\"javascript:envoiedit('".$key."', 'imacategory', 'schedule');\" title=\""._MENU_SCHEDULE."\"><center><img src=\"$urlofimages/admin/calendar_clock2.png\" style=\"margin-top:3px;\" width=\"36\"></center></a>";
 	echo "</td>"
-	."<td class=\"row1\" id=\"showhide_cat_$key\"><table align=\"left\" cellspacing=\"0\" cellpadding=\"0\" border=0>";
+	."<td bgcolor=\"$bgcolor3\"".$catclass." id=\"showhide_cat_$key\"><table align=\"left\" cellspacing=\"0\" cellpadding=\"0\" border=0>";
 
 	$newcolor = ( $new[$key]=="on" ) ? "new.gif" : "new_gray.gif" ;
 	
@@ -987,7 +938,7 @@ if ($old_school_imagedropdown==0)
 		echo "<option value=\"noimg\" $selected>"._MENU_NOIMG."</option>";
 
 		for ($i=0;$i<count($file);$i++) 
-		{ 
+		{ //chaque image /images/menu
 		    if ($file[$i] != "." && $file[$i] != ".." && $file[$i] != "categories" && $file[$i] != "admin") 
 			{
 			   if ($file[$i]==$image[$key]) 
@@ -1028,7 +979,7 @@ if ($old_school_imagedropdown==0)
 		$displaytargetnone="none";
 	}
 	
-	echo "<img style=\"display: ".$displaytargetblank."; width: 15px; margin-right: 5px;\" src=\"".$urlofimages."/admin/targetblank.gif\" name=\"targetblank$key\" alt=\""._MENU_TARGETBLANK."\" title=\""._MENU_TARGETBLANK."\">";
+	echo "<img style=\"display: ".$displaytargetblank."; width: 15px; margin-right: 5px;\" src=\"".$urlofimages."/admin/targetblank.png\" name=\"targetblank$key\" alt=\""._MENU_TARGETBLANK."\" title=\""._MENU_TARGETBLANK."\">";
 	
 	echo "<img style=\"display: ".$displaytargetnone."; width: 15px; margin-right: 5px;\" src=\"".$urlofimages."/admin/targetnone.gif\" name=\"targetnone$key\" alt=\""._MENU_TARGETNONE."\" title=\""._MENU_TARGETNONE."\">";
 
@@ -1044,9 +995,9 @@ if ($old_school_imagedropdown==0)
 	
 	$checked = ( $new[$key]<>"" ) ? "on" : "" ;
 	
-	$colornew = ($checked=="on") ? "new" : "new_gray";
+	$phpbb2_colornew = ($checked=="on") ? "new" : "new_gray";
 	
-	echo "<td><input type=\"hidden\" name=\"menuformnew[$key]\" value=\"$checked\"><img name=\"somcatnew$key\" src=\"".$urlofimages."/admin/$colornew.gif\" style=\"cursor: pointer;\" alt=\""._MENU_IMGNEWTITLE."\" title=\""._MENU_IMGNEWTITLE."\" onclick=\"menuchangecatimgnew(document.images['somcatnew$key'],'$key','');\">&nbsp;</td>";
+	echo "<td><input type=\"hidden\" name=\"menuformnew[$key]\" value=\"$checked\"><img name=\"somcatnew$key\" src=\"".$urlofimages."/admin/$phpbb2_colornew.gif\" style=\"cursor: pointer;\" alt=\""._MENU_IMGNEWTITLE."\" title=\""._MENU_IMGNEWTITLE."\" onclick=\"menuchangecatimgnew(document.images['somcatnew$key'],'$key','');\">&nbsp;</td>";
 
 	echo "<td><input type=\"hidden\" name=\"menuformdynamic[".$key."]\" value=\"".$dynamic[$key]."\">
 	[<a href='javascript:envoiedit(".$key.", \"imacategory\",\"edit\")' title=\""._MENU_MOREOPTIONS."\">+</a>]
@@ -1064,7 +1015,7 @@ if ($old_school_imagedropdown==0)
 	
 	echo "<input type=\"text\" class=\"select\" name=\"menuformbgcolor[$key]\" size=8 value=\"$categoriebgcolor[$key]\">&nbsp;"._MENU_BGCOLOR."&nbsp;&nbsp;&nbsp;</td>"
 	."</tr><tr height=8><td></td></tr></table></td>"
-	."<td class=\"row2\" rowspan=2 id=\"showhide_suppr_$key\">";
+	."<td bgcolor=\"$bgcolor2\"".$catclass." rowspan=2 id=\"showhide_suppr_$key\">";
 	
 	if ($key99<>99)
 	{
@@ -1072,14 +1023,11 @@ if ($old_school_imagedropdown==0)
 	}
 	
 	echo "</td>"
-	."</tr><tr><td class=\"row2\" id=\"showhide_content_$key\"".$display_cat.">";
+	."</tr><tr><td bgcolor=\"$bgcolor1\" id=\"showhide_content_$key\"".$display_cat.">";
 	
-	// Start - Fix by Ernest Buffington 08/25/2019 for PHP 7.3.6
-    if($moduleinthisgroup[$groupmenu[$key]] && count($moduleinthisgroup[$groupmenu[$key]]) <> 99)
-	$nbmodules = $nombremodules = (count($moduleinthisgroup[$groupmenu[$key]]));
+	$nbmodules = $nombremodules = count($titanium_moduleinthisgroup[$groupmenu[$key]]);
 	$nombremodules=$nombremodules+4; 
-    // End - Fix by Ernest Buffington 08/25/2019 for PHP 7.3.6
-	
+
 	echo "<table align=\"center\" border=0 cellspacing=0 cellpadding=2 width=\"100%\"><tr><td></td><td align =\"center\">"._MENU_CATCONTENT."</td><td align=\"center\">"._MENU_LINKURL."</td><td align=\"center\">"._MENU_LINKTEXT."</td><td width=\"3\"></td>";
 
 	if ($old_school_imagedropdown_cat==1) 
@@ -1175,25 +1123,25 @@ if ($old_school_imagedropdown==0)
 		
 		echo "<select name=\"menuformingroup[$key][$z]\" onchange='disab(this,this.value,this.form.elements[\"menuformmodulelink[$key][$z]\"],this.form.elements[\"menuformmodulelinktext[$key][$z]\"],\"$linkvalue\",\"$linktextvalue\"); menuadminshowhide(\"$menuzenom\",$hideok)'>";
 
-		echo "<option value=\"No\">ADD MODULE LINK TO MENU";
-		$selected = ($moduleinthisgroup[$groupmenu[$key]][$z]=="Horizonatal Rule") ? "selected" : "" ;
+		echo "<option value=\"Aucun\">ADD MODULE LINK TO MENU";
+		$selected = ($titanium_moduleinthisgroup[$groupmenu[$key]][$z]=="Horizonatal Rule") ? "selected" : "" ;
 		echo "<option value=\"Horizonatal Rule\" $selected>*Horizonatal Rule*";
-		$selected = ($moduleinthisgroup[$groupmenu[$key]][$z]=="External Link") ? "selected" : "" ;
+		$selected = ($titanium_moduleinthisgroup[$groupmenu[$key]][$z]=="External Link") ? "selected" : "" ;
 		echo "<option value=\"External Link\" $selected>*External Link*";
-		$selected = ($moduleinthisgroup[$groupmenu[$key]][$z]=="MENUTEXTONLY") ? "selected" : "" ;
+		$selected = ($titanium_moduleinthisgroup[$groupmenu[$key]][$z]=="MENUTEXTONLY") ? "selected" : "" ;
 		echo "<option value=\"MENUTEXTONLY\" $selected>*Text Without Url*";
 		echo "<option value=\"SEP\">=======================";
 		
-		for ($i=0;$i<count($modules);$i++) 
+		for ($i=0;$i<count($titanium_modules);$i++) 
 		{
 		    
-			$selected = ($modules[$i]==$moduleinthisgroup[$groupmenu[$key]][$z]) ? "selected" : "" ;
-			if ($modules[$i] == '..')
+			$selected = ($titanium_modules[$i]==$titanium_moduleinthisgroup[$groupmenu[$key]][$z]) ? "selected" : "" ;
+			if ($titanium_modules[$i] == '..')
 			{
 				
 			}
 			else
-			echo "<option value=\"$modules[$i]\" $selected>$modules[$i]";
+			echo "<option value=\"$titanium_modules[$i]\" $selected>$titanium_modules[$i]";
 		
 		}
 		
@@ -1238,7 +1186,7 @@ if ($old_school_imagedropdown==0)
 		
 		echo "</td></tr></table>";
 		echo "</td>";
-        echo "</td></tr></table>";
+echo "</td></tr></table>";
 		
 		$testehttp=strpos($linkinthisgroup[$groupmenu[$key]][$z],"http://");
 		$testeftp=strpos($linkinthisgroup[$groupmenu[$key]][$z],"ftp://");
@@ -1267,13 +1215,13 @@ if ($old_school_imagedropdown==0)
 		
 		echo "<img style=\"display: ".$displaytargetnone."; width: 15px; margin-right: 5px;\" src=\"".$urlofimages."/admin/targetnone.gif\" name=\"targetnone$formpointeur\" alt=\""._MENU_TARGETNONE."\" title=\""._MENU_TARGETNONE."\">";
 
-		if ($moduleinthisgroup[$groupmenu[$key]][$z]=="External Link") 
+		if ($titanium_moduleinthisgroup[$groupmenu[$key]][$z]=="External Link") 
 		{ //'External Link' 
 			$visibility_link="";
 			$visibility_link_text="";
 		}
 		else
-		if ($moduleinthisgroup[$groupmenu[$key]][$z]=="MENUTEXTONLY") 
+		if ($titanium_moduleinthisgroup[$groupmenu[$key]][$z]=="MENUTEXTONLY") 
 		{ // Text Only
 			$visibility_link="style=\"visibility:hidden;\" disabled";
 			$visibility_link_text="";
@@ -1296,7 +1244,7 @@ if ($old_school_imagedropdown==0)
 		echo "<td id=\"spanf$formpointeur\"".$linkclass."><input type=\"hidden\" name=\"menuformmoduleimage[".$key."][".$z."]\" value=\"".$imagenewschool."\"></td>";
 	}
 	else 
-	{ // flash
+	{ // flash)
 		echo "<td id=\"spanf$formpointeur\"".$linkclass." align=\"center\"><select name=\"menuformmoduleimage[$key][$z]\" onChange=\"changeimage_cat('image".$formpointeur."',this.value)\">";
 		echo "<option value='middot.gif' >"._MENU_NOIMG." ( <strong>&middot;</strong> )</option>";
 		
@@ -1322,9 +1270,9 @@ if ($old_school_imagedropdown==0)
 
 		$checked = ( $newinthisgroup[$groupmenu[$key]][$z]<>"" ) ? "on" : "" ;
 
-		$colornew = ($checked=="on") ? "new" : "new_gray";
+		$phpbb2_colornew = ($checked=="on") ? "new" : "new_gray";
 
-		echo "<td id=\"spanh$formpointeur\"".$linkclass." align=\"center\"><input type=\"hidden\" name=\"menuformmodulenew[$key][$z]\" id=\"menuformmodulenew[$key][$z]\" value=\"".$checked."\"><img name=\"somnew$formpointeur\" src=\"".$urlofimages."/admin/$colornew.gif\" style=\"cursor: pointer;\" alt=\""._MENU_IMGNEWTITLE."\" title=\""._MENU_IMGNEWTITLE."\" onclick=\"menuchangecatimgnew(document.images['somnew$formpointeur'],'$key','$z');\"></td>";
+		echo "<td id=\"spanh$formpointeur\"".$linkclass." align=\"center\"><input type=\"hidden\" name=\"menuformmodulenew[$key][$z]\" id=\"menuformmodulenew[$key][$z]\" value=\"".$checked."\"><img name=\"somnew$formpointeur\" src=\"".$urlofimages."/admin/$phpbb2_colornew.gif\" style=\"cursor: pointer;\" alt=\""._MENU_IMGNEWTITLE."\" title=\""._MENU_IMGNEWTITLE."\" onclick=\"menuchangecatimgnew(document.images['somnew$formpointeur'],'$key','$z');\"></td>";
 
 		echo "<td id=\"spani$formpointeur\"".$linkclass." style=\"text-align:left; vertical-align: middle;\"><a href=\"javascript:envoiedit($key,$z,'schedule');\" title=\""._MENU_SCHEDULE."\"><img src=\"$urlofimages/admin/calendar_clock.png\"  width=\"35\"></a></td>"; 
 
@@ -1400,7 +1348,7 @@ if ($old_school_imagedropdown==0)
 
 	echo""
 	."<br><br>"._MENU_REMARKS.""._MENU_REMARKSTWO.""
-	."<br><div align=\"center\"><br><br>Portal Menu v5.01 - &copy; 2019 The 86it Developers Network</div>";
+	."<br><div align=\"center\"><br><br>version 5.01b - &copy; <a href=\"mailto:ernest.buffington@gmail.com?body=Read the FAQ before asking me questions!!\">Ernest Allen Buffington</a></div>";
 
 	CloseTable();
 	include("footer.php");
@@ -1438,8 +1386,8 @@ function send()
 	      $menuformfirstclass, 
 		     $menuformdynamic, 
 			        $sublevel, 
-					      $db, 
-					  $prefix, 
+					      $titanium_db, 
+					  $titanium_prefix, 
 					     $sql,
 				  $admin_file;
 
@@ -1492,23 +1440,19 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 	}
 }
 
-$db->sql_query("DELETE FROM ".$prefix."_menu");
-$db->sql_query("DELETE FROM ".$prefix."_menu_categories");
+$titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_menu");
+$titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_menu_categories");
 
-global $db, $prefix;
-$sql="SELECT * FROM ".$prefix."_modules LIMIT 1";
-$result=$db->sql_query($sql);
-$row=$db->sql_fetchrow($result);
-//echo Mysql_error();
-
+global $titanium_db, $titanium_prefix;
+$sql="SELECT * FROM ".$titanium_prefix."_modules LIMIT 1";
+$result=$titanium_db->sql_query($sql);
+$row=$titanium_db->sql_fetchrow($result);
 if(isset($row['mod_group']))
 {
-    global $db, $prefix;
-
-	$sql2="SELECT * FROM ".$prefix."_users LIMIT 1";
-	$result2=$db->sql_query($sql2);
-	$row2=$db->sql_fetchrow($result2);
-	//echo Mysql_error();
+    global $titanium_db, $titanium_prefix;
+	$sql2="SELECT * FROM ".prefix."_users LIMIT 1";
+	$result2=$titanium_db->sql_query($sql2);
+	$row2=$titanium_db->sql_fetchrow($result2);
 	$managment_group=(isset($row2['points'])) ? 1 : 0 ;
 }
 else 
@@ -1539,7 +1483,7 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 			$invisible=$menuformradio;
 		}
 		
-		if ($menuformingroup[$i][$j] !="No") 
+		if ($menuformingroup[$i][$j] !="Aucun") 
 		{
 			if ($menuformingroup[$i][$j] =="Horizonatal Rule") // <hr />
 			{
@@ -1563,7 +1507,16 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 				$menuformmodulelinktext[$i][$j]="";
 			}
 			
-			$sql="INSERT INTO ".$prefix."_menu_categories (groupmenu, 
+			if (empty($zenew_days))
+			$zenew_days = -1;
+
+			if (empty($menu_schedule_date_debut[$i][$j]))
+			$menu_schedule_date_debut[$i][$j] = 0;
+
+			if (empty($menu_schedule_date_fin[$i][$j]))
+			$menu_schedule_date_fin[$i][$j] = 0;
+			
+			$sql="INSERT INTO ".$titanium_prefix."_menu_categories (groupmenu, 
 			                                                  module, 
 															     url, 
 															url_text, 
@@ -1591,9 +1544,8 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 					'".$menu_schedule_date_fin[$i][$j]."', 
 					'".$menu_schedule_days[$i][$j]."')";
 			
-			$db->sql_query($sql);
+			$titanium_db->sql_query($sql);
 			
-			//echo (MySql_error());
 		}
 		
 	}
@@ -1607,7 +1559,10 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 		$zeclass = ($menuformeachcategoryclass[0]!=$menuformclass) ? $menuformclass : $menuformeachcategoryclass[$i] ;
 		$zeclass = ($zeclass=="") ? $menuformclass : $zeclass ; 
 
-		$sql="INSERT INTO ".$prefix."_menu (groupmenu, 
+        if (empty($invisible))
+        $invisible = 0;
+
+		$sql="INSERT INTO ".$titanium_prefix."_menu (groupmenu, 
 		                                         name, 
 												image, 
 												 lien, 
@@ -1624,32 +1579,31 @@ for ($i=0; $i<=$menuformkeymenu; $i++)
 										     date_fin, 
 											     days) 
 	    
-		VALUES ('$menuformgroupmenu[$i]', 
+		VALUES ('".$menuformgroupmenu[$i]."', 
 		        '".$menuformname[$i]."', 
-				'$menuformimage[$i]', 
+				'".$menuformimage[$i]."', 
 				'".$menuformlien[$i]."', 
-				'$menuformhr[$i]', 
-				'$menuformcenter[$i]', 
-				'$menuformbgcolor[$i]', 
+				'".$menuformhr[$i]."', 
+				'".$menuformcenter[$i]."', 
+				'".$menuformbgcolor[$i]."', 
 				'".$invisible."', 
-				'$zeclass', 
-				'$menuformbold[$i]', 
-				'$menuformnew[$i]', 
-				'$menuformlistbox[$i]', 
-				'$menuformdynamic[$i]', 
-				'$menu_schedule_date_debut_cat[$i]', 
-				'$menu_schedule_date_fin_cat[$i]', 
-				'$menu_schedule_days_cat[$i]')";
+				'".$zeclass."', 
+				'".$menuformbold[$i]."', 
+				'".$menuformnew[$i]."', 
+				'".$menuformlistbox[$i]."', 
+				'".$menuformdynamic[$i]."', 
+				'".$menu_schedule_date_debut_cat[$i]."', 
+				'".$menu_schedule_date_fin_cat[$i]."', 
+				'".$menu_schedule_days_cat[$i]."')";
 		
-		$db->sql_query($sql);
+		$titanium_db->sql_query($sql);
 		
-		//echo (MySql_error());
 	} 
 }
 
 $nom = ($menushowadmin=='on') ? "" : "menunoadmindisplay" ;
 
-$sql="INSERT INTO ".$prefix."_menu (groupmenu, 
+$sql="INSERT INTO ".$titanium_prefix."_menu (groupmenu, 
                                          name, 
 										image, 
 										 lien, 
@@ -1683,11 +1637,10 @@ VALUES (99,
 		0, 
 		NULL)";
 
-$db->sql_query($sql);
+$titanium_db->sql_query($sql);
 
 include_once("header.php");
 OpenTable();
-//echo (MySql_error());
 echo "<br><div align=\"center\">"._MENU_SUCCESS."</div>";
 echo "<br><div align=\"center\">[<a href=\"admin.php\"> Back To Main Admin Area</a>]</div>";
 echo "<br><div align=\"center\">[<a href=\"".$admin_file.".php?op=menu\">"._MENU_BACKADMIN."</a>]</div>";
@@ -1699,7 +1652,7 @@ function edit()
 {
 	      global $key, 
 	               $z, 
-	      $modulename, 
+	      $titanium_modulename, 
 	       $link_name, 
 	        $lienlien, 
 	           $image, 
@@ -1717,8 +1670,8 @@ function edit()
  $menu_category_class, 
      $menu_link_class, 
 	   $menu_new_days, 
-	              $db, 
-			  $prefix, 
+	              $titanium_db, 
+			  $titanium_prefix, 
 		 $urlofimages, 
 		  $admin_file,
 		     $dynamic;
@@ -1733,13 +1686,13 @@ function edit()
 			
 				if ($image<>"middot.gif") 
 				{
-					$moduleimagesize = getimagesize("".$urlofimages."/categories/$image");
+					$titanium_moduleimagesize = getimagesize("".$urlofimages."/categories/$image");
 				}
 				else 
 				{
-					$moduleimagesize[0]=5;
+					$titanium_moduleimagesize[0]=5;
 				}
-				$imagesize =$catimagesize[0]-$moduleimagesize[0];
+				$imagesize =$catimagesize[0]-$titanium_moduleimagesize[0];
 
 				if ($imagesize<0) {
 					$imagesize=0;
@@ -1755,48 +1708,58 @@ function edit()
 		$catname = preg_replace("/\[SOMSYMBOLEinterro\]/","?",$catname);
 		$link_name = preg_replace("/\[SOMSYMBOLEinterro\]/","?",$link_name);
 		
-		include_once("themes/$zetheme/theme.php");
+		include_once('themes/'.$zetheme.'/theme.php'); 
 		
-		echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
+	
+		echo '<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 		<html><head><title>"._MENU_EDITLINKTITLE."</title>
-		<LINK REL=\"StyleSheet\" HREF=\"themes/$zetheme/style/titanium.css\" TYPE=\"text/css\"></head>
-		<body>
-		<form action=\"".$admin_file.".php?op=menu&amp;go=edit\" method=\"post\">
-		<input type=\"hidden\" name=\"menueditposted\" value=\"ok\">
-		<table cellspacing=2 cellpadding=3 align=\"center\">
-		<tr class=\"title\"><td colspan=3 align=\"center\" bgcolor=\"$bgcolor2\" >"._MENU_MOREOPTIONS."</td></tr>
+		<LINK REL="StyleSheet" HREF="themes/$zetheme/style/style.css" TYPE="text/css"></head>
+		<body>';
+
+		echo '<table border="1" width="100%">
+	    <tr>
+		<td bgcolor="grey">';
+
+		echo '<form action="'.$admin_file.'.php?op=menu&amp;go=edit" method="post">
+		<input type="hidden" name="menueditposted" value="ok">
+		<table cellspacing=2 cellpadding=3 align="center">
+		<tr class="title"><td colspan=3 align="center" bgcolor="darkgrey" >'._MENU_MOREOPTIONS.'</td></tr>
 		<tr height=6><td></td></tr><tr>
-		<td align=\"left\" bgcolor=\"$bgcolor3\"><img src=\"".$urlofimages."/$catimage\">&nbsp;$catname</td>
-		<td align=\"left\" bgcolor=\"$bgcolor3\">"._MENU_CLASS." : <input type=\"text\" class=\"select\" name=\"categoryclass\" value=\"$categoryclass\" size=10>
-		<input type=\"hidden\" name=\"z\" value=\"$z\"><input type=\"hidden\" name=\"keymenu\" value=\"$key\">
-		</td>";
+		<td align="left" bgcolor="darkgrey"><img src="'.$urlofimages.'/'.$catimage.'">&nbsp;'.$catname.'</td>
+		<td align="left" bgcolor="darkgrey">'._MENU_CLASS.' : <input type="text" class="select" name="categoryclass" value="'.$categoryclass.'" size=10>
+		<input type="hidden" name="z" value="'.$z.'"><input type="hidden" name="keymenu" value="'.$key.'">
+		</td>';
 		
 		$dynvalue = ($dynamic=='on') ? "" : "checked";
 		echo "<td><input type=\"checkbox\" name=\"alwaysopen\" id=\"alwaysopen\" $dynvalue><LABEL for=\"alwaysopen\">"._ALWAYS_OPEN."</LABEL></td>
 		</tr><tr height=3><td></td></tr>";
 		if ($z!="imacategory") {
-			echo "<tr bgcolor=\"$bgcolor1\">";
+			echo "<tr bgcolor=\"darkgrey\">";
 			$displayimage= ($image=="middot.gif") ? "<strong>&middot;</strong>" : "<img src=\"".$urlofimages."/categories/$image\">";
-			if ($modulename=="External Link" || $modulename=="MENUTEXTONLY") {
-				echo "<td bgcolor=\"$bgcolor1\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\">".$displayimage."&nbsp;$link_name</td>";
+			if ($titanium_modulename=="External Link" || $titanium_modulename=="MENUTEXTONLY") {
+				echo "<td bgcolor=\"darkgrey\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\">".$displayimage."&nbsp;$link_name</td>";
 			}
-			elseif ($modulename=="Horizonatal Rule") {
-				echo "<td bgcolor=\"$bgcolor1\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\"><hr></td>";
+			elseif ($titanium_modulename=="Horizonatal Rule") {
+				echo "<td bgcolor=\"darkgrey\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\"><hr></td>";
 			}
 			else {
-				echo "<td bgcolor=\"$bgcolor1\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\">".$displayimage."&nbsp;$modulename</td>";
+				echo "<td bgcolor=\"darkgrey\"><img src=\"".$urlofimages."/admin/none.gif\" width=\"$imagesize\" height=\"1\">".$displayimage."&nbsp;$titanium_modulename</td>";
 			}
-			$disabled=($modulename=="Horizonatal Rule") ? "disabled" : "" ;
-			echo "<td bgcolor=\"$bgcolor1\">"._MENU_CLASS." : <input type=\"text\" class=\"select\" name=\"somlienclass\" value=\"$link_class\" size=10></td>
+			$disabled=($titanium_modulename=="Horizonatal Rule") ? "disabled" : "" ;
+			echo "<td bgcolor=\"darkgrey\">"._MENU_CLASS." : <input type=\"text\" class=\"select\" name=\"somlienclass\" value=\"$link_class\" size=10></td>
 		<td>"._MENU_SINCE." <input type=\"text\" class=\"select\" name=\"somnew_days\" value=\"$new_days\" $disabled size=2> "._MENU_NBDAYS."
 		";
 
 			echo "</td></tr>";
 		}
 		echo "<tr><td height=10></td></tr><tr><td align=\"center\" colspan=3><input type=\"submit\"></td></tr><tr><td height=15></td></tr>
-		<tr><td colspan=3>"._MENU_ATTENTIONMOREOPTIONS."</td></tr></table></form>
+		<tr><td colspan=3>"._MENU_ATTENTIONMOREOPTIONS."</td></tr></table></form>";
+	echo '</td>
+	</tr>
+    </table>
+
 		</body>
-		</html>";
+		</html>';
 
 	}
 	else{
@@ -1817,12 +1780,13 @@ function edit()
 		<body>";
 
 	echo "<br><br><div align=\"center\"><span  class=\"title\">"._MENU_MOREOPTIONSUCCESS."</span><br>"._MENU_SENDTOVALIDATE."<br><br><br><br><br><br><div align=\"center\" class=\"title\">[<a href=\"javascript:window.close()\">"._MENU_CLOSE."</a>]</div>";
+	
 	echo"</body></html>";
 	}
 }
 
 function menu_schedule() {
-	global $key, $z, $modulename, $link_name, $lienlien, $image, $new_days, $categoryclass, $link_class, $catname, $catimage, $bgcolor1, $bgcolor3, $bgcolor2, $bgcolor4, $zetheme, $menu_edit_posted, $menu_category_class, $menu_link_class, $menu_new_days, $db, $prefix, $urlofimages;
+	global $key, $z, $titanium_modulename, $link_name, $lienlien, $image, $new_days, $categoryclass, $link_class, $catname, $catimage, $bgcolor1, $bgcolor3, $bgcolor2, $bgcolor4, $zetheme, $menu_edit_posted, $menu_category_class, $menu_link_class, $menu_new_days, $titanium_db, $titanium_prefix, $urlofimages;
 	global $admin_file;
 	if (!isset($admin_file)) {$admin_file="admin";}
 	
@@ -1838,10 +1802,9 @@ function menu_schedule() {
 		}
 		
 		include_once("themes/$zetheme/theme.php");
-	echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
-		<html><head><title>"._MENU_EDITLINKTITLE."</title>
-		<LINK REL=\"StyleSheet\" HREF=\"themes/$zetheme/style/style.css\" TYPE=\"text/css\"></head>
-		<body>";
+		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
+		<html><head><title>"._MENU_SCHEDULETITLE."...</title>
+		<LINK REL=\"StyleSheet\" HREF=\"themes/$zetheme/style/style.css\" TYPE=\"text/css\">";
 		?>
 		<script type="text/javascript" language="javascript">
 		function display_schedule(zeinput) {
@@ -1858,6 +1821,11 @@ function menu_schedule() {
 		echo "
 		</head>
 		<body>";
+		
+		echo '<table border="1" width="100%">
+	    <tr>
+		<td bgcolor="grey">'; 
+		
 		echo "<form name=\"schedule_menu\" action=\"".$admin_file.".php?op=menu&amp;go=schedule\" method=\"POST\">
 				<input type=\"hidden\" name=\"menu_schedule_post\" value=\"ok\">
 				<input type=\"hidden\" name=\"keymenu\" value=\"".$_GET['keymenu']."\">
@@ -1923,17 +1891,17 @@ function menu_schedule() {
 			$option_ms_fin.="<option value=\"".$zeoption."\"".$selected_fin.">".$zeoption."</option>";
 
 		}
-		$hidecheck=(strpos($_GET['days'],'8')!==false) ? "checked " : ""; 
+		$hidecheck=(strpos($_GET['days'],'8')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
 		$schedulecheck=($_GET['date_debut']!=0 && $_GET['date_fin']!=0) ? "checked " : "";
 		$scheduledisplay=($_GET['date_debut']!=0 && $_GET['date_fin']!=0) ? 'block' : 'none';
 		
-		$monday_check=(strpos($_GET['days'],'1')!==false) ? "checked " : ""; 
-		$tuesday_check=(strpos($_GET['days'],'2')!==false) ? "checked " : ""; 
-		$wednesday_check=(strpos($_GET['days'],'3')!==false) ? "checked " : ""; 
-		$thursday_check=(strpos($_GET['days'],'4')!==false) ? "checked " : ""; 
-		$friday_check=(strpos($_GET['days'],'5')!==false) ? "checked " : ""; 
-		$saturday_check=(strpos($_GET['days'],'6')!==false) ? "checked " : ""; 
-		$sunday_check=(strpos($_GET['days'],'7')!==false) ? "checked " : ""; 
+		$monday_check=(strpos($_GET['days'],'1')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
+		$tuesday_check=(strpos($_GET['days'],'2')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
+		$wednesday_check=(strpos($_GET['days'],'3')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
+		$thursday_check=(strpos($_GET['days'],'4')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
+		$friday_check=(strpos($_GET['days'],'5')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
+		$saturday_check=(strpos($_GET['days'],'6')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
+		$sunday_check=(strpos($_GET['days'],'7')!==false) ? "checked " : ""; // le !== (2=) est nécessaire
 		echo "</td>
 		<td><input type=\"checkbox\" ".$hidecheck."name=\"menu_schedule_hide\" id=\"hide\" OnClick=\"if(this.checked==true) {document.getElementById('schedule').checked=false;document.getElementById('schedule_table').style.display='none'}\"><LABEL for=\"hide\">"._MENU_HIDE."</LABEL>
 			<br>
@@ -1971,9 +1939,15 @@ function menu_schedule() {
 	</table>";
 		echo "<table border=0 align=\"center\" style=\"margin-top: 10px;\"><tr><td align=\"center\" colspan=2><input type=\"submit\" value=\"SAVE YOUR MODIFICATIONS\"></td></tr></table>";
 		echo "</form>";
+		
+		echo '</td>
+	    </tr>
+        </table>';
+
 		echo"</body></html>";
 	}
 	else {
+		//envoyer les données dans le formulaire principal.
 		$key=$_POST['keymenu'];
 		$z=$_POST['z'];
 		$days="";
@@ -2050,31 +2024,38 @@ function menu_schedule() {
 			echo "<script type=\"text/javascript\" language=\"javascript\">menu_hidelink($key,$z,'".$sens."',opener.document);</script>";
 		}
 		
-	    echo "<!DOCTYPE html PUBLIC \"-//W3C//DTD XHTML 1.0 Strict//EN\" \"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd\">
-		<html><head><title>"._MENU_EDITLINKTITLE."</title>
-		<LINK REL=\"StyleSheet\" HREF=\"themes/$zetheme/style/style.css\" TYPE=\"text/css\"></head>
-		<body>";
+		echo "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">
+			<html><head><title>".__MENU_SCHEDULETITLE."</title>
+			<LINK REL=\"StyleSheet\" HREF=\"themes/$zetheme/style/style.css\" TYPE=\"text/css\"></head>
+			<body>";
+
+		echo '<table border="1" width="100%">
+	    <tr>
+		<td bgcolor="grey">'; 
+
 		//echo "key:$key - z:$z - $menu_link_class - $menu_new_days - $somlienid - $menu_category_class<br>";
 		echo "<br><br><div align=\"center\"><span  class=\"title\">"._MENU_MOREOPTIONSUCCESS."</span><br>"._MENU_SENDTOVALIDATE."<br><br><br><br><br><br><div align=\"center\" class=\"title\">[<a href=\"javascript:window.close()\">"._MENU_CLOSE."</a>]</div>";
+		
+		echo '</td>
+	    </tr>
+        </table>';
+
 		echo"</body></html>";
 		
 	}
 }
 
-# delete menu category
-function deletecat() 
-{
-	global $admin_file;
+//
+//
 
-	if (!isset($admin_file)) 
-	{
-	  $admin_file="admin";
-	}
-	
-	global $deletecat, $key, $confirm, $catname, $db, $prefix;
-	
+function deletecat() {//pour supprimer une catégorie (fonction appelée par le clic sur "supprimer" dans une ligne du formulaire)
+	global $admin_file;
+	if (!isset($admin_file)) {$admin_file="admin";}
+	global $deletecat, $key, $confirm, $catname, $titanium_db, $titanium_prefix;
 	if ($confirm<>"YES") {
 		include_once ("header.php");
+		GraphicAdmin();
+		echo"<br>";
 		OpenTable();
 		$catname=htmlspecialchars($catname);
 		echo"<div align=\"center\">"._MENU_WARNINGDELETECAT." <i>$catname</i> ?<br><br>";
@@ -2083,189 +2064,36 @@ function deletecat()
 		CloseTable();
 		include_once("footer.php");
 	}
-	else 
-	{
+	else {
 		$confirm="NO";
-		$db->sql_query("DELETE FROM ".$prefix."_menu WHERE groupmenu='$deletecat'");
-		$db->sql_query("DELETE FROM ".$prefix."_menu_categories WHERE groupmenu='$deletecat'");
-		//echo (MySql_error());
+		$titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_menu WHERE groupmenu='$deletecat'");
+		$titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_menu_categories WHERE groupmenu='$deletecat'");
 		index();
 	}
 }
 
-function MenuInstall() 
-{
-	global  $admin_file, $prefix, $db, $domain;
-    $result = $db->sql_query("SHOW TABLES LIKE '".$prefix."_menu'");
-    $tableExists = $db->sql_numrows($result);
-	include("header.php");
+switch($go) {
 
-	if ($tableExists != 0)
-	{
-      index();
-	}
-	else
-	{
-      OpenTable();
-      if (is_mod_admin('admin')) 
-	  {
-		echo '<div align="center"><strong>'._MENU_THANKS.'</strong></div>';
-	    echo '<div align="center"><strong>'._MENU_INSTALL2.'</strong></div></br />';
-	    echo '<br>'._MENU_INSTALLING.'<br><br>' , PHP_EOL;
-		# START MENU TABLES INSTALL
-		# Drop table if there is one there already to avoid errors.
-	    echo 'I\'m going to drop the table "<strong>'.$prefix.'_menu</strong>" if it exists!' , PHP_EOL;
-	    echo '<br>' , PHP_EOL;
-	    echo 'If "<strong>'.$prefix.'_menu</strong>" did exist I have removed it!' , PHP_EOL;
-	    echo '<br>' , PHP_EOL;
-
-	    $db->sql_query("DROP TABLE IF EXISTS `".$prefix."_menu`");
-	
-	    # Lets create the new menu table
-        $result = $db->sql_query("CREATE TABLE IF NOT EXISTS `".$prefix."_menu` (
-        `groupmenu` int(2) NOT NULL DEFAULT '0',
-        `name` varchar(200) DEFAULT NULL,
-        `image` varchar(99) DEFAULT NULL,
-        `lien` text,
-        `hr` char(2) DEFAULT NULL,
-        `center` char(2) DEFAULT NULL,
-        `bgcolor` tinytext,
-        `invisible` int(1) DEFAULT NULL,
-        `class` tinytext,
-        `bold` char(2) DEFAULT NULL,
-        `new` char(2) DEFAULT NULL,
-        `listbox` char(2) DEFAULT NULL,
-        `dynamic` char(2) DEFAULT NULL,
-        `date_debut` bigint(20) NOT NULL DEFAULT '0',
-        `date_fin` bigint(20) NOT NULL DEFAULT '0',
-        `days` varchar(8) DEFAULT NULL,	
-        PRIMARY KEY (`groupmenu`)
-        ) ENGINE=MyISAM DEFAULT CHARSET=utf8;");
- 	 
-	    echo '<br>' , PHP_EOL
-        , 'Create table '.$prefix.'_menu:' , PHP_EOL;
-        
-		if($result)
-		{
-     	  echo'<span style="color:#008000;"><i>Success</i></span><br>' , PHP_EOL;
-        }
-		else
-		{
-     	  echo'<span style="color:#FF0000;"><i>Failed</i></span><br>' , PHP_EOL;
-        }
-	    echo '' , PHP_EOL
-	    , _MENU_INSERT_DATA , PHP_EOL;
-        
-		# Lets insert the data into the table
-        $result = $db->sql_query("INSERT INTO `".$prefix."_menu` (`groupmenu`, `name`, `image`, `lien`, `hr`, `center`, `bgcolor`, `invisible`, `class`, `bold`, `new`, `listbox`, `dynamic`, `date_debut`, `date_fin`, `days`) VALUES
-        (1, 'Blog Menu', 'community.png', '', 'on', '', '', 0, 'categories', 'on', '', '', '', 0, 0, ''),
-	    (99, '', NULL, NULL, NULL, NULL, NULL, 0, NULL, NULL, NULL, NULL, 'on', 0, 0, NULL);");
-	    
-		echo '<br>' , PHP_EOL
-        , 'Insert data into '.$prefix.'_menu:' , PHP_EOL;
-        
-		if($result)
-		{
-	      echo'<span style="color:#008000;"><i>Success</i></span><br>' , PHP_EOL;
-        }
-		else
-		{
-	      echo'<span style="color:#FF0000;"><i>Failed</i></span><br>' , PHP_EOL;
-        }
-        # END MENU TABLES INSTALL
-
-		echo '<br />' , PHP_EOL;
-
-	    # START MENU CATEGORIES TABLES INSTALL
-		# Drop table if there is one there already to avoid errors.
-	    echo 'I\'m going to drop the table "<strong>'.$prefix.'_menu_categories</strong>" if it exists!' , PHP_EOL;
-	    echo '<br>' , PHP_EOL;
-	    echo 'If "<strong>'.$prefix.'_menu_categories</strong>" did exist I have removed it!' , PHP_EOL;
-	    echo '<br>' , PHP_EOL;
-
-	    $db->sql_query("DROP TABLE IF EXISTS `".$prefix."_menu_categories`");
-	
-	    # Lets create the new menu table
-        $result = $db->sql_query("CREATE TABLE IF NOT EXISTS `".$prefix."_menu_categories` (
-        `id` int(11) NOT NULL AUTO_INCREMENT,
-        `date_fin` bigint(20) NOT NULL DEFAULT '0',
-        `date_debut` bigint(20) NOT NULL DEFAULT '0',
-        `sublevel` tinyint(3) NOT NULL DEFAULT '0',
-        `groupmenu` int(2) NOT NULL DEFAULT '0',
-        `module` varchar(50) NOT NULL DEFAULT '',
-        `url` text NOT NULL,
-        `url_text` text NOT NULL,
-        `image` varchar(50) NOT NULL DEFAULT '',
-        `new` char(2) DEFAULT NULL,
-        `new_days` tinyint(4) NOT NULL DEFAULT '-1',
-        `class` varchar(20) DEFAULT NULL,
-        `bold` char(2) DEFAULT NULL,
-        `days` varchar(8) NOT NULL DEFAULT '0',
-        PRIMARY KEY (`id`)
-        ) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;");
- 	 
-	    echo '' , PHP_EOL
-        , 'Create table '.$prefix.'_menu_categories:' , PHP_EOL;
-        
-		if($result)
-		{
-     	  echo'<span style="color:#008000;"><i>Success</i></span><br>' , PHP_EOL;
-        }
-		else
-		{
-     	  echo'<span style="color:#FF0000;"><i>Failed</i></span><br>' , PHP_EOL;
-        }
-	    echo '<br>' , PHP_EOL
-	    , _MENU_INSERT_DATA , PHP_EOL;
-        
-		# Lets insert the data into the table
-        $result = $db->sql_query("INSERT INTO `".$prefix."_menu_categories` (`id`, `date_fin`, `date_debut`, `sublevel`, `groupmenu`, `module`, `url`, `url_text`, `image`, `new`, `new_days`, `class`, `bold`, `days`) VALUES
-        (1, 0, 0, 0, 1, 'Blog', '', '', 'tree-T.png', '', 3, 'modules', 'on', ''),
-		(2, 0, 0, 0, 1, 'Blog_Topics', '', '', 'tree-T.png', '', 3, 'modules', 'on', ''),
-        (3, 0, 0, 0, 1, 'Blog_Archive', '', '', 'tree-T.png', '', 3, 'modules', 'on', ''),
-        (4, 0, 0, 0, 1, 'Blog_Top', '', '', 'tree-T.png', '', 3, 'modules', 'on', ''),
-	    (5, 0, 0, 0, 1, 'Blog_Submit', '', '', 'tree-L.png', '', 3, 'modules', 'on', '');");
-	    
-		echo '<br>' , PHP_EOL
-        , 'Insert data into '.$prefix.'_menu_categories:' , PHP_EOL;
-        
-		if($result)
-		{
-	      echo'<span style="color:#008000;"><i>Success</i></span><br>' , PHP_EOL;
-        }
-		else
-		{
-	      echo'<span style="color:#FF0000;"><i>Failed</i></span><br>' , PHP_EOL;
-        }
-        # START MENU CATEGORIES TABLES INSTALL
-		echo '<br /><strong>'._MENU_COMPLETE.'</strong><br /><br />';
-		header('Refresh: 30; URL=https://'.$domain.'/admin.php?op=menu');
-		echo '<div align="center"><strong><a href="https://'.$domain.'/admin.php?op=menu">[ BACK TO PORTAL ADMIN MENU ]</a></strong></div><br /><br />';
-		
-	  CloseTable();		
-	}
-
-  }
-   include("footer.php");
-}
-
-switch($go) 
-{
 	default:
-	case "Menu":
-	MenuInstall();
+	index();
 	break;
+
 	case "send":
 	send();
 	break;
+
 	case "deletecat":
 	deletecat();
 	break;
+
 	case "edit":
 	edit();
 	break;
+	
 	case "schedule":
 	menu_schedule();
 	break;
 }
+
+
 ?>

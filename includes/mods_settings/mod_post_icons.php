@@ -1,5 +1,4 @@
 <?php
-
 /***************************************************************************
  *                            mod_post_icons.php
  *                            ------------------
@@ -12,26 +11,18 @@
  ***************************************************************************/
 
 /***************************************************************************
- *
  *   This program is free software; you can redistribute it and/or modify
  *   it under the terms of the GNU General Public License as published by
  *   the Free Software Foundation; either version 2 of the License, or
  *   (at your option) any later version.
- *
  ***************************************************************************/
-
-if ( !defined('IN_PHPBB') )
-{
-	die("Hacking attempt");
-}
-
-// service functions
-include_once( NUKE_INCLUDE_DIR . 'functions_mods_settings.' . $phpEx );
-
-// mod definition
+if(!defined('IN_PHPBB2'))
+exit("ACCESS DENIED");
+# service functions
+include_once( NUKE_INCLUDE_DIR.'functions_mods_settings.'.$phpEx);
+# mod definition
 $mod_name = 'Icons_settings';
 $config_fields = array(
-
 	'icon_per_row' => array(
 		'lang_key'	=> 'Icons_per_row',
 		'explain'	=> 'Icons_per_row_explain',
@@ -39,8 +30,6 @@ $config_fields = array(
 		'default'	=> '10',
 		),
 );
-
-// init config table
+# init config table
 init_board_config($mod_name, $config_fields);
-
 ?>
