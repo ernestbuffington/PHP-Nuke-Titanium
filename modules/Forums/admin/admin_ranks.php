@@ -27,28 +27,28 @@
 if( !empty($setmodules) )
 {
 	$file = basename(__FILE__);
-	$titanium_module['Users']['Ranks'] = $file;
+	$module['Users']['Ranks'] = $file;
 	return;
 }
 
-define('IN_PHPBB2', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', true);
 
 //
 // Let's set the root dir for phpBB
 //
-$phpbb2_root_path = "./../";
-require($phpbb2_root_path . 'extension.inc');
-$cancel = ( isset($HTTP_POST_VARS['cancel']) || isset($_POST['cancel']) ) ? true : false;
+$phpbb_root_path = "./../";
+require($phpbb_root_path . 'extension.inc');
+$cancel = ( isset($_POST['cancel']) || isset($_POST['cancel']) ) ? true : false;
 $no_page_header = $cancel;
 require('./pagestart.' . $phpEx);
 if ($cancel)
 {
-	redirect_titanium(append_titanium_sid("admin_ranks.$phpEx", true));
+	redirect(append_sid("admin_ranks.$phpEx", true));
 }
 
-if( isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']) )
+if( isset($_GET['mode']) || isset($_POST['mode']) )
 {
-	$mode = (isset($HTTP_GET_VARS['mode'])) ? $HTTP_GET_VARS['mode'] : $HTTP_POST_VARS['mode'];
+	$mode = (isset($_GET['mode'])) ? $_GET['mode'] : $_POST['mode'];
 	$mode = htmlspecialchars($mode);
 }
 else
@@ -56,11 +56,11 @@ else
     //
     // These could be entered via a form button
     //
-    if( isset($HTTP_POST_VARS['add']) )
+    if( isset($_POST['add']) )
     {
             $mode = "add";
     }
-    else if( isset($HTTP_POST_VARS['save']) )
+    else if( isset($_POST['save']) )
     {
             $mode = "save";
     }
@@ -86,17 +86,17 @@ if( $mode != "" )
                 {
                         if( empty($rank_id) )
                         {
-                                message_die(GENERAL_MESSAGE, $titanium_lang['Must_select_rank']);
+                                message_die(GENERAL_MESSAGE, $lang['Must_select_rank']);
                         }
 
                         $sql = "SELECT * FROM " . RANKS_TABLE . "
                                 WHERE rank_id = $rank_id";
-                        if(!$result = $titanium_db->sql_query($sql))
+                        if(!$result = $db->sql_query($sql))
                         {
                                 message_die(GENERAL_ERROR, "Couldn't obtain rank data", "", __LINE__, __FILE__, $sql);
                         }
 
-                        $rank_info = $titanium_db->sql_fetchrow($result);
+                        $rank_info = $db->sql_fetchrow($result);
                         $s_hidden_fields .= '<input type="hidden" name="id" value="' . $rank_id . '" />';
 
                 }
@@ -137,22 +137,33 @@ if( $mode != "" )
 					}
 					closedir($dir);
 					$ranks_list = '<select name="rank_image_sel" onChange="update_rank(this.options[selectedIndex].value);">';
-					if ($rank_info['rank_image'] == '')
+					
+					if(!isset($lang['No_Rank_Image']))
+					$lang['No_Rank_Image'] = '';
+
+					if(!isset($rank_info['rank_image']))
+					$rank_info['rank_image'] = '';
+					
+					if (isset($rank_info['rank_image']) && $rank_info['rank_image'] == '')
 					{
-						$ranks_list .= "<option value=\"\" selected=\"selected\">" . $titanium_lang['No_Rank_Image'] . "</option>";
+						$ranks_list .= "<option value=\"\" selected=\"selected\">" . $lang['No_Rank_Image'] . "</option>";
 					}
 					else
 					{
-						$ranks_list .= "<option value=\"\">" . $titanium_lang['No_Rank_Image'] . "</option>";
+						$ranks_list .= "<option value=\"\">" . $lang['No_Rank_Image'] . "</option>";
 						$ranks_list .= "<option value=\"" . $rank_info['rank_image'] . "\" selected=\"selected\">" . str_replace($rank_path, "", $rank_info['rank_image']) . "</option>";
 					}
 					for($k=0; $k<=$l;$k++)
 					{
-						if ($file1[$k] != "")
+						if (isset($file1[$k]) && $file1[$k] != "")
 						{
 							$ranks_list .= "<option value=\"images/ranks/" . $file1[$k] . "\">images/ranks/" . $file1[$k] . "</option>";
 						}
 					}
+					
+					if(!isset($images['spacer']))
+					$images['spacer'] = '';
+					
 					$rank_img_sp = ( ($rank_info['rank_image'] != '') ? ('../' . $rank_info['rank_image']) : $images['spacer'] );
 					$rank_img_path = ( $rank_info['rank_image'] != '' ) ? $rank_info['rank_image'] : '';
 					$ranks_list .= '</select>';
@@ -171,11 +182,14 @@ if( $mode != "" )
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
 
-                $phpbb2_template->set_filenames(array(
+                $template->set_filenames(array(
                         "body" => "admin/ranks_edit_body.tpl")
                 );
-
-                $phpbb2_template->assign_vars(array(
+                
+				if(!isset($rank_info['rank_min']))
+				$rank_info['rank_min'] = '';
+				
+                $template->assign_vars(array(
 /*****[BEGIN]******************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
@@ -186,37 +200,37 @@ if( $mode != "" )
 						"SPECIAL_RANK" => $rank_is_special,
 						"GUEST_RANK" => $rank_is_guest,
 						"BANNED_RANK" => $rank_is_banned,
-						"RANK" => $rank_info['rank_title'],
+						"RANK" => $rank_info['rank_title'] ?? '',
 						"RANK_LIST" => $ranks_list,
 						"RANK_IMG" => ( $rank_info['rank_image'] != "") ? '../' . $rank_info['rank_image'] : $images['spacer'],
 			
-						"L_NO_RANK" => $titanium_lang['No_Rank'],
-						"L_DAYS_RANK" => $titanium_lang['Rank_Days_Count'],
-						"L_POSTS_RANK" => $titanium_lang['Rank_Posts_Count'],
-						"L_MIN_M_D" => $titanium_lang['Rank_Min_Des'],
-						"L_SPECIAL_RANK" => $titanium_lang['Rank_Special'],
-						"L_GUEST" => $titanium_lang['Guest_User'],
-						"L_BANNED" => $titanium_lang['Banned_User'],
-						"L_CURRENT_RANK" => $titanium_lang['Current_Rank_Image'],
+						"L_NO_RANK" => $lang['No_Rank'],
+						"L_DAYS_RANK" => $lang['Rank_Days_Count'],
+						"L_POSTS_RANK" => $lang['Rank_Posts_Count'],
+						"L_MIN_M_D" => $lang['Rank_Min_Des'],
+						"L_SPECIAL_RANK" => $lang['Rank_Special'],
+						"L_GUEST" => $lang['Guest_User'],
+						"L_BANNED" => $lang['Banned_User'],
+						"L_CURRENT_RANK" => $lang['Current_Rank_Image'],
 						"IMAGE" => ( $rank_info['rank_image'] != "" ) ? $rank_info['rank_image'] : "",
 						"IMAGE_DISPLAY" => ( $rank_info['rank_image'] != "" ) ? '<img src="../' . $rank_info['rank_image'] . '" />' : "",
 /*****[END]********************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
 
-                        "L_RANKS_TITLE" => $titanium_lang['Ranks_title'],
-                        "L_RANKS_TEXT" => $titanium_lang['Ranks_explain'],
-                        "L_RANK_TITLE" => $titanium_lang['Rank_title'],
-                        "L_RANK_SPECIAL" => $titanium_lang['Rank_special'],
-                        "L_RANK_MINIMUM" => $titanium_lang['Rank_minimum'],
-                        "L_RANK_IMAGE" => $titanium_lang['Rank_image'],
-                        "L_RANK_IMAGE_EXPLAIN" => $titanium_lang['Rank_image_explain'],
-                        "L_SUBMIT" => $titanium_lang['Submit'],
-                        "L_RESET" => $titanium_lang['Reset'],
-                        "L_YES" => $titanium_lang['Yes'],
-                        "L_NO" => $titanium_lang['No'],
+                        "L_RANKS_TITLE" => $lang['Ranks_title'],
+                        "L_RANKS_TEXT" => $lang['Ranks_explain'],
+                        "L_RANK_TITLE" => $lang['Rank_title'],
+                        "L_RANK_SPECIAL" => $lang['Rank_special'],
+                        "L_RANK_MINIMUM" => $lang['Rank_minimum'],
+                        "L_RANK_IMAGE" => $lang['Rank_image'],
+                        "L_RANK_IMAGE_EXPLAIN" => $lang['Rank_image_explain'],
+                        "L_SUBMIT" => $lang['Submit'],
+                        "L_RESET" => $lang['Reset'],
+                        "L_YES" => $lang['Yes'],
+                        "L_NO" => $lang['No'],
 
-                        "S_RANK_ACTION" => append_titanium_sid("admin_ranks.$phpEx"),
+                        "S_RANK_ACTION" => append_sid("admin_ranks.$phpEx"),
                         "S_HIDDEN_FIELDS" => $s_hidden_fields)
                 );
 
@@ -227,21 +241,21 @@ if( $mode != "" )
                 // Ok, they sent us our info, let's update it.
                 //
 
-                $rank_id = ( isset($HTTP_POST_VARS['id']) ) ? intval($HTTP_POST_VARS['id']) : 0;
-                $rank_title = ( isset($HTTP_POST_VARS['title']) ) ? trim($HTTP_POST_VARS['title']) : "";
+                $rank_id = ( isset($_POST['id']) ) ? intval($_POST['id']) : 0;
+                $rank_title = ( isset($_POST['title']) ) ? trim($_POST['title']) : "";
 /*****[BEGIN]******************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
-				$special_rank = $HTTP_POST_VARS['special_rank'];
-				$min_posts = ( isset($HTTP_POST_VARS['min_posts']) ) ? intval($HTTP_POST_VARS['min_posts']) : -1;
-				$rank_image = ( (isset($HTTP_POST_VARS['rank_image_path'])) ) ? trim($HTTP_POST_VARS['rank_image_path']) : "";
+				$special_rank = $_POST['special_rank'];
+				$min_posts = ( isset($_POST['min_posts']) ) ? intval($_POST['min_posts']) : -1;
+				$rank_image = ( (isset($_POST['rank_image_path'])) ) ? trim($_POST['rank_image_path']) : "";
 /*****[END]********************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
 
                 if( empty($rank_title) )
                 {
-                        message_die(GENERAL_MESSAGE, $titanium_lang['Must_select_rank']);
+                        message_die(GENERAL_MESSAGE, $lang['Must_select_rank']);
                 }
 
 /*****[BEGIN]******************************************
@@ -281,31 +295,31 @@ if( $mode != "" )
                                         SET user_rank = 0
                                         WHERE user_rank = $rank_id";
 
-                                if( !$result = $titanium_db->sql_query($sql) )
+                                if( !$result = $db->sql_query($sql) )
                                 {
-                                        message_die(GENERAL_ERROR, $titanium_lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
+                                        message_die(GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
                                 }
                         }
                         $sql = "UPDATE " . RANKS_TABLE . "
                                 SET rank_title = '" . str_replace("\'", "''", $rank_title) . "', rank_special = $special_rank, rank_min = $min_posts, rank_image = '" . str_replace("\'", "''", $rank_image) . "'
                                 WHERE rank_id = $rank_id";
 
-                        $message = $titanium_lang['Rank_updated'];
+                        $message = $lang['Rank_updated'];
                 }
                 else
                 {
                         $sql = "INSERT INTO " . RANKS_TABLE . " (rank_title, rank_special, rank_min, rank_image)
                                 VALUES ('" . str_replace("\'", "''", $rank_title) . "', $special_rank, $min_posts, '" . str_replace("\'", "''", $rank_image) . "')";
 
-                        $message = $titanium_lang['Rank_added'];
+                        $message = $lang['Rank_added'];
                 }
 
-                if( !$result = $titanium_db->sql_query($sql) )
+                if( !$result = $db->sql_query($sql) )
                 {
                         message_die(GENERAL_ERROR, "Couldn't update/insert into ranks table", "", __LINE__, __FILE__, $sql);
                 }
 
-                $message .= "<br /><br />" . sprintf($titanium_lang['Click_return_rankadmin'], "<a href=\"" . append_titanium_sid("admin_ranks.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($titanium_lang['Click_return_admin_index'], "<a href=\"" . append_titanium_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                $message .= "<br /><br />" . sprintf($lang['Click_return_rankadmin'], "<a href=\"" . append_sid("admin_ranks.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
                 message_die(GENERAL_MESSAGE, $message);
 
@@ -316,21 +330,21 @@ if( $mode != "" )
                 // Ok, they want to delete their rank
                 //
 
-                if( isset($HTTP_POST_VARS['id']) || isset($HTTP_GET_VARS['id']) )
+                if( isset($_POST['id']) || isset($_GET['id']) )
                 {
-                        $rank_id = ( isset($HTTP_POST_VARS['id']) ) ? intval($HTTP_POST_VARS['id']) : intval($HTTP_GET_VARS['id']);
+                        $rank_id = ( isset($_POST['id']) ) ? intval($_POST['id']) : intval($_GET['id']);
                 }
                 else
                 {
                         $rank_id = 0;
                 }
-                $confirm = isset($HTTP_POST_VARS['confirm']);
+                $confirm = isset($_POST['confirm']);
                 if( $rank_id && $confirm )
                 {
                         $sql = "DELETE FROM " . RANKS_TABLE . "
                                 WHERE rank_id = $rank_id";
 
-                        if( !$result = $titanium_db->sql_query($sql) )
+                        if( !$result = $db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, "Couldn't delete rank data", "", __LINE__, __FILE__, $sql);
                         }
@@ -339,12 +353,12 @@ if( $mode != "" )
                                 SET user_rank = 0
                                 WHERE user_rank = $rank_id";
 
-                        if( !$result = $titanium_db->sql_query($sql) )
+                        if( !$result = $db->sql_query($sql) )
                         {
-                                message_die(GENERAL_ERROR, $titanium_lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
+                                message_die(GENERAL_ERROR, $lang['No_update_ranks'], "", __LINE__, __FILE__, $sql);
                         }
 
-                        $message = $titanium_lang['Rank_removed'] . "<br /><br />" . sprintf($titanium_lang['Click_return_rankadmin'], "<a href=\"" . append_titanium_sid("admin_ranks.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($titanium_lang['Click_return_admin_index'], "<a href=\"" . append_titanium_sid("index.$phpEx?pane=right") . "\">", "</a>");
+                        $message = $lang['Rank_removed'] . "<br /><br />" . sprintf($lang['Click_return_rankadmin'], "<a href=\"" . append_sid("admin_ranks.$phpEx") . "\">", "</a>") . "<br /><br />" . sprintf($lang['Click_return_admin_index'], "<a href=\"" . append_sid("index.$phpEx?pane=right") . "\">", "</a>");
 
                         message_die(GENERAL_MESSAGE, $message);
 
@@ -352,30 +366,30 @@ if( $mode != "" )
  		elseif( $rank_id && !$confirm)
   		{
  			// Present the confirmation screen to the user
- 			$phpbb2_template->set_filenames(array(
+ 			$template->set_filenames(array(
  				'body' => 'admin/confirm_body.tpl')
  			);
 
  			$hidden_fields = '<input type="hidden" name="mode" value="delete" /><input type="hidden" name="id" value="' . $rank_id . '" />';
 
- 			$phpbb2_template->assign_vars(array(
- 				'MESSAGE_TITLE' => $titanium_lang['Confirm'],
- 				'MESSAGE_TEXT' => $titanium_lang['Confirm_delete_rank'],
+ 			$template->assign_vars(array(
+ 				'MESSAGE_TITLE' => $lang['Confirm'],
+ 				'MESSAGE_TEXT' => $lang['Confirm_delete_rank'],
 
- 				'L_YES' => $titanium_lang['Yes'],
- 				'L_NO' => $titanium_lang['No'],
+ 				'L_YES' => $lang['Yes'],
+ 				'L_NO' => $lang['No'],
 
- 				'S_CONFIRM_ACTION' => append_titanium_sid("admin_ranks.$phpEx"),
+ 				'S_CONFIRM_ACTION' => append_sid("admin_ranks.$phpEx"),
  				'S_HIDDEN_FIELDS' => $hidden_fields)
  			);
  		}
  		else
  		{
- 			message_die(GENERAL_MESSAGE, $titanium_lang['Must_select_rank']);
+ 			message_die(GENERAL_MESSAGE, $lang['Must_select_rank']);
  		}
  	}
 
- 	$phpbb2_template->pparse("body");
+ 	$template->pparse("body");
 
  	include('./page_footer_admin.'.$phpEx);
  }
@@ -383,32 +397,32 @@ if( $mode != "" )
  //
  // Show the default page
  //
- $phpbb2_template->set_filenames(array(
+ $template->set_filenames(array(
  	"body" => "admin/ranks_list_body.tpl")
  );
 
  $sql = "SELECT * FROM " . RANKS_TABLE . "
  	ORDER BY rank_min ASC, rank_special ASC";
- if( !$result = $titanium_db->sql_query($sql) )
+ if( !$result = $db->sql_query($sql) )
  {
  	message_die(GENERAL_ERROR, "Couldn't obtain ranks data", "", __LINE__, __FILE__, $sql);
  }
- $rank_count = $titanium_db->sql_numrows($result);
+ $rank_count = $db->sql_numrows($result);
 
- $rank_rows = $titanium_db->sql_fetchrowset($result);
+ $rank_rows = $db->sql_fetchrowset($result);
 
- $phpbb2_template->assign_vars(array(
- 	"L_RANKS_TITLE" => $titanium_lang['Ranks_title'],
- 	"L_RANKS_TEXT" => $titanium_lang['Ranks_explain'],
- 	"L_RANK" => $titanium_lang['Rank_title'],
- 	"L_RANK_MINIMUM" => $titanium_lang['Rank_minimum'],
- 	"L_SPECIAL_RANK" => $titanium_lang['Rank_special'],
- 	"L_EDIT" => $titanium_lang['Edit'],
- 	"L_DELETE" => $titanium_lang['Delete'],
- 	"L_ADD_RANK" => $titanium_lang['Add_new_rank'],
- 	"L_ACTION" => $titanium_lang['Action'],
+ $template->assign_vars(array(
+ 	"L_RANKS_TITLE" => $lang['Ranks_title'],
+ 	"L_RANKS_TEXT" => $lang['Ranks_explain'],
+ 	"L_RANK" => $lang['Rank_title'],
+ 	"L_RANK_MINIMUM" => $lang['Rank_minimum'],
+ 	"L_SPECIAL_RANK" => $lang['Rank_special'],
+ 	"L_EDIT" => $lang['Edit'],
+ 	"L_DELETE" => $lang['Delete'],
+ 	"L_ADD_RANK" => $lang['Add_new_rank'],
+ 	"L_ACTION" => $lang['Action'],
 
- 	"S_RANKS_ACTION" => append_titanium_sid("admin_ranks.$phpEx"))
+ 	"S_RANKS_ACTION" => append_sid("admin_ranks.$phpEx"))
  );
 
  for($i = 0; $i < $rank_count; $i++)
@@ -438,24 +452,24 @@ if( $mode != "" )
 /*****[BEGIN]******************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
-	$rank_is_special = ( $special_rank > 0) ? $titanium_lang['Yes'] : $titanium_lang['No'];
+	$rank_is_special = ( $special_rank > 0) ? $lang['Yes'] : $lang['No'];
 /*****[END]********************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
 
- 	$phpbb2_template->assign_block_vars("ranks", array(
+ 	$template->assign_block_vars("ranks", array(
  		"ROW_COLOR" => "#" . $row_color,
  		"ROW_CLASS" => $row_class,
  		"RANK" => $rank,
  		"SPECIAL_RANK" => $rank_is_special,
  		"RANK_MIN" => $rank_min,
 
- 		"U_RANK_EDIT" => append_titanium_sid("admin_ranks.$phpEx?mode=edit&amp;id=$rank_id"),
- 		"U_RANK_DELETE" => append_titanium_sid("admin_ranks.$phpEx?mode=delete&amp;id=$rank_id"))
+ 		"U_RANK_EDIT" => append_sid("admin_ranks.$phpEx?mode=edit&amp;id=$rank_id"),
+ 		"U_RANK_DELETE" => append_sid("admin_ranks.$phpEx?mode=delete&amp;id=$rank_id"))
  	);
  }
 
- $phpbb2_template->pparse("body");
+ $template->pparse("body");
 
 include('./page_footer_admin.'.$phpEx);
 

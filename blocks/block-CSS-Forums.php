@@ -1,6 +1,6 @@
 <?php
 
-global $blockslang, $admin, $titanium_db, $userinfo;
+global $blockslang, $admin, $db, $userinfo;
 
 /**
  *	Choose whether or not when clicking the topic title, it shoudl take you to first post or last.
@@ -280,39 +280,85 @@ div.row1 {
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-if (!$phpbb2_topic_data = titanium_cache_load('TopicData', 'home')):
+if (!$topic_data = cache_load('TopicData', 'home')):
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-	$phpbb2_topic_data = array();
-	$result = dbquery("SELECT t.topic_id, t.topic_type, t.topic_attachment, f.forum_name, f.forum_color, f.forum_id, t.topic_last_post_id, t.topic_first_post_id, t.topic_title, t.topic_poster, t.topic_views, t.topic_replies, t.topic_status, p.post_time, p.poster_id, pu.username as postername, u.username, u.user_id FROM `".TOPICS_TABLE."` t, `".FORUMS_TABLE."` f, `".POSTS_TABLE."` p, `".USERS_TABLE."` u, `".USERS_TABLE."` pu WHERE t.forum_id=f.forum_id AND p.post_id=t.topic_last_post_id AND u.user_id=t.topic_poster AND pu.user_id=p.poster_id AND t.topic_moved_id = '0' ORDER BY topic_last_post_id DESC LIMIT $last_new_topics");
+	$topic_data = array();
+	$result = dbquery("SELECT t.topic_id, 
+	                        t.topic_type, 
+					  t.topic_attachment, 
+					        f.forum_name, 
+						   f.forum_color, 
+						      f.forum_id, 
+					t.topic_last_post_id, 
+				   t.topic_first_post_id, 
+				           t.topic_title, 
+						  t.topic_poster, 
+						   t.topic_views, 
+						 t.topic_replies, 
+						  t.topic_status, 
+						     p.post_time, 
+							 p.poster_id, 
+							 pu.username AS postername, 
+							                u.username, 
+											 u.user_id FROM `".TOPICS_TABLE."` t, `".FORUMS_TABLE."` f, `".POSTS_TABLE."` p, `".USERS_TABLE."` u, `".USERS_TABLE."` pu 
+											 
+											 WHERE t.forum_id=f.forum_id 
+											 
+											 AND p.post_id=t.topic_last_post_id 
+											 
+											 AND u.user_id=t.topic_poster 
+											 
+											 AND pu.user_id=p.poster_id 
+											 
+											 AND t.topic_moved_id = '0' 
+											 
+											 ORDER BY topic_last_post_id DESC LIMIT $last_new_topics");
 
-	while ( list( $topic_id, $topic_type, $topic_attachment, $forum_name, $forum_color, $phpbb2_forum_id, $topic_last_post_id, $topic_first_post_id, $topic_title, $topic_poster, $topic_views, $topic_replies, $topic_status, $post_time, $poster_id, $poster_name, $titanium_username, $titanium_user_id ) = dbrow( $result)) 
+	while ( list( $topic_id, 
+	            $topic_type, 
+		  $topic_attachment, 
+		        $forum_name, 
+			   $forum_color, 
+			      $forum_id, 
+		$topic_last_post_id, 
+	   $topic_first_post_id, 
+	           $topic_title, 
+			  $topic_poster, 
+			   $topic_views, 
+			 $topic_replies, 
+			  $topic_status, 
+			     $post_time, 
+				 $poster_id, 
+			   $poster_name, 
+			      $username, 
+				   $user_id ) = dbrow( $result)) 
 	{
-	        $phpbb2_topic_data[$topic_id]['topic_id'] 			 = $topic_id;
-	        $phpbb2_topic_data[$topic_id]['topic_type'] 		 = $topic_type;
-			$phpbb2_topic_data[$topic_id]['topic_attachment'] 	 = $topic_attachment;
-	        $phpbb2_topic_data[$topic_id]['forum_name'] 		 = $forum_name;
-			$phpbb2_topic_data[$topic_id]['forum_color'] 		 = $forum_color;
-	        $phpbb2_topic_data[$topic_id]['forum_id'] 			 = $phpbb2_forum_id;
-	        $phpbb2_topic_data[$topic_id]['topic_last_post_id']  = $topic_last_post_id;
-	        $phpbb2_topic_data[$topic_id]['topic_first_post_id'] = $topic_first_post_id;
-	        $phpbb2_topic_data[$topic_id]['topic_title'] 		 = $topic_title;
-	        $phpbb2_topic_data[$topic_id]['topic_poster'] 		 = $topic_poster;
-	        $phpbb2_topic_data[$topic_id]['topic_views'] 		 = $topic_views;
-	        $phpbb2_topic_data[$topic_id]['topic_replies'] 		 = $topic_replies;
-			$phpbb2_topic_data[$topic_id]['topic_status'] 		 = $topic_status;
-	        $phpbb2_topic_data[$topic_id]['post_time'] 			 = $post_time;
-	        $phpbb2_topic_data[$topic_id]['poster_id'] 			 = $poster_id;
-	        $phpbb2_topic_data[$topic_id]['poster_name'] 		 = $poster_name;
-	        $phpbb2_topic_data[$topic_id]['username'] 			 = $titanium_username;
-	        $phpbb2_topic_data[$topic_id]['user_id'] 			 = $titanium_user_id;
+	        $topic_data[$topic_id]['topic_id'] 			 = $topic_id;
+	        $topic_data[$topic_id]['topic_type'] 		 = $topic_type;
+			$topic_data[$topic_id]['topic_attachment'] 	 = $topic_attachment;
+	        $topic_data[$topic_id]['forum_name'] 		 = $forum_name;
+			$topic_data[$topic_id]['forum_color'] 		 = $forum_color;
+	        $topic_data[$topic_id]['forum_id'] 			 = $forum_id;
+	        $topic_data[$topic_id]['topic_last_post_id']  = $topic_last_post_id;
+	        $topic_data[$topic_id]['topic_first_post_id'] = $topic_first_post_id;
+	        $topic_data[$topic_id]['topic_title'] 		 = $topic_title;
+	        $topic_data[$topic_id]['topic_poster'] 		 = $topic_poster;
+	        $topic_data[$topic_id]['topic_views'] 		 = $topic_views;
+	        $topic_data[$topic_id]['topic_replies'] 		 = $topic_replies;
+			$topic_data[$topic_id]['topic_status'] 		 = $topic_status;
+	        $topic_data[$topic_id]['post_time'] 			 = $post_time;
+	        $topic_data[$topic_id]['poster_id'] 			 = $poster_id;
+	        $topic_data[$topic_id]['poster_name'] 		 = $poster_name;
+	        $topic_data[$topic_id]['username'] 			 = $username;
+	        $topic_data[$topic_id]['user_id'] 			 = $user_id;
 	}
 	dbfree($result);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-	titanium_cache_set('TopicData', 'home', $phpbb2_topic_data);	
+	cache_set('TopicData', 'home', $topic_data);	
 endif;
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
@@ -337,16 +383,17 @@ $content  =  '
 
 </div>';
 
-if ($phpbb2_topic_data):
+if ($topic_data):
 
 	$count_topics = 0;
-	$phpbb2_topic_data = (is_array($phpbb2_topic_data)) ? $phpbb2_topic_data : array();
-	foreach($phpbb2_topic_data as $topic_info):
+	$topic_data = (is_array($topic_data)) ? $topic_data : array();
+	foreach($topic_data as $topic_info):
 
 		$row_class = ($count_topics % 2 && $alternate_row_class) ? "row3" : "row1";
 		$count_topics += 1;
 
-		$phpbb2_startedby = ($show_started_by == true) ? sprintf($blockslang['forums']['started'],'<a href="modules.php?name=Forums&amp;file=profile&amp;mode=viewprofile&amp;u='.$topic_info['user_id'].'">'.UsernameColor($topic_info['username']).'</a>') : '';
+		$startedby = ($show_started_by == true) ? sprintf($blockslang['forums']['started'],'<a 
+		href="modules.php?name=Forums&amp;file=profile&amp;mode=viewprofile&amp;u='.$topic_info['user_id'].'">'.UsernameColor($topic_info['username']).'</a>') : '';
 
 		$topic_info['forum_name'] = ($topic_info['forum_color']) ? '<span style="color: #'.$topic_info['forum_color'].'">'.$topic_info['forum_name'].'</span>' : $topic_info['forum_name'];
 
@@ -366,7 +413,9 @@ if ($phpbb2_topic_data):
 			<div class="'.$colClass8.' block-latest-post '.$bg__backwardsCompat.'">
 				<div class="block-latest-post-inner text-truncate">
 					<a href="modules.php?name=Forums&file=viewtopic&p='.$post_id.'">'.$topic_info['topic_title'].'</a><br />
-					<small>'.$phpbb2_startedby.' in <a href="modules.php?name=Forums&amp;file=viewforum&amp;f='.$topic_info['forum_id'].'">'.$topic_info['forum_name'].'</a> <a href="modules.php?name=Forums&amp;file=viewtopic&amp;p='.$topic_info['topic_last_post_id'].'#'.$topic_info['topic_last_post_id'].'"><i class="fas fa-arrow-right last-post-link" data-toggle="btn-tooltip" data-placement="top" aria-hidden="true" title="'.$blockslang['forums']['view_latest'].'"></i></a></small>
+					<small>'.$startedby.' in <a href="modules.php?name=Forums&amp;file=viewforum&amp;f='.$topic_info['forum_id'].'">'.$topic_info['forum_name'].'</a> <a 
+					href="modules.php?name=Forums&amp;file=viewtopic&amp;p='.$topic_info['topic_last_post_id'].'#'.$topic_info['topic_last_post_id'].'"><i 
+					class="fas fa-arrow-right last-post-link" data-toggle="btn-tooltip" data-placement="top" aria-hidden="true" title="'.$blockslang['forums']['view_latest'].'"></i></a></small>
 				</div>
 			</div>
 
@@ -375,8 +424,11 @@ if ($phpbb2_topic_data):
 			</div>
 
 			<div class="'.$colClass3.' block-latest-post-last '.$bg__backwardsCompat.'">
-				<div class="block-latest-post-time">'.EvoDate( 'M jS Y g:i a' , $topic_info['post_time'] , $userinfo['user_timezone'] ).'</div>
-				<div class="block-latest-post-author">'.sprintf($blockslang['forums']['by'],'<a href="modules.php?name=Forums&amp;file=profile&amp;mode=viewprofile&amp;u='.$topic_info['poster_id'].'">'.UsernameColor($topic_info['poster_name']).'</a>').' <a href="modules.php?name=Forums&amp;file=viewtopic&amp;p='.$topic_info['topic_last_post_id'].'#'.$topic_info['topic_last_post_id'].'"><i class="fas fa-arrow-right" data-toggle="btn-tooltip" data-placement="top" aria-hidden="true" title="'.$blockslang['forums']['view_latest'].'"></i></a></div>
+				<div class="block-latest-post-time">'.FormatDate( 'M jS Y g:i a' , $topic_info['post_time'] , $userinfo['user_timezone'] ).'</div>
+				<div class="block-latest-post-author">'.sprintf($blockslang['forums']['by'],'<a 
+				href="modules.php?name=Forums&amp;file=profile&amp;mode=viewprofile&amp;u='.$topic_info['poster_id'].'">'.UsernameColor($topic_info['poster_name']).'</a>').' 
+				<a href="modules.php?name=Forums&amp;file=viewtopic&amp;p='.$topic_info['topic_last_post_id'].'#'.$topic_info['topic_last_post_id'].'"><i class="fas fa-arrow-right" data-toggle="btn-tooltip" 
+				data-placement="top" aria-hidden="true" title="'.$blockslang['forums']['view_latest'].'"></i></a></div>
 			</div>
 
 		</div>';
@@ -390,6 +442,3 @@ else:
 	$content .=  '</div>';
 
 endif;
-
-
-?>

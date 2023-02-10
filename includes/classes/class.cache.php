@@ -3,6 +3,8 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
+global $cache_debug;
+$cache_debug = 1;
 
 /************************************************************************
    Nuke-Evolution: Caching System
@@ -51,7 +53,7 @@ class cache
     var $zend;
 
     // constructor
-    function cache($use_cache) {
+    function __construct($use_cache) {
         $this->type = $use_cache;
         $this->valid = ($this->type == CACHE_OFF || ($this->type == FILE_CACHE && (!is_writable(NUKE_CACHE_DIR) || ini_get('safe_mode')))) ? false : (($this->type == FILE_CACHE || $this->type == SQL_CACHE || $this->type == XCACHE || $this->type == APC_CACHE || $this->type == MEMCACHED) ? true : false);
         if($this->type == FILE_CACHE) {
@@ -71,8 +73,8 @@ class cache
 			$this->zend = Zend_Cache::factory('Core', 'Memcached', $frontendOptions);
 			$this->checkPrefix();
         } elseif($this->type == SQL_CACHE) {
-            global $titanium_db, $titanium_prefix;
-            /*list($saved_cache) = $titanium_db->sql_ufetchrow("SELECT cache_data FROM " . $titanium_prefix . "_config");
+            global $db, $prefix;
+            /*list($saved_cache) = $db->sql_ufetchrow("SELECT cache_data FROM " . $prefix . "_config");
             @eval($saved_cache);
             $this->saved = $saved_cache;*/
         }
@@ -103,13 +105,18 @@ class cache
     }
 
     // This function passes the variable $cache_changed, and then the function resync will handle it
-    function save($name, $cat='config', $fileData) {
-        if(!$this->valid) return false;
+    function save($name, string $cat = null, $fileData) {
+        
+		if(!isset($cat))
+		$cat = 'config';
+		
+		if(!$this->valid) return false;
         if(!isset($fileData)) return false;
         if(empty($fileData)) return false;
         if($fileData == false) return false;
 		
-		$name = str_replace(array(' ', '.', '-'), '_', $name);
+		$name = str_replace([' ', '.', '-'], '_', (string) $name);
+
 		$this->saved[$cat][$name] = $fileData;
         $this->changed = true;
         $this->zend->save($fileData, CACHE_PREFIX.$cat.'_'.$name);

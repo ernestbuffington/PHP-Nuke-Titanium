@@ -23,16 +23,16 @@ CarryMenu();
 ip2cmenu();
 CloseMenu();
 CloseTable();
-echo '<br />'."\n";
+
 OpenTable();
 echo '<form action="'.$admin_file.'.php" method="post">'."\n";
 echo '<input type="hidden" name="op" value="ABIP2CountryAddSave" />'."\n";
-echo '<input type="hidden" name="xop" value="'.$xop.'" />'."\n";
-echo '<input type="hidden" name="sip" value="'.$sip.'" />'."\n";
-echo '<input type="hidden" name="min" value="'.$min.'" />'."\n";
-echo '<input type="hidden" name="column" value="'.$column.'" />'."\n";
-echo '<input type="hidden" name="direction" value="'.$direction.'" />'."\n";
-echo '<input type="hidden" name="showcountry" value="'.$showcountry.'" />'."\n";
+echo '<input type="hidden" name="xop" value="'.isset($xop).'" />'."\n";
+echo '<input type="hidden" name="sip" value="'.isset($sip).'" />'."\n";
+echo '<input type="hidden" name="min" value="'.isset($min).'" />'."\n";
+echo '<input type="hidden" name="column" value="'.isset($column).'" />'."\n";
+echo '<input type="hidden" name="direction" value="'.isset($direction).'" />'."\n";
+echo '<input type="hidden" name="showcountry" value="'.isset($showcountry).'" />'."\n";
 echo '<table summary="" align="center" border="0" cellpadding="2" cellspacing="2">'."\n";
 echo '<tr><td align="center" class="content" colspan="2">'._AB_ADDIP2COUNTRYS.'</td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'"><strong>'._AB_IPLO.':</strong></td>'."\n";
@@ -47,8 +47,8 @@ echo '. <input type="text" name="xip_hi[2]" size="4" value="255" maxlength="3" s
 echo '. <input type="text" name="xip_hi[3]" size="4" value="255" maxlength="3" style="text-align: center;" /></td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'"><strong>'._AB_COUNTRY.':</strong></td>'."\n";
 echo '<td><select name="xc2c">'."\n";
-$result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_countries` ORDER BY `c2c`");
-while($countryrow = $titanium_db->sql_fetchrow($result)) {
+$result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_countries` ORDER BY `c2c`");
+while($countryrow = $db->sql_fetchrow($result)) {
   echo '<option value="'.$countryrow['c2c'].'">'.strtoupper($countryrow['c2c']).' - '.$countryrow['country'].'</option>'."\n";
 }
 echo '</select></td></tr>'."\n";

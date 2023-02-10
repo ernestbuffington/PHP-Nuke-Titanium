@@ -31,13 +31,13 @@ if (!defined('ADMIN_FILE')) {
    die('Access Denied');
 }
 
-global $titanium_prefix, $titanium_db, $admdata;
-$titanium_module_name = basename(dirname(dirname(__FILE__)));
-if(is_mod_admin($titanium_module_name)) {
+global $prefix, $db, $admdata;
+$module_name = basename(dirname(dirname(__FILE__)));
+if(is_mod_admin($module_name)) {
 
     switch($op) {
         case "mod_users":
-        redirect_titanium("modules.php?name=Your_Account&file=admin");
+        redirect("modules.php?name=Your_Account&file=admin");
         break;
     }
 

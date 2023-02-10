@@ -27,7 +27,7 @@ if (!defined('BOARD_CONFIG')) {
     die('Access Denied');
 }
 
-$phpbb2_template->set_filenames(array(
+$template->set_filenames(array(
     "private_messages" => "admin/board_config/board_private_messages.tpl")
 );
 
@@ -43,36 +43,36 @@ $welcome_pm_no = ( !$new['welcome_pm'] ) ? 'checked="checked"' : '';
 [ Mod:     Welcome PM                         v2.0.0 ]
 ******************************************************/
 //General Template variables
-$phpbb2_template->assign_vars(array(
+$template->assign_vars(array(
     "DHTML_ID" => "c" . $dhtml_id)
 );
     
 //Language Template variables
-$phpbb2_template->assign_vars(array(
-    "L_PRIVATE_MESSAGING" => $titanium_lang['Private_Messaging'],
-    "L_DISABLE_PRIVATE_MESSAGING" => $titanium_lang['Disable_privmsg'],
+$template->assign_vars(array(
+    "L_PRIVATE_MESSAGING" => $lang['Private_Messaging'],
+    "L_DISABLE_PRIVATE_MESSAGING" => $lang['Disable_privmsg'],
 /*****[BEGIN]******************************************
 [ Mod:     Welcome PM                         v2.0.0 ]
 ******************************************************/
-    "L_WELCOME_PM" => $titanium_lang['Welcome_PM_Admin'],
+    "L_WELCOME_PM" => $lang['Welcome_PM_Admin'],
 /*****[END]********************************************
 [ Mod:     Welcome PM                         v2.0.0 ]
 ******************************************************/
 /*****[BEGIN]******************************************
  [ Mod:     PM threshold                       v1.0.0 ]
  ******************************************************/
-    "L_PM_ALLOW_THRESHOLD" => $titanium_lang['pm_allow_threshold'],
-    "L_PM_ALLOW_TRHESHOLD_EXPLAIN" => $titanium_lang['pm_allow_threshold_explain'],
+    "L_PM_ALLOW_THRESHOLD" => $lang['pm_allow_threshold'],
+    "L_PM_ALLOW_TRHESHOLD_EXPLAIN" => $lang['pm_allow_threshold_explain'],
 /*****[END]********************************************
  [ Mod:     PM threshold                       v1.0.0 ]
  ******************************************************/
-    "L_INBOX_LIMIT" => $titanium_lang['Inbox_limits'],
-    "L_SENTBOX_LIMIT" => $titanium_lang['Sentbox_limits'],
-    "L_SAVEBOX_LIMIT" => $titanium_lang['Savebox_limits'],
+    "L_INBOX_LIMIT" => $lang['Inbox_limits'],
+    "L_SENTBOX_LIMIT" => $lang['Sentbox_limits'],
+    "L_SAVEBOX_LIMIT" => $lang['Savebox_limits'],
 ));
 
 //Data Template Variables
-$phpbb2_template->assign_vars(array(
+$template->assign_vars(array(
     "S_PRIVMSG_ENABLED" => $privmsg_on,
     "S_PRIVMSG_DISABLED" => $privmsg_off,
 /*****[BEGIN]******************************************
@@ -93,8 +93,8 @@ $phpbb2_template->assign_vars(array(
     "INBOX_LIMIT" => $new['max_inbox_privmsgs'],
     "SENTBOX_LIMIT" => $new['max_sentbox_privmsgs'],
     "SAVEBOX_LIMIT" => $new['max_savebox_privmsgs'],
-    "WELCOME_USERNAME" => $phpbb2_board_config['welcome_pm_username']
+    "WELCOME_USERNAME" => $board_config['welcome_pm_username']
  ));
-$phpbb2_template->pparse("private_messages");
+$template->pparse("private_messages");
 
 ?>

@@ -37,36 +37,41 @@ $uinfo = $userinfo;
 $ulevel = (isset($uinfo['user_level'])) ? $uinfo['user_level'] : 0;
 $uactive = (isset($uinfo['user_active'])) ? $uinfo['user_active'] : 0;
 if ( ($ulevel < 1) OR ($uactive < 1) ) {
-    unset($titanium_user);
+    unset($user);
     unset($cookie);
 }
 
+if(!isset($_GET['name']))
+$_GET['name'] = '';
+
 if(isset($_GET['name']) && isset($_GET['file']) || isset($_GET['mode'])) {
-    if ( ($_GET['name']=='Forums') && ($_GET['file']=='profile') && ($_GET['mode']=='register') ) redirect_titanium("modules.php?name=Your_Account&op=new_user");
+    if ( ($_GET['name']=='Forums') && ($_GET['file']=='profile') && ($_GET['mode']=='register') ) redirect("modules.php?name=Your_Account&op=new_user");
 }
 // CNB Mod
 // WARNING THIS SECTION OF CODE PREVENTS NEW POSTS REGISTERING AS UNREAD
 
 if (is_user()) {
     $lv = time();
-    //$titanium_db->sql_query("UPDATE ".$titanium_user_prefix."_users SET user_lastvisit='$lv' WHERE user_id='".$uinfo['user_id']."'");
-    $result = $titanium_db->sql_query("SELECT time FROM ".$titanium_prefix."_session WHERE uname='$uinfo[username]'");
-    list($sessiontime) = $titanium_db->sql_fetchrow($result);
-    $titanium_db->sql_freeresult($result);
+    //$db->sql_query("UPDATE ".$user_prefix."_users SET user_lastvisit='$lv' WHERE user_id='".$uinfo['user_id']."'");
+    $result = $db->sql_query("SELECT time FROM ".$prefix."_session WHERE uname='$uinfo[username]'");
+    list($sessiontime) = $db->sql_fetchrow($result);
+    $db->sql_freeresult($result);
 
 // modified by menelaos dot hetnet dot nl to reduce amount of sql-queries
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    if(($ya_config = $cache->load('ya_config', 'config')) === false) {
+    if(!($ya_config = $cache->load('ya_config', 'config'))) {
+	$configresult = [];
+	$ya_config = [];	
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-      $configresult = $titanium_db->sql_query("SELECT config_name, config_value FROM ".$titanium_prefix."_cnbya_config");
-      while (list($config_name, $config_value) = $titanium_db->sql_fetchrow($configresult)) {
+      $configresult = $db->sql_query("SELECT config_name, config_value FROM ".$prefix."_cnbya_config");
+      while (list($config_name, $config_value) = $db->sql_fetchrow($configresult)) {
           $ya_config[$config_name] = $config_value;
       }
-      $titanium_db->sql_freeresult($configresult);
+      $db->sql_freeresult($configresult);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -74,8 +79,8 @@ if (is_user()) {
 /*****[END]********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-    }
-    if(isset($config)) $config = $ya_config;
+    }    
+	if(isset($config)) $config = $ya_config;
     $cookieinactivity    = $ya_config['cookieinactivity'];
     $cookiepath        = $ya_config['cookiepath'];
     $autosuspend        = $ya_config['autosuspend'];
@@ -87,13 +92,13 @@ if (is_user()) {
         $r_username = $uinfo['username'];
         @setcookie("user");
         if (trim($cookiepath) != '') setcookie("user","","","$ya_config[cookiepath]");
-        $titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_session WHERE uname='$r_username'");
-        $titanium_db->sql_query("OPTIMIZE TABLE ".$titanium_prefix."_session");
-        $titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_bbsessions WHERE session_user_id='$r_uid'");
-        $titanium_db->sql_query("OPTIMIZE TABLE ".$titanium_prefix."_bbsessions");
-        unset($titanium_user);
+        $db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$r_username'");
+        $db->sql_query("OPTIMIZE TABLE ".$prefix."_session");
+        $db->sql_query("DELETE FROM ".$prefix."_bbsessions WHERE session_user_id='$r_uid'");
+        $db->sql_query("OPTIMIZE TABLE ".$prefix."_bbsessions");
+        unset($user);
         unset($cookie);
-      redirect_titanium("modules.php?name=Your_Account");
+      redirect("modules.php?name=Your_Account");
       exit;
     };
 
@@ -103,9 +108,9 @@ if (is_user()) {
     // WHEN THE ADMIN WANTS IT RUN.
     if (($autosuspend > 0) AND ($autosuspendmain==1)) {
         $st = time() - $autosuspend;
-        $susresult = $titanium_db->sql_query("SELECT user_id FROM ".$titanium_user_prefix."_users WHERE user_lastvisit <= $st AND user_level > 0");
-            while(list($sus_uid) = $titanium_db->sql_fetchrow($susresult)) {
-            $titanium_db->sql_query("UPDATE ".$titanium_user_prefix."_users SET user_level='0', user_active='0' WHERE user_id='$sus_uid'");
+        $susresult = $db->sql_query("SELECT user_id FROM ".$user_prefix."_users WHERE user_lastvisit <= $st AND user_level > 0");
+            while(list($sus_uid) = $db->sql_fetchrow($susresult)) {
+            $db->sql_query("UPDATE ".$user_prefix."_users SET user_level='0', user_active='0' WHERE user_id='$sus_uid'");
     }
   }
 

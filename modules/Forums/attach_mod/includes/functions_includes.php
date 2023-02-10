@@ -20,19 +20,19 @@
 /**
 * Include the FAQ-File (faq.php)
 */
-function attach_faq_include($titanium_lang_file)
+function attach_faq_include($lang_file)
 {
-    global $phpbb2_root_path, $phpbb2_board_config, $phpEx, $faq, $attach_config;
+    global $phpbb_root_path, $board_config, $phpEx, $faq, $attach_config;
 
-    if (intval($attach_config['disable_mod']))
+    if ((int) $attach_config['disable_mod'] !== 0)
     {
         return;
     }
 
-    if ($titanium_lang_file == 'lang_faq')
+    if ($lang_file == 'lang_faq')
     {
-        $titanium_language = attach_mod_get_lang('lang_faq_attach');
-        include($phpbb2_root_path . 'language/lang_' . $titanium_language . '/lang_faq_attach.'.$phpEx);
+        $language = attach_mod_get_lang('lang_faq_attach');
+        include($phpbb_root_path . 'language/lang_' . $language . '/lang_faq_attach.'.$phpEx);
     }
 }
 
@@ -51,12 +51,12 @@ function attach_setup_basic_auth($type, &$auth_fields, &$a_sql)
 
         case AUTH_ATTACH:
             $a_sql = 'a.auth_attachments';
-            $auth_fields = array('auth_attachments');
+            $auth_fields = ['auth_attachments'];
         break;
 
         case AUTH_DOWNLOAD:
             $a_sql = 'a.auth_download';
-            $auth_fields = array('auth_download');
+            $auth_fields = ['auth_download'];
         break;
 
         default:
@@ -69,7 +69,7 @@ function attach_setup_basic_auth($type, &$auth_fields, &$a_sql)
 */
 function attach_setup_forum_auth(&$simple_auth_ary, &$forum_auth_fields, &$field_names)
 {
-    global $titanium_lang;
+    global $lang;
 
     // Add Attachment Auth
     //                    Post Attachments
@@ -91,10 +91,10 @@ function attach_setup_forum_auth(&$simple_auth_ary, &$forum_auth_fields, &$field
     $simple_auth_ary[6][] = AUTH_MOD;
 
     $forum_auth_fields[] = 'auth_attachments';
-    $field_names['auth_attachments'] = $titanium_lang['Auth_attach'];
+    $field_names['auth_attachments'] = $lang['Auth_attach'];
 
     $forum_auth_fields[] = 'auth_download';
-    $field_names['auth_download'] = $titanium_lang['Auth_download'];
+    $field_names['auth_download'] = $lang['Auth_download'];
 }
 
 /**
@@ -102,17 +102,17 @@ function attach_setup_forum_auth(&$simple_auth_ary, &$forum_auth_fields, &$field
 */
 function attach_setup_usergroup_auth(&$forum_auth_fields, &$auth_field_match, &$field_names)
 {
-    global $titanium_lang;
+    global $lang;
 
     // Post Attachments
     $forum_auth_fields[] = 'auth_attachments';
     $auth_field_match['auth_attachments'] = AUTH_ATTACH;
-    $field_names['auth_attachments'] = $titanium_lang['Auth_attach'];
+    $field_names['auth_attachments'] = $lang['Auth_attach'];
 
     // Download Attachments
     $forum_auth_fields[] = 'auth_download';
     $auth_field_match['auth_download'] = AUTH_DOWNLOAD;
-    $field_names['auth_download'] = $titanium_lang['Auth_download'];
+    $field_names['auth_download'] = $lang['Auth_download'];
 }
 
 /**
@@ -120,41 +120,46 @@ function attach_setup_usergroup_auth(&$forum_auth_fields, &$auth_field_match, &$
 */
 function attach_setup_viewtopic_auth(&$order_sql, &$sql)
 {
-    $order_sql = str_replace('f.auth_attachments', 'f.auth_attachments, f.auth_download, t.topic_attachment', $order_sql);
-    $sql = str_replace('f.auth_attachments', 'f.auth_attachments, f.auth_download, t.topic_attachment', $sql);
+    $order_sql = str_replace('f.auth_attachments', 'f.auth_attachments, f.auth_download, t.topic_attachment', (string) $order_sql);
+    $sql = str_replace('f.auth_attachments', 'f.auth_attachments, f.auth_download, t.topic_attachment', (string) $sql);
 }
 
 /**
 * Setup s_auth_can in viewforum and viewtopic (viewtopic.php/viewforum.php)
 */
-function attach_build_auth_levels($phpbb2_is_auth, &$s_auth_can)
+function attach_build_auth_levels($is_auth, &$s_auth_can)
 {
-    global $titanium_lang, $attach_config, $phpEx, $phpbb2_forum_id;
+    global $lang, $attach_config, $phpEx, $forum_id;
 
-    if (intval($attach_config['disable_mod']))
+    if ((int) $attach_config['disable_mod'] !== 0)
     {
         return;
     }
 
     // If you want to have the rules window link within the forum view too, comment out the two lines, and comment the third line
-//    $rules_link = '(<a href="' . $phpbb2_root_path . 'attach_rules.' . $phpEx . '?f=' . $phpbb2_forum_id . '" target="_blank">Rules</a>)';
-//    $s_auth_can .= ( ( $phpbb2_is_auth['auth_attachments'] ) ? $rules_link . ' ' . $titanium_lang['Rules_attach_can'] : $titanium_lang['Rules_attach_cannot'] ) . '<br />';
-    $s_auth_can .= (($phpbb2_is_auth['auth_attachments']) ? $titanium_lang['Rules_attach_can'] : $titanium_lang['Rules_attach_cannot'] ) . '<br />';
+//    $rules_link = '(<a href="' . $phpbb_root_path . 'attach_rules.' . $phpEx . '?f=' . $forum_id . '" target="_blank">Rules</a>)';
+//    $s_auth_can .= ( ( $is_auth['auth_attachments'] ) ? $rules_link . ' ' . $lang['Rules_attach_can'] : $lang['Rules_attach_cannot'] ) . '<br />';
+    $s_auth_can .= (($is_auth['auth_attachments']) ? $lang['Rules_attach_can'] : $lang['Rules_attach_cannot'] ) . '<br />';
 
-    $s_auth_can .= (($phpbb2_is_auth['auth_download']) ? $titanium_lang['Rules_download_can'] : $titanium_lang['Rules_download_cannot'] ) . '<br />';
+    $s_auth_can .= (($is_auth['auth_download']) ? $lang['Rules_download_can'] : $lang['Rules_download_cannot'] ) . '<br />';
 }
+
+//function send(string $to_name = '', string $to_addr, string $from_name, string $from_addr, string $subject = '', bool $reply_to = false): bool {}
+//function send(string $to_addr, string $from_name, string $from_addr, string $to_name = '', string $subject = '', bool $reply_to = false): bool {}
 
 /**
 * Called from admin_users.php and admin_groups.php in order to process Quota Settings (admin/admin_users.php:admin/admin_groups.php)
 */
-function attachment_quota_settings($admin_mode, $submit = false, $mode)
+//function attachment_quota_settings($admin_mode, $submit = false, $mode)                  # from this
+function attachment_quota_settings(string $admin_mode, string $mode, bool $submit = false) # to this
 {
-    global $phpbb2_template, $titanium_db, $HTTP_POST_VARS, $HTTP_GET_VARS, $titanium_lang, $titanium_lang, $phpbb2_root_path, $phpEx, $attach_config;
+    $this_userdata = [];
+    global $template, $db, $_POST, $_GET, $lang, $lang, $phpbb_root_path, $phpEx, $attach_config;
 
     // Make sure constants got included
-    include_once($phpbb2_root_path . 'attach_mod/includes/constants.'.$phpEx);
+    include_once($phpbb_root_path . 'attach_mod/includes/constants.'.$phpEx);
 
-    if (!intval($attach_config['allow_ftp_upload']))
+    if ((int) $attach_config['allow_ftp_upload'] === 0)
     {
         if ($attach_config['upload_dir'][0] == '/' || ($attach_config['upload_dir'][0] != '/' && $attach_config['upload_dir'][1] == ':'))
         {
@@ -162,7 +167,7 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
         }
         else
         {
-			$upload_dir = $phpbb2_root_path . $attach_config['upload_dir'];
+			$upload_dir = $phpbb_root_path . $attach_config['upload_dir'];
         }
     }
     else
@@ -170,45 +175,45 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
         $upload_dir = $attach_config['download_path'];
     }
 
-    include_once($phpbb2_root_path . 'attach_mod/includes/functions_selects.' . $phpEx);
-    include_once($phpbb2_root_path . 'attach_mod/includes/functions_admin.' . $phpEx);
+    include_once($phpbb_root_path . 'attach_mod/includes/functions_selects.' . $phpEx);
+    include_once($phpbb_root_path . 'attach_mod/includes/functions_admin.' . $phpEx);
 
-    $titanium_user_id = 0;
+    $user_id = 0;
 
     if ($admin_mode == 'user')
     {
         // We overwrite submit here... to be sure
-        $submit = (isset($HTTP_POST_VARS['submit'])) ? true : false;
+        $submit = isset($_POST['submit']);
 
         if (!$submit && $mode != 'save')
         {
-            $titanium_user_id = get_var(POST_USERS_URL, 0);
+            $user_id = get_var(POST_USERS_URL, 0);
             $u_name = get_var('username', '');
 
-            if (!$titanium_user_id && !$u_name)
+            if (!$user_id && !$u_name)
             {
-                message_die(GENERAL_MESSAGE, $titanium_lang['No_user_id_specified'] );
+                message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
             }
 
-            if ($titanium_user_id)
+            if ($user_id)
             {
-                $this_userdata['user_id'] = $titanium_user_id;
+                $this_userdata['user_id'] = $user_id;
             }
             else
             {
                 // Get userdata is handling the sanitizing of username
-                $this_userdata = get_userdata($HTTP_POST_VARS['username'], true);
+                $this_userdata = get_userdata($_POST['username'], true);
             }
 
-            $titanium_user_id = (int) $this_userdata['user_id'];
+            $user_id = (int) $this_userdata['user_id'];
         }
         else
         {
-            $titanium_user_id = get_var('id', 0);
+            $user_id = get_var('id', 0);
 
-            if (!$titanium_user_id)
+            if (!$user_id)
             {
-                message_die(GENERAL_MESSAGE, $titanium_lang['No_user_id_specified'] );
+                message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
             }
         }
     }
@@ -217,29 +222,26 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
     {
         // Show the contents
         $sql = 'SELECT quota_limit_id, quota_type FROM ' . QUOTA_TABLE . '
-            WHERE user_id = ' . (int) $titanium_user_id;
+            WHERE user_id = ' . (int) $user_id;
 
-        if( !($result = $titanium_db->sql_query($sql)) )
+        if( !($result = $db->sql_query($sql)) )
         {
             message_die(GENERAL_ERROR, 'Unable to get Quota Settings', '', __LINE__, __FILE__, $sql);
         }
 
         $pm_quota = $upload_quota = 0;
 
-        if ($row = $titanium_db->sql_fetchrow($result))
+        if ($row = $db->sql_fetchrow($result))
         {
             do
             {
-                if ($row['quota_type'] == QUOTA_UPLOAD_LIMIT)
-                {
+                if ($row['quota_type'] == QUOTA_UPLOAD_LIMIT) {
                     $upload_quota = $row['quota_limit_id'];
-                }
-                else if ($row['quota_type'] == QUOTA_PM_LIMIT)
-                {
+                } elseif ($row['quota_type'] == QUOTA_PM_LIMIT) {
                     $pm_quota = $row['quota_limit_id'];
                 }
             }
-            while ($row = $titanium_db->sql_fetchrow($result));
+            while ($row = $db->sql_fetchrow($result));
         }
         else
         {
@@ -247,29 +249,24 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
             $upload_quota = $attach_config['default_upload_quota'];
             $pm_quota = $attach_config['default_pm_quota'];
         }
-        $titanium_db->sql_freeresult($result);
+        $db->sql_freeresult($result);
 
-        $phpbb2_template->assign_vars(array(
-            'S_SELECT_UPLOAD_QUOTA'        => quota_limit_select('user_upload_quota', $upload_quota),
-            'S_SELECT_PM_QUOTA'            => quota_limit_select('user_pm_quota', $pm_quota),
-            'L_UPLOAD_QUOTA'            => $titanium_lang['Upload_quota'],
-            'L_PM_QUOTA'                => $titanium_lang['Pm_quota'])
+        $template->assign_vars(['S_SELECT_UPLOAD_QUOTA'        => quota_limit_select('user_upload_quota', $upload_quota), 'S_SELECT_PM_QUOTA'            => quota_limit_select('user_pm_quota', $pm_quota), 'L_UPLOAD_QUOTA'            => $lang['Upload_quota'], 'L_PM_QUOTA'                => $lang['Pm_quota']]
         );
     }
-
-    if ($admin_mode == 'user' && $submit && $HTTP_POST_VARS['deleteuser'])
-    {
-        process_quota_settings($admin_mode, $titanium_user_id, QUOTA_UPLOAD_LIMIT, 0);
-        process_quota_settings($admin_mode, $titanium_user_id, QUOTA_PM_LIMIT, 0);
-    }
-    else if ($admin_mode == 'user' && $submit && $mode == 'save')
-    {
+    
+	if(!isset($_POST['deleteuser']))
+	$_POST['deleteuser'] = '';
+	
+    if ($admin_mode == 'user' && $submit && $_POST['deleteuser']) {
+        process_quota_settings($admin_mode, $user_id, QUOTA_UPLOAD_LIMIT, 0);
+        process_quota_settings($admin_mode, $user_id, QUOTA_PM_LIMIT, 0);
+    } elseif ($admin_mode == 'user' && $submit && $mode == 'save') {
         // Get the contents
         $upload_quota = get_var('user_upload_quota', 0);
         $pm_quota = get_var('user_pm_quota', 0);
-
-        process_quota_settings($admin_mode, $titanium_user_id, QUOTA_UPLOAD_LIMIT, $upload_quota);
-        process_quota_settings($admin_mode, $titanium_user_id, QUOTA_PM_LIMIT, $pm_quota);
+        process_quota_settings($admin_mode, $user_id, QUOTA_UPLOAD_LIMIT, $upload_quota);
+        process_quota_settings($admin_mode, $user_id, QUOTA_PM_LIMIT, $pm_quota);
     }
 
     if ($admin_mode == 'group' && $mode == 'newgroup')
@@ -277,7 +274,7 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
         return;
     }
 
-    if ($admin_mode == 'group' && !$submit && isset($HTTP_POST_VARS['edit']))
+    if ($admin_mode == 'group' && !$submit && isset($_POST['edit']))
     {
         // Get group id again, we do not trust phpBB here, Mods may be installed ;)
         $group_id = get_var(POST_GROUPS_URL, 0);
@@ -286,27 +283,24 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
         $sql = 'SELECT quota_limit_id, quota_type FROM ' . QUOTA_TABLE . '
             WHERE group_id = ' . (int) $group_id;
 
-        if( !($result = $titanium_db->sql_query($sql)) )
+        if( !($result = $db->sql_query($sql)) )
         {
             message_die(GENERAL_ERROR, 'Unable to get Quota Settings', '', __LINE__, __FILE__, $sql);
         }
 
         $pm_quota = $upload_quota = 0;
 
-        if ($row = $titanium_db->sql_fetchrow($result))
+        if ($row = $db->sql_fetchrow($result))
         {
             do
             {
-                if ($row['quota_type'] == QUOTA_UPLOAD_LIMIT)
-                {
+                if ($row['quota_type'] == QUOTA_UPLOAD_LIMIT) {
                     $upload_quota = $row['quota_limit_id'];
-                }
-                else if ($row['quota_type'] == QUOTA_PM_LIMIT)
-                {
+                } elseif ($row['quota_type'] == QUOTA_PM_LIMIT) {
                     $pm_quota = $row['quota_limit_id'];
                 }
             }
-            while ($row = $titanium_db->sql_fetchrow($result));
+            while ($row = $db->sql_fetchrow($result));
         }
         else
         {
@@ -314,31 +308,21 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
             $upload_quota = $attach_config['default_upload_quota'];
             $pm_quota = $attach_config['default_pm_quota'];
         }
-        $titanium_db->sql_freeresult($result);
+        $db->sql_freeresult($result);
 
-        $phpbb2_template->assign_vars(array(
-            'S_SELECT_UPLOAD_QUOTA'    => quota_limit_select('group_upload_quota', $upload_quota),
-            'S_SELECT_PM_QUOTA'        => quota_limit_select('group_pm_quota', $pm_quota),
-            'L_UPLOAD_QUOTA'        => $titanium_lang['Upload_quota'],
-            'L_PM_QUOTA'            => $titanium_lang['Pm_quota'])
+        $template->assign_vars(['S_SELECT_UPLOAD_QUOTA'    => quota_limit_select('group_upload_quota', $upload_quota), 'S_SELECT_PM_QUOTA'        => quota_limit_select('group_pm_quota', $pm_quota), 'L_UPLOAD_QUOTA'        => $lang['Upload_quota'], 'L_PM_QUOTA'            => $lang['Pm_quota']]
         );
     }
 
-    if ($admin_mode == 'group' && $submit && isset($HTTP_POST_VARS['group_delete']))
-    {
+    if ($admin_mode == 'group' && $submit && isset($_POST['group_delete'])) {
         $group_id = get_var(POST_GROUPS_URL, 0);
-
         process_quota_settings($admin_mode, $group_id, QUOTA_UPLOAD_LIMIT, 0);
         process_quota_settings($admin_mode, $group_id, QUOTA_PM_LIMIT, 0);
-    }
-    else if ($admin_mode == 'group' && $submit)
-    {
+    } elseif ($admin_mode == 'group' && $submit) {
         $group_id = get_var(POST_GROUPS_URL, 0);
-
         // Get the contents
         $upload_quota = get_var('group_upload_quota', 0);
         $pm_quota = get_var('group_pm_quota', 0);
-
         process_quota_settings($admin_mode, $group_id, QUOTA_UPLOAD_LIMIT, $upload_quota);
         process_quota_settings($admin_mode, $group_id, QUOTA_PM_LIMIT, $pm_quota);
     }
@@ -350,67 +334,61 @@ function attachment_quota_settings($admin_mode, $submit = false, $mode)
 * Groups are able to be grabbed, but it's not used within the Attachment Mod. ;)
 * (includes/usercp_viewprofile.php)
 */
-function display_upload_attach_box_limits($titanium_user_id, $group_id = 0)
+function display_upload_attach_box_limits($user_id, $group_id = 0)
 {
-    global $attach_config, $phpbb2_board_config, $phpbb2_root_path, $titanium_lang, $titanium_db, $phpbb2_template, $phpEx, $userdata, $profiledata;
+    global $attach_config, $board_config, $phpbb_root_path, $lang, $db, $template, $phpEx, $userdata, $profiledata;
 
-    if (intval($attach_config['disable_mod']))
+    if ((int) $attach_config['disable_mod'] !== 0)
     {
         return;
     }
 
-    if ($userdata['user_level'] != ADMIN && $userdata['user_id'] != $titanium_user_id)
+    if ($userdata['user_level'] != ADMIN && $userdata['user_id'] != $user_id)
     {
         return;
     }
 
-    if (!$titanium_user_id)
+    if (!$user_id)
     {
         return;
     }
 
     // Return if the user is not within the to be listed Group
-    if ($group_id)
+    if ($group_id && !user_in_group($user_id, $group_id))
     {
-        if (!user_in_group($titanium_user_id, $group_id))
-        {
-            return;
-        }
+        return;
     }
 
-    $titanium_user_id = (int) $titanium_user_id;
+    $user_id = (int) $user_id;
     $group_id = (int) $group_id;
 
     $attachments = new attach_posting();
     $attachments->page = PAGE_INDEX;
 
     // Get the assigned Quota Limit. For Groups, we are directly getting the value, because this Quota can change from user to user.
-    if ($group_id)
-    {
+    if ($group_id !== 0) {
         $sql = 'SELECT l.quota_limit
             FROM ' . QUOTA_TABLE . ' q, ' . QUOTA_LIMITS_TABLE . ' l
             WHERE q.group_id = ' . (int) $group_id . '
                 AND q.quota_type = ' . QUOTA_UPLOAD_LIMIT . '
                 AND q.quota_limit_id = l.quota_limit_id
             LIMIT 1';
-
-        if ( !($result = $titanium_db->sql_query($sql)) )
+        if ( !($result = $db->sql_query($sql)) )
         {
             message_die(GENERAL_ERROR, 'Could not get Group Quota', '', __LINE__, __FILE__, $sql);
         }
-
-        if ($titanium_db->sql_numrows($result) > 0)
+        if ($db->sql_numrows($result) > 0)
         {
-            $row = $titanium_db->sql_fetchrow($result);
-            $attach_config['upload_filesize_limit'] = intval($row['quota_limit']);
-            $titanium_db->sql_freeresult($result);
+            $row = $db->sql_fetchrow($result);
+            $attach_config['upload_filesize_limit'] = (int) $row['quota_limit'];
+            $db->sql_freeresult($result);
         }
         else
         {
-            $titanium_db->sql_freeresult($result);
+            $db->sql_freeresult($result);
 
             // Set Default Quota Limit
-            $quota_id = intval($attach_config['default_upload_quota']);
+            $quota_id = (int) $attach_config['default_upload_quota'];
 
             if ($quota_id == 0)
             {
@@ -423,34 +401,28 @@ function display_upload_attach_box_limits($titanium_user_id, $group_id = 0)
                     WHERE quota_limit_id = ' . (int) $quota_id . '
                     LIMIT 1';
 
-                if ( !($result = $titanium_db->sql_query($sql)) )
+                if ( !($result = $db->sql_query($sql)) )
                 {
                     message_die(GENERAL_ERROR, 'Could not get Quota Limit', '', __LINE__, __FILE__, $sql);
                 }
 
-                if ($titanium_db->sql_numrows($result) > 0)
+                if ($db->sql_numrows($result) > 0)
                 {
-                    $row = $titanium_db->sql_fetchrow($result);
+                    $row = $db->sql_fetchrow($result);
                     $attach_config['upload_filesize_limit'] = $row['quota_limit'];
                 }
                 else
                 {
                     $attach_config['upload_filesize_limit'] = $attach_config['attachment_quota'];
                 }
-                $titanium_db->sql_freeresult($result);
+                $db->sql_freeresult($result);
             }
         }
-    }
-    else
+    } elseif (is_array($profiledata)) {
+        $attachments->get_quota_limits($profiledata, $user_id);
+    } else
     {
-        if (is_array($profiledata))
-        {
-            $attachments->get_quota_limits($profiledata, $titanium_user_id);
-        }
-        else
-        {
-            $attachments->get_quota_limits($userdata, $titanium_user_id);
-        }
+        $attachments->get_quota_limits($userdata, $user_id);
     }
 
     if (!$attach_config['upload_filesize_limit'])
@@ -464,87 +436,86 @@ function display_upload_attach_box_limits($titanium_user_id, $group_id = 0)
 
     if ($upload_filesize_limit == 0)
     {
-        $titanium_user_quota = $titanium_lang['Unlimited'];
+        $user_quota = $lang['Unlimited'];
     }
     else
     {
-        $size_lang = ($upload_filesize_limit >= 1048576) ? $titanium_lang['MB'] : ( ($upload_filesize_limit >= 1024) ? $titanium_lang['KB'] : $titanium_lang['Bytes'] );
+        $size_lang = ($upload_filesize_limit >= 1_048_576) ? $lang['MB'] : ( ($upload_filesize_limit >= 1024) ? $lang['KB'] : $lang['Bytes'] );
 
-        if ($upload_filesize_limit >= 1048576)
+        if ($upload_filesize_limit >= 1_048_576) {
+            $user_quota = (round($upload_filesize_limit / 1_048_576 * 100) / 100) . ' ' . $size_lang;
+        } elseif ($upload_filesize_limit >= 1024) {
+            $user_quota = (round($upload_filesize_limit / 1024 * 100) / 100) . ' ' . $size_lang;
+        } else
         {
-            $titanium_user_quota = (round($upload_filesize_limit / 1048576 * 100) / 100) . ' ' . $size_lang;
-        }
-        else if ($upload_filesize_limit >= 1024)
-        {
-            $titanium_user_quota = (round($upload_filesize_limit / 1024 * 100) / 100) . ' ' . $size_lang;
-        }
-        else
-        {
-            $titanium_user_quota = ($upload_filesize_limit) . ' ' . $size_lang;
+            $user_quota = ($upload_filesize_limit) . ' ' . $size_lang;
         }
     }
 
     // Get all attach_id's the specific user posted, but only uploads to the board and not Private Messages
     $sql = 'SELECT attach_id
         FROM ' . ATTACHMENTS_TABLE . '
-        WHERE user_id_1 = ' . (int) $titanium_user_id . '
+        WHERE user_id_1 = ' . (int) $user_id . '
             AND privmsgs_id = 0
         GROUP BY attach_id';
 
-    if ( !($result = $titanium_db->sql_query($sql)) )
+    if ( !($result = $db->sql_query($sql)) )
     {
         message_die(GENERAL_ERROR, 'Couldn\'t query attachments', '', __LINE__, __FILE__, $sql);
     }
 
-    $attach_ids = $titanium_db->sql_fetchrowset($result);
-    $num_attach_ids = $titanium_db->sql_numrows($result);
-    $titanium_db->sql_freeresult($result);
-    $attach_id = array();
+    $attach_ids = $db->sql_fetchrowset($result);
+    $num_attach_ids = $db->sql_numrows($result);
+    $db->sql_freeresult($result);
+    $attach_id = [];
 
     for ($j = 0; $j < $num_attach_ids; $j++)
     {
-        $attach_id[] = intval($attach_ids[$j]['attach_id']);
+        $attach_id[] = (int) $attach_ids[$j]['attach_id'];
     }
 
-	$upload_filesize = (sizeof($attach_id) > 0) ? get_total_attach_filesize($attach_id) : 0;
+	$upload_filesize = ($attach_id !== []) ? get_total_attach_filesize($attach_id) : 0;
 
-    $size_lang = ($upload_filesize >= 1048576) ? $titanium_lang['MB'] : ( ($upload_filesize >= 1024) ? $titanium_lang['KB'] : $titanium_lang['Bytes'] );
+    $size_lang = ($upload_filesize >= 1_048_576) ? $lang['MB'] : ( ($upload_filesize >= 1024) ? $lang['KB'] : $lang['Bytes'] );
 
-    if ($upload_filesize >= 1048576)
+    if ($upload_filesize >= 1_048_576) {
+        $user_uploaded = (round($upload_filesize / 1_048_576 * 100) / 100) . ' ' . $size_lang;
+    } elseif ($upload_filesize >= 1024) {
+        $user_uploaded = (round($upload_filesize / 1024 * 100) / 100) . ' ' . $size_lang;
+    } else
     {
-        $titanium_user_uploaded = (round($upload_filesize / 1048576 * 100) / 100) . ' ' . $size_lang;
+        $user_uploaded = ($upload_filesize) . ' ' . $size_lang;
     }
-    else if ($upload_filesize >= 1024)
-    {
-        $titanium_user_uploaded = (round($upload_filesize / 1024 * 100) / 100) . ' ' . $size_lang;
-    }
-    else
-    {
-        $titanium_user_uploaded = ($upload_filesize) . ' ' . $size_lang;
-    }
+    
+	if(!isset($upload_limit_img_length))
+    $upload_limit_img_length = 0;
+
+	if(!isset($board_config['privmsg_graphic_length']))
+    $board_config['privmsg_graphic_length'] = 0;
 
     $upload_limit_pct = ( $upload_filesize_limit > 0 ) ? round(( $upload_filesize / $upload_filesize_limit ) * 100) : 0;
-    $upload_limit_img_length = ( $upload_filesize_limit > 0 ) ? round(( $upload_filesize / $upload_filesize_limit ) * $phpbb2_board_config['privmsg_graphic_length']) : 0;
+    $upload_limit_img_length = ( $upload_filesize_limit > 0 ) ? round(( $upload_filesize / $upload_filesize_limit ) * $board_config['privmsg_graphic_length']) : 0;
     if ($upload_limit_pct > 100)
     {
-        $upload_limit_img_length = $phpbb2_board_config['privmsg_graphic_length'];
+        $upload_limit_img_length = $board_config['privmsg_graphic_length'];
     }
     $upload_limit_remain = ( $upload_filesize_limit > 0 ) ? $upload_filesize_limit - $upload_filesize : 100;
 
-    $l_box_size_status = sprintf($titanium_lang['Upload_percent_profile'], $upload_limit_pct);
+    $l_box_size_status = sprintf($lang['Upload_percent_profile'], $upload_limit_pct);
 
-    $phpbb2_template->assign_block_vars('switch_upload_limits', array());
+    $template->assign_block_vars('switch_upload_limits', []);
 
-    $phpbb2_template->assign_vars(array(
-        'L_UACP'            => $titanium_lang['UACP'],
-        'L_UPLOAD_QUOTA'    => $titanium_lang['Upload_quota'],
-        //'U_UACP'            => $phpbb2_root_path . 'uacp.' . $phpEx . '?u=' . $titanium_user_id . '&amp;sid=' . $userdata['session_id'],
-        'U_UACP' => append_titanium_sid('uacp.' . $phpEx . '?u=' . $titanium_user_id . '&amp;sid=' . $userdata['session_id']),
-        'UPLOADED'            => sprintf($titanium_lang['User_uploaded_profile'], $titanium_user_uploaded),
-        'QUOTA'                => sprintf($titanium_lang['User_quota_profile'], $titanium_user_quota),
+    $template->assign_vars([
+        'L_UACP'            => $lang['UACP'],
+        'L_UPLOAD_QUOTA'    => $lang['Upload_quota'],
+        //'U_UACP'            => $phpbb_root_path . 'uacp.' . $phpEx . '?u=' . $user_id . '&amp;sid=' . $userdata['session_id'],
+        'U_UACP' => append_sid('uacp.' . $phpEx . '?u=' . $user_id . '&amp;sid=' . $userdata['session_id']),
+        'UPLOADED'            => sprintf($lang['User_uploaded_profile'], $user_uploaded),
+        'QUOTA'                => sprintf($lang['User_quota_profile'], $user_quota),
         'UPLOAD_LIMIT_IMG_WIDTH'    => $upload_limit_img_length,
         'UPLOAD_LIMIT_PERCENT'        => $upload_limit_pct,
-        'PERCENT_FULL'                => $l_box_size_status)
+        'PERCENT_FULL'                => $l_box_size_status,
+    ]
     );
 }
 
@@ -570,17 +541,18 @@ function prune_attachments($sql_post)
 */
 function perform_attach_pageregister($session_page, $in_admin = false)
 {
-    global $location, $location_url, $titanium_lang;
+    $phpEx = null;
+    global $location, $location_url, $lang;
 
     switch ($session_page)
     {
         case (PAGE_UACP):
-            $location = $titanium_lang['User_acp_title'];
+            $location = $lang['User_acp_title'];
             $location_url = ($in_admin) ? "index.$phpEx?pane=right" : "index.$phpEx";
         break;
 
         case (PAGE_RULES):
-            $location = $titanium_lang['Rules_page'];
+            $location = $lang['Rules_page'];
             $location_url = ($in_admin) ? "index.$phpEx?pane=right" : "index.$phpEx";
         break;
     }

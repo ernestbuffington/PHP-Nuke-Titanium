@@ -12,7 +12,7 @@ if (!defined('MODULE_FILE')) {
    die('You can\'t access this file directly...');
 }
 
-$titanium_module_name = basename(dirname(__FILE__));
+$module_name = basename(dirname(__FILE__));
 
 if ( isset($HTTP_GET_VARS['mode']) || isset($HTTP_POST_VARS['mode']) )
 {
@@ -25,11 +25,11 @@ else
 //
 // Generate page
 //
-global $titanium_module_name;
-if(!isset($titanium_module_name) || empty($titanium_module_name)){
-    $titanium_module_name = basename(dirname(__FILE__));
+global $module_name;
+if(!isset($module_name) || empty($module_name)){
+    $module_name = basename(dirname(__FILE__));
 }
-get_lang($titanium_module_name);
+get_lang($module_name);
 
 global $domain;
 $titanium_title = 'cPanel Login';
@@ -47,10 +47,10 @@ if (($_GET['failed'] == "1") or ($error == 1))
   echo "<font color=\"#FF0000\" face=\"verdana\" size=\"1\">Your login attempt failed!</font><br>";
 }
 global $textcolor1, $textcolor2;
-//$phpbb2_icon = img('computer.png', 'cPanel_Login'); 
-/*<?=$phpbb2_icon?>*/
+//$icon = img('computer.png', 'cPanel_Login'); 
+/*<?=$icon?>*/
 ?>
-<script type="text/javascript">
+<script>
 <!--
 function hov(loc,cls){
    if(loc.className)

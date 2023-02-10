@@ -38,11 +38,9 @@ $xuser_agent = htmlentities($xuser_agent, ENT_QUOTES);
 $xnotes = str_replace("<br>", "\r\n", $xnotes);
 $xnotes = str_replace("<br />", "\r\n", $xnotes);
 $xnotes = htmlentities($xnotes, ENT_QUOTES);
-if(!get_magic_quotes_runtime()) {
-  $xnotes = addslashes($xnotes);
-  $xusername = addslashes($xusername);
-}
-$result = $titanium_db->sql_query("UPDATE `".$titanium_prefix."_nsnst_blocked_ips` SET `ip_addr`='$xIPs', `ip_long`='$xIPl', `user_id`='$xuser_id', `username`='$xusername', `user_agent`='$xuser_agent', `date`='$xdate', `notes`='$xnotes', `reason`='$xreason', `expires`='$xexpires', `c2c`='$xc2c' WHERE `ip_addr`='$old_xIPs'");
+$xnotes = addslashes($xnotes);
+$xusername = addslashes($xusername);
+$result = $db->sql_query("UPDATE `".$prefix."_nsnst_blocked_ips` SET `ip_addr`='$xIPs', `ip_long`='$xIPl', `user_id`='$xuser_id', `username`='$xusername', `user_agent`='$xuser_agent', `date`='$xdate', `notes`='$xnotes', `reason`='$xreason', `expires`='$xexpires', `c2c`='$xc2c' WHERE `ip_addr`='$old_xIPs'");
 if(!$result) { die("DB Error"); }
 $i = 1;
 while($i <= 3) {

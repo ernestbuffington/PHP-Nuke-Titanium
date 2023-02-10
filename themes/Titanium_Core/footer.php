@@ -2,36 +2,23 @@
 #---------------------------------------------------------------------------------------#
 # FOOTER                                                                                #
 #---------------------------------------------------------------------------------------#
-# THEME SYSTEM FILE                                                                     #
-#---------------------------------------------------------------------------------------#
 # THEME INFO                                                                            #
-# Titanium_Core Theme v2.0 (Fixed & Full Width)                                         #
+# Titanium Core Theme v2.0 (Fixed & Full Width)                                         #
 #                                                                                       #
-# Final Build Date 03/16/2021 Tuesday 12:54am                                           #
+# Final Build Date 10/09/2022 Tuesday 12:54am                                           #
 #                                                                                       #
-# A Very Nice Gold Theme Design.                                                        #
-# Copyright © 2021 By: TheGhost AKA EA Buffington                                       #
-# e-Mail : ernest.buffington@gmail.com                                                  #
+# A Very Nice Gold Template Theme                                                       #
+# Copyright © 2021 : Brandon Maintenance Management                                     #
+# e-Mail : brandon.maintenance.management@gmail.com                                     #
 #---------------------------------------------------------------------------------------#
-# CREATION INFO                                                                         #
-# Created On: 03/16/2021 Tuesday 12:54am (v1.0)                                         #
-#                                                                                       #
-# Credit goes to Lonestar On: 1st August, 2019 (v3.0)                                   #
-# HTML5 Theme Code By: Lonestar (Lonestar-Modules.com)                                  #
-#                                                                                       #
-# Credit goes to TheMortal                                                              #
-# For his CSS MENU                                                                      #
-#                                                                                       #
-# Read CHANGELOG File for Updates & Upgrades Info                                       #
-#                                                                                       #
-# Designed By: TheGhost & Sebastian                                                     #
-# Web Site: https://www.86it.us                                                         #
-# Purpose: PHP-Nuke Titanium                                                            #
+# Designed By: Ernest Buffington                                                        #
+# Web Site: https://www.theghost.86it.us                                                #
+# Purpose: PHP-Nuke Titanium v4.0.2                                                     #
 #---------------------------------------------------------------------------------------#
 # CMS INFO                                                                              #
-# PHP-Nuke Copyright (c) 2006 by Francisco Burzi phpnuke.org                            #
+# PHP-Nuke Copyright (c) 2002    : Francisco Burzi phpnuke.org                          #
 # Nuke Evolution Xtreme (c) 2010 : Enhanced PHP-Nuke Web Portal System                  #
-# PHP-Nuke Titanium (c) 2021     : Enhanced PHP-Nuke Web Portal System                  #
+# PHP-Nuke Titanium (c) 2022     : Enhanced and Advanced PHP-Nuke Web Portal System     #
 #---------------------------------------------------------------------------------------#
 #                                                                                       #
 # Special Honorable Mentions                                                            #
@@ -56,8 +43,10 @@
 # Wolfstar                                                                              # 
 # -[04/17/2010] Updated Nuke Evolution to XHTML 1.0 Transitional                        #
 #---------------------------------------------------------------------------------------#
-# Titanium Core Footer Section      #
-#-----------------------------------#
+
+#-----------------------------#
+# Inferno Footer Section      #
+#-----------------------------#
 # Fixed & Full Width Style    #
 #-----------------------------#
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) exit('Access Denied');
@@ -72,15 +61,15 @@ global $customlang,
 echo '<!-- FOOTER START -->';
 global 
 	   $index, 
-	    $titanium_user, 
+	    $user, 
 	 $banners, 
 	  $cookie, 
-         $titanium_dbi, 
-		  $titanium_db, 
+         $dbi, 
+		  $db, 
 	   $admin, 
    $adminmail, 
-  $total_phpbb2_time, 
-  $phpbb2_start_time, 
+  $total_time, 
+  $start_time, 
        $foot1, 
 	   $foot2, 
 	   $foot3, 
@@ -91,7 +80,7 @@ global
   $theme_name, 
    $ThemeInfo,
     $bgcolor4,
-      $titanium_prefix;
+      $prefix;
 
 
 if(blocks_visible('right')) 
@@ -137,29 +126,12 @@ print '<tr>'."\n";
 print '<td width="100%" bgcolor="'.$bgcolor4.'">'."\n";
 echo "<!-- Top Footer END -->\n\n\n\n\n";
 
-
 echo '<div align="center">';
 footmsg();
 echo '</div>'; 
 
-//echo '<section id="flex-container">';
-//echo '<div class="flex-item" style="width: 100%; height: 0px; ">';
-//echo '<div class="tooltip-html center" style="font-size: 1;" title="'.theme_copyright.'"><span style="color: #ffffff;">'.str_replace('<br />', '', 'Universal Theme Design By The 86it Developers Network &copy; 2019-2021').'</span></div>';
-//echo '</div>';
-//echo '</section>';
-
-//echo '<div align="center" style="padding-top:5px;">';
-//echo '<button type="button" class="btn btn-warning" data-toggle="modal" data-target="#myCopyRight">&copy; '.THEME.' by The 86it Developers Network</button><br />';
-//echo '</div>';
 echo '<div align="center" style="padding-top:5px;">';
 echo '</div>';
-
-
-//echo '<div class="center">'.ads(3).'</div>';
-
-//echo '<a class="copyright" href="javascript: void(0)" onclick="window.open(\''.theme_dir.'copyrights.php\', \'windowname1\', \'width=800, height=500\'); return false;">';
-//echo '<span class="tooltip-html" title="'.theme_copyright_click.'"><strong>Universal Theme Design By The 86it Developers Network &copy; 2019-2021</strong></span>';
-//echo '</a>';
 
 echo "\n\n\n\n\n<!-- function_CloseTable top START -->\n";
 print '</td>';
@@ -192,13 +164,7 @@ print '</table>'."\n";
 # do not remove anything from here down when making a theme! The theme will not show up correctly
 echo '</td>';
 echo '</tr>';
-echo '</table><br /><br />';
-echo '<div align="center" style="padding-top:3956px;">';
-echo '</div>';
-global $powered_by;
-echo '<div align="center">'.$powered_by.'</div>';
-echo '<div align="center" style="padding-top:256px;">';
-echo '</div>';
+echo '</table>';
 echo '</td>';
 echo '</tr>';
 echo '</table>';

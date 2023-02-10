@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+ PHP-Nuke Titanium | Nuke-Evolution Basic : Enhanced and Advanced
  =======================================================================*/
 
 /************************************************************************
@@ -69,14 +69,14 @@ echo "<sy:updatePeriod>hourly</sy:updatePeriod>\n";
 echo "<sy:updateFrequency>1</sy:updateFrequency>\n";
 echo "<sy:updateBase>".$now."</sy:updateBase>\n\n";
 
-$result = $titanium_db->sql_query("SELECT s.sid, t.topicname, s.informant, s.title, s.datePublished, s.dateModified, s.hometext
-                          FROM ".$titanium_prefix."_stories s, ".$titanium_prefix."_topics t
+$result = $db->sql_query("SELECT s.sid, t.topicname, s.informant, s.title, s.datePublished, s.dateModified, s.hometext
+                          FROM ".$prefix."_blogs s, ".$prefix."_blogs_topics t
                           WHERE s.topic = t.topicid
                           ORDER BY sid
                           DESC LIMIT 10"
           );
 
-while ($row = $titanium_db->sql_fetchrow($result)) 
+while ($row = $db->sql_fetchrow($result)) 
 {
     $rsid = intval($row['sid']);
     $topicname = $row['topicname'];
@@ -92,7 +92,7 @@ while ($row = $titanium_db->sql_fetchrow($result))
 
     echo "<item>\n";
     echo "<title>".$title."</title>\n";
-    echo "<link>".$nukeurl."/modules.php?name=Blog&amp;file=article&amp;sid=".$rsid."</link>\n";
+    echo "<link>".$nukeurl."/modules.php?name=Blogs&amp;file=article&amp;sid=".$rsid."</link>\n";
     echo "<description><![CDATA[".$hometext."]]></description>\n";
     echo "<guid isPermaLink=\"false\">".$rsid."@".$nukeurl."</guid>\n";
     echo "<dc:subject>".$topicname."</dc:subject>\n";

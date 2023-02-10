@@ -26,19 +26,20 @@ define('_CREDENTIALS','You do not have the necessary credentials<br />to access 
 define('_AREA','Area!');
 # Modules group mod v1.0 END
 define('_EMPTY_MESSAGE','You must enter a message first');
-define('_YOUHAVE_1_MSGS','You Have <strong><span class="blink-one">%s</span></strong> New Private Message');
-define('_YOUHAVE_X_MSGS','You Have <strong><span class="blink-one">%s</span></strong> New Private Messages');
-define('_YOUHAVE_NO_MSGS','You Have <strong><span class="blink-one">0</span></strong> NEW Messages, Nobody Likes You!');
+define('_YOUHAVE_1_MSGS','You Have <strong><span class="blink-one">%s</span></strong> New Private Message!');
+define('_YOUHAVE_X_MSGS','You Have <strong><span class="blink-one">%s</span></strong> New Private Messages!');
+define('_YOUHAVE_NO_MSGS','You Have <strong><span class="blink-one">0</span></strong> NEW Messages!');
+
 // new common language defines.
 define('_S_ADMIN_PANEL','Admin Panel');
 define('_L_ADMIN_PANEL','Administration');
 define('_EDIT_PROFILE','Edit Profile');
-define('_YOUHAVE_X_MSGS','You Have <strong><span class="blink-one">%s</span></strong> New Private Messages');
 define('_WATCH_YOUTUBE','Watch this video on YouTube');
-define("_POSTEDBY","Posted by");
 define("_ON","on");
+
 define("_CHARSET","UTF-8");
 define("_LANG_DIRECTION","ltr");
+
 define('_INVISIBLEMODULES', 'Invisible Modules');
 define('_NOACTIVEMODULES', 'Inactive Modules');
 define('_NONE', 'None');
@@ -53,7 +54,7 @@ define('_UNLIMITED', 'Unlimited');
 define('_EDIT', 'Edit');
 define('_DELETE', 'Delete');
 define('_TOPIC', 'Topic');
-define('_ASSOTOPIC', 'Associated Topics');
+define('_ASSOCIATED_BLOG_TOPICS', 'Associated Blog Topics');
 define('_HOME', 'Home');
 define('_HOMEPROBLEM', 'There is a big problem here: we do not have a Homepage!!!');
 define('_ADDAHOME', 'Add a Module in your Home');
@@ -79,13 +80,15 @@ define("_BLOCKPROBLEM2","There isn't content right now for this block.");
 define("_SELECTGUILANG","Select Interface Language:");
 define("_COMMENTS","Comments");
 define("_READS","Reads");
-define("_MORENEWS","More in News Section");
+define("_MOREBLOGS","More in Blogs Section");
+
 define("_NEWSLETTERBLOCKSUBSCRIBED", "You are subscribed to the newsletter");
 define("_NEWSLETTERBLOCKREGISTER", "You must register to receive the newsletter");
 define("_NEWSLETTERBLOCKREGISTERNOW", "Click to register");
 define("_NEWSLETTERBLOCKNOTSUBSCRIBED", "You are not subscribed to the newsletter");
 define("_NEWSLETTERBLOCKSUBSCRIBE", "Click to subscribe");
 define("_NEWSLETTERBLOCKUNSUBSCRIBE", "Click to unsubscribe");
+
 define("_PASTARTICLES","Past Articles");
 define("_OLDERARTICLES","Older Articles");
 define('_DATESTRING','%A, %B %d, %Y (%H:%M:%S)');
@@ -96,7 +99,7 @@ define("_DATE","Date");
 define("_SEARCH","Search");
 define("_FORADMINTESTS","(for Admin tests)");
 define("_ACTIVEBUTNOTSEE","(Active but invisible link)");
-define("_PAGESVIEWS","page views since");
+define("_PAGESVIEWS","Page Views Since");
 define("_WERECEIVED","We received");
 define("_WRITES","writes");
 define("_GOBACK","[ <a href=\"javascript:history.go(-1)\">Go Back</a> ]");
@@ -106,9 +109,8 @@ define("_POSTEDON","Posted on");
 define("_WELCOMETO","Welcome to");
 define("_POSTEDBY","Posted by");
 define("_BY","by");
-define("_ON","on");
 define("_WAITINGCONT","Waiting Content");
-define("_SUBMISSIONS","Submissions");
+define("_BLOG_SUBMISSIONS","Submissions");
 define("_WREVIEWS","Waiting Reviews");
 define("_WLINKS","Waiting Links");
 define("_EPHEMERIDS","Ephemerids");
@@ -207,7 +209,6 @@ define("_ADDITIONALYGRP","Additionaly this module belongs to the Users Group");
 define("_YOUHAVEPOINTS","Points you have by participating on the site's content:");
 define("_MVIEWSUBUSERS","View: Subscribed Users Only");
 define("_MODULESSUBSCRIBER","We are Sorry but this section of our site is for <i>Subscribed Users Only.</i>");
-define("_SUBHERE","You can subscribe to our services from <a href=\"$subscription_url\">here</a>");
 define("_SUBEXPIRED","Your Subscription Expired");
 define("_HELLO","Hello");
 define("_SUBSCRIPTIONAT","This is an automated message to let you know that your subscription at");

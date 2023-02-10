@@ -1,273 +1,39 @@
 <?php
-#---------------------------------------------------------------------------------------#
-# HEADER FLYKIT CSS                                                                     #
-#---------------------------------------------------------------------------------------#
-# THEME INFO                                                                            #
-# Inferno Theme v1.0 (Fixed & Full Width)                                               #
-#                                                                                       #
-# Final Build Date 03/16/2021 Tuesday 12:54am                                           #
-#                                                                                       #
-# A Very Nice Fire and Brimstone Theme Design.                                          #
-# Copyright © 2021 By: TheGhost AKA EABuffington                                        #
-# e-Mail : ernest.buffington@gmail.com                                                  #
-#---------------------------------------------------------------------------------------#
-# CREATION INFO                                                                         #
-# Created On: 03/16/2021 Tuesday 12:54am (v1.0)                                         #
-#                                                                                       #
-# Credit goes to Lonestar On: 1st August, 2019 (v3.0)                                   #
-# HTML5 Theme Code By: Lonestar (Lonestar-Modules.com)                                  #
-#                                                                                       #
-# Credit goes to TheMortal                                                              #
-# For his CSS MENU                                                                      #
-#                                                                                       #
-# Read CHANGELOG File for Updates & Upgrades Info                                       #
-#                                                                                       #
-# Designed By: TheGhost & Sebastian                                                     #
-# Web Site: https://www.86it.us                                                         #
-# Purpose: PHP-Nuke Titanium | Nuke Evolution Xtreme                                    #
-#---------------------------------------------------------------------------------------#
-# CMS INFO                                                                              #
-# PHP-Nuke Copyright (c) 2006 by Francisco Burzi phpnuke.org                            #
-# Nuke Evolution Xtreme (c) 2010 : Enhanced PHP-Nuke Web Portal System                  #
-# PHP-Nuke Titanium (c) 2021     : Enhanced PHP-Nuke Web Portal System                  #
-#---------------------------------------------------------------------------------------#
-#                                                                                       #
-# Special Honorable Mentions                                                            #
-#---------------------------------------------------------------------------------------#
-# killigan                                                                              # 
-# -[04/17/2010] Updated Nuke Sentinel to version 2.6.01                                 # 
-# -[04/17/2010] Updated Nuke Evolution to XHTML 1.0 Transitional                        #
-#---------------------------------------------------------------------------------------#
-# SgtLegend                                                                             #   
-# -[04/17/2010] Updated Nuke Evolution to XHTML 1.0 Transitional                        #
-# -[04/18/2010] Updated the installer/upgrade files and display                         #
-# -[04/19/2010] Improved load time for global variables                                 #
-# -[04/21/2010] Upgraded Swift mail to version 4.0.6                                    #
-# -[04/21/2010] Upgraded HTML Purifier to version 4                                     # 
-#---------------------------------------------------------------------------------------#
-# Technocrat                                                                            # 
-# -[04/22/2010] Added speed tweaks to the cache and PHP version compare                 #  
-#---------------------------------------------------------------------------------------#
-# Eyecu                                                                                 # 
-# -[04/17/2010] Updated Nuke Evolution to XHTML 1.0 Transitional                        #
-#---------------------------------------------------------------------------------------#
-# Wolfstar                                                                              # 
-# -[04/17/2010] Updated Nuke Evolution to XHTML 1.0 Transitional                        #
-#---------------------------------------------------------------------------------------#
-
 global $theme_name;
-
-echo "\n\n/* Universal/css/header.php Fly Kit for PHP-Nuke Titanium - Design Themes On The Fly */\n"; 
-echo "/* When we are done we will move this code to style.css */\n\n"; 
-
-global $screen_width, $screen_height, $textcolor1, $textcolor2, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $bgcolor5;
-
+echo "/* Loading themes/".$theme_name."/css/header.php Fly Kit for PHP-Nuke Titanium - Design Themes On The Fly */\n"; 
+echo "/* When we are done we will move this code to style.css */\n"; 
+global $screen_width, $screen_height, $textcolor1, $textcolor2, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $bgcolor5, $fieldset_border_width, $locked_width;
 $bgcolor5 ='#3c3523';
 ?>
-input[type="radio"]{
-    vertical-align: bottom;
-}
-
-.absmiddle{
-    vertical-align: absmiddle;
-}
-
-/*---------------------------------------------------------------*/
-/* Forum Attachements                                            */
-/*---------------------------------------------------------------*/
-td.attachrowZ        
-{ 
-#font: normal 11px Verdana, Arial, Helvetica, sans-serif; color : <?=$textcolor1?>; 
-border-color : <?=$bgcolor4?>; 
-}
-td.attachheaderZ     
-{ 
-#font: normal 11px Verdana, Arial, Helvetica, sans-serif; color : <?=$textcolor1?>; 
-border-color : <?=$bgcolor4?>; 
-background-color: <?=$bgcolor1?>; 
-}
-table.attachtableZ    
-{ 
-#font: normal 12px Verdana, Arial, Helvetica, sans-serif; color : <?=$textcolor1?>; 
-border-color : <?=$bgcolor4?>;    
-border-collapse : collapse; 
-}
-/*---------------------------------------------------------------*/
-/* Main Theme Body                                               */
-/*---------------------------------------------------------------*/
-.button {
-  background-color: <?=$bgcolor1?>;
-  border: none;
-  color: white;
-  padding: 5px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  font-size: 16px;
-  margin: 4px 2px;
-}
-
-.button1 {border-radius: 2px;}
-.button2 {border-radius: 4px;}
-.button3 {border-radius: 8px;}
-.button4 {border-radius: 12px;}
-.button5 {border-radius: 50%;}
-
-a.redalert:link {text-decoration: underline; color: crimson;}
-a.redalert:visited {text-decoration: underline; color: crimson;}
-a.redalert:hover {text-decoration: underline; color: green;}
-
-.alert {
-  position: absolute;
-  top: 217px; // Should be same as the height of the header
-  width: 100%;
-}
-
-fieldset 
-{
-	display: block; 
-	margin-left: 2px; 
-	margin-right: 2px; 
-	padding-top: 0.15em; 
-	padding-bottom: 0.625em; 
-	padding-left: 0.75em; 
-	padding-right: 0.75em; 
-	border: 2px groove (internal value);
-
-   -webkit-border-radius: 8px;
-   -moz-border-radius: 8px;
-   border-radius: 8px;
-
-}
-
-hr {
-	background-color: #8d7b4d;
-	border: 0;
-	height: 1px;
-	margin: 5px 0;
-	width: 100%;
-    #opacity: 0.4;
-
-}
-
-   
-.outer_table_opacity
-{
-  opacity: 0.9;
-}
-.inferno_header_table
-{
-opacity: 0.9;
-background-color: black; 
-background-image: 
-url(themes/<?=$theme_name?>/backgrounds/top_box.png),       /* top black glass - TheGhost add 03/19/2021 */
-url(themes/<?=$theme_name?>/backgrounds/box_bottom.png);    /* bottom flames   - TheGhost add 03/19/2021 */
-background-position:
-top right, 
-bottom left; 
-background-repeat: 
-repeat-x; /* this makes the top glass block and the bottom flame block repeat from left to right and vice vs - TheGhost add 08/04/2019 */ 
-z-index: 780;
-}
-
-.modal-body {
-#   background-image: url(themes/<?=$theme_name?>/backgrounds/1920x1080.png);
-}
-
-.modal-backdrop {
-}
-
-.modal .modal-popout-bg {
-    background-image: url(themes/<?=$theme_name?>/backgrounds/modal_theme_copyright_pop_bg.png); 
-}
-
-.modal {
- 
-  /* Take the box out of the flow, so that it could look like a modal box */
-  # position: absolute;
-
-  /* Avoid the awkwardly stretchy box on bigger screens */
-  # max-width: 550px;
-
-  /* Aligning it to the absolute center of the page */
-  # top: 50%;
-  # left: 50%;
-  # transform: translate(-50%, -50%);
-
-  /* Some cosmetics */
-  # border-radius: 4px;
-  # background-color: rgba(0, 0, 0, .1);
-  
-}
-
-.modal-hidden {
-  display: none;
-}
-
-/* Make the media inside the box adapt the width of the parent */
-.modal img,
-.modal iframe,
-.modal video 
-{
-  max-width: 100%;
-}
-
-/* Make the inner element relatively-positioned to contain the close button */
-.modal-inner {
-  position: relative;
-  padding: 10px;
-}
-
-/* Close button */
-.modal-close {
-  font-size: 10px;
-
-  /* Take it out of the flow, and align to the top-left corner */
-  position: absolute;
-  top: -10px;
-  right: -10px;
-
-  /* Size it up */
-  width: 24px;
-  height: 24px;
-
-  /* Text-alignment */
-  text-align: center;
-
-  /* Cosmetics */
-  color: #eee;
-  border-width: 0;
-  border-radius: 100%;
-  background-color: black;
-}
-/*################################################################# Forum CSS from here down ###########################################*/
 /**
- * Stylesheet for the Universal Theme
+ * Stylesheet for the Titanium Core Theme
  *
- * @filename:  style.css
+ * @filename:  header.php
  * @author  :  TheGhost
  * @version :  3.0
- * @date    :  12/24/2018 (DD/MM/YYY)
- * @license :  Copyright (c) 2019 The Mortal The 86it Developers Network under the MIT license
+ * @date    :  11/22/2022 (DD/MM/YYY)
+ * @license :  Copyright (c) 2022 The 86it Developers Network under the MIT license
  * @notes   :  n/a
  *
  * -- -------------------------------------------------------------------
  * \/ STYLESHEET NAVIGATION
  * -- -------------------------------------------------------------------
  *
- * 1.  Reset CSS
- * 2.  Primary page styles
- * 3.  Page elements
- * 4.  Page header
- * 5.  Page footer
- * 6.  User interaction
- * 7.  Body content wrappers
- * 8.  Side body blocks
- * 9.  Center content wrapper
- * 10. Story content wrapper
- * 11. Inputs
- * 12. Clearfix
- * 13.  Forums Page Styles
+ *  1.  Reset CSS
+ *  2.  Primary page styles
+ *  3.  Page elements
+ *  4.  Page header
+ *  5.  Center Blocks
+ *  6.  Side Blocks
+ *  7.  Page footer
+ *  8.  User interaction
+ *  9.  Body content wrappers
+ * 10.  Side body blocks
+ * 11.  Center content wrapper
+ * 12.  Story content wrapper
+ * 13.  Inputs
+ * 14.  Clearfix
+ * 15.  Forums Page Styles
  * --- -------------------------------------------------------------------
 */
 
@@ -305,10 +71,14 @@ article, aside, details, figcaption, figure,
 footer, header, hgroup, menu, nav, section {
 	display: block;
 }
-body {
-	/*line-height: 1;*/
 
+/* By adding the following CSS properties we can prevent the odd rendering: PHONES */
+html{
+  -moz-text-size-adjust: none;
+  -webkit-text-size-adjust: none;
+  text-size-adjust: none;
 }
+  
 a
 blockquote, q {
 	quotes: none;
@@ -317,6 +87,44 @@ blockquote:before, blockquote:after,
 q:before, q:after {
 	content: '';
 	content: none;
+}
+
+.hover_effect {
+  height: auto;
+  width: 64px;
+  cursor: pointer; 
+}
+ 
+.hover_effect:hover {
+  height: auto;
+  width: 64px;
+  cursor: pointer;
+  animation: wiggle 2s linear infinite;
+}
+
+/* Keyframes */
+@keyframes wiggle {
+  0%, 7% {
+    transform: rotateZ(0);
+  }
+  15% {
+    transform: rotateZ(-15deg);
+  }
+  20% {
+    transform: rotateZ(10deg);
+  }
+  25% {
+    transform: rotateZ(-10deg);
+  }
+  30% {
+    transform: rotateZ(6deg);
+  }
+  35% {
+    transform: rotateZ(-4deg);
+  }
+  40%, 100% {
+    transform: rotateZ(0);
+  }
 }
 
 mark {
@@ -334,12 +142,16 @@ select { cursor: pointer; }
 
 input, select { vertical-align: middle; }
 label.radio { cursor: pointer; }
-input[type='checkbox'] { cursor: pointer; }
+input[type='checkbox']
+{
+  width:17px;height:17px;
+  cursor: pointer;
+}
 
 /*
  * 2. Primary page styles
  *----------------------------------------
-*/
+ */
 
 #flex-container {
     display: flex;
@@ -355,30 +167,123 @@ input[type='checkbox'] { cursor: pointer; }
 	margin: 0 auto;
 }
 
+input[type="radio"]{
+    vertical-align: bottom;
+}
+
+.absmiddle{
+    vertical-align: middle;
+}
+
+/*---------------------------------------------------------------*/
+/* Main Theme Body                                               */
+/*---------------------------------------------------------------*/
+.button {
+  background-color: <?=$bgcolor1?>;
+  border: none;
+  color: white;
+  padding: 5px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  margin: 4px 2px;
+}
+
+.button1 {border-radius: 2px;}
+.button2 {border-radius: 4px;}
+.button3 {border-radius: 8px;}
+.button4 {border-radius: 12px;}
+.button5 {border-radius: 50%;}
+
+a.redalert:link {text-decoration: underline; color: crimson;}
+a.redalert:visited {text-decoration: underline; color: crimson;}
+a.redalert:hover {text-decoration: underline; color: green;}
+
+.alert {
+  position: absolute;
+  top: 217px; // Should be same as the height of the header
+
+}
+
+hr {
+	background-color: #8d7b4d;
+	border: 0;
+	height: 1px;
+	margin: 5px 0;
+	width: 100%;
+    #opacity: 0.4;
+
+}
+
+fieldset {
+-webkit-border-radius: 8px;
+-moz-border-radius: 8px;
+border-radius: 8px;
+padding: 6px;
+}
+
 body {	
 	font-size: 14px;
 	color: #fff;
 	font-family: "Open Sans", sans-serif;
 	text-rendering: optimizeLegibility;
+    overflow-y: scroll; /* Show vertical scrollbar */
+    /* overflow-x: scroll;  Show horizontal scrollbar */
 }
 
-a { 
-	color: <?=$textcolor1?>;
-	text-decoration: none;
+
+
+a {
+ color: <?=$textcolor1?>;
+ text-decoration: none;
+ font-size: 1rem;
 }
 
-a:active,
+a:link {
+ color: <?=$textcolor1?>;
+ text-decoration: none;
+ text-shadow: 2px 2px black;
+}
+
+a:visited {
+ color: <?=$textcolor1?>;
+ text-decoration: none;
+ text-shadow: 2px 2px black;
+}
+
+a:focus {
+ color: <?=$textcolor1?>;
+ text-decoration: none;
+ text-shadow: 2px 2px black;
+}
+
+a:hover {
+ color: white;
+ text-decoration: none;
+ text-shadow: 2px 2px black;
+}
+
+a:active {
+ color: <?=$textcolor1?>;
+ text-decoration: none;
+ text-shadow: 2px 2px black;
+}
+  
+
 a.bbcode-href:active { 
-	color: <?=$textcolor2?>;
+	color: <?=$textcolor1?>;
+    text-shadow: 2px 2px black;
 }
 
-a:hover,
 a.bbcode-href:hover { 
-	color: <?=$textcolor2?>;
+	color: white;
+    text-shadow: 2px 2px black;
 }
 
 a.bbcode-href {
 	color: <?=$textcolor1?>;
+    text-shadow: 2px 2px black;
 }
 
 /*
@@ -409,11 +314,12 @@ h1, h2, h3, h4, h5, h6 {
 	font-weight: normal;
 }
 h1 { font-size: 30px; line-height: 1; margin-bottom: 5px; }
-h2 { font-size: 20px; margin-bottom: 7.5px; }
+h2 { font-size: 20px; margin-bottom: 5.5px; }
 h3 { font-size: 15px; line-height: 1; margin-bottom: 10px; }
 h4 { font-size: 12px; line-height: 1.25; margin-bottom: 12.5px; }
 h5 { font-size: 10px; font-weight: bold; margin-bottom: 15px; }
 h6 { font-size: 10px; font-weight: bold; }
+
 
 .bviewed {
 	font-size: 14px;
@@ -425,29 +331,586 @@ h6 { font-size: 10px; font-weight: bold; }
 /*
  * 4. Page Header
  *--------------------------------------------------
-*/
-.wrapLogo {
-	background-image: url('../images/hdr/Text-Logo.png');
-	float: left;
-	height: 110px;
-	padding: 0;
-	text-indent: -9999px;
-	width: 400px;
-	margin: 20px 15px 0 0;
+ */
+
+/* REG TABLES 100% Width */
+.table100
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
 }
 
-#hdr-banner-ads {
-	width: 468px;
-	height: 60px;
-	float: right;
-	clear: right;
-	margin: 40px 15px 0 0;
+.table100bg
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0px;
+
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  
+  background: repeat-x;
+  background: repeat-y;
+  text-align: center; 
+  background-image: url('themes/<?=$theme_name?>/images/BACKGROUNDS/151515.png');
+}
+
+.visitorName
+{
+  border: 0px solid #f00;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  vertical-align: bottom;
+  text-align: bottom;
+  height: 0px;
+  width: 0px;
+  display: box;
+  justify-content: box-end;
+  align-items: box-end;
+}
+
+.sendMessage
+{
+  border: 0px solid #f00;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  vertical-align: bottom;
+  text-align: top;
+  height: 0px;
+  width: 0px;
+  display: box;
+  justify-content: box-end;
+  align-items: box-end;
+}
+
+.tableVisotrLog
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  border-spacing: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  text-align: center;
+  background-color: <?=$bgcolor4?>; 
+}
+
+td.table1_width_definedLSM
+{
+  table-layout: auto;
+  width: 39px;
+  height: 100%;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-image: url('themes/<?=$theme_name?>/images/TABLES/left_side_middle_151515.png');
+}
+
+td.table1_width_definedRSM
+{
+  table-layout: auto;
+  width: 39px;
+  height: 100%;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-image: url('themes/<?=$theme_name?>/images/TABLES/right_side_middle_151515.png');
+}
+
+td.table1_width_definedBM
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background: repeat-x;
+  text-align: center; 
+  background-image: url('themes/<?=$theme_name?>/images/TABLES/bottom_middle_piece.png');
+}
+
+td.opentable_width_definedTM
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background: repeat-x;
+  text-align: center; 
+  background-image: url('themes/<?=$theme_name?>/images/TABLES/top_middle_piece.png');
+}
+
+td.BackgroundColor4
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-color: <?=$bgcolor4?>;
+}
+
+.header_table_opacity
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+  opacity: 0.9;
+}
+
+.header_table_two
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+}
+
+td.header_table_twoTL
+{
+  table-layout: auto;
+  width: 39px;
+  height: 50px;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-image: url('themes/<?=$theme_name?>/images/HEADER/top_left_corner.png');
+}
+
+td.header_table_twoTM
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background: repeat-x; 
+  background-image: url('themes/<?=$theme_name?>/images/HEADER/top_middle_piece.png');
+}
+
+td.header_table_twoTR
+{
+  table-layout: auto;
+  width: 39px;
+  height: 50px;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-image: url('themes/<?=$theme_name?>/images/HEADER/top_right_corner_10.png');
+}
+
+td.header_table_twoLSM
+{
+  table-layout: auto;
+  width: 39px;
+  height: 100%;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 39px;
+  border-spacing: 0px;
+  background-image: url('themes/<?=$theme_name?>/images/HEADER/left_side_middle_151515.png');
+}
+
+/* Used To Slide Banner Ads In TO View */
+@-webkit-keyframes pulsate {
+    0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
+    50% {opacity: 1.0;}
+    100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+}
+
+.banneradLT
+{
+  table-layout: auto;
+  width: 100%;
+  height: 165px;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+  /* filter: drop-shadow(1px 1px 6px #87774b); */
+}
+
+td.banneradLSM
+{
+  table-layout: auto;
+  width: 25%;
+  height: 79px;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+  text-align: left;
+  vertical-align: top;
+  /* -webkit-border-radius: 6px; */
+  /* -webkit-animation: pulsate 1s ease-in; */
+  /* -webkit-animation-iteration-count: 1; */
+  /* 0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;} */
+  /* 50% {opacity: 1.0;} */
+  /* 100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;} */
+
+}
+
+.banneradRT
+{
+  table-layout: auto;
+  width: 100%;
+  height: 165px;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+  /* filter: drop-shadow(1px 1px 6px #87774b); */
+}
+
+td.banneradRSM
+{
+  table-layout: auto;
+  width: 25%;
+  height: 79px;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+  text-align: right;
+  vertical-align: top;
+  -webkit-border-radius: 6px;
+  -webkit-animation: pulsate 1s ease-in;
+  -webkit-animation-iteration-count: 1; 
+  0% {-webkit-transform: scale(0.1, 0.1); opacity: 0.0;}
+  50% {opacity: 1.0;}
+  100% {-webkit-transform: scale(1.2, 1.2); opacity: 0.0;}
+}
+
+td.undermarqueeLT
+{
+  table-layout: auto; 
+  width: 25%; 
+  height: 14px;
+  border-collapse: collapse;
+  padding-top: 5px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+  text-align: left;
+  vertical-align: bottom;
+}
+
+td.abovemarqueeLT
+{
+  table-layout: auto;
+  width: 25%;
+  height: 30px;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 5px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+  text-align: center !important;
+  vertical-align: bottom;
+  font: bold 13px Georgia, sans-serif;
+  color:#b8a265; 
+}
+
+td.abovemarqueeRT
+{
+  table-layout: auto;
+  width: 25%;
+  height:60px;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 5px !important;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+  text-align: center !important;
+  vertical-align: bottom;
+  font: bold 13px Georgia, sans-serif;
+}
+
+
+td.abovemarqueeRT
+{
+  table-layout: auto;
+  width: 25%;
+  height: 30px;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+  text-align: left;
+  vertical-align: bottom;
 }
 
 /*
- * 5. Page Footer
+ * 5. Center Blocks
  *--------------------------------------------------
-*/
+ */
+td.tableCB_width_definedRT
+{
+  table-layout: auto;
+  width: 39px;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+}
+
+td.tableCB_width_definedLT
+{
+  table-layout: auto;
+  width: 39px;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+}
+
+td.tableCB_width_definedTM
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background: repeat-x;
+  text-align: center; 
+  background-image: url('themes/<?=$theme_name?>/images/CENTERBLOCKS/top_middle_piece.png');
+}
+
+td.tableCB_width_definedLSM
+{
+  table-layout: auto;
+  width: 23px;
+  height: 100%;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-image: url('themes/<?=$theme_name?>/images/CENTERBLOCKS/left_side_middle_151515.png');
+}
+
+td.tableCB_width_definedRSM
+{
+  table-layout: auto;
+  width: 23px;
+  height: 100%;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-image: url('themes/<?=$theme_name?>/images/CENTERBLOCKS/right_side_middle_151515.png');
+}
+
+td.tableCB_width_definedBM
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background: repeat-x;
+  text-align: center; 
+  background-image: url('themes/<?=$theme_name?>/images/CENTERBLOCKS/bottom_middle_piece.png');
+}
+
+
+/*
+ * 6. Side Blocks
+ *--------------------------------------------------
+ */
+
+/* Side Block */
+td.tableSB_width_definedTM
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background: repeat-x;
+  text-align: center; 
+  background-image: url('themes/<?=$theme_name?>/images/SIDEBLOCKS/top_middle_piece.png');
+}
+
+/* Side Block */
+td.tableSB_width_definedBM
+{
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background: repeat-x;
+  text-align: center; 
+  background-image: url('themes/<?=$theme_name?>/images/SIDEBLOCKS/bottom_middle_piece.png');
+}
+
+/* Side Block */
+td.tableSB_width_definedLSM
+{
+  table-layout: auto;
+  width: 23px;
+  height: 100%;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-image: url('themes/<?=$theme_name?>/images/SIDEBLOCKS/left_side_middle_151515.png');
+}
+
+/* Side Block */
+td.tableSB_width_definedRSM
+{
+  table-layout: auto;
+  width: 23px;
+  height: 100%;
+  border-collapse: collapse;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  padding-left: 0px;
+  padding-right: 0px;
+  border-spacing: 0px;
+  background-image: url('themes/<?=$theme_name?>/images/SIDEBLOCKS/right_side_middle_151515.png');
+}
+
+/* Side Block */
+.tableSB_width_defined
+{
+  table-layout: auto;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+}
+
+/* Side Block */
+td.tableSB_width_definedLT
+{
+  table-layout: auto;
+  width: 39px;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+}
+
+/* Side Block */
+td.tableSB_width_definedRT
+{
+  table-layout: auto;
+  width: 39px;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-color: transparent;
+}
+
+/*
+ * Proof Of God Style Sheet Cell Colors and Backgrounds
+ *--------------------------------------------------
+ */
+td.proof_of_god_row1 {
+	background: <?=$bgcolor2?>;
+	border: 1px solid #212f47;
+	padding: 4px;
+}
+
+td.proof_of_god_row2 {
+	border: 1px solid #212f47;
+	padding: 14px;
+}
+
+td.proof_of_god_row3 {
+	background-color: <?=$bgcolor4?>;
+	border: 1px solid <?=$bgcolor3?>;
+	border: 1px solid <?=$bgcolor3?>;
+	padding: 4px;
+}
+
+/*
+ * Nuke_Projects Style Sheet Cell Colors and Backgrounds
+ *--------------------------------------------------
+ */
+td.projects_row1 {
+	background: <?=$bgcolor2?>;
+	border: 1px solid #212f47;
+	padding: 4px;
+}
+
+td.projects_row2 {
+	border: 1px solid #212f47;
+	padding: 14px;
+}
+
+td.projects_row3 {
+	background-color: <?=$bgcolor4?>;
+	border: 1px solid <?=$bgcolor3?>;
+	border: 1px solid <?=$bgcolor3?>;
+	padding: 4px;
+}
+
+/*
+ * 7. Page Footer
+ *--------------------------------------------------
+ */
+ 
 .copyright,
 a.copyright,
 a.copyright:link,
@@ -473,7 +936,7 @@ a.copyright:hover {
 }
 
 /*
- * 6. User interaction
+ * 8. User interaction
  *--------------------------------------------------
 */
 .welcomebg {
@@ -494,7 +957,7 @@ a.copyright:hover {
 }
 
 /*
- * 7. Body Content wrappers
+ * 9. Body Content wrappers
  *--------------------------------------------------
 */
 .body-background {
@@ -506,134 +969,7 @@ a.copyright:hover {
 }
 
 /*
- * 8. Side Body Blocks
- *--------------------------------------------------
-*/
-.blocktitle {
-	font-weight: bold;
-	font-size: 12px;
-	color: <?=$bgcolor1?>;
-	letter-spacing: 0px;
-	text-decoration: none;
-	text-shadow: 0px 0px 5px #636363, 0px 0px 4px #A20303;
-	text-transform: uppercase;
-}
-.bl1 {
-	background: url('../images/blocks/Blocks_01.png') no-repeat;
-	height: 50px;
-	width: 218px;
-}
-.bl2 {
-	background: url('../images/blocks/Blocks_02.png') repeat-y;
-	height: auto;
-	width: 218px;
-}
-.bl3 {
-	background: url('../images/blocks/Blocks_03.png') no-repeat;
-	height: 20px;
-	width: 218px;
-}
-.bl5 {
-	background-color: #202020;
-}
-
-.bl5-content {
-	padding-left: 20px; 
-	padding-right: 20px;
-}
-
-
-
-/*
- * 10. News Story Content Wrapper
- *--------------------------------------------------
-*/
-
-article:first-of-type, .news-article {
-	padding-top: 10px;
-}
-
-article:last-of-type, .news-article {
-	padding-top: 0;
-	padding-bottom: 10px;
-}
-
-.storytitle-wrapper {
-	padding-top: 14px;
-}
-
-.storytitle {
-	font-weight: bold;
-	font-size: 12px;
-	color: #FACD8F;
-	letter-spacing: 0px;
-	text-decoration: none;
-}
-
-.postedoption {
-	padding-bottom:6px; 
-	float: right;
-	text-align: right;
-}
-
-.st1 {
-	background: url('../images/news/News_01.png') no-repeat;
-	height: 50px;
-	min-width: 32px;
-	width: 32px;
-}
-.st2 {
-	background: url('../images/news/News_02.png') repeat-x;
-	height: 50px;
-	width: 100%;
-}
-.st3 {
-	background: url('../images/news/News_03.png') no-repeat;
-	height: 50px;
-	min-width: 38px;
-	width: 38px;
-}
-.st4 {
-	background: url('../images/news/News_04.png') repeat-y;
-	width: 20px;
-}
-.st6 {
-	background: url('../images/news/News_06.png') repeat-y;
-	width: 20px;
-}
-.st5 {
-	background-color: #202020;
-	height: auto;
-	width: 96%;
-}
-.st7 {
-	background: url('../images/news/News_07.png') no-repeat;
-	height: 60px;
-	min-width: 32px;
-	width: 32px;
-}
-.st8 {
-	background: url('../images/news/News_08.png') repeat-x;
-	height: 60px;
-	width: 100%;
-}
-.st9 {
-	background: url('../images/news/News_09.png') no-repeat;
-	height: 60px;
-	min-width: 32px;
-	width: 32px;
-}
-.story-bd article {
-	margin: 0 16px;
-	overflow: hidden;
-	position: relative;
-	text-align: left;
-	z-index: 1;
-}
-
-
-/*
- * 11. Inputs
+ * 10. Inputs
  *--------------------------------------------------
 */
 input {
@@ -690,7 +1026,7 @@ td.extra {
 
 
 /*
- * 12. Clearfix
+ * 11. Clearfix
  *
  * The Magnificent Clearfix: Updated to prevent margin-collapsing on child elements.
  * j.mp/bestclearfix
@@ -708,7 +1044,7 @@ td.extra {
 
 
 /*
- * 13. FORUMS CSS Coding Begins Here
+ * 12. FORUMS CSS Coding Begins Here
  *--------------------------------------------------
 */
 
@@ -718,10 +1054,16 @@ td.extra {
 	border: 0 solid #000;
 }
 
-/* The Outline Round the Main Forum Tables */
+/* The Outline Round the Main Forum Tables UPDATED */
 .forumline {
-	background: <?=$bgcolor5?>;
-	border: #222 0px solid;
+  table-layout: auto;
+  width: 100%;
+  border-collapse: collapse;
+  padding: 0px;
+  border-spacing: 0px;
+  background-color: <?=$bgcolor5?>;
+  background: <?=$bgcolor5?>;
+  border: #222 0px solid;
 }
 
 /* Main table cell colours and backgrounds */
@@ -739,7 +1081,7 @@ td.row2 {
 
 td.row3 {
 	background-color: #7f6f49;
-	border: 1px solid border: 1px solid <?=$bgcolor3?>;
+	border: 1px solid <?=$bgcolor3?>;
 	border: 1px solid <?=$bgcolor3?>;
 	padding: 4px;
 }
@@ -747,7 +1089,7 @@ td.row3 {
 /* Category Row Right */
 td.rowpic {
 	background: <?=$bgcolor2?>;
-	border: <?=$bgcolor3?> 1px solid;
+	border: 1px solid <?=$bgcolor3?>;
 	padding-left: 2px;
 	padding-right: 2px;
 	padding-bottom: 2px;
@@ -986,9 +1328,15 @@ a.postlink:hover {
 /*--------------------------------------------------------------*/
 /* Everything Below this Line Needs to be Added to Other Themes */
 /*--------------------------------------------------------------*/
-input[type='submit'],input[type='checkbox'],input[type='radio']{cursor:pointer;}
+input[type='submit'],input[type='checkbox'],input[type='radio']
+{
+  cursor:pointer;
+}
+
 select{color: #fff;border:1px solid <?=$bgcolor1?>;cursor:pointer;margin:0 1px 1px;box-sizing:border-box;}
+
 input{color: #fff;border:1px solid <?=$bgcolor1?>;box-sizing:border-box;letter-spacing:1px;margin:0 1px 1px;padding:5px;box-sizing:border-box;}
+
 span.uppercase{text-transform:uppercase;}
 
 td.forums,th.forums{padding-left:5px;}
@@ -1018,7 +1366,7 @@ padding:10px 15px 7px 40px;
 width:90%;
 line-height:15px;
 color:<?=$textcolor1?>;text-shadow:0 1px 1px <?=$bgcolor4?>; 
-background-color:none;
+background-color:transparent;
 
 background-image:-webkit-radial-gradient(center,cover,rgba(166,139,67,0.7) 0%,rgba(166,139,67,0.1) 90%),-webkit-repeating-linear-gradient(top,transparent 0%,transparent 29px,rgba(239,207,173,0.7) 29px,rgba(239,207,173,0.7) 0px); 
 
@@ -1097,4 +1445,20 @@ font-style:italic;color:<?=$textcolor1?>;
 
 .forum-ranks {margin-bottom: 2px;}
 .forum-avatar {padding-bottom: 5px;}
+
+.visitors:hover
+{
+  transform: rotate(360deg);
+  transition: transform .8s ease-in-out;
+  cursor: pointer;
+}
+.visitors
+{
+  transition: all .2s ease-in-out;
+  max-width: 100vmin;
+  max-height: 70vmin;
+  box-shadow: 0 0.2rem 1rem rgba(0, 0, 0, 0.2);
+  border-radius: 100%;
+}
+
 <?

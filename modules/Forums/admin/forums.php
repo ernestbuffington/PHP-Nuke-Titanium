@@ -40,18 +40,18 @@ if (!defined('ADMIN_FILE')) {
    die ("Access Denied");
 }
 
-global $titanium_prefix, $titanium_db, $admdata;
-$titanium_module_name = basename(dirname(dirname(__FILE__)));
-if(is_mod_admin($titanium_module_name)) {
+global $prefix, $db, $admdata;
+$module_name = basename(dirname(dirname(__FILE__)));
+if(is_mod_admin($module_name)) {
 
     switch($op) {
     
         case "forums":
-        redirect_titanium("modules/$titanium_module_name/admin/index.php");
+        redirect("modules/$module_name/admin/index.php");
     }
 
 } else {
-    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$titanium_module_name\"");
+    DisplayError("<strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"");
 }
 
 ?>

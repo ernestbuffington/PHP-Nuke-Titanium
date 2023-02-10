@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+ PHP-Nuke Titanium | Nuke-Evolution Basic : Enhanced and Advanced
  =======================================================================*/
 
 /************************************************************************/
@@ -24,8 +24,8 @@ if (!defined('ADMIN_FILE')) {
     die('Access Denied');
 }
 
-$titanium_module_name = basename(dirname(dirname(__FILE__)));
-include_once(NUKE_MODULES_DIR.$titanium_module_name.'/admin/language/lang-'.$currentlang.'.php');
+$module_name = basename(dirname(dirname(__FILE__)));
+include_once(NUKE_MODULES_DIR.$module_name.'/admin/language/lang-'.$currentlang.'.php');
 
 switch($op) {
 
@@ -53,7 +53,7 @@ switch($op) {
     case "ad_plans_save":
     case "ad_plans_delete":
     case "ad_plans_status":
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/admin/index.php');
+        include(NUKE_MODULES_DIR.$module_name.'/admin/index.php');
     break;
 
 }

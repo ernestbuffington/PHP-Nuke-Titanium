@@ -19,35 +19,35 @@
  *
  ***************************************************************************/
 
-define('IN_PHPBB2', true);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', true);
 
 if( !empty($setmodules) )
 {
 	$file = basename(__FILE__);
-	$titanium_module['General']['Configuration_extend'] = $file;
+	$module['General']['Configuration_extend'] = $file;
 	return;
 }
 
 //
 // Let's set the root dir for phpBB
 //
-$phpbb2_root_path = "./../";
-require($phpbb2_root_path . 'extension.inc');
+$phpbb_root_path = "./../";
+require($phpbb_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 
 //
 // get all the mods settings
 //
 $mods = array();
-$dir = @opendir( './../../../includes/mods_settings');
-while( $file = @readdir($dir) )
+$dir = opendir( './../../../includes/mods_settings');
+while( $file = readdir($dir) )
 {
 	if( preg_match("/^mod_.*?\." . $phpEx . "$/", $file) )
 	{
 		include( './../../../includes/mods_settings/' . $file);
 	}
 }
-@closedir($dir);
+closedir($dir);
 
 // menu_id
 $menu_id = 0;
@@ -83,27 +83,41 @@ $sub_keys = array();
 $sub_sort = array();
 
 // process
-@reset($mods);
-while ( list($menu_name, $menu) = each($mods) )
+reset($mods);
+//while ( list($menu_name, $menu) = each($mods) ) 
+foreach ($mods as $menu_name => $menu)
 {
+
 	// check if there is some config fields in the mods under this menu
 	$found = false;
 
 	// menu
-	@reset($menu['data']);
-	while ( ( list($mod_name, $mod) = @each($menu['data']) ) && !$found )
+	reset($menu['data']);
+	
+	//while ( ( list($mod_name, $mod) = each($menu['data']) ) && !$found )
+	foreach ($menu['data'] as $mod_name => $mod)
 	{
+		if($found == true)
+		continue;
 		// sub menu
-		@reset($mod['data']);
-		while ( ( list($sub_name, $sub) = @each($mod['data']) ) && !$found )
+		reset($mod['data']);
+		//while ( ( list($sub_name, $sub) = each($mod['data']) ) && !$found )
+		foreach ($mod['data'] as $sub_name => $sub)
 		{
+		    if($found == true)
+		    continue;
 			// fields
-			@reset($sub['data']);
-			while ( ( list($field_name, $field) = @each($sub['data']) ) && !$found )
+			reset($sub['data']);
+			//while ( ( list($field_name, $field) = each($sub['data']) ) && !$found )
+			foreach ($sub['data'] as $field_name => $field)
 			{
-				if ( !isset($field['user_only']) || !$field['user_only'] )
+
+		       if($found == true)
+		        continue;
+
+				if(!isset($field['user_only']) || !$field['user_only'])
 				{
-					$found=true;
+					$found = true;
 					break;
 				}
 			}
@@ -121,24 +135,28 @@ while ( list($menu_name, $menu) = each($mods) )
 		$mod_keys[$i] = array();
 		$mod_sort[$i] = array();
 
-		@reset($menu['data']);
-		while ( list($mod_name, $mod) = @each($menu['data']) )
+		reset($menu['data']);
+		//while ( list($mod_name, $mod) = each($menu['data']) )
+		foreach ($menu['data'] as $mod_name => $mod)
 		{
 			// check if there is some config fields
 			$found = false;
-			@reset($mod['data']);
-			while ( list($sub_name, $sub) = @each($mod['data']) )
+			reset($mod['data']);
+			//while ( list($sub_name, $sub) = each($mod['data']) )
+			foreach ($mod['data'] as $sub_name => $sub)
 			{
-				@reset($sub['data']);
-				while ( list($field_name, $field) = @each($sub['data']) )
+				reset($sub['data']);
+				//while ( list($field_name, $field) = each($sub['data']) )
+				foreach ($sub['data'] as $field_name => $field)
 				{
-					if ( !isset($field['user_only']) || !$field['user_only'] )
+					if(!isset($field['user_only']) || !$field['user_only'])
 					{
-						$found=true;
+						$found = true;
 						break;
 					}
 				}
 			}
+			
 			if ($found)
 			{
 				$j = count($mod_keys[$i]);
@@ -150,19 +168,21 @@ while ( list($menu_name, $menu) = each($mods) )
 				$sub_sort[$i][$j] = array();
 
 				// sub names
-				@reset($mod['data']);
-				while ( list($sub_name, $sub) = @each($mod['data']) )
+				reset($mod['data']);
+				//while ( list($sub_name, $sub) = each($mod['data']) )
+				foreach ($mod['data'] as $sub_name => $sub)
 				{
 					if ( !empty($sub_name) )
 					{
 						// check if there is some config fields in this level
 						$found = false;
-						@reset($sub['data']);
-						while ( list($field_name, $field) = @each($sub['data']) )
+						reset($sub['data']);
+						//while ( list($field_name, $field) = each($sub['data']) )
+						foreach ($sub['data'] as $field_name => $field)
 						{
 							if ( !isset($field['user_only']) || !$field['user_only'] )
 							{
-								$found=true;
+								$found = true;
 								break;
 							}
 						}
@@ -173,13 +193,13 @@ while ( list($menu_name, $menu) = each($mods) )
 						}
 					}
 				}
-				@array_multisort($sub_sort[$i][$j], $sub_keys[$i][$j]);
+				array_multisort($sub_sort[$i][$j], $sub_keys[$i][$j]);
 			}
 		}
-		@array_multisort($mod_sort[$i], $mod_keys[$i], $sub_sort[$i], $sub_keys[$i]);
+		array_multisort($mod_sort[$i], $mod_keys[$i], $sub_sort[$i], $sub_keys[$i]);
 	}
 }
-@array_multisort($menu_sort, $menu_keys, $mod_sort, $mod_keys, $sub_sort, $sub_keys);
+array_multisort($menu_sort, $menu_keys, $mod_sort, $mod_keys, $sub_sort, $sub_keys);
 
 // fix menu id
 if ( $menu_id > count($menu_keys) )
@@ -206,6 +226,9 @@ $menu_name = $menu_keys[$menu_id];
 $mod_name = $mod_keys[$menu_id][$mod_id];
 
 // sub name
+if(!isset($sub_keys[$menu_id][$mod_id][$sub_id]))
+$sub_keys[$menu_id][$mod_id][$sub_id] = '';
+
 $sub_name = $sub_keys[$menu_id][$mod_id][$sub_id];
 
 // buttons
@@ -213,9 +236,9 @@ $submit = isset($HTTP_POST_VARS['submit']);
 
 // get the real value of board_config
 $sql = "SELECT * FROM " . CONFIG_TABLE;
-if ( !$result = $titanium_db->sql_query($sql) ) message_die(CRITICAL_ERROR, 'Could not query config information', '', __LINE__, __FILE__, $sql);
+if ( !$result = $db->sql_query($sql) ) message_die(CRITICAL_ERROR, 'Could not query config information', '', __LINE__, __FILE__, $sql);
 $config = array();
-while ($row = $titanium_db->sql_fetchrow($result))
+while ($row = $db->sql_fetchrow($result))
 {
 	$config[ $row['config_name'] ] = $row['config_value'];
 }
@@ -228,8 +251,9 @@ if ($submit)
 	$error_msg = '';
 
 	// format and verify data
-	@reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-	while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']) )
+	reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
+	//while ( list($field_name, $field) = each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']) )
+	foreach ($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'] as $field_name => $field)
 	{
 		if (isset($HTTP_POST_VARS[$field_name]))
 		{
@@ -242,7 +266,7 @@ if ($submit)
 					{
 						$error = true;
 						$msg = mods_settings_get_lang( $mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'][$field_name]['lang_key'] );
-						$error_msg = (empty($error_msg) ? '' : '<br />') . $titanium_lang['Error'] . ':&nbsp;' . $msg;
+						$error_msg = (empty($error_msg) ? '' : '<br />') . $lang['Error'] . ':&nbsp;' . $msg;
 					}
 					break;
 				case 'TINYINT':
@@ -274,15 +298,16 @@ if ($submit)
 			}
 			if ($error)
 			{
-				$message = $error_msg . '<br /><br />' . sprintf($titanium_lang['Click_return_config'], '<a href="' . append_titanium_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($titanium_lang['Click_return_admin_index'], '<a href="' . append_titanium_sid("./index.$phpEx?pane=right") . '">', '</a>');
+				$message = $error_msg . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("./index.$phpEx?pane=right") . '">', '</a>');
 				message_die(GENERAL_MESSAGE, $message);
 			}
 		}
 	}
 
 	// save data
-	@reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-	while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']) )
+	reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
+	//while ( list($field_name, $field) = each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']) )
+	foreach ($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'] as $field_name => $field)
 	{
 		if (isset($$field_name))
 		{
@@ -290,7 +315,7 @@ if ($submit)
 			$sql = "UPDATE " . CONFIG_TABLE . " 
 					SET config_value = '" . $$field_name . "'
 					WHERE config_name = '" . $field_name . "'";
-			if ( !$titanium_db->sql_query($sql) )
+			if ( !$db->sql_query($sql) )
 			{
 				message_die(GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
 			}
@@ -301,7 +326,7 @@ if ($submit)
 			$sql = "UPDATE " . CONFIG_TABLE . " 
 					SET config_value = '" . intval($HTTP_POST_VARS[$field_name . '_over']) . "'
 					WHERE config_name = '$field_name" . "_over'";
-			if ( !$titanium_db->sql_query($sql) )
+			if ( !$db->sql_query($sql) )
 			{
 				message_die(GENERAL_ERROR, 'Failed to update general configuration for ' . $field_name, '', __LINE__, __FILE__, $sql);
 			}
@@ -309,23 +334,23 @@ if ($submit)
 	}
 
 	// send an update message
-	$message = $titanium_lang['Config_updated'] . '<br /><br />' . sprintf($titanium_lang['Click_return_config'], '<a href="' . append_titanium_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($titanium_lang['Click_return_admin_index'], '<a href="' . append_titanium_sid("./index.$phpEx?pane=right") . '">', '</a>');
+	$message = $lang['Config_updated'] . '<br /><br />' . sprintf($lang['Click_return_config'], '<a href="' . append_sid("./admin_board_extend.$phpEx?menu=$menu_id&mod=$mod_id&msub=$sub_id") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("./index.$phpEx?pane=right") . '">', '</a>');
 	message_die(GENERAL_MESSAGE, $message);
 }
 
 
 // template
-$phpbb2_template->set_filenames(array(
+$template->set_filenames(array(
 	'body' => 'admin/board_config_extend_body.tpl')
 );
 
 // header
-$phpbb2_template->assign_vars(array(
-	'L_TITLE'			=> $titanium_lang['Configuration_extend'],
-	'L_TITLE_EXPLAIN'	=> $titanium_lang['Config_explain'],
+$template->assign_vars(array(
+	'L_TITLE'			=> $lang['Configuration_extend'],
+	'L_TITLE_EXPLAIN'	=> $lang['Config_explain'],
 	'L_MOD_NAME'		=> mods_settings_get_lang($menu_name) . ' - ' . mods_settings_get_lang($mod_name) . ( !empty($sub_name) ? ' - ' . mods_settings_get_lang($sub_name) : '' ),
-	'L_SUBMIT'			=> $titanium_lang['Submit'],
-	'L_RESET'			=> $titanium_lang['Reset'],
+	'L_SUBMIT'			=> $lang['Submit'],
+	'L_RESET'			=> $lang['Reset'],
 	)
 );
 
@@ -341,9 +366,9 @@ for ($i = 0; $i < count($menu_keys); $i++)
 			$l_menu = $sub_keys[$i][0][0];
 		}
 	}
-	$phpbb2_template->assign_block_vars('menu', array(
+	$template->assign_block_vars('menu', array(
 		'CLASS'		=> ($menu_id == $i) ? ( (count($mod_keys[$i]) > 1) ? 'row3' : 'row1' ) : 'row2',
-		'U_MENU'	=> append_titanium_sid("./admin_board_extend.$phpEx?menu=$i"),
+		'U_MENU'	=> append_sid("./admin_board_extend.$phpEx?menu=$i"),
 		'L_MENU'	=> sprintf( ( ($menu_id == $i) ? '<b>%s</b>' : '%s' ), mods_settings_get_lang($l_menu) ),
 		)
 	);
@@ -351,12 +376,12 @@ for ($i = 0; $i < count($menu_keys); $i++)
 	{
 		if (count($mod_keys[$i]) > 1 )
 		{
-			$phpbb2_template->assign_block_vars('menu.title_open', array());
+			$template->assign_block_vars('menu.title_open', array());
 		}
 	}
 	else
 	{
-		$phpbb2_template->assign_block_vars('menu.title_close', array() );
+		$template->assign_block_vars('menu.title_close', array() );
 	}
 	if ($menu_id == $i)
 	{
@@ -367,10 +392,10 @@ for ($i = 0; $i < count($menu_keys); $i++)
 			{
 				$l_mod = $sub_keys[$i][$j][0];
 			}
-			$phpbb2_template->assign_block_vars('menu.mod', array(
+			$template->assign_block_vars('menu.mod', array(
 				'CLASS'	=> ( ($menu_id == $i) && ($mod_id == $j) ) ? 'row1' : 'row2',
 				'ALIGN'	=> ( ($menu_id == $i) && ($mod_id == $j) && (count($sub_keys[$i][$j]) > 1) ) ? 'left' : 'center',
-				'U_MOD'	=> append_titanium_sid("./admin_board_extend.$phpEx?menu=$i&mod=$j"),
+				'U_MOD'	=> append_sid("./admin_board_extend.$phpEx?menu=$i&mod=$j"),
 				'L_MOD'	=> sprintf( ( ( ($menu_id == $i) && ($mod_id == $j) ) ? '<b>%s</b>' : '%s' ), mods_settings_get_lang($l_mod) ),
 				)
 			);
@@ -378,12 +403,12 @@ for ($i = 0; $i < count($menu_keys); $i++)
 			{
 				if ( count($sub_keys[$i][$j]) > 1 )
 				{
-					$phpbb2_template->assign_block_vars('menu.mod.sub', array());
+					$template->assign_block_vars('menu.mod.sub', array());
 					for ($k = 0; $k < count($sub_keys[$i][$j]); $k++)
 					{
-						$phpbb2_template->assign_block_vars('menu.mod.sub.row', array(
+						$template->assign_block_vars('menu.mod.sub.row', array(
 							'CLASS'	=> ( ($menu_id == $i) && ($mod_id == $j) && ($sub_id == $k) ) ? 'row1' : 'row1',
-							'U_MOD' => append_titanium_sid("./admin_board_extend.$phpEx?menu=$i&mod=$j&msub=$k"),
+							'U_MOD' => append_sid("./admin_board_extend.$phpEx?menu=$i&mod=$j&msub=$k"),
 							'L_MOD'	=> sprintf( (($sub_id == $k) ? '<b>%s</b>' : '%s'), mods_settings_get_lang($sub_keys[$i][$j][$k]) ),
 							)
 						);
@@ -395,16 +420,18 @@ for ($i = 0; $i < count($menu_keys); $i++)
 }
 
 // send items
-@reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
-while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']) )
+reset($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']);
+//while ( list($field_name, $field) = each($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data']) )
+foreach ($mods[$menu_name]['data'][$mod_name]['data'][$sub_name]['data'] as $field_name => $field)
 {
 	// get the field input statement
 	$input = '';
 	switch ($field['type'])
 	{
 		case 'LIST_RADIO':
-			@reset($field['values']);
-			while ( list($key, $val) = @each($field['values']) )
+			reset($field['values']);
+			//while ( list($key, $val) = each($field['values']) )
+			foreach ($field['values'] as $key => $val)
 			{
 				$selected = ($config[$field_name] == $val) ? ' checked="checked"' : '';
 				$l_key = mods_settings_get_lang($key);
@@ -412,8 +439,9 @@ while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['
 			}
 			break;
 		case 'LIST_DROP':
-			@reset($field['values']);
-			while ( list($key, $val) = @each($field['values']) )
+			reset($field['values']);
+			//while ( list($key, $val) = each($field['values']) )
+			foreach ($field['values'] as $key => $val)
 			{
 				$selected = ($config[$field_name] == $val) ? ' selected="selected"' : '';
 				$l_key = mods_settings_get_lang($key);
@@ -455,18 +483,19 @@ while ( list($field_name, $field) = @each($mods[$menu_name]['data'][$mod_name]['
 	if ( !empty($input) && !empty($field['user']) && isset($userdata[ $field['user'] ]) )
 	{
 		$override = '';
-		@reset($list_yes_no);
-		while ( list($key, $val) = @each($list_yes_no) )
+		reset($list_yes_no);
+		//while ( list($key, $val) = each($list_yes_no) )
+		foreach ($list_yes_no as $key => $val)
 		{
 			$selected = ($config[$field_name . '_over'] == $val) ? ' checked="checked"' : '';
 			$l_key = mods_settings_get_lang($key);
 			$override .= '<input type="radio" name="' . $field_name . '_over' . '" value="' . $val . '"' . $selected . ' />' . $l_key . '&nbsp;&nbsp;';
 		}
-		$override = '<hr />' . $titanium_lang['Override_user_choices'] . ':&nbsp;'. $override;
+		$override = '<hr />' . $lang['Override_user_choices'] . ':&nbsp;'. $override;
 	}
 
 	// dump to template
-	$phpbb2_template->assign_block_vars('field', array(
+	$template->assign_block_vars('field', array(
 		'L_NAME'	=> mods_settings_get_lang($field['lang_key']),
 		'L_EXPLAIN'	=> !empty($field['explain']) ? '<br />' . mods_settings_get_lang($field['explain']) : '',
 		'INPUT'		=> $input,
@@ -480,14 +509,14 @@ $s_hidden_fields = '';
 $s_hidden_fields .= '<input type="hidden" name="menu_id" value="' . $menu_id . '" />';
 $s_hidden_fields .= '<input type="hidden" name="mod_id" value="' . $mod_id . '" />';
 $s_hidden_fields .= '<input type="hidden" name="sub_id" value="' . $sub_id . '" />';
-$phpbb2_template->assign_vars(array(
-	'S_ACTION'			=> append_titanium_sid("./admin_board_extend.$phpEx"),
+$template->assign_vars(array(
+	'S_ACTION'			=> append_sid("./admin_board_extend.$phpEx"),
 	'S_HIDDEN_FIELDS'	=> $s_hidden_fields,
 	)
 );
 
 // footer
-$phpbb2_template->pparse("body");
+$template->pparse("body");
 include('./page_footer_admin.'.$phpEx);
 
 ?>

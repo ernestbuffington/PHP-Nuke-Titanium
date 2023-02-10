@@ -3,7 +3,6 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-
 /***************************************************************************
  *                                common.php
  *                            -------------------
@@ -31,11 +30,11 @@
       Advanced Time Management                 v2.2.0       07/26/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB2'))
+if (!defined('IN_PHPBB'))
 {
-    die('ACCESS DENIED');
+    die('Hacking attempt');
 }
-
+global $board_config, $userinfo;
 // based on http://forum.mamboserver.com/showthread.php?t=26406 article
 $url_denied = array(
 	'/bin', '/usr', '/etc', '/boot', '/dev', '/perl', '/initrd', '/lost+found', '/mnt', '/proc', '/root', '/sbin', '/cgi-bin', '/tmp', '/var',
@@ -72,13 +71,13 @@ unset($_env);
 // Protect against GLOBALS tricks
 if (isset($HTTP_POST_VARS['GLOBALS']) || isset($HTTP_POST_FILES['GLOBALS']) || isset($HTTP_GET_VARS['GLOBALS']) || isset($HTTP_COOKIE_VARS['GLOBALS']))
 {
-    die("ACCESS DENIED");
+    die("Hacking attempt");
 }
 
 // Protect against HTTP_SESSION_VARS tricks
 if (isset($HTTP_SESSION_VARS) && !is_array($HTTP_SESSION_VARS))
 {
-    die("ACCESS DENIED");
+    die("Hacking attempt");
 }
 
 if (@ini_get('register_globals') == '1' || strtolower(@ini_get('register_globals')) == 'on')
@@ -196,13 +195,13 @@ if ($_POST != $HTTP_POST_VARS) {
 $userdata = array();
 $theme = array();
 $images = array();
-$titanium_lang = array();
-$titanium_nav_links = array();
-$titanium_dss_seeded = false;
+$lang = array();
+$nav_links = array();
+$dss_seeded = false;
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-$titanium_pc_dateTime = array();
+$pc_dateTime = array();
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
@@ -222,7 +221,7 @@ include_once(NUKE_INCLUDE_DIR.'functions.php');
 include_once(NUKE_DB_DIR.'db.php');
 
 // We do not need this any longer, unset for safety purposes
-unset($titanium_dbpasswd);
+unset($dbpasswd);
 
 //
 // Obtain and encode users IP
@@ -232,9 +231,9 @@ unset($titanium_dbpasswd);
 // even bother complaining ... go scream and shout at the idiots out there who feel
 // "clever" is doing harm rather than good ... karma is a great thing ... :)
 // Quake: sorry fella, we are using a better ip tracker :)
-//$titanium_client_ip = ( !empty($HTTP_SERVER_VARS['REMOTE_ADDR']) ) ? $HTTP_SERVER_VARS['REMOTE_ADDR'] : ( ( !empty($HTTP_ENV_VARS['REMOTE_ADDR']) ) ? $HTTP_ENV_VARS['REMOTE_ADDR'] : getenv('REMOTE_ADDR') );
-$titanium_client_ip = $identify->get_ip();
-$titanium_user_ip = encode_ip($titanium_client_ip);
+//$client_ip = ( !empty($HTTP_SERVER_VARS['REMOTE_ADDR']) ) ? $HTTP_SERVER_VARS['REMOTE_ADDR'] : ( ( !empty($HTTP_ENV_VARS['REMOTE_ADDR']) ) ? $HTTP_ENV_VARS['REMOTE_ADDR'] : getenv('REMOTE_ADDR') );
+$client_ip = $identify->get_ip();
+$user_ip = encode_ip($client_ip);
 
 //
 // Setup forum wide options, if this fails
@@ -245,7 +244,7 @@ $titanium_user_ip = encode_ip($titanium_client_ip);
 /*****[BEGIN]******************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/
-include($phpbb2_root_path . 'attach_mod/attachment_mod.php');
+include($phpbb_root_path . 'attach_mod/attachment_mod.php');
 /*****[END]********************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/
@@ -257,20 +256,20 @@ include($phpbb2_root_path . 'attach_mod/attachment_mod.php');
  [ Mod:     Disable Board Message              v1.0.0 ]
  [ Mod:     Admin view board while disabled    v1.0.0 ]
  ******************************************************/
-if( $phpbb2_board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN") && ($phpbb2_board_config['board_disable_adminview'] && $userinfo['user_level'] != 2) )
+if( $board_config['board_disable'] && !defined("IN_ADMIN") && !defined("IN_LOGIN") && ($board_config['board_disable_adminview'] && $userinfo['user_level'] != 2) )
 {
-    if ( $phpbb2_board_config['board_disable_msg'] != "" )
+    if ( $board_config['board_disable_msg'] != "" )
     {
-        message_die(GENERAL_MESSAGE, $phpbb2_board_config['board_disable_msg'], 'Information');
+        message_die(GENERAL_MESSAGE, $board_config['board_disable_msg'], 'Information');
     }
     else
     {
         message_die(GENERAL_MESSAGE, 'Board_disable', 'Information');
     }
-} 
+}
 /*****[END]********************************************
  [ Mod:     Disable Board Message              v1.0.0 ]
  [ Mod:     Admin view board while disabled    v1.0.0 ]
  ******************************************************/
-
 ?>
+

@@ -1,7 +1,34 @@
 <?php
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
+ =======================================================================*/
+
+/*======================================================================= 
+  PHP-NUKE: Shout Box
+  ==========================
+
+ Copyright (c) 2003-2005 by Aric Bolf (SuperCat)
+ http://www.OurScripts.net
+
+ Copyright (c) 2002 by Quiecom
+ http://www.Quiecom.com
+
+ This program is free software. You can redistribute it and/or modify
+ it under the terms of the GNU General Public License as published by
+ the Free Software Foundation
+ =======================================================================*/
+
+/*****[CHANGES]**********************************************************
+-=[Base]=-
+      Nuke Patched                             v3.1.0       08/10/2005
+      NukeSentinel                             v2.4.2       10/29/2005
+-=[Mod]=-
+      Advanced Username Color                  v1.0.5       10/10/2005
+ ************************************************************************/
+
 function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid) 
 {
-    global $currentlang, $cache, $top_content, $mid_content, $bottom_content, $ShoutMarqueeheight, $nsnst_const, $userinfo, $titanium_prefix, $titanium_db, $top_out, $board_config;
+    global $currentlang, $cache, $top_content, $mid_content, $bottom_content, $ShoutMarqueeheight, $nsnst_const, $userinfo, $prefix, $db, $top_out, $board_config;
 	
     if (!empty($currentlang)) 
     include_once(NUKE_MODULES_DIR.'Shout_Box/lang-block/lang-'.$currentlang.'.php');
@@ -12,45 +39,57 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
     $BannedShouter = '';
 
     $is_user = is_user();
-    $titanium_username = $userinfo['username'];
+    $username = $userinfo['username'];
 
-    if ((($conf = $cache->load('conf', 'shoutbox')) == false) || empty($conf)) 
+    if (!($conf = $cache->load('conf', 'titanium_shoutbox')))
 	{
-        $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_conf`";
-        $result = $titanium_db->sql_query($sql);
-        $conf = $titanium_db->sql_fetchrow($result);
-        $cache->save('conf', 'shoutbox', $conf);
-        $titanium_db->sql_freeresult($result);
+        $sql = "SELECT * FROM `".$prefix."_shoutbox_conf`";
+        $result = $db->sql_query($sql);
+        $conf = $db->sql_fetchrow($result);
+        $cache->save('conf', 'titanium_shoutbox', $conf);
+        $db->sql_freeresult($result);
     }
 
-    if ((($nameblock = $cache->load('nameblock', 'shoutbox')) == false) || empty($nameblock)) 
+    if (!($nameblock = $cache->load('nameblock', 'titanium_shoutbox'))) 
 	{
-        $sql = "SELECT `name` FROM ".$titanium_prefix."_shoutbox_nameblock";
-        $nameresult = $titanium_db->sql_query($sql);
-        while ($row = $titanium_db->sql_fetchrow($nameresult)) {
+        $sql = "SELECT `name` FROM ".$prefix."_shoutbox_nameblock";
+        $nameresult = $db->sql_query($sql);
+        while ($row = $db->sql_fetchrow($nameresult)) {
             $nameblock[] = $row;
         }
-        $cache->save('nameblock', 'shoutbox', $nameblock);
-        $titanium_db->sql_freeresult($nameresult);
+        $cache->save('nameblock', 'titanium_shoutbox', $nameblock);
+        $db->sql_freeresult($nameresult);
     }
 
-    if ((($censor = $cache->load('censor', 'shoutbox')) == false) || empty($censor)) 
+    if (!($censor = $cache->load('censor', 'titanium_shoutbox'))) 
 	{
-        $sql = "SELECT * FROM ".$titanium_prefix."_shoutbox_censor";
-        $result = $titanium_db->sql_query($sql);
-        while ($row = $titanium_db->sql_fetchrow($result)) {
-            $censor[] = $row;
+        $sql = "SELECT * FROM ".$prefix."_shoutbox_censor";
+        $result = $db->sql_query($sql);
+        
+		$censor = [];
+		$row = [];
+		
+		while ($row = $db->sql_fetchrow($result)) {
+        
+		if(!isset($row))
+			$censor[] = $row;
         }
-        $cache->save('censor', 'shoutbox', $censor);
-        $titanium_db->sql_freeresult($result);
+        $cache->save('censor', 'titanium_shoutbox', $censor);
+        $db->sql_freeresult($result);
     }
 
     // Check if block is in center position
-    $sql = "SELECT `bposition` FROM `".$titanium_prefix."_blocks` WHERE `blockfile`='block-Shout_Box.php'";
-    $SBpos = $titanium_db->sql_query($sql);
-    $SBpos = $titanium_db->sql_fetchrow($SBpos);
-    
-	if ($SBpos['bposition'] == 'c' || $SBpos['bposition'] == 'd') 
+    $sql = "SELECT `bposition` FROM `".$prefix."_blocks` WHERE `blockfile`='block-Shout_Box.php'";
+
+	$SBpos = [];
+
+    $SBpos = $db->sql_query($sql);
+    $SBpos = $db->sql_fetchrow($SBpos);
+	
+	if(!isset($SBpos['bposition']))
+	$SBpos['bposition'] = '';
+	
+	if (!empty($SBpos['bposition']) && $SBpos['bposition'] == 'c' || $SBpos['bposition'] == 'd') 
 	{
         $SBpos = 'center';
         $SBborder = 1;
@@ -60,7 +99,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
         $SBpos = 'side';
         $SBborder = 0;
     }
-    $titanium_db->sql_freeresult($SBpos);
+    $db->sql_freeresult($SBpos);
 
     if (isset($nsnst_const['remote_ip']) && !empty($nsnst_const['remote_ip'])) 
 	{
@@ -74,10 +113,10 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
     //do IP test then ban if on list
     if($conf['ipblock']== 'yes') 
 	{
-        $sql = "SELECT `name` FROM `".$titanium_prefix."_shoutbox_ipblock`";
-        $ipresult = $titanium_db->sql_query($sql);
+        $sql = "SELECT `name` FROM `".$prefix."_shoutbox_ipblock`";
+        $ipresult = $db->sql_query($sql);
     
-	    while ($badips = $titanium_db->sql_fetchrow($ipresult)) 
+	    while ($badips = $db->sql_fetchrow($ipresult)) 
 		{
             if (preg_match("/\[\*\]/i", $badips['name'])) 
 			{ // Allow for Subnet bans like 123.456.*
@@ -108,7 +147,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
                 }
             }
         }
-        $titanium_db->sql_freeresult($ipresult);
+        $db->sql_freeresult($ipresult);
     }
     //do name test then ban if on list (only applies to registered users)
     if ($conf['nameblock']== 'yes'  && $BannedShouter != "yes") 
@@ -117,7 +156,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 		{
             foreach ($nameblock as $name) 
 			{
-                if ($titanium_username == $name['name']) 
+                if ($username == $name['name']) 
 				{
                     $BannedShouter = "yes";
                     break;
@@ -133,42 +172,42 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			// start processing shout
 			if (isset($shoutuid) && !empty($shoutuid)) 
 			{
-				$titanium_username = $shoutuid;
+				$username = $shoutuid;
 			}
 			
 			// remove whitespace off ends of nickname
-			$titanium_username = trim($titanium_username);
+			$username = trim($username);
 			
 			if($conf['anonymouspost']== 'yes') 
 			{
-				$unum = strlen($titanium_username);
+				$unum = strlen($username);
 			
 				if ($unum < 2) 
 				{ 
 				  $ShoutError = _NICKTOOSHORT; 
 				}
 				
-				if (!$titanium_username || $titanium_username == _NAME) 
+				if (!$username || $username == _NAME) 
 				{ 
 				   $ShoutError = _NONICK; 
 				}
 				
-				if (preg_match("/\.xxx/i", $titanium_username) && $conf['blockxxx']== 'yes') 
+				if (preg_match("/\.xxx/i", $username) && $conf['blockxxx']== 'yes') 
 				{ 
-				  $titanium_username = "Anonymous"; 
+				  $username = "Anonymous"; 
 				}
 				
-				if (preg_match("#javascript:(.*)#i", $titanium_username)) 
+				if (preg_match("#javascript:(.*)#i", $username)) 
 				{ 
-				   $titanium_username = "Anonymous"; 
+				   $username = "Anonymous"; 
 				}
-				$titanium_username = htmlspecialchars($titanium_username, ENT_QUOTES);
-				$titanium_username = str_replace("&amp;amp;", "&amp;",$titanium_username);
+				$username = htmlspecialchars($username, ENT_QUOTES);
+				$username = str_replace("&amp;amp;", "&amp;",$username);
 			}
 			
-			if (!$is_user && !empty($titanium_username) && $titanium_username != "Anonymous") 
+			if (!$is_user && !empty($username) && $username != "Anonymous") 
 			{
-				$titanium_username = str_replace(" ", "_",$titanium_username);
+				$username = str_replace(" ", "_",$username);
 			}
 
 			$ShoutComment = trim($ShoutComment); // remove whitespace off ends of shout
@@ -351,9 +390,9 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			//Smilies from database
 			$ShoutArrayReplace = explode(" ",$ShoutComment);
 			$ShoutArrayScan = $ShoutArrayReplace;
-			$sql = "SELECT `text`, `image` FROM `".$titanium_prefix."_shoutbox_emoticons`";
-			$eresult = $titanium_db->sql_query($sql);
-			while ($emoticons = $titanium_db->sql_fetchrow($eresult)) {
+			$sql = "SELECT `text`, `image` FROM `".$prefix."_shoutbox_emoticons`";
+			$eresult = $db->sql_query($sql);
+			while ($emoticons = $db->sql_fetchrow($eresult)) {
 				$i = 0;
 				if (is_array($ShoutArrayScan)) {
 					foreach($ShoutArrayScan as $ShoutPart) {
@@ -362,14 +401,14 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 					}
 				}
 			}
-			$titanium_db->sql_freeresult($eresult);
+			$db->sql_freeresult($eresult);
 			$ShoutComment = implode(" ",$ShoutArrayReplace);
 
 			//do name test then error if on list
 			if($conf['nameblock']== 'yes') {
 				if (is_array($nameblock)) {
 					foreach ($nameblock as $name) {
-						if($titanium_username == $name['name']) {
+						if($username == $name['name']) {
 							$ShoutError = _BANNEDNICK;
 						}
 					}
@@ -377,26 +416,26 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			}
 
 			// check for anonymous users cloning/ghosting registered users' nicknames
-			if (!is_user() && !empty($titanium_username) && $titanium_username != "Anonymous") {
-				$sql = "SELECT `username` FROM `".$titanium_prefix."_users` WHERE `username`='$titanium_username'";
-				$nameresult = $titanium_db->sql_query($sql);
-				if ($row = $titanium_db->sql_fetchrow($nameresult)) {
+			if (!is_user() && !empty($username) && $username != "Anonymous") {
+				$sql = "SELECT `username` FROM `".$prefix."_users` WHERE `username`='$username'";
+				$nameresult = $db->sql_query($sql);
+				if ($row = $db->sql_fetchrow($nameresult)) {
 					$ShoutError = _NOCLONINGNICKS;
 				}
-				$titanium_db->sql_freeresult($nameresult);
+				$db->sql_freeresult($nameresult);
 			}
 
 			//look for bad words, then censor them.
 			if($conf['censor']== 'yes') {
 				// start Anonymous nickname censor check here. If bad, replace bad nick with 'Anonymous'
-				if (!$is_user && !empty($titanium_username) && $titanium_username != "Anonymous") {
+				if (!$is_user && !empty($username) && $username != "Anonymous") {
 					if (is_array($censor)) {
 						foreach ($censor as $word) {
-							if ($titanium_username != 'Anonymous') {
+							if ($username != 'Anonymous') {
 								$one = strtolower($word['text']);
-								$titanium_usernameL = strtolower($titanium_username);
-								if (stristr($titanium_usernameL, $one) !== false) {
-									$titanium_username = "Anonymous";
+								$usernameL = strtolower($username);
+								if (stristr($usernameL, $one) !== false) {
+									$username = "Anonymous";
 								}
 							}
 						}
@@ -423,39 +462,39 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			}
 
 			// duplicate posting checker. stops repeated spam attacks
-			$sql = "SELECT `comment` FROM `".$titanium_prefix."_shoutbox_shouts` ORDER BY `id` DESC LIMIT 5";
-			$result = $titanium_db->sql_query($sql);
-			while ($row = $titanium_db->sql_fetchrow($result)) {
+			$sql = "SELECT `comment` FROM `".$prefix."_shoutbox_shouts` ORDER BY `id` DESC LIMIT 5";
+			$result = $db->sql_query($sql);
+			while ($row = $db->sql_fetchrow($result)) {
 				if ($row['comment'] == $ShoutComment) {
 					$ShoutError = _DUPLICATESHOUT;
 				}
 			}
-			$titanium_db->sql_freeresult($result);
+			$db->sql_freeresult($result);
 
-			if ($conf['anonymouspost'] == 'no' && $titanium_username == 'Anonymous') {
+			if ($conf['anonymouspost'] == 'no' && $username == 'Anonymous') {
 					$ShoutError = _ONLYREGISTERED2;
 			}
 
 			if (!$ShoutError) {
 
 				if ($is_user) {
-					$day = EvoDate('d/m/Y', time(), $userinfo['user_timezone']);
-					$time = EvoDate('H:i', time(), $userinfo['user_timezone']);
+					$day = FormatDate('d/m/Y', time(), $userinfo['user_timezone']);
+					$time = FormatDate('H:i', time(), $userinfo['user_timezone']);
 				} else {
-					$day = EvoDate('d/m/Y', time(), $board_config['board_timezone']);
-					$time = EvoDate('H:i', time(), $board_config['board_timezone']);
+					$day = FormatDate('d/m/Y', time(), $board_config['board_timezone']);
+					$time = FormatDate('H:i', time(), $board_config['board_timezone']);
 				}
 
 				$currentTime = time();
 
-				$sql = "INSERT INTO ".$titanium_prefix."_shoutbox_shouts (id,name,comment,date,time,ip,timestamp) VALUES ('0','$titanium_username','$ShoutComment','$day','$time','$uip','$currentTime')";
-				$titanium_db->sql_query($sql);
+				$sql = "INSERT INTO ".$prefix."_shoutbox_shouts (id,name,comment,date,time,ip,timestamp) VALUES ('0','$username','$ShoutComment','$day','$time','$uip','$currentTime')";
+				$db->sql_query($sql);
 
 				$PreviousShoutComment = '';
 				$PreviousComment = '';
 			} else {
-				if ($titanium_username != _NAME) {
-					$PreviousUsername = $titanium_username;
+				if ($username != _NAME) {
+					$PreviousUsername = $username;
 				}
 				if ($PreviousShoutComment != _SB_MESSAGE) {
 					$PreviousComment = $PreviousShoutComment;
@@ -466,13 +505,13 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 
         //Display Content From here on down
 
-        if (!is_user() && !empty($titanium_username) && $titanium_username != "Anonymous") { $titanium_username = "Anonymous"; }
+        if (!is_user() && !empty($username) && $username != "Anonymous") { $username = "Anonymous"; }
 
         $ThemeSel = get_theme();
-        $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_theme_images` WHERE `themeName`='$ThemeSel'";
-        $result = $titanium_db->sql_query($sql);
-        $themeRow = $titanium_db->sql_fetchrow($result);
-        $titanium_db->sql_freeresult($result);
+        $sql = "SELECT * FROM `".$prefix."_shoutbox_theme_images` WHERE `themeName`='$ThemeSel'";
+        $result = $db->sql_query($sql);
+        $themeRow = $db->sql_fetchrow($result);
+        $db->sql_freeresult($result);
 
         if (!empty($themeRow['blockBackgroundImage']) && file_exists(NUKE_MODULES_DIR.'Shout_Box/images/background/'.$themeRow['blockBackgroundImage'])) {
             $showBackground = 'yes';
@@ -480,10 +519,18 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
             $showBackground = 'no';
         }
 
+			$up_img = '<i class="bi bi-caret-up"></i>';
+			$down_img = '<i class="bi bi-caret-down"></i>';
+			//$pause_img = '<i class="bi bi-pause"></i>';
+
+			/*
+
         if (!empty($themeRow['blockArrowColor'])) {
+			
             if (file_exists(NUKE_MODULES_DIR.'Shout_Box/images/up/'.$themeRow['blockArrowColor'])) {
                 $up_img = 'modules/Shout_Box/images/up/'.$themeRow['blockArrowColor'];
             } else {
+				
                 $up_img = 'modules/Shout_Box/images/up/Black.gif';
             }
             if (file_exists(NUKE_MODULES_DIR.'Shout_Box/images/down/'.$themeRow['blockArrowColor'])) {
@@ -501,9 +548,10 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
             $down_img = 'modules/Shout_Box/images/down/Black.gif';
             $pause_img = 'modules/Shout_Box/images/pause/Black.gif';
         }
-
-        $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_shouts` ORDER BY `id` DESC LIMIT $conf[number]";
-        $result = $titanium_db->sql_query($sql);
+        */
+		
+        $sql = "SELECT * FROM `".$prefix."_shoutbox_shouts` ORDER BY `id` DESC LIMIT $conf[number]";
+        $result = $db->sql_query($sql);
 
 
         // Top half
@@ -531,20 +579,20 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
         }
         $flag = 1;
         $ThemeSel = get_theme();
-        $sql = "SELECT `blockColor1`, `blockColor2` FROM `".$titanium_prefix."_shoutbox_themes` WHERE `themeName`='$ThemeSel'";
-        $resultT = $titanium_db->sql_query($sql);
-        $rowColor = $titanium_db->sql_fetchrow($resultT);
-        $titanium_db->sql_freeresult($resultT);
+        $sql = "SELECT `blockColor1`, `blockColor2` FROM `".$prefix."_shoutbox_themes` WHERE `themeName`='$ThemeSel'";
+        $resultT = $db->sql_query($sql);
+        $rowColor = $db->sql_fetchrow($resultT);
+        $db->sql_freeresult($resultT);
 
         // Sticky shouts
-        $sql = "SELECT `comment`, `timestamp` FROM `".$titanium_prefix."_shoutbox_sticky` WHERE `stickySlot`=0";
-        $stickyResult = $titanium_db->sql_query($sql);
-        $stickyRow0 = $titanium_db->sql_fetchrow($stickyResult);
-        $titanium_db->sql_freeresult($stickyResult);
-        $sql = "SELECT `comment`, `timestamp` FROM `".$titanium_prefix."_shoutbox_sticky` WHERE `stickySlot`=1";
-        $stickyResult = $titanium_db->sql_query($sql);
-        $stickyRow1 = $titanium_db->sql_fetchrow($stickyResult);
-        $titanium_db->sql_freeresult($stickyResult);
+        $sql = "SELECT `comment`, `timestamp` FROM `".$prefix."_shoutbox_sticky` WHERE `stickySlot`=0";
+        $stickyResult = $db->sql_query($sql);
+        $stickyRow0 = $db->sql_fetchrow($stickyResult);
+        $db->sql_freeresult($stickyResult);
+        $sql = "SELECT `comment`, `timestamp` FROM `".$prefix."_shoutbox_sticky` WHERE `stickySlot`=1";
+        $stickyResult = $db->sql_query($sql);
+        $stickyRow1 = $db->sql_fetchrow($stickyResult);
+        $db->sql_freeresult($stickyResult);
 
         if ($stickyRow0) {
             if ($showBackground == 'yes') {
@@ -552,15 +600,19 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
             } else {
                 if ($flag == 1) { $flag = 2; }
                 elseif ($flag == 2) { $flag = 1; }
+				
+				$mid_content .= "<tr><td style=\"background-color: none;\">";
+				
+				if(isset($rowColor['blockColor1']))
                 $mid_content .= "<tr><td style=\"background-color: ".$rowColor['blockColor1'].";\">";
             }
             $mid_content .= "<strong>"._SB_ADMIN.":</strong> ".$stickyRow0['comment'];
             if ($conf['date']== 'yes') {
                 if ($is_user) {
-                    $unixTime = EvoDate($userinfo['user_dateformat'], $stickyRow0['timestamp'], $userinfo['user_timezone']);
+                    $unixTime = FormatDate($userinfo['user_dateformat'], $stickyRow0['timestamp'], $userinfo['user_timezone']);
                     $mid_content .= "<br />$unixTime";
                 } else {
-                    $unixTime = EvoDate($board_config['default_dateformat'], $stickyRow0['timestamp'], $board_config['board_timezone']);
+                    $unixTime = FormatDate($board_config['default_dateformat'], $stickyRow0['timestamp'], $board_config['board_timezone']);
                     $mid_content .= "<br />$unixTime";
                 }
             }
@@ -577,10 +629,10 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
             $mid_content .= "<strong>"._SB_ADMIN.":</strong> ".$stickyRow1['comment'];
             if ($conf['date']== 'yes') {
                 if ($is_user) {
-                    $unixTime = EvoDate($userinfo['user_dateformat'], $stickyRow1['timestamp'], $userinfo['user_timezone']);
+                    $unixTime = FormatDate($userinfo['user_dateformat'], $stickyRow1['timestamp'], $userinfo['user_timezone']);
                     $mid_content .= "<br />$unixTime";
                 } else {
-                    $unixTime = EvoDate($board_config['default_dateformat'], $stickyRow1['timestamp'], $board_config['board_timezone']);
+                    $unixTime = FormatDate($board_config['default_dateformat'], $stickyRow1['timestamp'], $board_config['board_timezone']);
                     $mid_content .= "<br />$unixDay&nbsp;$unixTime";
                 }
             }
@@ -589,13 +641,14 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
         // end sticky shouts
 
         $i = 0;
-        while ($row = $titanium_db->sql_fetchrow($result)) {
+		$flag = [];
+        while ($row = $db->sql_fetchrow($result)) {
             if ($flag == 1) { $bgcolor = $rowColor['blockColor1']; }
             if ($flag == 2) { $bgcolor = $rowColor['blockColor2']; }
             if ($showBackground == 'yes') {
                 $tempContent[$i] = "<tr><td>";
             } else {
-                $tempContent[$i] = "<tr><td style=\"background-color: $bgcolor;\">";
+                $tempContent[$i] = "<tr><td style=\"background-color: transparent;\">";
             }
             $ShoutComment = str_replace('src=', 'src="', $row['comment']);
             $ShoutComment = str_replace('.gif>', '.gif" alt="" />', $ShoutComment);
@@ -617,7 +670,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
                 $ShoutComment = preg_replace("/\[\/u\]/i","</span>","$ShoutComment");
             }
 
-            if ($titanium_username == 'Anonymous') {
+            if ($username == 'Anonymous') {
     /*****[BEGIN]******************************************
      [ Mod:    Advanced Username Color             v1.0.5 ]
      ******************************************************/
@@ -629,10 +682,10 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
             else 
 			{
                 // check to see if nickname is a user in the DB
-                $sqlN = "SELECT * FROM `".$titanium_prefix."_users` WHERE `username`='".$row['name']."'";
-                $nameresultN = $titanium_db->sql_query($sqlN);
-                $rowN = $titanium_db->sql_fetchrow($nameresultN);
-                $titanium_db->sql_freeresult($nameresultN);
+                $sqlN = "SELECT * FROM `".$prefix."_users` WHERE `username`='".$row['name']."'";
+                $nameresultN = $db->sql_query($sqlN);
+                $rowN = $db->sql_fetchrow($nameresultN);
+                $db->sql_freeresult($nameresultN);
                 
 				if ($rowN && ($row['name'] != "Anonymous")) 
 				{
@@ -656,12 +709,12 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
                     // reads unix timestamp && formats it to the viewer's timezone
                     if ($is_user) 
 					{
-                        $unixTime = EvoDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
+                        $unixTime = FormatDate($userinfo['user_dateformat'], $row['timestamp'], $userinfo['user_timezone']);
                         $tempContent[$i] .= "<br />$unixTime<br /><br />"; # added a space between shouts
                     } 
 					else 
 					{
-                        $unixTime = EvoDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
+                        $unixTime = FormatDate($board_config['default_dateformat'], $row['timestamp'], $board_config['board_timezone']);
                         $tempContent[$i] .= "<br />$unixTime<br /><br />"; # added a space between shouts
                     }
                 } 
@@ -690,7 +743,7 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
             }
         }
         // You may not remove or edit this copyright!!! Doing so violates the GPL license.
-        $mid_content .= "<tr><td align=\"right\"><a title=\"Free scripts!\" target=\"_blank\" href=\"https://ourscripts.86it.us\"><span style=\"font-size: 9;\">Shout Box &copy;</span></a></td></tr></table>";
+        $mid_content .= "<tr><td align=\"right\"><a title=\"SuperCats ShoutBox!\" target=\"_blank\" href=\"https://supercat.86it.us\"><span style=\"font-size: 9;\">Shout Box &copy;</span></a></td></tr></table>";
         // end copyright.
         // end mid content
         // start bottom content $bottom_content
@@ -700,17 +753,14 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
         // bottom half
 		$bottom_content .= "<form name=\"shoutform1\" method=\"post\" action=\"modules.php?name=Your_Account\" style=\"margin-bottom: 0px; margin-top: 0px\" id=\"shoutform1\">";
 		
-        if ($conf['anonymouspost'] == 'no' && $titanium_username == 'Anonymous') 
+        if ($conf['anonymouspost'] == 'no' && $username == 'Anonymous') 
 		{
-            $bottom_content .= "<div style=\"padding: 1px;\" align=\"center\" ><a class=\"titaniumbutton\" href=\"modules.php?name=Shout_Box\">"._SHOUTHISTORY."</a>";
-            $bottom_content .= "&nbsp;<span style=\"cursor: pointer;\" onmouseover=\"SBspeed=4\" onmouseout=\"SBspeed=1\"><img src=\"$up_img\" 
-			border=\"0\" alt=\"\" width=\"9\" height=\"5\" /></span>";
+            $bottom_content .= "<div style=\"padding: 1px;\" align=\"center\" class=\"content\"><a href=\"modules.php?name=Shout_Box\">"._SHOUTHISTORY."</a>";
+            $bottom_content .= "&nbsp;<span style=\"cursor: pointer;\" onmouseover=\"SBspeed=4\" onmouseout=\"SBspeed=1\">$up_img</span>";
             
-			$bottom_content .= "&nbsp;<span style=\"cursor: pointer;\" onmouseover=\"SBspeed=1-5\" onmouseout=\"SBspeed=1\"><img 
-			src=\"$down_img\" border=\"0\" alt=\"\" width=\"9\" height=\"5\" /></span>";
+			$bottom_content .= "&nbsp;<span style=\"cursor: pointer;\" onmouseover=\"SBspeed=1-5\" onmouseout=\"SBspeed=1\">$down_img</span>";
             
-			$bottom_content .= "&nbsp;<span style=\"cursor: wait;\" onmouseover=\"SBspeed=0\" onmouseout=\"SBspeed=1\"><img 
-			src=\"$pause_img\" border=\"0\" alt=\"\" width=\"9\" height=\"5\" /></span>";
+			//$bottom_content .= "&nbsp;<span style=\"cursor: wait;\" onmouseover=\"SBspeed=0\" onmouseout=\"SBspeed=1\">$pause_img</span>";
             
 			$bottom_content .= "</div><div style=\"padding: 1px; text-align: center;\" class=\"content\"><br />"._ONLYREGISTERED." <a 
 			href=\"modules.php?name=Your_Account\">"._SHOUTLOGIN."</a> "._OR." <a href=\"modules.php?name=Your_Account&amp;op=new_user\">"._CREATEANACCT."</a>.</div>";
@@ -721,17 +771,14 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
             $bottom_content .= "<tr>";
         
 		    $bottom_content .= "<td align=\"center\"".(($SBpos == 'center') ? " colspan=\"".(($conf['anonymouspost']== 'yes' 
-			&& $titanium_username == 'Anonymous') ? '3' : '2')."\" style=\"padding: 5px 0;\"" : '') . ">";
+			&& $username == 'Anonymous') ? '3' : '2')."\" style=\"padding: 5px 0;\"" : '') . ">";
             
-			$bottom_content .= "<div align=\"center\"><a class=\"titaniumbutton\" href=\"modules.php?name=Shout_Box\">"._SHOUTHISTORY."</a></div>";
-            $bottom_content .= "<span style=\"cursor: pointer;\" onmouseover=\"SBspeed=4\" onmouseout=\"SBspeed=1\"><img 
-			src=\"$up_img\" border=\"0\" alt=\"\" width=\"9\" height=\"5\" /></span>";
+			$bottom_content .= "<div align=\"center\"><a href=\"modules.php?name=Shout_Box\">"._SHOUTHISTORY."</a></div>";
+            $bottom_content .= "<span style=\"cursor: pointer;\" onmouseover=\"SBspeed=4\" onmouseout=\"SBspeed=1\">$up_img</span>";
             
-			$bottom_content .= "<span style=\"cursor: pointer;\" onmouseover=\"SBspeed=1-5\" onmouseout=\"SBspeed=1\"><img 
-			src=\"$down_img\" border=\"0\" alt=\"\" width=\"9\" height=\"5\" /></span>";
+			$bottom_content .= "<span style=\"cursor: pointer;\" onmouseover=\"SBspeed=1-5\" onmouseout=\"SBspeed=1\">$down_img</span>";
             
-			$bottom_content .= "<span style=\"cursor: wait;\" onmouseover=\"SBspeed=0\" onmouseout=\"SBspeed=1\"><img 
-			src=\"$pause_img\" border=\"0\" alt=\"\" width=\"9\" height=\"5\" /></span>";
+			//$bottom_content .= "<span style=\"cursor: wait;\" onmouseover=\"SBspeed=0\" onmouseout=\"SBspeed=1\">$pause_img</span>";
             
 			$bottom_content .= "</td>";
             $bottom_content .= "</tr>\n";
@@ -752,16 +799,19 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
                 $ShoutTextWidth = $conf['textWidth'] - 4;
             }
 			
-            if ($conf['anonymouspost']== 'yes' && $titanium_username == 'Anonymous') {
-                if ($PreviousUsername) { $boxtext = $PreviousUsername; } else { $boxtext = _NAME; }
+            if ($conf['anonymouspost']== 'yes' && $username == 'Anonymous') {
+                if (isset($PreviousUsername)) { $boxtext = $PreviousUsername; } else { $boxtext = _NAME; }
                 
 				if ($SBpos == 'center') 
 				{
-					$bottom_content .= "<td align=\"center\" width=\"130\" valign=\"top\" style=\"padding-right: 10px;\"><input type=\"text\" name=\"shoutuid\" id=\"shoutuid\" size=\"$ShoutNameWidth\" value=\"$boxtext\" maxlength=\"25\" onfocus=\"if ( this.value == '"._NAME."' ) { this.value=''; }\" onblur=\"if (this.value == '') { this.value='"._NAME."' }\" style=\"width: 100%;\" /></td>\n";
+					$bottom_content .= "<td align=\"center\" width=\"130\" valign=\"top\" style=\"padding-right: 10px;\"><input type=\"text\" 
+					name=\"shoutuid\" id=\"shoutuid\" size=\"$ShoutNameWidth\" value=\"$boxtext\" maxlength=\"25\" onfocus=\"if ( this.value == '"._NAME."' ) { 
+					this.value=''; }\" onblur=\"if (this.value == '') { this.value='"._NAME."' }\" style=\"width: 100%;\" /></td>\n";
 				} 
 				else 
 				{
-					$bottom_content .= "<tr><td align=\"center\"><input type=\"text\" name=\"shoutuid\" id=\"shoutuid\" size=\"$ShoutNameWidth\" value=\"$boxtext\" maxlength=\"25\" onfocus=\"if ( this.value == '"._NAME."' ) { this.value=''; }\" onblur=\"if (this.value == '') { this.value='"._NAME."' }\" /></td></tr>\n";
+					$bottom_content .= "<tr><td align=\"center\"><input type=\"text\" name=\"shoutuid\" id=\"shoutuid\" size=\"$ShoutNameWidth\" value=\"$boxtext\" 
+					maxlength=\"25\" onfocus=\"if ( this.value == '"._NAME."' ) { this.value=''; }\" onblur=\"if (this.value == '') { this.value='"._NAME."' }\" /></td></tr>\n";
 				}
             }
 			
@@ -770,7 +820,8 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 			if ($SBpos == 'center') 
 			{
 				$bottom_content .= "<td align=\"left\" nowrap=\"nowrap\" valign=\"top\">";
-				$bottom_content .= "<input type=\"text\" name=\"ShoutComment\" id=\"ShoutComment\" size=\"$ShoutTextWidth\" onKeyPress=\"return OnEnter(event)\" value=\"$boxtext\" maxlength=\"2500\" onfocus=\"if ( this.value == '"._SB_MESSAGE."' ) { this.value=''; }\" onblur=\"if (this.value == '') { this.value='"._SB_MESSAGE."' }\" style=\"width: 100%;\" />";
+				$bottom_content .= "<input type=\"text\" name=\"ShoutComment\" id=\"ShoutComment\" size=\"$ShoutTextWidth\" onKeyPress=\"return OnEnter(event)\" value=\"$boxtext\" 
+				maxlength=\"2500\" onfocus=\"if ( this.value == '"._SB_MESSAGE."' ) { this.value=''; }\" onblur=\"if (this.value == '') { this.value='"._SB_MESSAGE."' }\" style=\"width: 100%;\" />";
 				$bottom_content .= "</td>";
 				
 				$bottom_content .= "<td align=\"right\" width=\"140\">";
@@ -779,14 +830,14 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 				$bottom_content .= "<div id=\"smilies_hide\" style=\"display: block;\">";
 				
 				$bottom_content .= "<div class=\"content\">";
-				$bottom_content .= "<input class=\"titaniumbutton\" type=\"button\" name=\"button\" onclick=\"AjaxShout();\" value=\""._SHOUT."\" />&nbsp;"; # added a space between buttons
-				$bottom_content .= "<span onclick=\"changeBoxSize('show'); return false;\"><input class=\"titaniumbutton\" type=\"button\" value=\""._SMILIES."\" /></span>";
+				$bottom_content .= "<input type=\"button\" name=\"button\" onclick=\"AjaxShout();\" value=\""._SHOUT."\" />&nbsp;"; # added a space between buttons
+				$bottom_content .= "<span onclick=\"changeBoxSize('show'); return false;\"><input type=\"button\" value=\""._SMILIES."\" /></span>";
 				$bottom_content .= "</div>";
 				$bottom_content .= "</div>";
 				$bottom_content .= "<div id=\"smilies_show\" style=\"display: none;\">";
 				$bottom_content .= "<div class=\"content\">";
-				$bottom_content .= "<input class=\"titaniumbutton\" type=\"button\" name=\"button\" onclick=\"AjaxShout();\" value=\""._SHOUT."\" />&nbsp;"; # added a space between buttons
-				$bottom_content .= "<span onclick=\"changeBoxSize ('hide'); return false;\"><input class=\"titaniumbutton\" type=\"button\" value=\""._SMILIES."\" /></span>";
+				$bottom_content .= "<input type=\"button\" name=\"button\" onclick=\"AjaxShout();\" value=\""._SHOUT."\" />&nbsp;"; # added a space between buttons
+				$bottom_content .= "<span onclick=\"changeBoxSize ('hide'); return false;\"><input type=\"button\" value=\""._SMILIES."\" /></span>";
 				$bottom_content .= "<br /><br />";
 				$bottom_content .= "<tr>";
 				$bottom_content .= "<td align=\"center\" nowrap=\"nowrap\">";
@@ -805,27 +856,27 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
 				$bottom_content .= "<input type=\"hidden\" name=\"ShoutSubmit\" id=\"ShoutSubmit\" value=\"ShoutPost\" />";
 				$bottom_content .= "<div id=\"smilies_hide\" style=\"display: block;\">";
 				$bottom_content .= "<div class=\"content\"><br/>"; # added
-				$bottom_content .= "<input class=\"titaniumbutton\" type=\"button\" name=\"button\" onclick=\"AjaxShout();\" value=\""._SHOUT."\" />&nbsp;"; # added a space between buttons
-				$bottom_content .= "<span onclick=\"changeBoxSize('show'); return false;\"><input class=\"titaniumbutton\" type=\"button\" value=\""._SMILIES."\" /></span>";
+				$bottom_content .= "<input type=\"button\" name=\"button\" onclick=\"AjaxShout();\" value=\""._SHOUT."\" />&nbsp;"; # added a space between buttons
+				$bottom_content .= "<span onclick=\"changeBoxSize('show'); return false;\"><input type=\"button\" value=\""._SMILIES."\" /></span>";
 				$bottom_content .= "</div>";
 				$bottom_content .= "</div>";
 				$bottom_content .= "<div id=\"smilies_show\" style=\"display: none;\">";
 				$bottom_content .= "<div class=\"content\">";
-				$bottom_content .= "<input  class=\"titaniumbutton\" type=\"button\" name=\"button\" onclick=\"AjaxShout();\" value=\""._SHOUT."\" />&nbsp;"; # added a space between buttons
-				$bottom_content .= "<span onclick=\"changeBoxSize ('hide'); return false;\"><input class=\"titaniumbutton\" type=\"button\" value=\""._SMILIES."\" /></span>";
+				$bottom_content .= "<input type=\"button\" name=\"button\" onclick=\"AjaxShout();\" value=\""._SHOUT."\" />&nbsp;"; # added a space between buttons
+				$bottom_content .= "<span onclick=\"changeBoxSize ('hide'); return false;\"><input type=\"button\" value=\""._SMILIES."\" /></span>";
 				$bottom_content .= "<br /><br />";
 			}
 
-            $sql = "SELECT distinct image FROM `".$titanium_prefix."_shoutbox_emoticons`";
-            $nameresult1 = $titanium_db->sql_query($sql);
+            $sql = "SELECT distinct image FROM `".$prefix."_shoutbox_emoticons`";
+            $nameresult1 = $db->sql_query($sql);
             $flag = 1;
             
-			while ($return = $titanium_db->sql_fetchrow($nameresult1)) 
+			while ($return = $db->sql_fetchrow($nameresult1)) 
 			{
-                $sql = "SELECT * FROM `".$titanium_prefix."_shoutbox_emoticons` WHERE `image`='$return[0]' LIMIT 1";
-                $nameresult = $titanium_db->sql_query($sql);
+                $sql = "SELECT * FROM `".$prefix."_shoutbox_emoticons` WHERE `image`='$return[0]' LIMIT 1";
+                $nameresult = $db->sql_query($sql);
             
-			    while ($emoticons = $titanium_db->sql_fetchrow($nameresult)) 
+			    while ($emoticons = $db->sql_fetchrow($nameresult)) 
 				{
                     $emoticons[3] = str_replace('>', '', $emoticons['image']);
                     $emoticons[3] = str_replace('src=', 'src="', $emoticons[3]);
@@ -838,9 +889,9 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid)
                     }
                     $flag++;
                 }
-                $titanium_db->sql_freeresult($nameresult);
+                $db->sql_freeresult($nameresult);
             }
-            $titanium_db->sql_freeresult($nameresult1);
+            $db->sql_freeresult($nameresult1);
             $bottom_content .= "</div></div></td></tr>\n";
 
             $bottom_content .= "</table><br/></form>\n";

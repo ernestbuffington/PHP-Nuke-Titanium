@@ -1,7 +1,7 @@
 <html>
  <head>
 <title>{TOPIC}</title> 
-<script language="JavaScript" type="text/javascript"> 
+<script> 
 <!-- 
     function __off(n) 
     { 
@@ -71,7 +71,7 @@
   <table width="100%" cellspacing="2" cellpadding="2" border="0" align="center">
     <tr> 
       <td align="right" nowrap="nowrap"><span class="genmed">{L_SELECT_SORT_FIELD}:&nbsp;{S_FIELD_SELECT}&nbsp;&nbsp;{L_SORT_ORDER}:&nbsp;{S_ORDER_SELECT}&nbsp;&nbsp; 
-        <input type="submit" name="submit" value="{L_SUBMIT}" class="titaniumbutton" />
+        <input type="submit" name="submit" value="{L_SUBMIT}" class="liteoption" />
         </span>
       </td>
     </tr>
@@ -86,7 +86,7 @@
     <tr>
         <td class="{votes.COLOR}" border="1" align="center"><span class="gensmall">{votes.VOTE_ID}</span></td> 
         <td class="{votes.COLOR}" border="1"><span class="genmed">
-            <script language="JavaScript" type="text/javascript"> 
+            <script> 
             <!-- 
                 onoff('vote{votes.VOTE_ID}_switch',false); 
             //--> 

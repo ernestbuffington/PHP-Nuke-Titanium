@@ -15,8 +15,8 @@ if (!defined('NUKESENTINEL_ADMIN')) {
    die ('You can\'t access this file directly...');
 }
 
-if(!get_magic_quotes_runtime()) { $harvester = addslashes($harvester); }
-$testnum1 = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_harvesters` WHERE `harvester`='".$harvester."' AND `hid`!='".$hid."'"));
+$harvester = addslashes($harvester); 
+$testnum1 = $db->sql_numrows($db->sql_query("SELECT * FROM `".$prefix."_nsnst_harvesters` WHERE `harvester`='".$harvester."' AND `hid`!='".$hid."'"));
 if($testnum1 > 0) {
   include_once(NUKE_BASE_DIR.'header.php');
   OpenTable();
@@ -26,7 +26,7 @@ if($testnum1 > 0) {
   harvestermenu();
   CloseMenu();
   CloseTable();
-  echo '<br />'."\n";
+
   OpenTable();
   echo '<center><strong>'._AB_HARVESTEREXISTS.'</strong></center><br />'."\n";
   echo '<center><strong>'._GOBACK.'</strong></center><br />'."\n";
@@ -41,20 +41,20 @@ if($testnum1 > 0) {
   harvestermenu();
   CloseMenu();
   CloseTable();
-  echo '<br />'."\n";
+
   OpenTable();
   echo '<center><strong>'._AB_HARVESTEREMPTY.'</strong></center><br />'."\n";
   echo '<center><strong>'._GOBACK.'</strong></center><br />'."\n";
   CloseTable();
   include_once(NUKE_BASE_DIR.'footer.php');
 } else {
-  $getIPs = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_harvesters` WHERE `hid`='".$hid."' LIMIT 0,1"));
-  $titanium_db->sql_query("UPDATE `".$titanium_prefix."_nsnst_harvesters` SET `harvester`='".$harvester."' WHERE `hid`='".$hid."'");
+  $getIPs = $db->sql_fetchrow($db->sql_query("SELECT * FROM `".$prefix."_nsnst_harvesters` WHERE `hid`='".$hid."' LIMIT 0,1"));
+  $db->sql_query("UPDATE `".$prefix."_nsnst_harvesters` SET `harvester`='".$harvester."' WHERE `hid`='".$hid."'");
   $list_harvester = explode("\r\n", $ab_config['list_harvester']);
   $list_harvester = str_replace($getIPs['harvester'], $harvester, $list_harvester);
   rsort($list_harvester);
-  $phpbb2_endlist = count($list_harvester)-1;
-  if(empty($list_harvester[$phpbb2_endlist])) { array_pop($list_harvester); }
+  $endlist = count($list_harvester)-1;
+  if(empty($list_harvester[$endlist])) { array_pop($list_harvester); }
   sort($list_harvester);
   $list_harvester = implode("\r\n", $list_harvester);
   absave_config("list_harvester", $list_harvester);

@@ -3,6 +3,7 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
+
 /************************************************************************
    Nuke-Evolution: Spambot Killer
    ============================================
@@ -43,9 +44,9 @@ if (!defined('MODULE_FILE')) {
 
 global $bgcolor2;
 
-$titanium_module_name = basename(dirname(__FILE__));
+$module_name = basename(dirname(__FILE__));
 include_once(NUKE_BASE_DIR.'header.php');
-get_lang($titanium_module_name);
+get_lang($module_name);
 title(_SBK);
 define('INDEX_FILE', true);
 
@@ -76,7 +77,8 @@ srand(microtime() * 1000000);
 //Functions
 function gensalt($length) {
     global $chars;
-    mt_srand(microtime() * 1000000);
+    //mt_srand(microtime() * 1000000);
+	mt_srand(0, MT_RAND_MT19937);
     $salt = "";
     for($j=0; $j<$length; $j++) {
         $salt .= $chars[mt_rand(0, count($chars) - 1)];

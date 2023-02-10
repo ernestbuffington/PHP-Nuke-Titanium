@@ -3,7 +3,6 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-
 /***************************************************************************
  *                           page_footer_admin.php
  *                            -------------------
@@ -24,25 +23,24 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB2'))
-{
-    die('ACCESS DENIED');
+if (!defined('IN_PHPBB')) {
+  die('Hacking attempt');
 }
 
-global $do_gzip_compress, $phpbb2_template, $cache, $userdata, $titanium_db, $titanium_lang, $phpbb2_board_config;
+global $do_gzip_compress, $template, $cache, $userdata, $db, $lang, $board_config;
 //
 // Show the overall footer.
 //
-$phpbb2_template->set_filenames(array(
-        'page_footer' => 'admin/page_footer.tpl')
+$template->set_filenames(array(
+  'page_footer' => 'admin/page_footer.tpl')
 );
 
-$phpbb2_template->assign_vars(array(
-    'PHPBB_VERSION' => ($userdata['user_level'] == ADMIN && $userdata['user_id'] != ANONYMOUS) ? '2' . $phpbb2_board_config['version'] : '',
-        'TRANSLATION_INFO' => (isset($titanium_lang['TRANSLATION_INFO'])) ? $titanium_lang['TRANSLATION_INFO'] : ((isset($titanium_lang['TRANSLATION'])) ? $titanium_lang['TRANSLATION'] : ''))
+$template->assign_vars(array(
+  'PHPBB_VERSION' => ($userdata['user_level'] == ADMIN && $userdata['user_id'] != ANONYMOUS) ? '2' . $board_config['version'] : '',
+  'TRANSLATION_INFO' => (isset($lang['TRANSLATION_INFO'])) ? $lang['TRANSLATION_INFO'] : ((isset($lang['TRANSLATION'])) ? $lang['TRANSLATION'] : ''))
 );
 
-$phpbb2_template->pparse('page_footer');
+$template->pparse('page_footer');
 
 //
 // Resync changed chache
@@ -52,32 +50,29 @@ $cache->resync();
 //
 // Close our DB connection.
 //
-$titanium_db->sql_close();
+$db->sql_close();
 
 //
 // Compress buffered output if required
 // and send to browser
 //
-if( $do_gzip_compress )
-{
-        //
-        // Borrowed from php.net!
-        //
-        $gzip_contents = ob_get_contents();
-        ob_end_clean();
+if( $do_gzip_compress ) {
+//
+// Borrowed from php.net!
+//
+  $gzip_contents = ob_get_contents();
+  ob_end_clean();
 
-        $gzip_size = strlen($gzip_contents);
-        $gzip_crc = crc32($gzip_contents);
+  $gzip_size = strlen($gzip_contents);
+  $gzip_crc = crc32($gzip_contents);
 
-        $gzip_contents = gzcompress($gzip_contents, 9);
-        $gzip_contents = substr($gzip_contents, 0, strlen($gzip_contents) - 4);
+  $gzip_contents = gzcompress($gzip_contents, 9);
+  $gzip_contents = substr($gzip_contents, 0, strlen($gzip_contents) - 4);
 
-        echo "\x1f\x8b\x08\x00\x00\x00\x00\x00";
-        echo $gzip_contents;
-        echo pack('V', $gzip_crc);
-        echo pack('V', $gzip_size);
+  echo "\x1f\x8b\x08\x00\x00\x00\x00\x00";
+  echo $gzip_contents;
+  echo pack('V', $gzip_crc);
+  echo pack('V', $gzip_size);
 }
-
 exit;
-
 ?>

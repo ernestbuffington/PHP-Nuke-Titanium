@@ -21,9 +21,9 @@
       Automatic Subject on Reply               v1.0.0       09/03/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB2'))
+if (!defined('IN_PHPBB'))
 {
-    die('ACCESS DENIED');
+    die('Hacking attempt');
 }
 
 $submit = $refresh = FALSE;
@@ -33,152 +33,203 @@ $hidden_form_fields .= '<input type="hidden" name="sid" value="' . $userdata['se
 //
 // Set toggles for various options
 //
-if ( !$phpbb2_board_config['allow_html'] )
+if ( !$board_config['allow_html'] )
 {
     $html_on = 0;
 }
 else
 {
-    $html_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_html']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $phpbb2_board_config['allow_html'] : $userdata['user_allowhtml'] );
+    $html_on = ( $submit || $refresh ) ? ( ( empty($_POST['disable_html']) ) ? TRUE : 0 ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $board_config['allow_html'] : $userdata['user_allowhtml'] );
 }
 
-if ( !$phpbb2_board_config['allow_bbcode'] )
+if ( !$board_config['allow_bbcode'] )
 {
     $bbcode_on = 0;
 }
 else
 {
-    $bbcode_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_bbcode']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $phpbb2_board_config['allow_bbcode'] : $userdata['user_allowbbcode'] );
+    $bbcode_on = ( $submit || $refresh ) ? ( ( empty($_POST['disable_bbcode']) ) ? TRUE : 0 ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $board_config['allow_bbcode'] : $userdata['user_allowbbcode'] );
 }
 
-if ( !$phpbb2_board_config['allow_smilies'] )
+if ( !$board_config['allow_smilies'] )
 {
     $smilies_on = 0;
 }
 else
 {
-    $smilies_on = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['disable_smilies']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $phpbb2_board_config['allow_smilies'] : $userdata['user_allowsmile'] );
+    $smilies_on = ( $submit || $refresh ) ? ( ( empty($_POST['disable_smilies']) ) ? TRUE : 0 ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? $board_config['allow_smilies'] : $userdata['user_allowsmile'] );
 }
 
-if ( ($submit || $refresh) && $phpbb2_is_auth['auth_read'])
-{
-    $notify_user = ( !empty($HTTP_POST_VARS['notify']) ) ? TRUE : 0;
-}
-else
-{
-    if ( $userdata['session_logged_in'] && $phpbb2_is_auth['auth_read'] )
-    {
-        $sql = "SELECT topic_id
+if (($submit || $refresh) && $is_auth['auth_read']) {
+    $notify_user = ( empty($_POST['notify']) ) ? 0 : TRUE;
+} elseif ($userdata['session_logged_in'] && $is_auth['auth_read']) {
+    $sql = "SELECT topic_id
             FROM " . TOPICS_WATCH_TABLE . "
             WHERE topic_id = $topic_id
                 AND user_id = " . $userdata['user_id'];
-        if ( !($result = $titanium_db->sql_query($sql)) )
-        {
-            message_die(GENERAL_ERROR, 'Could not obtain topic watch information', '', __LINE__, __FILE__, $sql);
-        }
-
-        $notify_user = ( $titanium_db->sql_fetchrow($result) ) ? TRUE : $userdata['user_notify'];
-        $titanium_db->sql_freeresult($result);
-    }
-    else
+    if ( !($result = $db->sql_query($sql)) )
     {
-        $notify_user = ( $userdata['session_logged_in'] && $phpbb2_is_auth['auth_read'] ) ? $userdata['user_notify'] : 0;
+        message_die(GENERAL_ERROR, 'Could not obtain topic watch information', '', __LINE__, __FILE__, $sql);
     }
+    $notify_user = ( $db->sql_fetchrow($result) ) ? TRUE : $userdata['user_notify'];
+    $db->sql_freeresult($result);
+} else
+{
+    $notify_user = ( $userdata['session_logged_in'] && $is_auth['auth_read'] ) ? $userdata['user_notify'] : 0;
 }
 
-$attach_sig = ( $submit || $refresh ) ? ( ( !empty($HTTP_POST_VARS['attach_sig']) ) ? TRUE : 0 ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? 0 : $userdata['user_attachsig'] );
+$attach_sig = ( $submit || $refresh ) ? ( ( empty($_POST['attach_sig']) ) ? 0 : TRUE ) : ( ( $userdata['user_id'] == ANONYMOUS ) ? 0 : $userdata['user_attachsig'] );
 
-$titanium_user_sig = ( $userdata['user_sig'] != '' ) ? $userdata['user_sig'] : '';
+$user_sig = ( $userdata['user_sig'] != '' ) ? $userdata['user_sig'] : '';
 
-if ( (($userdata['user_quickreply_mode']==1) && ($userdata['user_id'] != ANONYMOUS)) || (($phpbb2_board_config['anonymous_sqr_mode']==1) && ($userdata['user_id'] == ANONYMOUS)) )
+if ( (($userdata['user_quickreply_mode']==1) && ($userdata['user_id'] != ANONYMOUS)) || (($board_config['anonymous_sqr_mode']==1) && ($userdata['user_id'] == ANONYMOUS)) )
 {
-    $phpbb2_template->assign_block_vars('switch_advanced_qr', array());
+    $template->assign_block_vars('switch_advanced_qr', []);
     //
     // Signature toggle selection
     //
-    if( $titanium_user_sig != '' )
+    if( $user_sig != '' )
     {
-        $phpbb2_template->assign_block_vars('switch_advanced_qr.switch_signature_checkbox', array());
+        $template->assign_block_vars('switch_advanced_qr.switch_signature_checkbox', []);
     }
 
     //
     // HTML toggle selection
     //
-    if ( $phpbb2_board_config['allow_html'] )
+    if ( $board_config['allow_html'] )
     {
-        $html_status = $titanium_lang['HTML_is_ON'];
-        $phpbb2_template->assign_block_vars('switch_advanced_qr.switch_html_checkbox', array());
+        $html_status = $lang['HTML_is_ON'];
+        $template->assign_block_vars('switch_advanced_qr.switch_html_checkbox', []);
     }
     else
     {
-        $html_status = $titanium_lang['HTML_is_OFF'];
+        $html_status = $lang['HTML_is_OFF'];
     }
 
     //
     // BBCode toggle selection
     //
-    if ( $phpbb2_board_config['allow_bbcode'] )
+    if ( $board_config['allow_bbcode'] )
     {
-        $bbcode_status = $titanium_lang['BBCode_is_ON'];
-        $phpbb2_template->assign_block_vars('switch_advanced_qr.switch_bbcode_checkbox', array());
+        $bbcode_status = $lang['BBCode_is_ON'];
+        $template->assign_block_vars('switch_advanced_qr.switch_bbcode_checkbox', []);
     }
     else
     {
-        $bbcode_status = $titanium_lang['BBCode_is_OFF'];
+        $bbcode_status = $lang['BBCode_is_OFF'];
     }
 
     //
     // Smilies toggle selection
     //
-    if ( $phpbb2_board_config['allow_smilies'] )
+    if ( $board_config['allow_smilies'] )
     {
-        $smilies_status = $titanium_lang['Smilies_are_ON'];
-        $phpbb2_template->assign_block_vars('switch_advanced_qr.switch_smilies_checkbox', array());
+        $smilies_status = $lang['Smilies_are_ON'];
+        $template->assign_block_vars('switch_advanced_qr.switch_smilies_checkbox', []);
     }
     else
     {
-        $smilies_status = $titanium_lang['Smilies_are_OFF'];
+        $smilies_status = $lang['Smilies_are_OFF'];
     }
 
     //
     // Notify checkbox - only show if user is logged in
     //
-    if ( $userdata['session_logged_in'] && $phpbb2_is_auth['auth_read'] )
+    if ( $userdata['session_logged_in'] && $is_auth['auth_read'] )
     {
-        if ( $mode != 'editpost' || ( $mode == 'editpost' && $post_info['poster_id'] != ANONYMOUS ) )
+        if(!isset($mode))
+        $mode = '';
+	    
+		if ( $mode != 'editpost' || ( $mode == 'editpost' && $post_info['poster_id'] != ANONYMOUS ) )
         {
-            $phpbb2_template->assign_block_vars('switch_advanced_qr.switch_notify_checkbox', array());
+            $template->assign_block_vars('switch_advanced_qr.switch_notify_checkbox', []);
         }
     }
 /*****[BEGIN]******************************************
  [ Mod:     Lock/Unlock in quick reply         v1.0.0 ]
  ******************************************************/
-if (  $phpbb2_is_auth['auth_mod'] )
+if (  $is_auth['auth_mod'] )
 {
+/*****[BEGIN]******************************************
+ [ Base:    Lock/Unlock in Posting Body        v1.0.1 ]
+ ******************************************************/
+		$lock = ( isset($HTTP_POST_VARS['lock']) ) ? TRUE : FALSE;
+		$unlock = ( isset($HTTP_POST_VARS['unlock']) ) ? TRUE : FALSE;
+
+        if(!isset($submit))
+        $submit = '';
+
+        if(!isset($confirm))
+        $confirm = '';
+
+		if ( ($submit || $confirm) && ($lock || $unlock) && ($is_auth['auth_mod']) && ($mode != 'newtopic') && (!$refresh) )
+		{
+			$t_id = ( !isset($post_info['topic_id']) ) ? $topic_id : $post_info['topic_id'];
+
+			if ( $unlock )
+			{
+/*****[BEGIN]******************************************
+ [ Mod:     Log Moderator Actions              v1.1.6 ]
+ ******************************************************/
+				log_action($lang['Unlock'], '', $t_id, $userdata['user_id'], '', '');
+/*****[END]********************************************
+ [ Mod:     Log Moderator Actions              v1.1.6 ]
+ ******************************************************/
+				$sql = "UPDATE " . TOPICS_TABLE . "
+
+				SET topic_status = " . TOPIC_UNLOCKED . "
+
+				WHERE topic_id = " . $t_id . "
+
+				AND topic_moved_id = 0";
+			}
+			else if ($lock)
+			{
+/*****[BEGIN]******************************************
+ [ Mod:     Log Moderator Actions              v1.1.6 ]
+ ******************************************************/
+				log_action($lang['Lock'], '', $t_id, $userdata['user_id'], '', '');
+/*****[END]********************************************
+ [ Mod:     Log Moderator Actions              v1.1.6 ]
+ ******************************************************/
+				$sql = "UPDATE " . TOPICS_TABLE . "
+
+				SET topic_status = " . TOPIC_LOCKED . "
+
+				WHERE topic_id = " . $t_id . "
+
+				AND topic_moved_id = 0";
+
+			}
+
+			if ($lock || $unlock)
+			{
+				if ( !($result = $db->sql_query($sql)) )
+				{
+					message_die(GENERAL_ERROR, 'Could not update topics table', '', __LINE__, __FILE__, $sql);
+				}
+			}
+		}
+/*****[END]********************************************
+ [ Base:    Lock/Unlock in Posting Body        v1.0.1 ]
+ ******************************************************/
         $sql = "SELECT topic_status FROM " . TOPICS_TABLE . " WHERE topic_id = '$reply_topic_id'";
-            if (!$result = $titanium_db->sql_query($sql)) {
+            if (!$result = $db->sql_query($sql)) {
             message_die(GENERAL_ERROR, 'Could not obtain topic status information', '', __LINE__, __FILE__, $sql);
             }
-        $topic_status = $titanium_db->sql_fetchrow($result);
-        $titanium_db->sql_freeresult($result);
+        $topic_status = $db->sql_fetchrow($result);
+        $db->sql_freeresult($result);
         $topic_status = $topic_status['topic_status'];
 
-    if ( $topic_status == TOPIC_LOCKED )
-    {
-        $phpbb2_template->assign_block_vars('switch_advanced_qr.switch_unlock_topic', array());
-
-        $phpbb2_template->assign_vars(array(
-            'L_UNLOCK_TOPIC' => $titanium_lang['Unlock_topic'],
-            'S_UNLOCK_CHECKED' => ( $unlock ) ? 'checked="checked"' : '')
+    if ($topic_status == TOPIC_LOCKED) {
+        $template->assign_block_vars('switch_advanced_qr.switch_unlock_topic', []);
+        $template->assign_vars(['L_UNLOCK_TOPIC' => $lang['Unlock_topic'], 
+		                        'S_UNLOCK_CHECKED' => ( $unlock ) ? 'checked="checked"' : '']
         );
-    }
-    else if ( $topic_status == TOPIC_UNLOCKED )
-    {
-        $phpbb2_template->assign_block_vars('switch_advanced_qr.switch_lock_topic', array());
-
-        $phpbb2_template->assign_vars(array(
-            'L_LOCK_TOPIC' => $titanium_lang['Lock_topic'],
-            'S_LOCK_CHECKED' => ( $lock ) ? 'checked="checked"' : '')
+    } elseif ($topic_status == TOPIC_UNLOCKED) {
+        $template->assign_block_vars('switch_advanced_qr.switch_lock_topic', []);
+		$template->assign_vars(['L_LOCK_TOPIC' => $lang['Lock_topic'], 
+		                        'S_LOCK_CHECKED' => ( $lock ) ? 'checked="checked"' : '']
         );
     }
 }
@@ -189,23 +240,7 @@ if (  $phpbb2_is_auth['auth_mod'] )
     // Generate smilies listing for page output
     generate_smilies('inline', PAGE_POSTING);
 
-    $phpbb2_template->assign_vars(array(
-
-        'HTML_STATUS' => $html_status,
-        'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_titanium_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
-        'SMILIES_STATUS' => $smilies_status,
-        'BB_BOX' => Make_TextArea_Ret('message', '', 'post', '99.4%', '200px', true),
-        'L_OPTIONS' => $titanium_lang['Options'],
-        'L_DISABLE_HTML' => $titanium_lang['Disable_HTML_post'],
-        'L_DISABLE_BBCODE' => $titanium_lang['Disable_BBCode_post'],
-        'L_DISABLE_SMILIES' => $titanium_lang['Disable_Smilies_post'],
-        'L_ATTACH_SIGNATURE' => $titanium_lang['Attach_signature'],
-        'L_NOTIFY_ON_REPLY' => $titanium_lang['Notify'],
-        'S_HTML_CHECKED' => ( !$html_on ) ? 'checked="checked"' : '',
-        'S_BBCODE_CHECKED' => ( !$bbcode_on ) ? 'checked="checked"' : '',
-        'S_SMILIES_CHECKED' => ( !$smilies_on ) ? 'checked="checked"' : '',
-        'S_SIGNATURE_CHECKED' => ( $attach_sig ) ? 'checked="checked"' : '',
-        'S_NOTIFY_CHECKED' => ( $notify_user ) ? 'checked="checked"' : '')
+    $template->assign_vars(['HTML_STATUS' => $html_status, 'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="' . append_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'), 'SMILIES_STATUS' => $smilies_status, 'BB_BOX' => Make_TextArea_Ret('message', '', 'post', '99.4%', '200px', true), 'L_OPTIONS' => $lang['Options'], 'L_DISABLE_HTML' => $lang['Disable_HTML_post'], 'L_DISABLE_BBCODE' => $lang['Disable_BBCode_post'], 'L_DISABLE_SMILIES' => $lang['Disable_Smilies_post'], 'L_ATTACH_SIGNATURE' => $lang['Attach_signature'], 'L_NOTIFY_ON_REPLY' => $lang['Notify'], 'S_HTML_CHECKED' => ( $html_on ) ? '' : 'checked="checked"', 'S_BBCODE_CHECKED' => ( $bbcode_on ) ? '' : 'checked="checked"', 'S_SMILIES_CHECKED' => ( $smilies_on ) ? '' : 'checked="checked"', 'S_SIGNATURE_CHECKED' => ( $attach_sig ) ? 'checked="checked"' : '', 'S_NOTIFY_CHECKED' => ( $notify_user ) ? 'checked="checked"' : '']
     );
 
 }
@@ -235,46 +270,45 @@ else
 
 if( !$userdata['session_logged_in'] || ( $mode == 'editpost' && $post_info['poster_id'] == ANONYMOUS ) )
 {
-    $phpbb2_template->assign_block_vars('switch_username_select', array());
+    $template->assign_block_vars('switch_username_select', []);
 }
 
 //
 // Output the data to the template
 //
-if ( (($userdata['user_open_quickreply']==1) && ($userdata['user_id'] != ANONYMOUS)) || (($phpbb2_board_config['anonymous_open_sqr']==1) && ($userdata['user_id'] == ANONYMOUS)) )
+if ( (($userdata['user_open_quickreply']==1) && ($userdata['user_id'] != ANONYMOUS)) || (($board_config['anonymous_open_sqr']==1) && ($userdata['user_id'] == ANONYMOUS)) )
 {
-    $phpbb2_template->assign_block_vars('switch_open_qr_yes', array());
+    $template->assign_block_vars('switch_open_qr_yes', []);
 }
 else
 {
-    $phpbb2_template->assign_block_vars('switch_open_qr_no', array());
+    $template->assign_block_vars('switch_open_qr_no', []);
 }
 
-$phpbb2_template->assign_vars(array(
+$template->assign_vars([
     'U_POST_SQR_TOPIC' => 'javascript:sqr_show_hide();',
     'SQR_IMG' => $images['quickreply'],
-    'L_POST_SQR_TOPIC' => $titanium_lang['Show_hide_quick_reply_form'],
-
+    'L_POST_SQR_TOPIC' => $lang['Show_hide_quick_reply_form'],
     'BB_BOX' => ( $userdata['user_quickreply_mode'] == 1 ) ? Make_TextArea_Ret('message', '', 'post', '99.4%', '200px', true) : '<textarea data-autoresize id="message" name="message" style="resize: none; width: 100% !important; height: 200px; min-height: 200px;"></textarea>',
-
-    'L_EMPTY_MESSAGE' => $titanium_lang['Empty_message'],
-    'L_QUICK_REPLY' => $titanium_lang['Quick_Reply'],
-    'L_USERNAME' => $titanium_lang['Username'],
-    'L_SUBJECT' => $titanium_lang['Subject'],
-/*****[BEGIN]******************************************
- [ Mod:     Automatic Subject on Reply         v1.0.0 ]
- ******************************************************/
+    'L_EMPTY_MESSAGE' => $lang['Empty_message'],
+    'L_QUICK_REPLY' => $lang['Quick_Reply'],
+    'L_USERNAME' => $lang['Username'],
+    'L_SUBJECT' => $lang['Subject'],
+    /*****[BEGIN]******************************************
+     [ Mod:     Automatic Subject on Reply         v1.0.0 ]
+     ******************************************************/
     'SUBJECT' => "Re: " . $forum_topic_data['topic_title'],
-/*****[END]********************************************
- [ Mod:     Automatic Subject on Reply         v1.0.0 ]
- ******************************************************/
-    'L_MESSAGE_BODY' => $titanium_lang['Message_body'],
-    'L_PREVIEW' => $titanium_lang['Preview'],
-    'L_SUBMIT' => $titanium_lang['Submit'],
-    'S_POST_ACTION' => append_titanium_sid("posting.$phpEx"),
-    'S_HIDDEN_FORM_FIELDS' => $hidden_form_fields)
+    /*****[END]********************************************
+     [ Mod:     Automatic Subject on Reply         v1.0.0 ]
+     ******************************************************/
+    'L_MESSAGE_BODY' => $lang['Message_body'],
+    'L_PREVIEW' => $lang['Preview'],
+    'L_SUBMIT' => $lang['Submit'],
+    'S_POST_ACTION' => append_sid("posting.$phpEx"),
+    'S_HIDDEN_FORM_FIELDS' => $hidden_form_fields,
+]
 );
 
-$phpbb2_template->assign_var_from_handle('QRBODY', 'qrbody');
+$template->assign_var_from_handle('QRBODY', 'qrbody');
 
 ?>

@@ -31,13 +31,13 @@
 
       $id = $_GETVAR->get('id', 'GET', 'int');
 
-      $result = $titanium_db->sql_query("SELECT `site_url`, `site_status` FROM `".$titanium_prefix."_link_us` WHERE `id`='$id'");
-      list($url, $site_status) = $titanium_db->sql_fetchrow($result);
+      $result = $db->sql_query("SELECT `site_url`, `site_status` FROM `".$prefix."_link_us` WHERE `id`='$id'");
+      list($url, $site_status) = $db->sql_fetchrow($result);
 
       if ($site_status == 1) {
-        $titanium_db->sql_uquery("UPDATE `".$titanium_prefix."_link_us` SET `site_hits`=`site_hits`+1 WHERE `id`='$id'");
+        $db->sql_uquery("UPDATE `".$prefix."_link_us` SET `site_hits`=`site_hits`+1 WHERE `id`='$id'");
       }
 
-      redirect_titanium($url);
+      redirect($url);
 
 ?>

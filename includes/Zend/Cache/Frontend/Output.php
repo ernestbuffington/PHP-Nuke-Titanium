@@ -1,6 +1,6 @@
 <?php
 /**
- * Zend Framework
+ * Zend Framework Modified for PHP-Nuke Titanium
  *
  * LICENSE
  *
@@ -12,31 +12,31 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
+ * @category   Zend for PHP-Nuke Titanium
  * @package    Zend_Cache
  * @subpackage Zend_Cache_Frontend
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Output.php 16 2010-02-12 00:38:19Z Technocrat $
+ * @version    $Id$
  */
 
 
 /**
  * @see Zend_Cache_Core
  */
-require_once(NUKE_ZEND_DIR.'Cache/Core.php');
+require_once NUKE_ZEND_DIR.'Cache/Core.php';
 
 
 /**
  * @package    Zend_Cache
  * @subpackage Zend_Cache_Frontend
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Cache_Frontend_Output extends Zend_Cache_Core
 {
 
-    private $_idStack = array();
+    private $_idStack = [];
 
     /**
      * Constructor
@@ -44,10 +44,10 @@ class Zend_Cache_Frontend_Output extends Zend_Cache_Core
      * @param  array $options Associative array of options
      * @return void
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
         parent::__construct($options);
-        $this->_idStack = array();
+        $this->_idStack = [];
     }
 
     /**
@@ -55,7 +55,7 @@ class Zend_Cache_Frontend_Output extends Zend_Cache_Core
      *
      * @param  string  $id                     Cache id
      * @param  boolean $doNotTestCacheValidity If set to true, the cache validity won't be tested
-     * @param  boolean $echoData               If set to true, datas are sent to the browser if the cache is hit (simpy returned else)
+     * @param  boolean $echoData               If set to true, datas are sent to the browser if the cache is hit (simply returned else)
      * @return mixed True if the cache is hit (false else) with $echoData=true (default) ; string else (datas)
      */
     public function start($id, $doNotTestCacheValidity = false, $echoData = true)
@@ -85,11 +85,10 @@ class Zend_Cache_Frontend_Output extends Zend_Cache_Core
      * @param  int     $priority         integer between 0 (very low priority) and 10 (maximum priority) used by some particular backends
      * @return void
      */
-    public function end($tags = array(), $specificLifetime = false, $forcedDatas = null, $echoData = true, $priority = 8)
+    public function end($tags = [], $specificLifetime = false, $forcedDatas = null, $echoData = true, $priority = 8)
     {
         if ($forcedDatas === null) {
-            $data = ob_get_contents();
-            ob_end_clean();
+            $data = ob_get_clean();
         } else {
             $data =& $forcedDatas;
         }

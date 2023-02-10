@@ -69,19 +69,19 @@
       Nuke Patched                             v3.1.0       06/26/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB2'))
+if (!defined('IN_PHPBB'))
 {
-    die('ACCESS DENIED');
+    die('Hacking attempt');
 }
 
 // Is send through board enabled? No, return to index
-if (!$phpbb2_board_config['board_email_form'])
+if (!$board_config['board_email_form'])
 {
 /*****[BEGIN]******************************************
  [ Base:    Nuke Patched                       v3.1.0 ]
  ******************************************************/
         $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", $_SERVER["SERVER_SOFTWARE"]) ) ? "Refresh: 0; URL=" : "Location: ";
-        redirect_titanium(append_titanium_sid("index.$phpEx", true));
+        redirect(append_sid("index.$phpEx", true));
         exit;
 /*****[END]********************************************
  [ Base:    Nuke Patched                       v3.1.0 ]
@@ -90,37 +90,37 @@ if (!$phpbb2_board_config['board_email_form'])
 
 if ( !empty($HTTP_GET_VARS[POST_USERS_URL]) || !empty($HTTP_POST_VARS[POST_USERS_URL]) )
 {
-        $titanium_user_id = ( !empty($HTTP_GET_VARS[POST_USERS_URL]) ) ? intval($HTTP_GET_VARS[POST_USERS_URL]) : intval($HTTP_POST_VARS[POST_USERS_URL]);
+        $user_id = ( !empty($HTTP_GET_VARS[POST_USERS_URL]) ) ? intval($HTTP_GET_VARS[POST_USERS_URL]) : intval($HTTP_POST_VARS[POST_USERS_URL]);
 }
 else
 {
-        message_die(GENERAL_MESSAGE, $titanium_lang['No_user_specified']);
+        message_die(GENERAL_MESSAGE, $lang['No_user_specified']);
 }
 
 if ( !$userdata['session_logged_in'] )
 {
-        redirect_titanium( append_titanium_sid("login.$phpEx?redirect=profile.$phpEx&mode=email&" . POST_USERS_URL . "=$titanium_user_id", true));
+        redirect( append_sid("login.$phpEx?redirect=profile.$phpEx&mode=email&" . POST_USERS_URL . "=$user_id", true));
         exit;
 }
 
 $sql = "SELECT username, user_email, user_viewemail, user_lang
         FROM " . USERS_TABLE . "
-        WHERE user_id = '$titanium_user_id'";
-if ( $result = $titanium_db->sql_query($sql) )
+        WHERE user_id = '$user_id'";
+if ( $result = $db->sql_query($sql) )
 {
-        if ( $row = $titanium_db->sql_fetchrow($result) )
+        if ( $row = $db->sql_fetchrow($result) )
 	{
-        $titanium_db->sql_freeresult($result);
+        $db->sql_freeresult($result);
 
-        $titanium_username = $row['username'];
-        $titanium_user_email = $row['user_email'];
-        $titanium_user_lang = $row['user_lang'];
+        $username = $row['username'];
+        $user_email = $row['user_email'];
+        $user_lang = $row['user_lang'];
 
         if ( $row['user_viewemail'] || $userdata['user_level'] == ADMIN )
         {
-                if ( time() - $userdata['user_emailtime'] < $phpbb2_board_config['flood_interval'] )
+                if ( time() - $userdata['user_emailtime'] < $board_config['flood_interval'] )
                 {
-                        message_die(GENERAL_MESSAGE, $titanium_lang['Flood_email_limit']);
+                        message_die(GENERAL_MESSAGE, $lang['Flood_email_limit']);
                 }
 
                 if ( isset($HTTP_POST_VARS['submit']) )
@@ -134,7 +134,7 @@ if ( $result = $titanium_db->sql_query($sql) )
                         else
                         {
                                 $error = TRUE;
-                                $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $titanium_lang['Empty_subject_email'] : $titanium_lang['Empty_subject_email'];
+                                $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Empty_subject_email'] : $lang['Empty_subject_email'];
                         }
 
                         if ( !empty($HTTP_POST_VARS['message']) )
@@ -144,7 +144,7 @@ if ( $result = $titanium_db->sql_query($sql) )
                         else
                         {
                                 $error = TRUE;
-                                $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $titanium_lang['Empty_message_email'] : $titanium_lang['Empty_message_email'];
+                                $error_msg = ( !empty($error_msg) ) ? $error_msg . '<br />' . $lang['Empty_message_email'] : $lang['Empty_message_email'];
                         }
 
                         if ( !$error )
@@ -152,11 +152,11 @@ if ( $result = $titanium_db->sql_query($sql) )
                                 $sql = "UPDATE " . USERS_TABLE . "
                                         SET user_emailtime = " . time() . "
                                         WHERE user_id = " . $userdata['user_id'];
-                                if ( $result = $titanium_db->sql_query($sql) )
+                                if ( $result = $db->sql_query($sql) )
                                 {
-                                        $titanium_db->sql_freeresult($result);
+                                        $db->sql_freeresult($result);
                                         include("includes/emailer.php");
-                                        $emailer = new emailer($phpbb2_board_config['smtp_delivery']);
+                                        $emailer = new emailer($board_config['smtp_delivery']);
 
                                         $emailer->from($userdata['user_email']);
                                         $emailer->replyto($userdata['user_email']);
@@ -164,18 +164,18 @@ if ( $result = $titanium_db->sql_query($sql) )
                                         $email_headers = 'X-AntiAbuse: Board servername - ' . $server_name . "\n";
                                         $email_headers .= 'X-AntiAbuse: User_id - ' . $userdata['user_id'] . "\n";
                                         $email_headers .= 'X-AntiAbuse: Username - ' . $userdata['username'] . "\n";
-                                        $email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($titanium_user_ip) . "\n";
+                                        $email_headers .= 'X-AntiAbuse: User IP - ' . decode_ip($user_ip) . "\n";
 
-                                        $emailer->use_template('profile_send_email', $titanium_user_lang);
-                                        $emailer->email_address($titanium_user_email);
+                                        $emailer->use_template('profile_send_email', $user_lang);
+                                        $emailer->email_address($user_email);
                                         $emailer->set_subject($subject);
                                         $emailer->extra_headers($email_headers);
 
                                         $emailer->assign_vars(array(
-                                                'SITENAME' => $phpbb2_board_config['sitename'],
-                                                'BOARD_EMAIL' => $phpbb2_board_config['board_email'],
+                                                'SITENAME' => $board_config['sitename'],
+                                                'BOARD_EMAIL' => $board_config['board_email'],
                                                 'FROM_USERNAME' => $userdata['username'],
-                                                'TO_USERNAME' => $titanium_username,
+                                                'TO_USERNAME' => $username,
                                                 'MESSAGE' => $message)
                                         );
                                         $emailer->send();
@@ -190,21 +190,21 @@ if ( $result = $titanium_db->sql_query($sql) )
                                                 $emailer->set_subject($subject);
 
                                                 $emailer->assign_vars(array(
-                                                        'SITENAME' => $phpbb2_board_config['sitename'],
-                                                        'BOARD_EMAIL' => $phpbb2_board_config['board_email'],
+                                                        'SITENAME' => $board_config['sitename'],
+                                                        'BOARD_EMAIL' => $board_config['board_email'],
                                                         'FROM_USERNAME' => $userdata['username'],
-                                                        'TO_USERNAME' => $titanium_username,
+                                                        'TO_USERNAME' => $username,
                                                         'MESSAGE' => $message)
                                                 );
                                                 $emailer->send();
                                                 $emailer->reset();
                                         }
 
-                                        $phpbb2_template->assign_vars(array(
-                                                'META' => '<meta http-equiv="refresh" content="5;url=' . append_titanium_sid("index.$phpEx") . '">')
+                                        $template->assign_vars(array(
+                                                'META' => '<meta http-equiv="refresh" content="5;url=' . append_sid("index.$phpEx") . '">')
                                         );
 
-                                        $message = $titanium_lang['Email_sent'] . '<br /><br />' . sprintf($titanium_lang['Click_return_index'],  '<a href="' . append_titanium_sid("index.$phpEx") . '">', '</a>');
+                                        $message = $lang['Email_sent'] . '<br /><br />' . sprintf($lang['Click_return_index'],  '<a href="' . append_sid("index.$phpEx") . '">', '</a>');
 
                                         message_die(GENERAL_MESSAGE, $message);
                                 }
@@ -217,53 +217,53 @@ if ( $result = $titanium_db->sql_query($sql) )
 
                 include("includes/page_header.php");
 
-                $phpbb2_template->set_filenames(array(
+                $template->set_filenames(array(
                         'body' => 'profile_send_email.tpl')
                 );
                 make_jumpbox('viewforum.'.$phpEx);
 
                 if ( $error )
                 {
-                        $phpbb2_template->set_filenames(array(
+                        $template->set_filenames(array(
                                 'reg_header' => 'error_body.tpl')
                         );
-                        $phpbb2_template->assign_vars(array(
+                        $template->assign_vars(array(
                                 'ERROR_MESSAGE' => $error_msg)
                         );
-                        $phpbb2_template->assign_var_from_handle('ERROR_BOX', 'reg_header');
+                        $template->assign_var_from_handle('ERROR_BOX', 'reg_header');
                 }
 
-                $phpbb2_template->assign_vars(array(
-                        'USERNAME' => $titanium_username,
+                $template->assign_vars(array(
+                        'USERNAME' => $username,
 
                         'S_HIDDEN_FIELDS' => '',
-                        'S_POST_ACTION' => append_titanium_sid("profile.$phpEx?mode=email&amp;" . POST_USERS_URL . "=$titanium_user_id"),
+                        'S_POST_ACTION' => append_sid("profile.$phpEx?mode=email&amp;" . POST_USERS_URL . "=$user_id"),
 
-                        'L_SEND_EMAIL_MSG' => $titanium_lang['Send_email_msg'],
-                        'L_RECIPIENT' => $titanium_lang['Recipient'],
-                        'L_SUBJECT' => $titanium_lang['Subject'],
-                        'L_MESSAGE_BODY' => $titanium_lang['Message_body'],
-                        'L_MESSAGE_BODY_DESC' => $titanium_lang['Email_message_desc'],
-                        'L_EMPTY_SUBJECT_EMAIL' => $titanium_lang['Empty_subject_email'],
-                        'L_EMPTY_MESSAGE_EMAIL' => $titanium_lang['Empty_message_email'],
-                        'L_OPTIONS' => $titanium_lang['Options'],
-                        'L_CC_EMAIL' => $titanium_lang['CC_email'],
-                        'L_SPELLCHECK' => $titanium_lang['Spellcheck'],
-                        'L_SEND_EMAIL' => $titanium_lang['Send_email'])
+                        'L_SEND_EMAIL_MSG' => $lang['Send_email_msg'],
+                        'L_RECIPIENT' => $lang['Recipient'],
+                        'L_SUBJECT' => $lang['Subject'],
+                        'L_MESSAGE_BODY' => $lang['Message_body'],
+                        'L_MESSAGE_BODY_DESC' => $lang['Email_message_desc'],
+                        'L_EMPTY_SUBJECT_EMAIL' => $lang['Empty_subject_email'],
+                        'L_EMPTY_MESSAGE_EMAIL' => $lang['Empty_message_email'],
+                        'L_OPTIONS' => $lang['Options'],
+                        'L_CC_EMAIL' => $lang['CC_email'],
+                        'L_SPELLCHECK' => $lang['Spellcheck'],
+                        'L_SEND_EMAIL' => $lang['Send_email'])
                 );
 
-                $phpbb2_template->pparse('body');
+                $template->pparse('body');
 
                 include("includes/page_tail.php");
         }
         else
         {
-                message_die(GENERAL_MESSAGE, $titanium_lang['User_prevent_email']);
+                message_die(GENERAL_MESSAGE, $lang['User_prevent_email']);
         }
 }
 	else
 	{
-		message_die(GENERAL_MESSAGE, $titanium_lang['User_not_exist']);
+		message_die(GENERAL_MESSAGE, $lang['User_not_exist']);
 	}
 }
 else

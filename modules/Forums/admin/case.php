@@ -35,12 +35,12 @@ if (!defined('ADMIN_FILE')) {
    die ("Access Denied");
 }
 
-$titanium_module_name = basename(dirname(dirname(__FILE__)));
+$module_name = basename(dirname(dirname(__FILE__)));
 
 switch($op) {
 
     case "forums":
-        include("modules/$titanium_module_name/admin/forums.php");
+        include("modules/$module_name/admin/forums.php");
     break;
  
 }

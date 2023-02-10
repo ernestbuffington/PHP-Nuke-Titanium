@@ -3,7 +3,6 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-
 /***************************************************************************
  *                              admin_users.php
  *                            -------------------
@@ -44,50 +43,53 @@
 	  Birthdays                                v3.0.0
 	  Admin User Notes                         v1.0.0       05/28/2009
 	  Arcade                                   v3.0.2       05/29/2009
+	  PHP 8.1 Patched                          v4.0.3       12/13/2022
+-=[Last Updated]=-
+      12/13/2022 11:00 am Ernest ALlen Buffington	  
  ************************************************************************/
 
-define('IN_PHPBB2', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', true);
 
 if( !empty($setmodules) )
 {
         $filename = basename(__FILE__);
-        $titanium_module['Users']['Manage'] = $filename;
+        $module['Users']['Manage'] = $filename;
 
         return;
 }
 
-$phpbb2_root_path = './../';
-require($phpbb2_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
-require("../../../includes/bbcode.php");
-require("../../../includes/functions_post.php");
-require("../../../includes/functions_selects.php");
-require("../../../includes/functions_validate.php");
+$phpbb_root_path = './../';
+require($phpbb_root_path . 'extension.inc');
+require(__DIR__ . '/pagestart.' . $phpEx);
+require(__DIR__ . "/../../../includes/bbcode.php");
+require(__DIR__ . "/../../../includes/functions_post.php");
+require(__DIR__ . "/../../../includes/functions_selects.php");
+require(__DIR__ . "/../../../includes/functions_validate.php");
 
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-if ( !file_exists(@phpbb_realpath($phpbb2_root_path . 'language/lang_' . $phpbb2_board_config['default_lang'] . '/lang_adv_time.' . $phpEx)) )
+if ( !file_exists(phpbb_realpath($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx)) )
 {
-    include_once($phpbb2_root_path . 'language/lang_english/lang_adv_time.' . $phpEx);
+    include_once($phpbb_root_path . 'language/lang_english/lang_adv_time.' . $phpEx);
 } else
 {
-    include_once($phpbb2_root_path . 'language/lang_' . $phpbb2_board_config['default_lang'] . '/lang_adv_time.' . $phpEx);
+    include_once($phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/lang_adv_time.' . $phpEx);
 }
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
 
-$html_entities_match = array('#<#', '#>#');
-$html_entities_replace = array('&lt;', '&gt;');
+$html_entities_match = ['#<#', '#>#'];
+$html_entities_replace = ['&lt;', '&gt;'];
 
 //
 // Set mode
 //
-if( isset( $HTTP_POST_VARS['mode'] ) || isset( $HTTP_GET_VARS['mode'] ) )
+if( isset( $_POST['mode'] ) || isset( $_GET['mode'] ) )
 {
-        $mode = ( isset( $HTTP_POST_VARS['mode']) ) ? $HTTP_POST_VARS['mode'] : $HTTP_GET_VARS['mode'];
-        $mode = htmlspecialchars($mode);
+        $mode = $_POST['mode'] ?? $_GET['mode'];
+        $mode = htmlspecialchars((string) $mode);
 }
 else
 {
@@ -97,115 +99,119 @@ else
 //
 // Begin program
 //
-if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) || isset($HTTP_GET_VARS[POST_USERS_URL]) || isset( $HTTP_POST_VARS[POST_USERS_URL]) ) )
+if ( $mode == 'edit' || $mode == 'save' && ( isset($_POST['username']) || isset($_GET[POST_USERS_URL]) || isset( $_POST[POST_USERS_URL]) ) )
 {
 /*****[BEGIN]******************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/
-      attachment_quota_settings('user', $HTTP_POST_VARS['submit'], $mode);
+      if(isset($mode) && isset($_POST['submit'])) {
+        attachment_quota_settings('user', $_POST['submit'], $mode);
+	  }
 /*****[END]********************************************
  [ Mod:    Attachment Mod                      v2.4.1 ]
  ******************************************************/
         //
         // Ok, the profile has been modified and submitted, let's update
         //
-        if ( ( $mode == 'save' && isset( $HTTP_POST_VARS['submit'] ) ) || isset( $HTTP_POST_VARS['avatargallery'] ) || isset( $HTTP_POST_VARS['submitavatar'] ) || isset( $HTTP_POST_VARS['cancelavatar'] ) )
+        if ( ( $mode == 'save' && isset( $_POST['submit'] ) ) || isset( $_POST['avatargallery'] ) || isset( $_POST['submitavatar'] ) || isset( $_POST['cancelavatar'] ) )
         {
-                $titanium_user_id = intval($HTTP_POST_VARS['id']);
+                $user_id = (int) $_POST['id'];
 
-                if (!($this_userdata = get_userdata($titanium_user_id)))
+                if (!($this_userdata = get_userdata($user_id)))
                 {
-                        message_die(GENERAL_MESSAGE, $titanium_lang['No_user_id_specified'] );
+                        message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
                 }
 
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-                $this_userdata['xdata'] = get_user_xdata($titanium_user_id);
+                $this_userdata['xdata'] = get_user_xdata($user_id);
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-
-        if( $HTTP_POST_VARS['deleteuser'] && ( $userdata['user_id'] != $titanium_user_id ) )
+	    if(!isset($_POST['deleteuser']))
+	    $_POST['deleteuser'] = '';
+	
+        if( $_POST['deleteuser'] && ( $userdata['user_id'] != $user_id ) )
                 {
                         $sql = "SELECT g.group_id
                                 FROM " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE . " g
-                                WHERE ug.user_id = '$titanium_user_id'
+                                WHERE ug.user_id = '$user_id'
                                         AND g.group_id = ug.group_id
                                         AND g.group_single_user = 1";
-                        if( !($result = $titanium_db->sql_query($sql)) )
+                        if( !($result = $db->sql_query($sql)) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not obtain group information for this user', '', __LINE__, __FILE__, $sql);
                         }
 
-                        $row = $titanium_db->sql_fetchrow($result);
+                        $row = $db->sql_fetchrow($result);
 
                         $sql = "UPDATE " . POSTS_TABLE . "
-                                SET poster_id = " . DELETED . ", post_username = '" . str_replace("\\'", "''", addslashes($this_userdata['username'])) . "'
-                                WHERE poster_id = '$titanium_user_id'";
-                        if( !$titanium_db->sql_query($sql) )
+                                SET poster_id = " . DELETED . ", post_username = '" . str_replace("\\'", "''", addslashes((string) $this_userdata['username'])) . "'
+                                WHERE poster_id = '$user_id'";
+                        if( !$db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not update posts for this user', '', __LINE__, __FILE__, $sql);
                         }
 
                         $sql = "UPDATE " . TOPICS_TABLE . "
                                 SET topic_poster = " . DELETED . "
-                                WHERE topic_poster = '$titanium_user_id'";
-                        if( !$titanium_db->sql_query($sql) )
+                                WHERE topic_poster = '$user_id'";
+                        if( !$db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not update topics for this user', '', __LINE__, __FILE__, $sql);
                         }
 
                         $sql = "UPDATE " . VOTE_USERS_TABLE . "
                                 SET vote_user_id = " . DELETED . "
-                                WHERE vote_user_id = '$titanium_user_id'";
-                        if( !$titanium_db->sql_query($sql) )
+                                WHERE vote_user_id = '$user_id'";
+                        if( !$db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not update votes for this user', '', __LINE__, __FILE__, $sql);
                         }
 
                         $sql = "UPDATE " . GROUPS_TABLE . "
             				SET group_moderator = " . $userdata['user_id'] . "
-            				WHERE group_moderator = $titanium_user_id";
-            			if( !$titanium_db->sql_query($sql) )
+            				WHERE group_moderator = $user_id";
+            			if( !$db->sql_query($sql) )
             			{
             				message_die(GENERAL_ERROR, 'Could not update group moderators', '', __LINE__, __FILE__, $sql);
                         }
 
                         $sql = "DELETE FROM " . USERS_TABLE . "
-                                WHERE user_id = '$titanium_user_id'";
-                        if( !$titanium_db->sql_query($sql) )
+                                WHERE user_id = '$user_id'";
+                        if( !$db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not delete user', '', __LINE__, __FILE__, $sql);
                         }
 
                         $sql = "DELETE FROM " . USER_GROUP_TABLE . "
-                                WHERE user_id = '$titanium_user_id'";
-                        if( !$titanium_db->sql_query($sql) )
+                                WHERE user_id = '$user_id'";
+                        if( !$db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not delete user from user_group table', '', __LINE__, __FILE__, $sql);
                         }
 
-                        if (intval($row['group_id']) > 0)
+                        if ((int) $row['group_id'] > 0)
                         {
                         $sql = "DELETE FROM " . GROUPS_TABLE . "
                                 WHERE group_id = " . $row['group_id'];
-                        if( !$titanium_db->sql_query($sql) )
+                        if( !$db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
                         }
 
                         $sql = "DELETE FROM " . AUTH_ACCESS_TABLE . "
                                 WHERE group_id = " . $row['group_id'];
-                        if( !$titanium_db->sql_query($sql) )
+                        if( !$db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not delete group for this user', '', __LINE__, __FILE__, $sql);
                           }
                         }
 
                         $sql = "DELETE FROM " . TOPICS_WATCH_TABLE . "
-                                WHERE user_id = '$titanium_user_id'";
-                        if ( !$titanium_db->sql_query($sql) )
+                                WHERE user_id = '$user_id'";
+                        if ( !$db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not delete user from topic watch table', '', __LINE__, __FILE__, $sql);
                         }
@@ -213,24 +219,24 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 /*****[BEGIN]******************************************
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
-                                                $sql = "DELETE FROM " . SCORES_TABLE . " WHERE user_id = $titanium_user_id";
+                                                $sql = "DELETE FROM " . SCORES_TABLE . " WHERE user_id = $user_id";
 
-                                                if ( !$titanium_db->sql_query($sql) )
+                                                if ( !$db->sql_query($sql) )
                                                 {
                                                                 message_die(GENERAL_ERROR, 'Could not delete scores from table', '', __LINE__, __FILE__, $sql);
                                                 }
 
-                                                $sql = "SELECT * FROM " . GAMES_TABLE . " WHERE game_highuser = $titanium_user_id";
+                                                $sql = "SELECT * FROM " . GAMES_TABLE . " WHERE game_highuser = $user_id";
 
-                                                if( !($result = $titanium_db->sql_query($sql)) )
+                                                if( !($result = $db->sql_query($sql)) )
                                                 {
                                                                 message_die(GENERAL_ERROR, 'Could not read games table', '', __LINE__, __FILE__, $sql);
                                                 }
 
-                                                while ( $row_games = $titanium_db->sql_fetchrow($result) ) {
+                                                while ( $row_games = $db->sql_fetchrow($result) ) {
                                                                 $sql2 = "SELECT * FROM " . SCORES_TABLE . " WHERE game_id = " . $row_games['game_id'] . " ORDER BY score_game DESC, score_date ASC LIMIT 0,1";
 
-                                                                if( !($result2 = $titanium_db->sql_query($sql2)) )
+                                                                if( !($result2 = $db->sql_query($sql2)) )
                                                                 {
                                                                                 message_die(GENERAL_ERROR, 'Could not select scores', '', __LINE__, __FILE__, $sql2);
                                                                 }
@@ -239,7 +245,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                                                                 $game_highscore = 0 ;
                                                                 $game_highdate = 0 ;
 
-                                                                if ( $row_high = $titanium_db->sql_fetchrow($result2) )
+                                                                if ( $row_high = $db->sql_fetchrow($result2) )
                                                                 {
                                                                                 $game_highuser = $row_high['user_id'] ;
                                                                                 $game_highscore = $row_high['score_game'] ;
@@ -248,13 +254,13 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 
                                                                 $sql2 = "UPDATE " . GAMES_TABLE . " SET game_highuser = $game_highuser , game_highdate = $game_highdate , game_highscore = $game_highscore WHERE game_id = " . $row_games['game_id'];
 
-                                                                if ( !$titanium_db->sql_query($sql2) )
+                                                                if ( !$db->sql_query($sql2) )
                                                                 {
                                                                                 message_die(GENERAL_ERROR, 'Could not update games table', '', __LINE__, __FILE__, $sql2);
                                                                 }
 
                                                                 $sql2 = "UPDATE " . COMMENTS_TABLE. " SET comments_value = '' WHERE game_id = " . $row_games['game_id'];
-                                                                if (!$titanium_db->sql_query($sql2))
+                                                                if (!$db->sql_query($sql2))
                                                                 {
                                                                                 message_die(GENERAL_ERROR, 'Could not delete from comments table', '', __LINE__, __FILE__, $sql2);
                                                                 }
@@ -264,22 +270,22 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  ******************************************************/
 
                         $sql = "DELETE FROM " . BANLIST_TABLE . "
-                                WHERE ban_userid = '$titanium_user_id'";
-                        if ( !$titanium_db->sql_query($sql) )
+                                WHERE ban_userid = '$user_id'";
+                        if ( !$db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not delete user from banlist table', '', __LINE__, __FILE__, $sql);
                         }
 
 						 $sql = "DELETE FROM " . SESSIONS_TABLE . "
-							WHERE session_user_id = $titanium_user_id";
-						 if ( !$titanium_db->sql_query($sql) )
+							WHERE session_user_id = $user_id";
+						 if ( !$db->sql_query($sql) )
 						 {
 							message_die(GENERAL_ERROR, 'Could not delete sessions for this user', '', __LINE__, __FILE__, $sql);
 						 }
 
 						 $sql = "DELETE FROM " . SESSIONS_KEYS_TABLE . "
-							WHERE user_id = $titanium_user_id";
-						 if ( !$titanium_db->sql_query($sql) )
+							WHERE user_id = $user_id";
+						 if ( !$db->sql_query($sql) )
 						 {
 							message_die(GENERAL_ERROR, 'Could not delete auto-login keys for this user', '', __LINE__, __FILE__, $sql);
 						 }
@@ -287,9 +293,9 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 /*****[BEGIN]******************************************
  [ Mod:     Initial Usergroup                  v1.0.1 ]
  ******************************************************/
-                        $sql = "DELETE FROM ".$titanium_prefix."_bbuser_group
-                                WHERE user_id = '$titanium_user_id'";
-                        if ( !$titanium_db->sql_query($sql) )
+                        $sql = "DELETE FROM ".$prefix."_bbuser_group
+                                WHERE user_id = '$user_id'";
+                        if ( !$db->sql_query($sql) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not delete user from inital user group table', '', __LINE__, __FILE__, $sql);
                         }
@@ -299,20 +305,20 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 
                         $sql = "SELECT privmsgs_id
                                 FROM " . PRIVMSGS_TABLE . "
-                                WHERE privmsgs_from_userid = '$titanium_user_id'
-                                        OR privmsgs_to_userid = '$titanium_user_id'";
-                        if ( !($result = $titanium_db->sql_query($sql)) )
+                                WHERE privmsgs_from_userid = '$user_id'
+                                        OR privmsgs_to_userid = '$user_id'";
+                        if ( !($result = $db->sql_query($sql)) )
                         {
                                 message_die(GENERAL_ERROR, 'Could not select all users private messages', '', __LINE__, __FILE__, $sql);
                         }
 
                         // This little bit of code directly from the private messaging section.
-                        while ( $row_privmsgs = $titanium_db->sql_fetchrow($result) )
+                        while ( $row_privmsgs = $db->sql_fetchrow($result) )
                         {
                                 $mark_list[] = $row_privmsgs['privmsgs_id'];
                         }
 
-                        if ( count($mark_list) )
+                        if ( (is_countable($mark_list) ? count($mark_list) : 0) > 0 )
                         {
                                 $delete_sql_id = implode(', ', $mark_list);
 
@@ -321,37 +327,37 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                                 $delete_sql = "DELETE FROM " . PRIVMSGS_TABLE . "
                                         WHERE privmsgs_id IN ($delete_sql_id)";
 
-                                if ( !$titanium_db->sql_query($delete_sql) )
+                                if ( !$db->sql_query($delete_sql) )
                                 {
                                         message_die(GENERAL_ERROR, 'Could not delete private message info', '', __LINE__, __FILE__, $delete_sql);
                                 }
 
-                                if ( !$titanium_db->sql_query($delete_text_sql) )
+                                if ( !$db->sql_query($delete_text_sql) )
                                 {
                                         message_die(GENERAL_ERROR, 'Could not delete private message text', '', __LINE__, __FILE__, $delete_text_sql);
                                 }
                         }
 
-                        $message = $titanium_lang['User_deleted'] . '<br /><br />' . sprintf($titanium_lang['Click_return_useradmin'], '<a href="' . append_titanium_sid("admin_users.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($titanium_lang['Click_return_admin_index'], '<a href="' . append_titanium_sid("index.$phpEx?pane=right") . '">', '</a>');
+                        $message = $lang['User_deleted'] . '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid("admin_users.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
 
                         message_die(GENERAL_MESSAGE, $message);
                 }
 
-                $titanium_username = ( !empty($HTTP_POST_VARS['username']) ) ? phpbb_clean_username($HTTP_POST_VARS['username']) : '';
-                $email = ( !empty($HTTP_POST_VARS['email']) ) ? trim(strip_tags(htmlspecialchars( $HTTP_POST_VARS['email'] ) )) : '';
+                $username = ( empty($_POST['username']) ) ? '' : phpbb_clean_username($_POST['username']);
+                $email = ( empty($_POST['email']) ) ? '' : trim(strip_tags(htmlspecialchars( (string) $_POST['email'] ) ));
 
-                $password = ( !empty($HTTP_POST_VARS['password']) ) ? trim(strip_tags(htmlspecialchars( $HTTP_POST_VARS['password'] ) )) : '';
-                $password_confirm = ( !empty($HTTP_POST_VARS['password_confirm']) ) ? trim(strip_tags(htmlspecialchars( $HTTP_POST_VARS['password_confirm'] ) )) : '';
+                $password = ( empty($_POST['password']) ) ? '' : trim(strip_tags(htmlspecialchars( (string) $_POST['password'] ) ));
+                $password_confirm = ( empty($_POST['password_confirm']) ) ? '' : trim(strip_tags(htmlspecialchars( (string) $_POST['password_confirm'] ) ));
 
 /*****[BEGIN]******************************************
  [ Mod:  Birthdays                             v3.0.0 ]
  ******************************************************/
-				$phpbb2_bday_year = ( !empty($HTTP_POST_VARS['bday_year']) ) ? $HTTP_POST_VARS['bday_year'] : 0;
-				$bday_month = ( !empty($HTTP_POST_VARS['bday_month']) ) ? $HTTP_POST_VARS['bday_month'] : 0;
-				$bday_day = ( !empty($HTTP_POST_VARS['bday_day']) ) ? $HTTP_POST_VARS['bday_day'] : 0;
+				$bday_year = ( empty($_POST['bday_year']) ) ? 0 : $_POST['bday_year'];
+				$bday_month = ( empty($_POST['bday_month']) ) ? 0 : $_POST['bday_month'];
+				$bday_day = ( empty($_POST['bday_day']) ) ? 0 : $_POST['bday_day'];
 		
-				$birthday_display = ( isset($HTTP_POST_VARS['birthday_display']) ) ? intval($HTTP_POST_VARS['birthday_display']) : 0;
-				$birthday_greeting = ( isset($HTTP_POST_VARS['bday_greeting']) ) ? $HTTP_POST_VARS['bday_greeting'] : 0;
+				$birthday_display = ( isset($_POST['birthday_display']) ) ? (int) $_POST['birthday_display'] : 0;
+				$birthday_greeting = $_POST['bday_greeting'] ?? 0;
 /*****[END]********************************************
  [ Mod:  Birthdays                             v3.0.0 ]
  ******************************************************/
@@ -359,48 +365,48 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-                $reputation = ( !empty($HTTP_POST_VARS['reputation']) ) ? trim(strip_tags( $HTTP_POST_VARS['reputation'] ) ) : 0;
+                $reputation = ( empty($_POST['reputation']) ) ? 0 : trim(strip_tags( (string) $_POST['reputation'] ) );
 /*****[END]********************************************
  [ Mod:     Users Reputations System           v1.0.0 ]
  ******************************************************/
-				$facebook = ( !empty($HTTP_POST_VARS['facebook']) ) ? trim(strip_tags( $HTTP_POST_VARS['facebook'] ) ) : '';
-                $website = ( !empty($HTTP_POST_VARS['website']) ) ? trim(strip_tags( $HTTP_POST_VARS['website'] ) ) : '';
-                $location = ( !empty($HTTP_POST_VARS['location']) ) ? trim(strip_tags( $HTTP_POST_VARS['location'] ) ) : '';
-                $occupation = ( !empty($HTTP_POST_VARS['occupation']) ) ? trim(strip_tags( $HTTP_POST_VARS['occupation'] ) ) : '';
-                $interests = ( !empty($HTTP_POST_VARS['interests']) ) ? trim(strip_tags( $HTTP_POST_VARS['interests'] ) ) : '';
+				$facebook = ( empty($_POST['facebook']) ) ? '' : trim(strip_tags( (string) $_POST['facebook'] ) );
+                $website = ( empty($_POST['website']) ) ? '' : trim(strip_tags( (string) $_POST['website'] ) );
+                $location = ( empty($_POST['location']) ) ? '' : trim(strip_tags( (string) $_POST['location'] ) );
+                $occupation = ( empty($_POST['occupation']) ) ? '' : trim(strip_tags( (string) $_POST['occupation'] ) );
+                $interests = ( empty($_POST['interests']) ) ? '' : trim(strip_tags( (string) $_POST['interests'] ) );
 /*****[BEGIN]******************************************
  [ Mod:    Gender                              v1.2.6 ]
  ******************************************************/
-                $gender = ( isset($HTTP_POST_VARS['gender']) ) ? intval ($HTTP_POST_VARS['gender']) : 0;
+                $gender = ( isset($_POST['gender']) ) ? (int) $_POST['gender'] : 0;
 /*****[END]********************************************
  [ Mod:    Gender                              v1.2.6 ]
  ******************************************************/
 /*****[BEGIN]******************************************
  [ Mod:    At a Glance Options                 v1.0.0 ]
  *****************************************************/
-                $glance_show = ( !empty($HTTP_POST_VARS['glance_show']) ) ? trim(strip_tags( $HTTP_POST_VARS['glance_show'] ) ) : '';
+                $glance_show = ( empty($_POST['glance_show']) ) ? '' : trim(strip_tags( (string) $_POST['glance_show'] ) );
 /*****[END]********************************************
  [ Mod:    At a Glance Options                 v1.0.0 ]
  *****************************************************/
 /*****[BEGIN]******************************************
  [ Mod:    Edit User Post Count                v1.0.0 ]
  *****************************************************/
-                $titanium_user_posts = ( !empty($HTTP_POST_VARS['user_posts']) ) ? trim(strip_tags( $HTTP_POST_VARS['user_posts'] ) ) : 0;
+                $user_posts = ( empty($_POST['user_posts']) ) ? 0 : trim(strip_tags( (string) $_POST['user_posts'] ) );
 /*****[END]********************************************
  [ Mod:    Edit User Post Count                v1.0.0 ]
  *****************************************************/
  /*****[BEGIN]******************************************
  [ Mod:    Hide Images                         v1.0.0 ]
  ******************************************************/
-                $hide_images = ( !empty($HTTP_POST_VARS['hide_images']) ) ? trim(strip_tags( $HTTP_POST_VARS['hide_images'] ) ) : 0;
+                $hide_images = ( empty($_POST['hide_images']) ) ? 0 : trim(strip_tags( (string) $_POST['hide_images'] ) );
 /*****[END]********************************************
  [ Mod:    Hide Images                         v1.0.0 ]
  ******************************************************/
-                $signature = ( !empty($HTTP_POST_VARS['signature']) ) ? trim(str_replace('<br />', "\n", $HTTP_POST_VARS['signature'] ) ) : '';
+                $signature = ( empty($_POST['signature']) ) ? '' : trim(str_replace('<br />', "\n", (string) $_POST['signature'] ) );
 /*****[BEGIN]******************************************
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-                $titanium_user_admin_notes = ( !empty($HTTP_POST_VARS['user_admin_notes']) ) ? trim(str_replace('<br />', "\n", $HTTP_POST_VARS['user_admin_notes'] ) ) : '';
+                $user_admin_notes = ( empty($_POST['user_admin_notes']) ) ? '' : trim(str_replace('<br />', "\n", (string) $_POST['user_admin_notes'] ) );
 /*****[END]********************************************
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
@@ -408,13 +414,13 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-                $xdata = array();
+                $xdata = [];
                 $xd_meta = get_xd_metadata();
                 foreach ($xd_meta as $name => $info)
                 {
-                    if ( !empty($HTTP_POST_VARS[$name]) && $info['handle_input'] )
+                    if ( !empty($_POST[$name]) && $info['handle_input'] )
                     {
-                        $xdata[$name] = trim(str_replace('<br />', "\n", $HTTP_POST_VARS[$name] ) );
+                        $xdata[$name] = trim(str_replace('<br />', "\n", (string) $_POST[$name] ) );
                     }
                 }
 /*****[END]********************************************
@@ -423,106 +429,110 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 
                 validate_optional_fields($website, $location, $occupation, $interests, $signature, $facebook);
 
-                $viewemail = ( isset( $HTTP_POST_VARS['viewemail']) ) ? ( ( $HTTP_POST_VARS['viewemail'] ) ? TRUE : 0 ) : 0;
-                $allowviewonline = ( isset( $HTTP_POST_VARS['hideonline']) ) ? ( ( $HTTP_POST_VARS['hideonline'] ) ? 0 : TRUE ) : TRUE;
-                $notifyreply = ( isset( $HTTP_POST_VARS['notifyreply']) ) ? ( ( $HTTP_POST_VARS['notifyreply'] ) ? TRUE : 0 ) : 0;
-                $notifypm = ( isset( $HTTP_POST_VARS['notifypm']) ) ? ( ( $HTTP_POST_VARS['notifypm'] ) ? TRUE : 0 ) : TRUE;
-                $popuppm = ( isset( $HTTP_POST_VARS['popup_pm']) ) ? ( ( $HTTP_POST_VARS['popup_pm'] ) ? TRUE : 0 ) : TRUE;
-                $attachsig = ( isset( $HTTP_POST_VARS['attachsig']) ) ? ( ( $HTTP_POST_VARS['attachsig'] ) ? TRUE : 0 ) : 0;
+                $viewemail = ( isset( $_POST['viewemail']) ) ? ( ( $_POST['viewemail'] ) ? TRUE : 0 ) : 0;
+                $allowviewonline = ( isset( $_POST['hideonline']) ) ? ( ( $_POST['hideonline'] ) ? 0 : TRUE ) : TRUE;
+                $notifyreply = ( isset( $_POST['notifyreply']) ) ? ( ( $_POST['notifyreply'] ) ? TRUE : 0 ) : 0;
+                $notifypm = ( isset( $_POST['notifypm']) ) ? ( ( $_POST['notifypm'] ) ? TRUE : 0 ) : TRUE;
+                $popuppm = ( isset( $_POST['popup_pm']) ) ? ( ( $_POST['popup_pm'] ) ? TRUE : 0 ) : TRUE;
+                $attachsig = ( isset( $_POST['attachsig']) ) ? ( ( $_POST['attachsig'] ) ? TRUE : 0 ) : 0;
 
-                $allowhtml = ( isset( $HTTP_POST_VARS['allowhtml']) ) ? intval( $HTTP_POST_VARS['allowhtml'] ) : $phpbb2_board_config['allow_html'];
-                $allowbbcode = ( isset( $HTTP_POST_VARS['allowbbcode']) ) ? intval( $HTTP_POST_VARS['allowbbcode'] ) : $phpbb2_board_config['allow_bbcode'];
-                $allowsmilies = ( isset( $HTTP_POST_VARS['allowsmilies']) ) ? intval( $HTTP_POST_VARS['allowsmilies'] ) : $phpbb2_board_config['allow_smilies'];
+                $allowhtml = ( isset( $_POST['allowhtml']) ) ? (int) $_POST['allowhtml'] : $board_config['allow_html'];
+                $allowbbcode = ( isset( $_POST['allowbbcode']) ) ? (int) $_POST['allowbbcode'] : $board_config['allow_bbcode'];
+                $allowsmilies = ( isset( $_POST['allowsmilies']) ) ? (int) $_POST['allowsmilies'] : $board_config['allow_smilies'];
 /*****[BEGIN]******************************************
  [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
  ******************************************************/
-                $showavatars = ( isset( $HTTP_POST_VARS['showavatars']) ) ? intval( $HTTP_POST_VARS['showavatars'] ) : $phpbb2_board_config['showavatars'];
-                $showsignatures = ( isset( $HTTP_POST_VARS['showsignatures']) ) ? intval( $HTTP_POST_VARS['showsignatures'] ) : $phpbb2_board_config['showsignatures'];
+                $showavatars = ( isset( $_POST['showavatars']) ) ? (int) $_POST['showavatars'] : $board_config['showavatars'];
+                $showsignatures = ( isset( $_POST['showsignatures']) ) ? (int) $_POST['showsignatures'] : $board_config['showsignatures'];
 /*****[END]********************************************
  [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
  ******************************************************/
 
-                $titanium_user_style = ( $HTTP_POST_VARS['theme'] ) ?  $HTTP_POST_VARS['theme'] : '';
+                $user_style = $_POST['theme'] ?: '';
 
 /*****[BEGIN]******************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-                $titanium_user_wordwrap = ( $HTTP_POST_VARS['user_wordwrap'] ) ? intval( $HTTP_POST_VARS['user_wordwrap'] ) : $phpbb2_board_config['wrap_def'];
+                $user_wordwrap = ( $_POST['user_wordwrap'] ) ? (int) $_POST['user_wordwrap'] : $board_config['wrap_def'];
 /*****[END]********************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-                $titanium_user_lang = ( $HTTP_POST_VARS['language'] ) ? $HTTP_POST_VARS['language'] : $phpbb2_board_config['default_lang'];
-                $titanium_user_timezone = ( isset( $HTTP_POST_VARS['timezone']) ) ? doubleval( $HTTP_POST_VARS['timezone'] ) : $phpbb2_board_config['board_timezone'];
+                $user_lang = $_POST['language'] ?: $board_config['default_lang'];
+                $user_timezone = ( isset( $_POST['timezone']) ) ? (float) $_POST['timezone'] : $board_config['board_timezone'];
 /*****[BEGIN]******************************************
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
-				$titanium_user_flag = ( !empty($HTTP_POST_VARS['user_flag']) ) ? $HTTP_POST_VARS['user_flag'] : '' ;
+				$user_flag = ( empty($_POST['user_flag']) ) ? '' : $_POST['user_flag'] ;
 /*****[END]********************************************
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-                $time_mode = ( isset($HTTP_POST_VARS['time_mode']) ) ? intval($HTTP_POST_VARS['time_mode']) : $phpbb2_board_config['default_time_mode'];
-                if ( !preg_match("/[^0-9]/i",$HTTP_POST_VARS['dst_time_lag']) )
+                $time_mode = ( isset($_POST['time_mode']) ) ? (int) $_POST['time_mode'] : $board_config['default_time_mode'];
+                if ( !preg_match("/[^0-9]/i",(string) $_POST['dst_time_lag']) )
                 {
-                    $dst_time_lag = ( isset($HTTP_POST_VARS['dst_time_lag']) ) ? intval($HTTP_POST_VARS['dst_time_lag']) : $phpbb2_board_config['default_dst_time_lag'];
+                    $dst_time_lag = ( isset($_POST['dst_time_lag']) ) ? (int) $_POST['dst_time_lag'] : $board_config['default_dst_time_lag'];
                 }
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
-                $titanium_user_template = ( $HTTP_POST_VARS['template'] ) ? $HTTP_POST_VARS['template'] : $phpbb2_board_config['board_template'];
-                $titanium_user_dateformat = ( $HTTP_POST_VARS['dateformat'] ) ? trim( $HTTP_POST_VARS['dateformat'] ) : $phpbb2_board_config['default_dateformat'];
+                $user_template = $_POST['template'] = $_POST['template'] ?? '' ?: $board_config['board_template'] = $board_config['board_template'] ?? '';
+                $user_dateformat = ( $_POST['dateformat'] ) ? trim( (string) $_POST['dateformat'] ) : $board_config['default_dateformat'];
 
 /*****[BEGIN]******************************************
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
-                $titanium_user_show_quickreply = ( isset( $HTTP_POST_VARS['show_quickreply'] ) ) ? intval( $HTTP_POST_VARS['show_quickreply'] ) : 1;
-                $titanium_user_quickreply_mode = ( isset( $HTTP_POST_VARS['quickreply_mode'] ) ) ? ( ( $HTTP_POST_VARS['quickreply_mode'] ) ? TRUE : 0 ) : TRUE;
-                $titanium_user_open_quickreply = ( isset( $HTTP_POST_VARS['open_quickreply'] ) ) ? ( ( $HTTP_POST_VARS['open_quickreply'] ) ? TRUE : 0 ) : TRUE;
+                $user_show_quickreply = ( isset( $_POST['show_quickreply'] ) ) ? (int) $_POST['show_quickreply'] : 1;
+                $user_quickreply_mode = ( isset( $_POST['quickreply_mode'] ) ) ? ( ( $_POST['quickreply_mode'] ) ? TRUE : 0 ) : TRUE;
+                $user_open_quickreply = ( isset( $_POST['open_quickreply'] ) ) ? ( ( $_POST['open_quickreply'] ) ? TRUE : 0 ) : TRUE;
 /*****[END]********************************************
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
 
-                $titanium_user_avatar_local = ( isset( $HTTP_POST_VARS['avatarselect'] ) && !empty($HTTP_POST_VARS['submitavatar'] ) && $phpbb2_board_config['allow_avatar_local'] ) ? $HTTP_POST_VARS['avatarselect'] : ( ( isset( $HTTP_POST_VARS['avatarlocal'] )  ) ? $HTTP_POST_VARS['avatarlocal'] : '' );
-                $titanium_user_avatar_category = ( isset($HTTP_POST_VARS['avatarcatname']) && $phpbb2_board_config['allow_avatar_local'] ) ? htmlspecialchars($HTTP_POST_VARS['avatarcatname']) : '' ;
+                $user_avatar_local = ( isset( $_POST['avatarselect'] ) && !empty($_POST['submitavatar'] ) && $board_config['allow_avatar_local'] ) ? $_POST['avatarselect'] : ( $_POST['avatarlocal'] ?? '' );
+                $user_avatar_category = ( isset($_POST['avatarcatname']) && $board_config['allow_avatar_local'] ) ? htmlspecialchars((string) $_POST['avatarcatname']) : '' ;
 
-                $titanium_user_avatar_remoteurl = ( !empty($HTTP_POST_VARS['avatarremoteurl']) ) ? trim( $HTTP_POST_VARS['avatarremoteurl'] ) : '';
-                $titanium_user_avatar_url = ( !empty($HTTP_POST_VARS['avatarurl']) ) ? trim( $HTTP_POST_VARS['avatarurl'] ) : '';
-                $titanium_user_avatar_loc = ( $HTTP_POST_FILES['avatar']['tmp_name'] != "none") ? $HTTP_POST_FILES['avatar']['tmp_name'] : '';
-                $titanium_user_avatar_name = ( !empty($HTTP_POST_FILES['avatar']['name']) ) ? $HTTP_POST_FILES['avatar']['name'] : '';
-                $titanium_user_avatar_size = ( !empty($HTTP_POST_FILES['avatar']['size']) ) ? $HTTP_POST_FILES['avatar']['size'] : 0;
-                $titanium_user_avatar_filetype = ( !empty($HTTP_POST_FILES['avatar']['type']) ) ? $HTTP_POST_FILES['avatar']['type'] : '';
+                $user_avatar_remoteurl = ( empty($_POST['avatarremoteurl']) ) ? '' : trim( (string) $_POST['avatarremoteurl'] );
+                $user_avatar_url = ( empty($_POST['avatarurl']) ) ? '' : trim( (string) $_POST['avatarurl'] );
+                
+				if(!isset($_FILES['avatar']['tmp_name']))
+				$_FILES['avatar']['tmp_name'] = '';
+				$user_avatar_loc = ( $_FILES['avatar']['tmp_name'] != "none") ? $_FILES['avatar']['tmp_name'] : '';
+                
+				$user_avatar_name = ( empty($_FILES['avatar']['name']) ) ? '' : $_FILES['avatar']['name'];
+                $user_avatar_size = ( empty($_FILES['avatar']['size']) ) ? 0 : $_FILES['avatar']['size'];
+                $user_avatar_filetype = ( empty($_FILES['avatar']['type']) ) ? '' : $_FILES['avatar']['type'];
 
-                $titanium_user_avatar = ( empty($titanium_user_avatar_loc) ) ? $this_userdata['user_avatar'] : '';
-                $titanium_user_avatar_type = ( empty($titanium_user_avatar_loc) ) ? $this_userdata['user_avatar_type'] : '';
+                $user_avatar = ( empty($user_avatar_loc) ) ? $this_userdata['user_avatar'] : '';
+                $user_avatar_type = ( empty($user_avatar_loc) ) ? $this_userdata['user_avatar_type'] : '';
 
-                $titanium_user_status = ( !empty($HTTP_POST_VARS['user_status']) ) ? intval( $HTTP_POST_VARS['user_status'] ) : 0;
-                $titanium_user_allowpm = ( !empty($HTTP_POST_VARS['user_allowpm']) ) ? intval( $HTTP_POST_VARS['user_allowpm'] ) : 0;
+                $user_status = ( empty($_POST['user_status']) ) ? 0 : (int) $_POST['user_status'];
+                $user_allowpm = ( empty($_POST['user_allowpm']) ) ? 0 : (int) $_POST['user_allowpm'];
 
-                $titanium_user_rank = ( !empty($HTTP_POST_VARS['user_rank']) ) ? intval( $HTTP_POST_VARS['user_rank'] ) : 0;
+                $user_rank = ( empty($_POST['user_rank']) ) ? 0 : (int) $_POST['user_rank'];
 /*****[BEGIN]******************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
-				$titanium_user_rank2 = ( !empty($HTTP_POST_VARS['user_rank2']) ) ? intval( $HTTP_POST_VARS['user_rank2'] ) : 0;
-				$titanium_user_rank3 = ( !empty($HTTP_POST_VARS['user_rank3']) ) ? intval( $HTTP_POST_VARS['user_rank3'] ) : 0;
-				$titanium_user_rank4 = ( !empty($HTTP_POST_VARS['user_rank4']) ) ? intval( $HTTP_POST_VARS['user_rank4'] ) : 0;
-				$titanium_user_rank5 = ( !empty($HTTP_POST_VARS['user_rank5']) ) ? intval( $HTTP_POST_VARS['user_rank5'] ) : 0;
+				$user_rank2 = ( empty($_POST['user_rank2']) ) ? 0 : (int) $_POST['user_rank2'];
+				$user_rank3 = ( empty($_POST['user_rank3']) ) ? 0 : (int) $_POST['user_rank3'];
+				$user_rank4 = ( empty($_POST['user_rank4']) ) ? 0 : (int) $_POST['user_rank4'];
+				$user_rank5 = ( empty($_POST['user_rank5']) ) ? 0 : (int) $_POST['user_rank5'];
 /*****[END]********************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
-                $titanium_user_allowavatar = ( !empty($HTTP_POST_VARS['user_allowavatar']) ) ? intval( $HTTP_POST_VARS['user_allowavatar'] ) : 0;
+                $user_allowavatar = ( empty($_POST['user_allowavatar']) ) ? 0 : (int) $_POST['user_allowavatar'];
 
-                if( isset( $HTTP_POST_VARS['avatargallery'] ) || isset( $HTTP_POST_VARS['submitavatar'] ) || isset( $HTTP_POST_VARS['cancelavatar'] ) )
+                if( isset( $_POST['avatargallery'] ) || isset( $_POST['submitavatar'] ) || isset( $_POST['cancelavatar'] ) )
                 {
-                        $titanium_username = stripslashes($titanium_username);
+                        $username = stripslashes((string) $username);
                         $email = stripslashes($email);
                         $password = '';
                         $password_confirm = '';
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-                        $reputation = intval(stripslashes($reputation));
+                        $reputation = (int) stripslashes($reputation);
 /*****[END]********************************************
  [ Mod:     Users Reputations System           v1.0.0 ]
  ******************************************************/
@@ -541,7 +551,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 /*****[BEGIN]******************************************
  [ Mod:    Edit User Post Count                v1.0.0 ]
  *****************************************************/
-                        $titanium_user_posts = intval(stripslashes($titanium_user_posts));
+                        $user_posts = (int) stripslashes($user_posts);
 /*****[END]********************************************
  [ Mod:    Edit User Post Count                v1.0.0 ]
  *****************************************************/
@@ -549,7 +559,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 /*****[BEGIN]******************************************
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-                        $titanium_user_admin_notes = htmlspecialchars(stripslashes($titanium_user_admin_notes));
+                        $user_admin_notes = htmlspecialchars(stripslashes($user_admin_notes));
 /*****[END]********************************************
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
@@ -557,467 +567,423 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-                        $func = create_function('$a', 'return htmlspecialchars(stripslashes($a));');
+                        $func = fn($a): string => htmlspecialchars(stripslashes((string) $a));
                         $xdata = array_map($func, $xdata);
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
 
-                        $titanium_user_lang = stripslashes($titanium_user_lang);
-                        $titanium_user_dateformat = htmlspecialchars(stripslashes($titanium_user_dateformat));
+                        $user_lang = stripslashes((string) $user_lang);
+                        $user_dateformat = htmlspecialchars(stripslashes((string) $user_dateformat));
 
-                        if ( !isset($HTTP_POST_VARS['cancelavatar']))
+                        if ( !isset($_POST['cancelavatar']))
                         {
-                                $titanium_user_avatar = $titanium_user_avatar_category . '/' . $titanium_user_avatar_local;
-                                $titanium_user_avatar_type = USER_AVATAR_GALLERY;
+                                $user_avatar = $user_avatar_category . '/' . $user_avatar_local;
+                                $user_avatar_type = USER_AVATAR_GALLERY;
                         }
                 }
         }
 
-        if( isset( $HTTP_POST_VARS['submit'] ) )
-        {
-                include("../../../includes/usercp_avatar.php");
+        if (isset( $_POST['submit'] )) {
+            include(__DIR__ . "/../../../includes/usercp_avatar.php");
+            $error = FALSE;
+            if (stripslashes((string) $username) != $this_userdata['username'])
+            {
+                    unset($rename_user);
 
-                $error = FALSE;
-
-                if (stripslashes($titanium_username) != $this_userdata['username'])
-                {
-                        unset($rename_user);
-
-                        if ( stripslashes(strtolower($titanium_username)) != strtolower($this_userdata['username']) )
-                        {
-                                $result = validate_username($titanium_username);
-                                if ( $result['error'] )
-                                {
-                                        $error = TRUE;
-                                        $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $result['error_msg'];
-                                }
-                                else if ( strtolower(str_replace("\\'", "''", $titanium_username)) == strtolower($userdata['username']) )
-                                {
-                                        $error = TRUE;
-                                        $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $titanium_lang['Username_taken'];
-                                }
-                        }
-
-                        if (!$error)
-                        {
-                                $titanium_username_sql = "username = '" . str_replace("\\'", "''", $titanium_username) . "', ";
-                                $rename_user = $titanium_username; // Used for renaming usergroup
-                        }
-                }
-
-                $passwd_sql = '';
-                if( !empty($password) && !empty($password_confirm) )
-                {
-                        //
-                        // Awww, the user wants to change their password, isn't that cute..
-                        //
-                        if($password != $password_confirm)
-                        {
-                                $error = TRUE;
-                                $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $titanium_lang['Password_mismatch'];
-                        }
-                        else
-                        {
-/*****[BEGIN]******************************************
- [ Base:     Evolution Functions               v1.5.0 ]
- ******************************************************/
-                                $password = md5($password);
-                                $passwd_sql = "user_password = '$password', ";
-/*****[END]********************************************
- [ Base:     Evolution Functions               v1.5.0 ]
- ******************************************************/
-                        }
-                }
-                else if( $password && !$password_confirm )
-                {
-                        $error = TRUE;
-                        $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $titanium_lang['Password_mismatch'];
-                }
-                else if( !$password && $password_confirm )
-                {
-                        $error = TRUE;
-                        $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $titanium_lang['Password_mismatch'];
-                }
-				
-/*****[BEGIN]******************************************
- [ Mod:  Birthdays                             v3.0.0 ]
- ******************************************************/
-				$empty_month = empty($bday_month) || $bday_month == $titanium_lang['Default_Month'];
-				$empty_day = empty($bday_day) || $bday_day == $titanium_lang['Default_Day'];
-				$empty_year = empty($phpbb2_bday_year) || $phpbb2_bday_year == $titanium_lang['Default_Year'];
-		
-				$temp_month = $empty_month ? 1 : $bday_month;
-				$temp_day = $empty_day ? 1 : $bday_day;
-				$temp_year = $empty_year ? 4 : $phpbb2_bday_year;
-		
-				switch (true)
-				{
-					case $phpbb2_board_config['bday_year'] && (($empty_month != $empty_day) || ($empty_day != $empty_year)):
-					case !$phpbb2_board_config['bday_year'] && (($empty_month != $empty_day) || ($empty_day && !$empty_year)):
-					case !@checkdate( $temp_month, $temp_day, $temp_year ) && (!$phpbb2_board_config['bday_lock'] || $userdata['user_birthday'] == 0):
-						$error = TRUE;
-						$error_msg .= ( ( !empty($error_msg) ) ? '<br />' : '' ) . $titanium_lang['Birthday_invalid'];
-				}
-		
-				$titanium_user_birthday = sprintf('%02d%02d%04d',$bday_month,$bday_day,$phpbb2_bday_year);
-				$titanium_user_birthday2 = ( $birthday_display != BIRTHDAY_DATE && $birthday_display != BIRTHDAY_NONE && !$empty_month && !$empty_day && !$empty_year ) ? sprintf('%04d%02d%02d',$phpbb2_bday_year,$bday_month,$bday_day) : 'NULL';
-		
-				if ( $birthday_greeting && !( $phpbb2_board_config['bday_greeting'] & 1<<($birthday_greeting-1) ) )
-				{
-					$birthday_greeting = 0;
-				}
-/*****[END]********************************************
- [ Mod:  Birthdays                             v3.0.0 ]
- ******************************************************/
-
-                if ($signature != '')
-                {
-                        $sig_length_check = preg_replace('/(\[.*?)(=.*?)\]/is', '\\1]', stripslashes($signature));
-                        if ( $allowhtml )
-                        {
-                                $sig_length_check = preg_replace('/(\<.*?)(=.*?)( .*?=.*?)?([ \/]?\>)/is', '\\1\\3\\4', $sig_length_check);
-                        }
-
-                        // Only create a new bbcode_uid when there was no uid yet.
-                        if ( $signature_bbcode_uid == '' )
-                        {
-                                $signature_bbcode_uid = ( $allowbbcode ) ? make_bbcode_uid() : '';
-                        }
-                        $signature = prepare_message($signature, $allowhtml, $allowbbcode, $allowsmilies, $signature_bbcode_uid);
-
-                        if ( strlen($sig_length_check) > $phpbb2_board_config['max_sig_chars'] )
-                        {
-                                $error = TRUE;
-                                $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . $titanium_lang['Signature_too_long'];
-                        }
-                }
-/*****[BEGIN]******************************************
- [ Mod:    Advanced Time Management            v2.2.0 ]
- ******************************************************/
-                if ( preg_match("/[^0-9]/i",$HTTP_POST_VARS['dst_time_lag']) || $dst_time_lag<0 || $dst_time_lag>120 )
-                {
-                    $error = TRUE;
-                    $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $titanium_lang['dst_time_lag_error'];
-                }
-/*****[END]********************************************
- [ Mod:    Advanced Time Management            v2.2.0 ]
- ******************************************************/
-
-/*****[BEGIN]******************************************
- [ Mod:     XData                              v1.0.3 ]
- ******************************************************/
-                $xd_meta = get_xd_metadata();
-                while ( list($code_name, $meta) = each($xd_meta) )
-                {
-                    if ( $meta['handle_input'] && ( ( $mode == 'register' && $meta['default_auth'] == XD_AUTH_ALLOW ) || xdata_auth($code_name, $userdata['user_id']) ) )
+                    if ( stripslashes(strtolower((string) $username)) !== strtolower((string) $this_userdata['username']) )
                     {
-                        if ( ($meta['field_length'] > 0) && (strlen($xdata[$code_name]) > $meta['field_length']) )
-                        {
-                               $error = TRUE;
-                            $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($titanium_lang['XData_too_long'], $meta['field_name']);
-                        }
-
-                        if ( ( count($meta['values_array']) > 0 ) && ( ! in_array($xdata[$code_name], $meta['values_array']) ) )
-                        {
-                               $error = TRUE;
-                            $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($titanium_lang['XData_invalid'], $meta['field_name']);
-                        }
-
-                        if ( ( strlen($meta['field_regexp']) > 0 ) && ( ! preg_match($meta['field_regexp'], $xdata[$code_name]) ) )
-                        {
-                            $error = TRUE;
-                            $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($titanium_lang['XData_invalid'], $meta['field_name']);
-                        }
-
-                        if ( $meta['allow_bbcode'] )
-                        {
-                            if ( $signature_bbcode_uid == '' )
-                            {
-                                $signature_bbcode_uid = ( $allowbbcode ) ? make_bbcode_uid() : '';
-                            }
-                        }
-
-                        $xdata[$code_name] = prepare_message($xdata[$code_name], $meta['allow_html'], $meta['allow_bbcode'], $meta['allow_smilies'], $signature_bbcode_uid);
-                      }
-                }
-/*****[END]********************************************
- [ Mod:     XData                              v1.0.3 ]
- ******************************************************/
-                //
-                // Avatar stuff
-                //
-                $avatar_sql = "";
-                if( isset($HTTP_POST_VARS['avatardel']) )
-                {
-                        if( $this_userdata['user_avatar_type'] == USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "" )
-                        {
-                                if( @file_exists(@phpbb_realpath('./../' . $phpbb2_board_config['avatar_path'] . "/" . $this_userdata['user_avatar'])) )
-					            {
-               						@unlink('./../' . $phpbb2_board_config['avatar_path'] . "/" . $this_userdata['user_avatar']);
-                                }
-                        }
-                        $avatar_sql = ", user_avatar = '', user_avatar_type = " . USER_AVATAR_NONE;
-                }
-                else if( ( $titanium_user_avatar_loc != "" || !empty($titanium_user_avatar_url) ) && !$error )
-                {
-                        //
-                        // Only allow one type of upload, either a
-                        // filename or a URL
-                        //
-                        if( !empty($titanium_user_avatar_loc) && !empty($titanium_user_avatar_url) )
-                        {
+                            $result = validate_username($username);
+                            if ($result['error']) {
                                 $error = TRUE;
-                                if( isset($error_msg) )
-                                {
-                                        $error_msg .= "<br />";
-                                }
-                                $error_msg .= $titanium_lang['Only_one_avatar'];
-                        }
+                                $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $result['error_msg'];
+                            } elseif (strtolower(str_replace("\\'", "''", (string) $username)) === strtolower((string) $userdata['username'])) {
+                                $error = TRUE;
+                                $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Username_taken'];
+                            }
+                    }
 
-                        if( $titanium_user_avatar_loc != "" )
-                        {
-                                if( file_exists(@phpbb_realpath($titanium_user_avatar_loc)) && preg_match("/\.(jpg|gif|png)$/i", $titanium_user_avatar_name) )
-                                {
-                                        if( $titanium_user_avatar_size <= $phpbb2_board_config['avatar_filesize'] && $titanium_user_avatar_size > 0)
-                                        {
-                                                $error_type = false;
-
-                                                //
-                                                // Opera appends the image name after the type, not big, not clever!
-                                                //
-                                                preg_match("'image\/[x\-]*([a-z]+)'", $titanium_user_avatar_filetype, $titanium_user_avatar_filetype);
-                                                $titanium_user_avatar_filetype = $titanium_user_avatar_filetype[1];
-
-                                                switch( $titanium_user_avatar_filetype )
-                                                {
-                                                        case "jpeg":
-                                                        case "pjpeg":
-                                                        case "jpg":
-                                                                $imgtype = '.jpg';
-                                                                break;
-                                                        case "gif":
-                                                                $imgtype = '.gif';
-                                                                break;
-                                                        case "png":
-                                                                $imgtype = '.png';
-                                                                break;
-                                                        default:
-                                                                $error = true;
-                                                                $error_msg = (!empty($error_msg)) ? $error_msg . "<br />" . $titanium_lang['Avatar_filetype'] : $titanium_lang['Avatar_filetype'];
-                                                                break;
-                                                }
-
-                                                if( !$error )
-                                                {
-                                                        list($width, $height) = @getimagesize($titanium_user_avatar_loc);
-
-                                                        if( $width <= $phpbb2_board_config['avatar_max_width'] && $height <= $phpbb2_board_config['avatar_max_height'] )
-                                                        {
-                                                                $titanium_user_id = $this_userdata['user_id'];
-
-                                                                $avatar_filename = $titanium_user_id . $imgtype;
-
-                                                                if( $this_userdata['user_avatar_type'] == USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "" )
-                                                                {
-                                                                        if( @file_exists(@phpbb_realpath("./../" . $phpbb2_board_config['avatar_path'] . "/" . $this_userdata['user_avatar'])) )
-                                                                        {
-                                                                                @unlink("./../" . $phpbb2_board_config['avatar_path'] . "/". $this_userdata['user_avatar']);
-                                                                        }
-                                                                }
-                                                                @copy($titanium_user_avatar_loc, "./../" . $phpbb2_board_config['avatar_path'] . "/$avatar_filename");
-
-                                                                $avatar_sql = ", user_avatar = '$avatar_filename', user_avatar_type = " . USER_AVATAR_UPLOAD;
-                                                        }
-                                                        else
-                                                        {
-                                                                $l_avatar_size = sprintf($titanium_lang['Avatar_imagesize'], $phpbb2_board_config['avatar_max_width'], $phpbb2_board_config['avatar_max_height']);
-
-                                                                $error = true;
-                                                                $error_msg = ( !empty($error_msg) ) ? $error_msg . "<br />" . $l_avatar_size : $l_avatar_size;
-                                                        }
-                                                }
-                                        }
-                                        else
-                                        {
-                                                $l_avatar_size = sprintf($titanium_lang['Avatar_filesize'], round($phpbb2_board_config['avatar_filesize'] / 1024));
-
-                                                $error = true;
-                                                $error_msg = ( !empty($error_msg) ) ? $error_msg . "<br />" . $l_avatar_size : $l_avatar_size;
-                                        }
-                                }
-                                else
-                                {
-                                        $error = true;
-                                        $error_msg = ( !empty($error_msg) ) ? $error_msg . "<br />" . $titanium_lang['Avatar_filetype'] : $titanium_lang['Avatar_filetype'];
-                                }
-                        }
-                        else if( !empty($titanium_user_avatar_url) )
-                        {
-                                //
-                                // First check what port we should connect
-                                // to, look for a :[xxxx]/ or, if that doesn't
-                                // exist assume port 80 (http)
-                                //
-                                preg_match("/^(http:\/\/)?([\w\-\.]+)\:?([0-9]*)\/(.*)$/", $titanium_user_avatar_url, $url_ary);
-
-                                if( !empty($url_ary[4]) )
-                                {
-                                        $port = (!empty($url_ary[3])) ? $url_ary[3] : 80;
-
-                                        $fsock = @fsockopen($url_ary[2], $port, $errno, $errstr);
-                                        if( $fsock )
-                                        {
-                                                $base_get = "/" . $url_ary[4];
-
-                                                //
-                                                // Uses HTTP 1.1, could use HTTP 1.0 ...
-                                                //
-                                                @fputs($fsock, "GET $base_get HTTP/1.1\r\n");
-                                                @fputs($fsock, "HOST: " . $url_ary[2] . "\r\n");
-                                                @fputs($fsock, "Connection: close\r\n\r\n");
-
-                                                unset($avatar_data);
-                                                while( !@feof($fsock) )
-                                                {
-                                                        $avatar_data .= @fread($fsock, $phpbb2_board_config['avatar_filesize']);
-                                                }
-                                                @fclose($fsock);
-
-                                                if( preg_match("/Content-Length\: ([0-9]+)[^\/ ][\s]+/i", $avatar_data, $file_data1) && preg_match("/Content-Type\: image\/[x\-]*([a-z]+)[\s]+/i", $avatar_data, $file_data2) )
-                                                {
-                                                        $file_size = $file_data1[1];
-                                                        $file_type = $file_data2[1];
-
-                                                        switch( $file_type )
-                                                        {
-                                                                case "jpeg":
-                                                                case "pjpeg":
-                                                                case "jpg":
-                                                                        $imgtype = '.jpg';
-                                                                        break;
-                                                                case "gif":
-                                                                        $imgtype = '.gif';
-                                                                        break;
-                                                                case "png":
-                                                                        $imgtype = '.png';
-                                                                        break;
-                                                                default:
-                                                                        $error = true;
-                                                                        $error_msg = (!empty($error_msg)) ? $error_msg . "<br />" . $titanium_lang['Avatar_filetype'] : $titanium_lang['Avatar_filetype'];
-                                                                        break;
-                                                        }
-
-                                                        if( !$error && $file_size > 0 && $file_size < $phpbb2_board_config['avatar_filesize'] )
-                                                        {
-                                                                $avatar_data = substr($avatar_data, strlen($avatar_data) - $file_size, $file_size);
-
-                                                                $tmp_filename = tempnam ("/tmp", $this_userdata['user_id'] . "-");
-                                                                $fptr = @fopen($tmp_filename, "wb");
-                                                                $bytes_written = @fwrite($fptr, $avatar_data, $file_size);
-                                                                @fclose($fptr);
-
-                                                                if( $bytes_written == $file_size )
-                                                                {
-                                                                        list($width, $height) = @getimagesize($tmp_filename);
-
-                                                                        if( $width <= $phpbb2_board_config['avatar_max_width'] && $height <= $phpbb2_board_config['avatar_max_height'] )
-                                                                        {
-                                                                                $titanium_user_id = $this_userdata['user_id'];
-
-                                                                                $avatar_filename = $titanium_user_id . $imgtype;
-
-                                                                                if( $this_userdata['user_avatar_type'] == USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "")
-                                                                                {
-                                                                                        if( file_exists(@phpbb_realpath("./../" . $phpbb2_board_config['avatar_path'] . "/" . $this_userdata['user_avatar'])) )
-                                                                                        {
-                                                                                                @unlink("./../" . $phpbb2_board_config['avatar_path'] . "/" . $this_userdata['user_avatar']);
-                                                                                        }
-                                                                                }
-                                                                                @copy($tmp_filename, "./../" . $phpbb2_board_config['avatar_path'] . "/$avatar_filename");
-                                                                                @unlink($tmp_filename);
-
-                                                                                $avatar_sql = ", user_avatar = '$avatar_filename', user_avatar_type = " . USER_AVATAR_UPLOAD;
-                                                                        }
-                                                                        else
-                                                                        {
-                                                                                $l_avatar_size = sprintf($titanium_lang['Avatar_imagesize'], $phpbb2_board_config['avatar_max_width'], $phpbb2_board_config['avatar_max_height']);
-
-                                                                                $error = true;
-                                                                                $error_msg = ( !empty($error_msg) ) ? $error_msg . "<br />" . $l_avatar_size : $l_avatar_size;
-                                                                        }
-                                                                }
-                                                                else
-                                                                {
-                                                                        //
-                                                                        // Error writing file
-                                                                        //
-                                                                        @unlink($tmp_filename);
-                                                                        message_die(GENERAL_ERROR, "Could not write avatar file to local storage. Please contact the board administrator with this message", "", __LINE__, __FILE__);
-                                                                }
-                                                        }
-                                                }
-                                                else
-                                                {
-                                                        //
-                                                        // No data
-                                                        //
-                                                        $error = true;
-                                                        $error_msg = ( !empty($error_msg) ) ? $error_msg . "<br />" . $titanium_lang['File_no_data'] : $titanium_lang['File_no_data'];
-                                                }
-                                        }
-                                        else
-                                        {
-                                                //
-                                                // No connection
-                                                //
-                                                $error = true;
-                                                $error_msg = ( !empty($error_msg) ) ? $error_msg . "<br />" . $titanium_lang['No_connection_URL'] : $titanium_lang['No_connection_URL'];
-                                        }
-                                }
-                                else
-                                {
-                                        $error = true;
-                                        $error_msg = ( !empty($error_msg) ) ? $error_msg . "<br />" . $titanium_lang['Incomplete_URL'] : $titanium_lang['Incomplete_URL'];
-                                }
-                        }
-                        else if( !empty($titanium_user_avatar_name) )
-                        {
-                                $l_avatar_size = sprintf($titanium_lang['Avatar_filesize'], round($phpbb2_board_config['avatar_filesize'] / 1024));
-
-                                $error = true;
-                                $error_msg = ( !empty($error_msg) ) ? $error_msg . "<br />" . $l_avatar_size : $l_avatar_size;
-                        }
-                }
-                else 
-				if( $titanium_user_avatar_remoteurl != "" && empty($avatar_sql) && !$error )
-                {
-                        if( !preg_match("#^http:\/\/#i", $titanium_user_avatar_remoteurl) )
-                        {
-                                $titanium_user_avatar_remoteurl = "http://" . $titanium_user_avatar_remoteurl;
-                        }
-
-                        if( preg_match("#^(http:\/\/[a-z0-9\-]+?\.([a-z0-9\-]+\.)*[a-z]+\/.*?\.(gif|jpg|png)$)#is", $titanium_user_avatar_remoteurl) )
-                        {
-                                $avatar_sql = ", user_avatar = '" . str_replace("\'", "''", $titanium_user_avatar_remoteurl) . "', user_avatar_type = " . USER_AVATAR_REMOTE;
-                        }
-                        else
-                        {
-                                $error = true;
-                                $error_msg = ( !empty($error_msg) ) ? $error_msg . "<br />" . $titanium_lang['Wrong_remote_avatar_format'] : $titanium_lang['Wrong_remote_avatar_format'];
-                        }
-                }
-                else 
-				if( $titanium_user_avatar_local != "" && empty($avatar_sql) && !$error )
-                {
-                        $avatar_sql = ", user_avatar = '" . str_replace("\'", "''", phpbb_ltrim(basename($titanium_user_avatar_category), "'") . '/' . phpbb_ltrim(basename($titanium_user_avatar_local), "'")) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
-                }
-
+                    if (!$error)
+                    {
+                            $username_sql = "username = '" . str_replace("\\'", "''", (string) $username) . "', ";
+                            $rename_user = $username; // Used for renaming usergroup
+                    }
+            }
+            $passwd_sql = '';
+            if (!empty($password) && !empty($password_confirm)) {
                 //
-                // Update entry in DB
+                // Awww, the user wants to change their password, isn't that cute..
                 //
-                if( !$error )
+                if($password != $password_confirm)
                 {
+                        $error = TRUE;
+                        $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Password_mismatch'];
+                }
+                else
+                {
+/*****[BEGIN]******************************************
+ [ Base:     Evolution Functions               v1.5.0 ]
+ ******************************************************/
+                        $password = md5((string) $password);
+                        $passwd_sql = "user_password = '$password', ";
+/*****[END]********************************************
+ [ Base:     Evolution Functions               v1.5.0 ]
+ ******************************************************/
+                }
+            } elseif ($password && !$password_confirm) {
+                $error = TRUE;
+                $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Password_mismatch'];
+            } elseif (!$password && $password_confirm) {
+                $error = TRUE;
+                $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Password_mismatch'];
+            }
+            /*****[BEGIN]******************************************
+             [ Mod:  Birthdays                             v3.0.0 ]
+             ******************************************************/
+            $empty_month = empty($bday_month) || $bday_month == $lang['Default_Month'];
+            $empty_day = empty($bday_day) || $bday_day == $lang['Default_Day'];
+            $empty_year = empty($bday_year) || $bday_year == $lang['Default_Year'];
+            $temp_month = $empty_month ? 1 : $bday_month;
+            $temp_day = $empty_day ? 1 : $bday_day;
+            $temp_year = $empty_year ? 4 : $bday_year;
+            switch (true)
+        				{
+        					case $board_config['bday_year'] && (($empty_month !== $empty_day) || ($empty_day !== $empty_year)):
+        					case !$board_config['bday_year'] && (($empty_month !== $empty_day) || ($empty_day && !$empty_year)):
+        					case !checkdate( $temp_month, $temp_day, $temp_year ) && (!$board_config['bday_lock'] || $userdata['user_birthday'] == 0):
+        						$error = TRUE;
+        						$error_msg .= ( ( empty($error_msg) ) ? '' : '<br />' ) . $lang['Birthday_invalid'];
+        				}
+            
+			$user_birthday = sprintf('%02d%02d%04d',$bday_month,$bday_day,$bday_year);
+            
+			$user_birthday2 = ( $birthday_display != BIRTHDAY_DATE 
+			                    && $birthday_display != BIRTHDAY_NONE 
+								&& !$empty_month 
+								&& !$empty_day 
+								&& !$empty_year ) ? sprintf('%04d%02d%02d',$bday_year,$bday_month,$bday_day) : '0';
+								
+            if ( $birthday_greeting && !( $board_config['bday_greeting'] & 1<<($birthday_greeting-1) ) )
+        	{
+        	  $birthday_greeting = 0;
+			}
+            /*****[END]********************************************
+             [ Mod:  Birthdays                             v3.0.0 ]
+             ******************************************************/
+            if ($signature != '')
+            {
+                    $sig_length_check = preg_replace('/(\[.*?)(=.*?)\]/is', '\\1]', stripslashes((string) $signature));
+                    if ( $allowhtml )
+                    {
+                            $sig_length_check = preg_replace('/(\<.*?)(=.*?)( .*?=.*?)?([ \/]?\>)/is', '\\1\\3\\4', $sig_length_check);
+                    }
+
+                    // Only create a new bbcode_uid when there was no uid yet.
+                    if ( $signature_bbcode_uid == '' )
+                    {
+                            $signature_bbcode_uid = ( $allowbbcode ) ? make_bbcode_uid() : '';
+                    }
+                    $signature = prepare_message($signature, $allowhtml, $allowbbcode, $allowsmilies, $signature_bbcode_uid);
+
+                    if ( strlen($sig_length_check) > $board_config['max_sig_chars'] )
+                    {
+                            $error = TRUE;
+                            $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['Signature_too_long'];
+                    }
+            }
+            /*****[BEGIN]******************************************
+             [ Mod:    Advanced Time Management            v2.2.0 ]
+             ******************************************************/
+            if ( preg_match("/[^0-9]/i",(string) $_POST['dst_time_lag']) || $dst_time_lag<0 || $dst_time_lag>120 )
+            {
+                $error = TRUE;
+                $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['dst_time_lag_error'];
+            }
+            /*****[END]********************************************
+             [ Mod:    Advanced Time Management            v2.2.0 ]
+             ******************************************************/
+            /*****[BEGIN]******************************************
+             [ Mod:     XData                              v1.0.3 ]
+             ******************************************************/
+            $xd_meta = get_xd_metadata();
+            foreach ($xd_meta as $code_name => $meta) {
+                if ( $meta['handle_input'] && ( ( $mode == 'register' && $meta['default_auth'] == XD_AUTH_ALLOW ) || xdata_auth($code_name, $userdata['user_id']) ) )
+                {
+                    if ( ($meta['field_length'] > 0) && (strlen((string) $xdata[$code_name]) > $meta['field_length']) )
+                    {
+                           $error = TRUE;
+                        $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($lang['XData_too_long'], $meta['field_name']);
+                    }
+
+                    if ( ( (is_countable($meta['values_array']) ? count($meta['values_array']) : 0) > 0 ) && ( ! in_array($xdata[$code_name], $meta['values_array']) ) )
+                    {
+                           $error = TRUE;
+                        $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($lang['XData_invalid'], $meta['field_name']);
+                    }
+
+                    if ( ( strlen((string) $meta['field_regexp']) > 0 ) && ( ! preg_match($meta['field_regexp'], (string) $xdata[$code_name]) ) )
+                    {
+                        $error = TRUE;
+                        $error_msg .=  ( ( isset($error_msg) ) ? '<br />' : '' ) . sprintf($lang['XData_invalid'], $meta['field_name']);
+                    }
+
+                    if ( $meta['allow_bbcode'] && $signature_bbcode_uid == '' )
+                    {
+                        $signature_bbcode_uid = ( $allowbbcode ) ? make_bbcode_uid() : '';
+                    }
+
+                    $xdata[$code_name] = prepare_message($xdata[$code_name], $meta['allow_html'], $meta['allow_bbcode'], $meta['allow_smilies'], $signature_bbcode_uid);
+                  }
+            }
+            /*****[END]********************************************
+             [ Mod:     XData                              v1.0.3 ]
+             ******************************************************/
+            //
+            // Avatar stuff
+            //
+            $avatar_sql = "";
+            if (isset($_POST['avatardel'])) {
+                if( $this_userdata['user_avatar_type'] == USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "" && file_exists(phpbb_realpath('./../' . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar'])) )
+                {
+                        unlink('./../' . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar']);
+                }
+                $avatar_sql = ", user_avatar = '', user_avatar_type = " . USER_AVATAR_NONE;
+            } elseif (( $user_avatar_loc != "" || !empty($user_avatar_url) ) && !$error) {
+                //
+                // Only allow one type of upload, either a
+                // filename or a URL
+                //
+                if( !empty($user_avatar_loc) && !empty($user_avatar_url) )
+                {
+                        $error = TRUE;
+                        if( isset($error_msg) )
+                        {
+                                $error_msg .= "<br />";
+                        }
+                        $error_msg .= $lang['Only_one_avatar'];
+                }
+                if ($user_avatar_loc != "") {
+                    if( file_exists(phpbb_realpath($user_avatar_loc)) && preg_match("/\.(jpg|gif|png)$/i", (string) $user_avatar_name) )
+                    {
+                            if( $user_avatar_size <= $board_config['avatar_filesize'] && $user_avatar_size > 0)
+                            {
+                                    $error_type = false;
+
+                                    //
+                                    // Opera appends the image name after the type, not big, not clever!
+                                    //
+                                    preg_match("'image\/[x\-]*([a-z]+)'", (string) $user_avatar_filetype, $user_avatar_filetype);
+                                    $user_avatar_filetype = $user_avatar_filetype[1];
+
+                                    switch( $user_avatar_filetype )
+                                    {
+                                            case "jpeg":
+                                            case "pjpeg":
+                                            case "jpg":
+                                                    $imgtype = '.jpg';
+                                                    break;
+                                            case "gif":
+                                                    $imgtype = '.gif';
+                                                    break;
+                                            case "png":
+                                                    $imgtype = '.png';
+                                                    break;
+                                            default:
+                                                    $error = true;
+                                                    $error_msg = (empty($error_msg)) ? $lang['Avatar_filetype'] : $error_msg . "<br />" . $lang['Avatar_filetype'];
+                                                    break;
+                                    }
+
+                                    if( !$error )
+                                    {
+                                            [$width, $height] = getimagesize($user_avatar_loc);
+
+                                            if( $width <= $board_config['avatar_max_width'] && $height <= $board_config['avatar_max_height'] )
+                                            {
+                                                    $user_id = $this_userdata['user_id'];
+
+                                                    $avatar_filename = $user_id . $imgtype;
+
+                                                    if( $this_userdata['user_avatar_type'] == USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "" && file_exists(phpbb_realpath("./../" . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar'])) )
+                                                    {
+                                                            unlink("./../" . $board_config['avatar_path'] . "/". $this_userdata['user_avatar']);
+                                                    }
+                                                    copy($user_avatar_loc, "./../" . $board_config['avatar_path'] . "/$avatar_filename");
+
+                                                    $avatar_sql = ", user_avatar = '$avatar_filename', user_avatar_type = " . USER_AVATAR_UPLOAD;
+                                            }
+                                            else
+                                            {
+                                                    $l_avatar_size = sprintf($lang['Avatar_imagesize'], $board_config['avatar_max_width'], $board_config['avatar_max_height']);
+
+                                                    $error = true;
+                                                    $error_msg = ( empty($error_msg) ) ? $l_avatar_size : $error_msg . "<br />" . $l_avatar_size;
+                                            }
+                                    }
+                            }
+                            else
+                            {
+                                    $l_avatar_size = sprintf($lang['Avatar_filesize'], round($board_config['avatar_filesize'] / 1024));
+
+                                    $error = true;
+                                    $error_msg = ( empty($error_msg) ) ? $l_avatar_size : $error_msg . "<br />" . $l_avatar_size;
+                            }
+                    }
+                    else
+                    {
+                            $error = true;
+                            $error_msg = ( empty($error_msg) ) ? $lang['Avatar_filetype'] : $error_msg . "<br />" . $lang['Avatar_filetype'];
+                    }
+                } elseif (!empty($user_avatar_url)) {
+                    //
+                    // First check what port we should connect
+                    // to, look for a :[xxxx]/ or, if that doesn't
+                    // exist assume port 80 (http)
+                    //
+                    preg_match("/^(http:\\/\\/)?([\\w\\-\\.]+)\\:?(\\d*)\\/(.*)\$/", (string) $user_avatar_url, $url_ary);
+                    if( !empty($url_ary[4]) )
+                    {
+                            $port = (empty($url_ary[3])) ? 80 : $url_ary[3];
+
+                            $fsock = fsockopen($url_ary[2], $port, $errno, $errstr);
+                            if( $fsock )
+                            {
+                                    $base_get = "/" . $url_ary[4];
+
+                                    //
+                                    // Uses HTTP 1.1, could use HTTP 1.0 ...
+                                    //
+                                    fwrite($fsock, "GET $base_get HTTP/1.1\r\n");
+                                    fwrite($fsock, "HOST: " . $url_ary[2] . "\r\n");
+                                    fwrite($fsock, "Connection: close\r\n\r\n");
+
+                                    unset($avatar_data);
+                                    while( !feof($fsock) )
+                                    {
+                                            $avatar_data .= fread($fsock, $board_config['avatar_filesize']);
+                                    }
+                                    fclose($fsock);
+
+                                    if( preg_match("/Content-Length\\: (\\d+)[^\\/ ][\\s]+/i", (string) $avatar_data, $file_data1) && preg_match("/Content-Type\: image\/[x\-]*([a-z]+)[\s]+/i", (string) $avatar_data, $file_data2) )
+                                    {
+                                            $file_size = $file_data1[1];
+                                            $file_type = $file_data2[1];
+
+                                            switch( $file_type )
+                                            {
+                                                    case "jpeg":
+                                                    case "pjpeg":
+                                                    case "jpg":
+                                                            $imgtype = '.jpg';
+                                                            break;
+                                                    case "gif":
+                                                            $imgtype = '.gif';
+                                                            break;
+                                                    case "png":
+                                                            $imgtype = '.png';
+                                                            break;
+                                                    default:
+                                                            $error = true;
+                                                            $error_msg = (empty($error_msg)) ? $lang['Avatar_filetype'] : $error_msg . "<br />" . $lang['Avatar_filetype'];
+                                                            break;
+                                            }
+
+                                            if( !$error && $file_size > 0 && $file_size < $board_config['avatar_filesize'] )
+                                            {
+                                                    $avatar_data = substr((string) $avatar_data, strlen((string) $avatar_data) - $file_size, $file_size);
+
+                                                    $tmp_filename = tempnam ("/tmp", $this_userdata['user_id'] . "-");
+                                                    $fptr = fopen($tmp_filename, "wb");
+                                                    $bytes_written = fwrite($fptr, $avatar_data, $file_size);
+                                                    fclose($fptr);
+
+                                                    if( $bytes_written == $file_size )
+                                                    {
+                                                            [$width, $height] = getimagesize($tmp_filename);
+
+                                                            if( $width <= $board_config['avatar_max_width'] && $height <= $board_config['avatar_max_height'] )
+                                                            {
+                                                                    $user_id = $this_userdata['user_id'];
+
+                                                                    $avatar_filename = $user_id . $imgtype;
+
+                                                                    if( $this_userdata['user_avatar_type'] == USER_AVATAR_UPLOAD && $this_userdata['user_avatar'] != "" && file_exists(phpbb_realpath("./../" . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar'])))
+                                                                    {
+                                                                            unlink("./../" . $board_config['avatar_path'] . "/" . $this_userdata['user_avatar']);
+                                                                    }
+                                                                    copy($tmp_filename, "./../" . $board_config['avatar_path'] . "/$avatar_filename");
+                                                                    unlink($tmp_filename);
+
+                                                                    $avatar_sql = ", user_avatar = '$avatar_filename', user_avatar_type = " . USER_AVATAR_UPLOAD;
+                                                            }
+                                                            else
+                                                            {
+                                                                    $l_avatar_size = sprintf($lang['Avatar_imagesize'], $board_config['avatar_max_width'], $board_config['avatar_max_height']);
+
+                                                                    $error = true;
+                                                                    $error_msg = ( empty($error_msg) ) ? $l_avatar_size : $error_msg . "<br />" . $l_avatar_size;
+                                                            }
+                                                    }
+                                                    else
+                                                    {
+                                                            //
+                                                            // Error writing file
+                                                            //
+                                                            unlink($tmp_filename);
+                                                            message_die(GENERAL_ERROR, "Could not write avatar file to local storage. Please contact the board administrator with this message", "", __LINE__, __FILE__);
+                                                    }
+                                            }
+                                    }
+                                    else
+                                    {
+                                            //
+                                            // No data
+                                            //
+                                            $error = true;
+                                            $error_msg = ( empty($error_msg) ) ? $lang['File_no_data'] : $error_msg . "<br />" . $lang['File_no_data'];
+                                    }
+                            }
+                            else
+                            {
+                                    //
+                                    // No connection
+                                    //
+                                    $error = true;
+                                    $error_msg = ( empty($error_msg) ) ? $lang['No_connection_URL'] : $error_msg . "<br />" . $lang['No_connection_URL'];
+                            }
+                    }
+                    else
+                    {
+                            $error = true;
+                            $error_msg = ( empty($error_msg) ) ? $lang['Incomplete_URL'] : $error_msg . "<br />" . $lang['Incomplete_URL'];
+                    }
+                } elseif (!empty($user_avatar_name)) {
+                    $l_avatar_size = sprintf($lang['Avatar_filesize'], round($board_config['avatar_filesize'] / 1024));
+                    $error = true;
+                    $error_msg = ( empty($error_msg) ) ? $l_avatar_size : $error_msg . "<br />" . $l_avatar_size;
+                }
+            } elseif ($user_avatar_remoteurl != "" && empty($avatar_sql) && !$error) {
+                if( !preg_match("#^http:\/\/#i", (string) $user_avatar_remoteurl) )
+                {
+                        $user_avatar_remoteurl = "http://" . $user_avatar_remoteurl;
+                }
+                if( preg_match("#^(http:\/\/[a-z0-9\-]+?\.([a-z0-9\-]+\.)*[a-z]+\/.*?\.(gif|jpg|png)$)#is", (string) $user_avatar_remoteurl) )
+                {
+                        $avatar_sql = ", user_avatar = '" . str_replace("\'", "''", (string) $user_avatar_remoteurl) . "', user_avatar_type = " . USER_AVATAR_REMOTE;
+                }
+                else
+                {
+                        $error = true;
+                        $error_msg = ( empty($error_msg) ) ? $lang['Wrong_remote_avatar_format'] : $error_msg . "<br />" . $lang['Wrong_remote_avatar_format'];
+                }
+            } elseif ($user_avatar_local != "" && empty($avatar_sql) && !$error) {
+                $avatar_sql = ", user_avatar = '" . str_replace("\'", "''", phpbb_ltrim(basename((string) $user_avatar_category), "'") . '/' . phpbb_ltrim(basename((string) $user_avatar_local), "'")) . "', user_avatar_type = " . USER_AVATAR_GALLERY;
+            }
+            //
+            // Update entry in DB
+            //
+            if( !$error )
+            {
 /*****[BEGIN]******************************************
  [ Mod:    Super Quick Reply                   v1.3.2 ]
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
@@ -1033,9 +999,63 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:    Users Reputations Systems           v1.0.0 ]
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-                        $sql = "UPDATE " . USERS_TABLE . "
-                                SET " . $titanium_username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", $email) . "', user_reputation = '" . str_replace("\'", "''", $reputation) . "', user_birthday = $titanium_user_birthday, user_birthday2 = $titanium_user_birthday2, birthday_display = $birthday_display, birthday_greeting = $birthday_greeting, user_website = '" . str_replace("\'", "''", $website) . "', user_occ = '" . str_replace("\'", "''", $occupation) . "', user_from = '" . str_replace("\'", "''", $location) . "', user_from_flag = '$titanium_user_flag', user_interests = '" . str_replace("\'", "''", $interests) . "', user_glance_show = '" . str_replace("\'", "''", $glance_show) . "', user_sig = '" . str_replace("\'", "''", $signature) . "', user_admin_notes = '" . str_replace("\'", "''", $titanium_user_admin_notes) . "', user_viewemail = $viewemail, user_facebook = '" . str_replace("\'", "''", $facebook) . "', user_attachsig = '$attachsig', user_sig_bbcode_uid = '$signature_bbcode_uid', user_allowsmile = '$allowsmilies', user_showavatars = '$showavatars', user_showsignatures = '$showsignatures', user_allowhtml = '$allowhtml', user_allowavatar = '$titanium_user_allowavatar', user_allowbbcode = '$allowbbcode', user_allow_viewonline = '$allowviewonline', user_notify = '$notifyreply', user_allow_pm = '$titanium_user_allowpm', user_notify_pm = '$notifypm', user_popup_pm = '$popuppm', user_wordwrap = '$titanium_user_wordwrap', user_lang = '" . str_replace("\'", "''", $titanium_user_lang) . "', theme = '$titanium_user_style', user_timezone = '$titanium_user_timezone', user_time_mode = '$time_mode', user_dst_time_lag = '$dst_time_lag', user_dateformat = '" . str_replace("\'", "''", $titanium_user_dateformat) . "', user_show_quickreply = '$titanium_user_show_quickreply', user_quickreply_mode = '$titanium_user_quickreply_mode', user_open_quickreply = $titanium_user_open_quickreply, user_active = '$titanium_user_status', user_hide_images = '$hide_images', user_rank = '$titanium_user_rank', user_rank2 = '$titanium_user_rank2', user_rank3 = '$titanium_user_rank3', user_rank4 = '$titanium_user_rank4', user_rank5 = '$titanium_user_rank5', user_gender = '$gender', user_posts='$titanium_user_posts'" . $avatar_sql . "
-                                WHERE user_id = '$titanium_user_id'";
+                    if(!isset($username_sql))
+					$username_sql = '';
+					
+					if(!isset($signature_bbcode_uid))
+					$signature_bbcode_uid = '';
+					
+                    $sql = "UPDATE " . USERS_TABLE . "
+                                SET " . $username_sql . $passwd_sql . "user_email = '" . str_replace("\'", "''", (string) $email) . "', 
+								user_reputation = '" . str_replace("\'", "''", (string) $reputation) . "', 
+								user_birthday = '".$user_birthday."', 
+								user_birthday2 = '".$user_birthday2."', 
+								birthday_display = '".$birthday_display."', 
+								birthday_greeting = '".$birthday_greeting."', 
+								user_website = '" . str_replace("\'", "''", (string) $website) . "', 
+								user_occ = '" . str_replace("\'", "''", (string) $occupation) . "', 
+								user_from = '" . str_replace("\'", "''", (string) $location) . "', 
+								user_from_flag = '".$user_flag."', 
+								user_interests = '" . str_replace("\'", "''", (string) $interests) . "', 
+								user_glance_show = '" . str_replace("\'", "''", (string) $glance_show) . "', 
+								user_sig = '" . str_replace("\'", "''", (string) $signature) . "', 
+								user_admin_notes = '" . str_replace("\'", "''", (string) $user_admin_notes) . "', 
+								user_viewemail = '".$viewemail."', 
+								user_facebook = '" . str_replace("\'", "''", (string) $facebook) . "', 
+								user_attachsig = '".$attachsig."', 
+								user_sig_bbcode_uid = '".$signature_bbcode_uid."', 
+								user_allowsmile = '".$allowsmilies."', 
+								user_showavatars = '".$showavatars."', 
+								user_showsignatures = '".$showsignatures."', 
+								user_allowhtml = '".$allowhtml."', 
+								user_allowavatar = '".$user_allowavatar."', 
+								user_allowbbcode = '".$allowbbcode."', 
+								user_allow_viewonline = '".$allowviewonline."', 
+								user_notify = '".$notifyreply."', 
+								user_allow_pm = '".$user_allowpm."', 
+								user_notify_pm = '".$notifypm."', 
+								user_popup_pm = '".$popuppm."', 
+								user_wordwrap = '".$user_wordwrap."', 
+								user_lang = '" . str_replace("\'", "''", (string) $user_lang) . "', 
+								theme = '".$user_style."', 
+								user_timezone = '".$user_timezone."', 
+								user_time_mode = '".$time_mode."', 
+								user_dst_time_lag = '".$dst_time_lag."', 
+								user_dateformat = '" . str_replace("\'", "''", (string) $user_dateformat) . "', 
+								user_show_quickreply = '".$user_show_quickreply."', 
+								user_quickreply_mode = '".$user_quickreply_mode."', 
+								user_open_quickreply = '".$user_open_quickreply."', 
+								user_active = '".$user_status."', 
+								user_hide_images = '".$hide_images."', 
+								user_rank =  '".$user_rank."', 
+								user_rank2 = '".$user_rank2."', 
+								user_rank3 = '".$user_rank3."', 
+								user_rank4 = '".$user_rank4."', 
+								user_rank5 = '".$user_rank5."', 
+								user_gender = '".$gender."', 
+								user_posts  = '".$user_posts.$avatar_sql."'
+                                
+								WHERE user_id = '".$user_id."'";
 /*****[END]********************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  [ Mod:    Gender                              v1.2.6 ]
@@ -1051,342 +1071,340 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:    Users Reputations Systems           v1.0.0 ]
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-                        if( $result = $titanium_db->sql_query($sql) )
-                        {
-                                if( isset($rename_user) )
-                                {
-                                        $sql = "UPDATE " . GROUPS_TABLE . "
-                                                SET group_name = '".str_replace("\'", "''", $rename_user)."'
-                                                WHERE group_name = '".str_replace("'", "''", $this_userdata['username'] )."'";
-                                        if( !$result = $titanium_db->sql_query($sql) )
-                                        {
-                                                message_die(GENERAL_ERROR, 'Could not rename users group', '', __LINE__, __FILE__, $sql);
-                                        }
-                                }
-
-                                // Delete user session, to prevent the user navigating the forum (if logged in) when disabled
-                                if (!$titanium_user_status)
-                                {
-                                        $sql = "DELETE FROM " . SESSIONS_TABLE . "
-                                                WHERE session_user_id = " . $titanium_user_id;
-
-                                        if ( !$titanium_db->sql_query($sql) )
-                                        {
-                                                message_die(GENERAL_ERROR, 'Error removing user session', '', __LINE__, __FILE__, $sql);
-                                        }
-                                }
-
-/*****[BEGIN]******************************************
- [ Mod:     XData                              v1.0.3 ]
- ******************************************************/
-                                $xd_meta = get_xd_metadata();
-                                while ( list($code_name, $meta) = each($xd_meta) )
-                                {
-                                    $xd_value = $xdata[$code_name];
-                                    if ( ( in_array($xd_value, $meta['values_array']) || count($meta['values_array']) == 0 ) && $meta['handle_input'] )
+                    $xdata = [];
+					
+                    if( $result = $db->sql_query($sql) )
+                    {
+                            if( isset($rename_user) )
+                            {
+                                    $sql = "UPDATE " . GROUPS_TABLE . "
+                                                SET group_name = '".str_replace("\'", "''", (string) $rename_user)."'
+                                                WHERE group_name = '".str_replace("'", "''", (string) $this_userdata['username'] )."'";
+                                    if( !$result = $db->sql_query($sql) )
                                     {
-                                        set_user_xdata($titanium_user_id, $code_name, $xd_value);
+                                            message_die(GENERAL_ERROR, 'Could not rename users group', '', __LINE__, __FILE__, $sql);
                                     }
+                            }
+
+                            // Delete user session, to prevent the user navigating the forum (if logged in) when disabled
+                            if (!$user_status)
+                            {
+                                    $sql = "DELETE FROM " . SESSIONS_TABLE . "
+                                                WHERE session_user_id = " . $user_id;
+
+                                    if ( !$db->sql_query($sql) )
+                                    {
+                                            message_die(GENERAL_ERROR, 'Error removing user session', '', __LINE__, __FILE__, $sql);
+                                    }
+                            }
+
+/*****[BEGIN]******************************************
+ [ Mod:     XData                              v1.0.3 ]
+ ******************************************************/
+                            $xd_meta = get_xd_metadata();
+                            foreach ($xd_meta as $code_name => $meta) {
+                                
+								if(!isset($xdata[$code_name]))
+								$xdata[$code_name] = '';
+								
+								$xd_value = $xdata[$code_name];
+                                
+								if ( ( in_array($xd_value, $meta['values_array']) || (is_countable($meta['values_array']) ? count($meta['values_array']) : 0) == 0 ) && $meta['handle_input'] )
+                                {
+                                    set_user_xdata($user_id, $code_name, $xd_value);
                                 }
+                            }
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-                                // We remove all stored login keys since the password has been updated
-                 				// and change the current one (if applicable)
-                 				if ( !empty($passwd_sql) )
-                 				{
-                 					titanium_session_reset_keys($titanium_user_id, $titanium_user_ip);
-                 				}
-                                $message .= $titanium_lang['Admin_user_updated'];
-                        }
-                        else
-                        {
-                            message_die(GENERAL_ERROR, 'Admin_user_fail', '', __LINE__, __FILE__, $sql);
-                        }
+                            // We remove all stored login keys since the password has been updated
+             				// and change the current one (if applicable)
+             				if ( !empty($passwd_sql) )
+             				{
+             					session_reset_keys($user_id, $user_ip);
+             				}
+                            
+							if(!isset($message))
+							$message = '';
+							
+							$message .= $lang['Admin_user_updated'];
+                    }
+                    else
+                    {
+                        message_die(GENERAL_ERROR, 'Admin_user_fail', '', __LINE__, __FILE__, $sql);
+                    }
 
-                        $message .= '<br /><br />' . sprintf($titanium_lang['Click_return_useradmin'], '<a href="' . append_titanium_sid("admin_users.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($titanium_lang['Click_return_admin_index'], '<a href="' . append_titanium_sid("index.$phpEx?pane=right") . '">', '</a>');
+                    $message .= '<br /><br />' . sprintf($lang['Click_return_useradmin'], '<a href="' . append_sid("admin_users.$phpEx") . '">', '</a>') . '<br /><br />' . sprintf($lang['Click_return_admin_index'], '<a href="' . append_sid("index.$phpEx?pane=right") . '">', '</a>');
 
-                        message_die(GENERAL_MESSAGE, $message);
-                }
-                else
-                {
-                        $phpbb2_template->set_filenames(array(
-                                'reg_header' => 'error_body.tpl')
-                        );
+                    message_die(GENERAL_MESSAGE, $message);
+            }
+            else
+            {
+                    $template->set_filenames(['reg_header' => 'error_body.tpl']
+                    );
 
-                        $phpbb2_template->assign_vars(array(
-                                'ERROR_MESSAGE' => $error_msg)
-                        );
+                    $template->assign_vars(['ERROR_MESSAGE' => $error_msg]
+                    );
 
-                        $phpbb2_template->assign_var_from_handle('ERROR_BOX', 'reg_header');
+                    $template->assign_var_from_handle('ERROR_BOX', 'reg_header');
 
-                        $titanium_username = htmlspecialchars(stripslashes($titanium_username));
-                        $email = stripslashes($email);
-                        $password = '';
-                        $password_confirm = '';
+                    $username = htmlspecialchars(stripslashes((string) $username));
+                    $email = stripslashes((string) $email);
+                    $password = '';
+                    $password_confirm = '';
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-                        $reputation = intval($reputation);
+                    $reputation = (int) $reputation;
 /*****[END]********************************************
  [ Mod:     Users Reputations System           v1.0.0 ]
  ******************************************************/
-						$facebook = htmlspecialchars(stripslashes($facebook));
-                        $website = htmlspecialchars(stripslashes($website));
-                        $location = htmlspecialchars(stripslashes($location));
-                        $occupation = htmlspecialchars(stripslashes($occupation));
-                        $interests = htmlspecialchars(stripslashes($interests));
+						$facebook = htmlspecialchars(stripslashes((string) $facebook));
+                    $website = htmlspecialchars(stripslashes((string) $website));
+                    $location = htmlspecialchars(stripslashes((string) $location));
+                    $occupation = htmlspecialchars(stripslashes((string) $occupation));
+                    $interests = htmlspecialchars(stripslashes((string) $interests));
 /*****[BEGIN]******************************************
  [ Mod:    At a Glance Options                 v1.0.0 ]
  *****************************************************/
-                        $glance_show = htmlspecialchars(stripslashes($glance_show));
+                    $glance_show = htmlspecialchars(stripslashes((string) $glance_show));
 /*****[END]**********77********************************
  [ Mod:    At a Glance Options                 v1.0.0 ]
  *****************************************************/
 /*****[BEGIN]******************************************
  [ Mod:    Edit User Post Count                v1.0.0 ]
  *****************************************************/
-                        $titanium_user_posts = intval(stripslashes($titanium_user_posts));
+                    $user_posts = (int) stripslashes((string) $user_posts);
 /*****[END]**********77********************************
  [ Mod:    Edit User Post Count                v1.0.0 ]
  *****************************************************/
  /*****[BEGIN]******************************************
  [ Mod:    Hide Images                         v1.0.0 ]
  ******************************************************/
-                        $hide_images = stripslashes($hide_images);
+                    $hide_images = stripslashes((string) $hide_images);
 /*****[END]********************************************
  [ Mod:    Hide Images                         v1.0.0 ]
  ******************************************************/
 
-                        $signature = htmlspecialchars(stripslashes($signature));
+                    $signature = htmlspecialchars(stripslashes((string) $signature));
 
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-                        $func = create_function('$a', 'return htmlspecialchars(stripslashes($a));');
-                        $xdata = array_map($func, $xdata);
+                    $func = fn($a): string => htmlspecialchars(stripslashes((string) $a));
+                    $xdata = array_map($func, $xdata);
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
 
-                        $titanium_user_lang = stripslashes($titanium_user_lang);
-                        $titanium_user_dateformat = htmlspecialchars(stripslashes($titanium_user_dateformat));
-                }
-        }
-        else if( !isset( $HTTP_POST_VARS['submit'] ) && $mode != 'save' && !isset( $HTTP_POST_VARS['avatargallery'] ) && !isset( $HTTP_POST_VARS['submitavatar'] ) && !isset( $HTTP_POST_VARS['cancelavatar'] ) )
-        {
-                if( isset( $HTTP_GET_VARS[POST_USERS_URL]) || isset( $HTTP_POST_VARS[POST_USERS_URL]) )
-                {
-                        $titanium_user_id = ( isset( $HTTP_POST_VARS[POST_USERS_URL]) ) ? intval( $HTTP_POST_VARS[POST_USERS_URL]) : intval( $HTTP_GET_VARS[POST_USERS_URL]);
-                        $this_userdata = get_userdata($titanium_user_id);
-                        if( !$this_userdata )
-                        {
-                                message_die(GENERAL_MESSAGE, $titanium_lang['No_user_id_specified'] );
-                        }
+                    $user_lang = stripslashes((string) $user_lang);
+                    $user_dateformat = htmlspecialchars(stripslashes((string) $user_dateformat));
+            }
+        } elseif (!isset( $_POST['submit'] ) && $mode != 'save' && !isset( $_POST['avatargallery'] ) && !isset( $_POST['submitavatar'] ) && !isset( $_POST['cancelavatar'] )) {
+            if( isset( $_GET[POST_USERS_URL]) || isset( $_POST[POST_USERS_URL]) )
+            {
+                    $user_id = ( isset( $_POST[POST_USERS_URL]) ) ? (int) $_POST[POST_USERS_URL] : (int) $_GET[POST_USERS_URL];
+                    $this_userdata = get_userdata($user_id);
+                    if( !$this_userdata )
+                    {
+                            message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
+                    }
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-                        $this_userdata['xdata'] = get_user_xdata($titanium_user_id);
+                    $this_userdata['xdata'] = get_user_xdata($user_id);
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-                }
-                else
-                {
-                        $this_userdata = get_userdata($HTTP_POST_VARS['username'], true);
-                        if( !$this_userdata )
-                        {
-                                message_die(GENERAL_MESSAGE, $titanium_lang['No_user_id_specified'] );
-                        }
+            }
+            else
+            {
+                    $this_userdata = get_userdata($_POST['username'], true);
+                    if( !$this_userdata )
+                    {
+                            message_die(GENERAL_MESSAGE, $lang['No_user_id_specified'] );
+                    }
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-                        $this_userdata['xdata'] = get_user_xdata($HTTP_POST_VARS['username'], true);
+                    $this_userdata['xdata'] = get_user_xdata($_POST['username'], true);
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
-                }
-
-                //
-                // Now parse and display it as a template
-                //
-                $titanium_user_id = $this_userdata['user_id'];
-                $titanium_username = $this_userdata['username'];
-                $email = $this_userdata['user_email'];
-                $password = '';
-                $password_confirm = '';
-				
-/*****[BEGIN]******************************************
- [ Mod:    Birthdays                           v3.0.0 ]
- ******************************************************/
-				preg_match('/(..)(..)(....)/', sprintf('%08d',$this_userdata['user_birthday']), $bday_parts);
-				$bday_month = $bday_parts[1];
-				$bday_day = $bday_parts[2];
-				$phpbb2_bday_year = $bday_parts[3];
-		
-				$birthday_display = $this_userdata['birthday_display'];
-				$birthday_greeting = $this_userdata['birthday_greeting'];
-/*****[END]********************************************
- [ Mod:    Birthdays                           v3.0.0 ]
- ******************************************************/
-/*****[BEGIN]******************************************
- [ Mod:     Users Reputations Systems          v1.0.0 ]
- ******************************************************/
-                $reputation = $this_userdata['user_reputation'];
-/*****[END]********************************************
- [ Mod:     Users Reputations System           v1.0.0 ]
- ******************************************************/
-				$facebook = htmlspecialchars($this_userdata['user_facebook']);
-                $website = htmlspecialchars($this_userdata['user_website']);
-                $location = htmlspecialchars($this_userdata['user_from']);
-/*****[BEGIN]******************************************
- [ Mod:     Member Country Flags               v2.0.7 ]
- ******************************************************/
-				$titanium_user_flag = htmlspecialchars($this_userdata['user_from_flag']);
-/*****[END]********************************************
- [ Mod:     Member Country Flags               v2.0.7 ]
- ******************************************************/
-                $occupation = htmlspecialchars($this_userdata['user_occ']);
-                $interests = htmlspecialchars($this_userdata['user_interests']);
-/*****[BEGIN]******************************************
- [ Mod:    Gender                              v1.2.6 ]
- ******************************************************/
-                $gender = $this_userdata['user_gender'];
-/*****[END]********************************************
- [ Mod:    Gender                              v1.2.6 ]
- ******************************************************/
-/*****[BEGIN]******************************************
- [ Mod:    At a Glance Options                 v1.0.0 ]
- *****************************************************/
-                $glance_show = htmlspecialchars($this_userdata['user_glance_show']);
-/*****[END]********************************************
- [ Mod:    At a Glance Options                 v1.0.0 ]
- *****************************************************/
-/*****[BEGIN]******************************************
- [ Mod:    Edit User Post Count                v1.0.0 ]
- *****************************************************/
-                $titanium_user_posts = intval($this_userdata['user_posts']);
-/*****[END]********************************************
- [ Mod:    Edit User Post Count                v1.0.0 ]
- *****************************************************/
- /*****[BEGIN]******************************************
- [ Mod:    Hide Images                         v1.0.0 ]
- ******************************************************/
-                $hide_images = $this_userdata['user_hide_images'];
-/*****[END]********************************************
- [ Mod:    Hide Images                         v1.0.0 ]
- ******************************************************/
-
-                $signature = ($this_userdata['user_sig_bbcode_uid'] != '') ? preg_replace('#:' . $this_userdata['user_sig_bbcode_uid'] . '#si', '', $this_userdata['user_sig']) : $this_userdata['user_sig'];
-                $signature = preg_replace($html_entities_match, $html_entities_replace, $signature);
-
-/*****[BEGIN]******************************************
- [ Mod:     XData                              v1.0.3 ]
- ******************************************************/
-                foreach ($this_userdata['xdata'] as $name => $value)
-                {
-                    $value = ($this_userdata['user_sig_bbcode_uid'] != '') ? preg_replace('#:' . $this_userdata['user_sig_bbcode_uid'] . '#si', '', $value) : $value;
-                    $xdata[$name] = preg_replace($html_entities_match, $html_entities_replace, $value);
-                }
-/*****[END]********************************************
- [ Mod:     XData                              v1.0.3 ]
- ******************************************************/
-
-                $viewemail = $this_userdata['user_viewemail'];
-                $notifypm = $this_userdata['user_notify_pm'];
-                $popuppm = $this_userdata['user_popup_pm'];
-                $notifyreply = $this_userdata['user_notify'];
-                $attachsig = $this_userdata['user_attachsig'];
-                $allowhtml = $this_userdata['user_allowhtml'];
-                $allowbbcode = $this_userdata['user_allowbbcode'];
-                $allowsmilies = $this_userdata['user_allowsmile'];
-                $titanium_user_lang = $this_userdata['user_lang'];
-/*****[BEGIN]******************************************
- [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
- ******************************************************/
-                $showavatars = $this_userdata['user_showavatars'];
-                $showsignatures = $this_userdata['user_showsignatures'];
-/*****[END]********************************************
- [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
- ******************************************************/
-                $titanium_user_timezone = $this_userdata['user_timezone'];
-
-                $allowviewonline = $this_userdata['user_allow_viewonline'];
-
-                $titanium_user_avatar = $this_userdata['user_avatar'];
-                $titanium_user_avatar_type = $this_userdata['user_avatar_type'];
-                $titanium_user_style = $this_userdata['theme'];
-/*****[BEGIN]******************************************
- [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
- ******************************************************/
-                $titanium_user_wordwrap = $this_userdata['user_wordwrap'];
-/*****[END]********************************************
- [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
- ******************************************************/
-                $time_mode = $this_userdata['user_time_mode'];
-                $dst_time_lag = $this_userdata['user_dst_time_lag'];
-/*****[BEGIN]******************************************
- [ Mod:    Advanced Time Management            v2.2.0 ]
- ******************************************************/
-                if ( preg_match("/[^0-9]/i",$HTTP_POST_VARS['dst_time_lag']) || $dst_time_lag<0 || $dst_time_lag>120 )
-                {
-                    $error = TRUE;
-                    $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $titanium_lang['dst_time_lag_error'];
-                }
-/*****[END]********************************************
- [ Mod:    Advanced Time Management            v2.2.0 ]
- ******************************************************/
-                $titanium_user_dateformat = htmlspecialchars($this_userdata['user_dateformat']);
-/*****[BEGIN]******************************************
- [ Mod:     Super Quick Reply                  v1.3.2 ]
- ******************************************************/
-                $titanium_user_show_quickreply = $this_userdata['user_show_quickreply'];
-                $titanium_user_quickreply_mode = $this_userdata['user_quickreply_mode'];
-                $titanium_user_open_quickreply = $this_userdata['user_open_quickreply'];
-/*****[END]********************************************
- [ Mod:     Super Quick Reply                  v1.3.2 ]
- ******************************************************/
-
-                $titanium_user_status = $this_userdata['user_active'];
-                $titanium_user_allowavatar = $this_userdata['user_allowavatar'];
-                $titanium_user_allowpm = $this_userdata['user_allow_pm'];
-/*****[BEGIN]******************************************
- [ Mod:    Admin User Notes                    v1.0.0 ]
- ******************************************************/
-                $admin_notes = $this_userdata['user_admin_notes'];
-/*****[END]********************************************
- [ Mod:    Admin User Notes                    v1.0.0 ]
- ******************************************************/
-                $COPPA = false;
-
-                $html_status =  ($this_userdata['user_allowhtml'] ) ? $titanium_lang['HTML_is_ON'] : $titanium_lang['HTML_is_OFF'];
-                $bbcode_status = ($this_userdata['user_allowbbcode'] ) ? $titanium_lang['BBCode_is_ON'] : $titanium_lang['BBCode_is_OFF'];
-                $smilies_status = ($this_userdata['user_allowsmile'] ) ? $titanium_lang['Smilies_are_ON'] : $titanium_lang['Smilies_are_OFF'];
+            }
+            //
+            // Now parse and display it as a template
+            //
+            $user_id = $this_userdata['user_id'];
+            $username = $this_userdata['username'];
+            $email = $this_userdata['user_email'];
+            $password = '';
+            $password_confirm = '';
+            /*****[BEGIN]******************************************
+             [ Mod:    Birthdays                           v3.0.0 ]
+             ******************************************************/
+            preg_match('/(..)(..)(....)/', sprintf('%08d',$this_userdata['user_birthday']), $bday_parts);
+            $bday_month = $bday_parts[1];
+            $bday_day = $bday_parts[2];
+            $bday_year = $bday_parts[3];
+            $birthday_display = $this_userdata['birthday_display'];
+            $birthday_greeting = $this_userdata['birthday_greeting'];
+            /*****[END]********************************************
+             [ Mod:    Birthdays                           v3.0.0 ]
+             ******************************************************/
+            /*****[BEGIN]******************************************
+             [ Mod:     Users Reputations Systems          v1.0.0 ]
+             ******************************************************/
+            $reputation = $this_userdata['user_reputation'];
+            /*****[END]********************************************
+             [ Mod:     Users Reputations System           v1.0.0 ]
+             ******************************************************/
+            $facebook = htmlspecialchars((string) $this_userdata['user_facebook']);
+            $website = htmlspecialchars((string) $this_userdata['user_website']);
+            $location = htmlspecialchars((string) $this_userdata['user_from']);
+            /*****[BEGIN]******************************************
+             [ Mod:     Member Country Flags               v2.0.7 ]
+             ******************************************************/
+            $user_flag = htmlspecialchars((string) $this_userdata['user_from_flag']);
+            /*****[END]********************************************
+             [ Mod:     Member Country Flags               v2.0.7 ]
+             ******************************************************/
+            $occupation = htmlspecialchars((string) $this_userdata['user_occ']);
+            $interests = htmlspecialchars((string) $this_userdata['user_interests']);
+            /*****[BEGIN]******************************************
+             [ Mod:    Gender                              v1.2.6 ]
+             ******************************************************/
+            $gender = $this_userdata['user_gender'];
+            /*****[END]********************************************
+             [ Mod:    Gender                              v1.2.6 ]
+             ******************************************************/
+            /*****[BEGIN]******************************************
+             [ Mod:    At a Glance Options                 v1.0.0 ]
+             *****************************************************/
+            $glance_show = htmlspecialchars((string) $this_userdata['user_glance_show']);
+            /*****[END]********************************************
+             [ Mod:    At a Glance Options                 v1.0.0 ]
+             *****************************************************/
+            /*****[BEGIN]******************************************
+             [ Mod:    Edit User Post Count                v1.0.0 ]
+             *****************************************************/
+            $user_posts = (int) $this_userdata['user_posts'];
+            /*****[END]********************************************
+             [ Mod:    Edit User Post Count                v1.0.0 ]
+             *****************************************************/
+            /*****[BEGIN]******************************************
+             [ Mod:    Hide Images                         v1.0.0 ]
+             ******************************************************/
+            $hide_images = $this_userdata['user_hide_images'];
+            /*****[END]********************************************
+             [ Mod:    Hide Images                         v1.0.0 ]
+             ******************************************************/
+            $signature = ($this_userdata['user_sig_bbcode_uid'] != '') ? preg_replace('#:' . $this_userdata['user_sig_bbcode_uid'] . '#si', '', (string) $this_userdata['user_sig']) : $this_userdata['user_sig'];
+            $signature = preg_replace($html_entities_match, $html_entities_replace, (string) $signature);
+            /*****[BEGIN]******************************************
+             [ Mod:     XData                              v1.0.3 ]
+             ******************************************************/
+            foreach ($this_userdata['xdata'] as $name => $value)
+            {
+                $value = ($this_userdata['user_sig_bbcode_uid'] != '') ? preg_replace('#:' . $this_userdata['user_sig_bbcode_uid'] . '#si', '', (string) $value) : $value;
+                $xdata[$name] = preg_replace($html_entities_match, $html_entities_replace, (string) $value);
+            }
+            /*****[END]********************************************
+             [ Mod:     XData                              v1.0.3 ]
+             ******************************************************/
+            $viewemail = $this_userdata['user_viewemail'];
+            $notifypm = $this_userdata['user_notify_pm'];
+            $popuppm = $this_userdata['user_popup_pm'];
+            $notifyreply = $this_userdata['user_notify'];
+            $attachsig = $this_userdata['user_attachsig'];
+            $allowhtml = $this_userdata['user_allowhtml'];
+            $allowbbcode = $this_userdata['user_allowbbcode'];
+            $allowsmilies = $this_userdata['user_allowsmile'];
+            $user_lang = $this_userdata['user_lang'];
+            /*****[BEGIN]******************************************
+             [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
+             ******************************************************/
+            $showavatars = $this_userdata['user_showavatars'];
+            $showsignatures = $this_userdata['user_showsignatures'];
+            /*****[END]********************************************
+             [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
+             ******************************************************/
+            $user_timezone = $this_userdata['user_timezone'];
+            $allowviewonline = $this_userdata['user_allow_viewonline'];
+            $user_avatar = $this_userdata['user_avatar'];
+            $user_avatar_type = $this_userdata['user_avatar_type'];
+            $user_style = $this_userdata['theme'];
+            /*****[BEGIN]******************************************
+             [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
+             ******************************************************/
+            $user_wordwrap = $this_userdata['user_wordwrap'];
+            /*****[END]********************************************
+             [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
+             ******************************************************/
+            $time_mode = $this_userdata['user_time_mode'];
+            $dst_time_lag = $this_userdata['user_dst_time_lag'];
+            /*****[BEGIN]******************************************
+             [ Mod:    Advanced Time Management            v2.2.0 ]
+             ******************************************************/
+			if(!isset($_POST['dst_time_lag']))
+			$_POST['dst_time_lag'] = '';
+            
+			if ( preg_match("/[^0-9]/i",(string) $_POST['dst_time_lag']) || $dst_time_lag<0 || $dst_time_lag>120 )
+            {
+                $error = TRUE;
+                $error_msg .= ( ( isset($error_msg) ) ? '<br />' : '' ) . $lang['dst_time_lag_error'];
+            }
+            /*****[END]********************************************
+             [ Mod:    Advanced Time Management            v2.2.0 ]
+             ******************************************************/
+            $user_dateformat = htmlspecialchars((string) $this_userdata['user_dateformat']);
+            /*****[BEGIN]******************************************
+             [ Mod:     Super Quick Reply                  v1.3.2 ]
+             ******************************************************/
+            $user_show_quickreply = $this_userdata['user_show_quickreply'];
+            $user_quickreply_mode = $this_userdata['user_quickreply_mode'];
+            $user_open_quickreply = $this_userdata['user_open_quickreply'];
+            /*****[END]********************************************
+             [ Mod:     Super Quick Reply                  v1.3.2 ]
+             ******************************************************/
+            $user_status = $this_userdata['user_active'];
+            $user_allowavatar = $this_userdata['user_allowavatar'];
+            $user_allowpm = $this_userdata['user_allow_pm'];
+            /*****[BEGIN]******************************************
+             [ Mod:    Admin User Notes                    v1.0.0 ]
+             ******************************************************/
+            $admin_notes = $this_userdata['user_admin_notes'];
+            /*****[END]********************************************
+             [ Mod:    Admin User Notes                    v1.0.0 ]
+             ******************************************************/
+            $COPPA = false;
+            $html_status =  ($this_userdata['user_allowhtml'] ) ? $lang['HTML_is_ON'] : $lang['HTML_is_OFF'];
+            $bbcode_status = ($this_userdata['user_allowbbcode'] ) ? $lang['BBCode_is_ON'] : $lang['BBCode_is_OFF'];
+            $smilies_status = ($this_userdata['user_allowsmile'] ) ? $lang['Smilies_are_ON'] : $lang['Smilies_are_OFF'];
         }
 
-        if( isset($HTTP_POST_VARS['avatargallery']) && !$error )
+        if( isset($_POST['avatargallery']) && !$error )
         {
                 if( !$error )
                 {
-                        $titanium_user_id = intval($HTTP_POST_VARS['id']);
+                        $user_id = (int) $_POST['id'];
 
-                        $phpbb2_template->set_filenames(array(
-                                "body" => "admin/user_avatar_gallery.tpl")
+                        $template->set_filenames(["body" => "admin/user_avatar_gallery.tpl"]
                         );
 
-                        $dir = @opendir("../" . $phpbb2_board_config['avatar_gallery_path']);
+                        $dir = opendir("../" . $board_config['avatar_gallery_path']);
 
-                        $avatar_images = array();
-                        while( $file = @readdir($dir) )
+                        $avatar_images = [];
+                        while( $file = readdir($dir) )
                         {
-                                if( $file != "." && $file != ".." && !is_file(phpbb_realpath("./../" . $phpbb2_board_config['avatar_gallery_path'] . "/" . $file)) && !is_link(phpbb_realpath("./../" . $phpbb2_board_config['avatar_gallery_path'] . "/" . $file)) )
+                                if( $file != "." && $file != ".." && !is_file(phpbb_realpath("./../" . $board_config['avatar_gallery_path'] . "/" . $file)) && !is_link(phpbb_realpath("./../" . $board_config['avatar_gallery_path'] . "/" . $file)) )
                                 {
-                                        $sub_dir = @opendir("../" . $phpbb2_board_config['avatar_gallery_path'] . "/" . $file);
+                                        $sub_dir = opendir("../" . $board_config['avatar_gallery_path'] . "/" . $file);
 
                                         $avatar_row_count = 0;
                                         $avatar_col_count = 0;
 
-                                        while( $sub_file = @readdir($sub_dir) )
+                                        while( $sub_file = readdir($sub_dir) )
                                         {
                                                 if( preg_match("/(\.gif$|\.png$|\.jpg)$/is", $sub_file) )
                                                 {
@@ -1403,58 +1421,50 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                                 }
                         }
 
-                        @closedir($dir);
+                        closedir($dir);
 
-                        if( isset($HTTP_POST_VARS['avatarcategory']) )
-                        {
-                                $category = htmlspecialchars($HTTP_POST_VARS['avatarcategory']);
-                        }
-                        else
-                        {
-                                list($category, ) = each($avatar_images);
-                        }
-                        @reset($avatar_images);
+                        $category = isset($_POST['avatarcategory']) ? htmlspecialchars((string) $_POST['avatarcategory']) : key($avatar_images);
+                        reset($avatar_images);
 
                         $s_categories = "";
-                        while( list($key) = each($avatar_images) )
-                        {
-                                $selected = ( $key == $category ) ? "selected=\"selected\"" : "";
-                                if( count($avatar_images[$key]) )
-                                {
-                                        $s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst($key) . '</option>';
-                                }
+                        foreach (array_keys($avatar_images) as $key) {
+                            $selected = ( $key == $category ) ? "selected=\"selected\"" : "";
+                            if( $avatar_images[$key] !== [] )
+                            {
+                                    $s_categories .= '<option value="' . $key . '"' . $selected . '>' . ucfirst((string) $key) . '</option>';
+                            }
                         }
 
                         $s_colspan = 0;
-                        for($i = 0; $i < count($avatar_images[$category]); $i++)
+                        $itemsCount = count($avatar_images[$category]);
+                        for($i = 0; $i < $itemsCount; $i++)
                         {
-                                $phpbb2_template->assign_block_vars("avatar_row", array());
+                                $template->assign_block_vars("avatar_row", []);
 
                                 $s_colspan = max($s_colspan, count($avatar_images[$category][$i]));
+                                $itemsCount2 = count($avatar_images[$category][$i]);
 
-                                for($j = 0; $j < count($avatar_images[$category][$i]); $j++)
+                                for($j = 0; $j < $itemsCount2; $j++)
                                 {
-                                        $phpbb2_template->assign_block_vars("avatar_row.avatar_column", array(
-                                                "AVATAR_IMAGE" => "../" . $phpbb2_board_config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j])
+                                        $template->assign_block_vars("avatar_row.avatar_column", ["AVATAR_IMAGE" => "../" . $board_config['avatar_gallery_path'] . '/' . $category . '/' . $avatar_images[$category][$i][$j]]
                                         );
 
-                                        $phpbb2_template->assign_block_vars("avatar_row.avatar_option_column", array(
-                                                "S_OPTIONS_AVATAR" => $avatar_images[$category][$i][$j])
+                                        $template->assign_block_vars("avatar_row.avatar_option_column", ["S_OPTIONS_AVATAR" => $avatar_images[$category][$i][$j]]
                                         );
                                 }
                         }
 
-                        $coppa = ( ( !$HTTP_POST_VARS['coppa'] && !$HTTP_GET_VARS['coppa'] ) || $mode == "register") ? 0 : TRUE;
+                        $coppa = ( ( !$_POST['coppa'] && !$_GET['coppa'] ) || $mode == "register") ? 0 : TRUE;
 
                         $s_hidden_fields = '<input type="hidden" name="mode" value="edit" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="coppa" value="' . $coppa . '" /><input type="hidden" name="avatarcatname" value="' . $category . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="id" value="' . $titanium_user_id . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="id" value="' . $user_id . '" />';
 
-                        $s_hidden_fields .= '<input type="hidden" name="username" value="' . str_replace("\"", "&quot;", $titanium_username) . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="email" value="' . str_replace("\"", "&quot;", $email) . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="username" value="' . str_replace("\"", "&quot;", (string) $username) . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="email" value="' . str_replace("\"", "&quot;", (string) $email) . '" />';
 /*****[BEGIN]******************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
-						$s_hidden_fields .= '<input type="hidden" name="bday_years" value="' . $phpbb2_bday_years . '" />';
+						$s_hidden_fields .= '<input type="hidden" name="bday_years" value="' . $bday_years . '" />';
 						$s_hidden_fields .= '<input type="hidden" name="bday_months" value="' . $bday_months . '" />';
 						$s_hidden_fields .= '<input type="hidden" name="bday_days" value="' . $bday_days . '" />';
 						$s_hidden_fields .= '<input type="hidden" name="birthday_display" value="' . $birthday_display . '" />';
@@ -1466,33 +1476,33 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
-                        $s_hidden_fields .= '<input type="hidden" name="reputation" value="' . str_replace("\"", "&quot;", $reputation) . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="reputation" value="' . str_replace("\"", "&quot;", (string) $reputation) . '" />';
 /*****[END]********************************************
  [ Mod:     Users Reputations System           v1.0.0 ]
  ******************************************************/
-						$s_hidden_fields .= '<input type="hidden" name="facebook" value="' . str_replace("\"", "&quot;", $facebook) . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="website" value="' . str_replace("\"", "&quot;", $website) . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="location" value="' . str_replace("\"", "&quot;", $location) . '" />';
+						$s_hidden_fields .= '<input type="hidden" name="facebook" value="' . str_replace("\"", "&quot;", (string) $facebook) . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="website" value="' . str_replace("\"", "&quot;", (string) $website) . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="location" value="' . str_replace("\"", "&quot;", (string) $location) . '" />';
 /*****[BEGIN]******************************************
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
-						$s_hidden_fields .= '<input type="hidden" name="user_flag" value="' . $titanium_user_flag . '" />';
+						$s_hidden_fields .= '<input type="hidden" name="user_flag" value="' . $user_flag . '" />';
 /*****[END]********************************************
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
-                        $s_hidden_fields .= '<input type="hidden" name="occupation" value="' . str_replace("\"", "&quot;", $occupation) . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="interests" value="' . str_replace("\"", "&quot;", $interests) . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="occupation" value="' . str_replace("\"", "&quot;", (string) $occupation) . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="interests" value="' . str_replace("\"", "&quot;", (string) $interests) . '" />';
 /*****[BEGIN]******************************************
  [ Mod:    At a Glance Options                 v1.0.0 ]
  *****************************************************/
-                        $s_hidden_fields .= '<input type="hidden" name="glance_show" value="' . str_replace("\"", "&quot;", $glance_show) . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="glance_show" value="' . str_replace("\"", "&quot;", (string) $glance_show) . '" />';
 /*****[END]********************************************
  [ Mod:    At a Glance Options                 v1.0.0 ]
  *****************************************************/
 /*****[BEGIN]******************************************
  [ Mod:    Edit User Post Count                v1.0.0 ]
  *****************************************************/
-                        $s_hidden_fields .= '<input type="hidden" name="user_posts" value="' . $titanium_user_posts . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="user_posts" value="' . $user_posts . '" />';
 /*****[END]********************************************
  [ Mod:    Edit User Post Count                v1.0.0 ]
  *****************************************************/
@@ -1504,7 +1514,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:    Hide Images                         v1.0.0 ]
  ******************************************************/
 
-                        $s_hidden_fields .= '<input type="hidden" name="signature" value="' . str_replace("\"", "&quot;", $signature) . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="signature" value="' . str_replace("\"", "&quot;", (string) $signature) . '" />';
                         $s_hidden_fields .= '<input type="hidden" name="viewemail" value="' . $viewemail . '" />';
 /*****[BEGIN]******************************************
  [ Mod:    Gender                              v1.2.6 ]
@@ -1529,23 +1539,22 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
  ******************************************************/
                         $s_hidden_fields .= '<input type="hidden" name="hideonline" value="' . !$allowviewonline . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="theme" value="' . $titanium_user_style . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="theme" value="' . $user_style . '" />';
 /*****[BEGIN]******************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-                        $s_hidden_fields .= '<input type="hidden" name="wrap" value="' . $titanium_user_wordwrap .'" />';
+                        $s_hidden_fields .= '<input type="hidden" name="wrap" value="' . $user_wordwrap .'" />';
 /*****[END]********************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-                        $s_hidden_fields .= '<input type="hidden" name="language" value="' . $titanium_user_lang . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="timezone" value="' . $titanium_user_timezone . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="language" value="' . $user_lang . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="timezone" value="' . $user_timezone . '" />';
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
                         reset($xdata);
-                        while ( list($key, $value) = each($xdata) )
-                        {
-                            $s_hidden_fields .= '<input type="hidden" name="' . $key . '" value="' . str_replace("\"", "&quot;", $value) . '" />';
+                        foreach ($xdata as $key => $value) {
+                            $s_hidden_fields .= '<input type="hidden" name="' . $key . '" value="' . str_replace("\"", "&quot;", (string) $value) . '" />';
                         }
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
@@ -1556,7 +1565,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  ******************************************************/
                         $s_hidden_fields .= '<input type="hidden" name="time_mode" value="' . $time_mode . '" />';
                         $s_hidden_fields .= '<input type="hidden" name="dst_time_lag" value="' . $dst_time_lag . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="dateformat" value="' . str_replace("\"", "&quot;", $titanium_user_dateformat) . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="dateformat" value="' . str_replace("\"", "&quot;", (string) $user_dateformat) . '" />';
 /*****[END]********************************************
  [ Mod:    Advanced Time Management            v2.2.0 ]
  ******************************************************/
@@ -1564,79 +1573,77 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 /*****[BEGIN]******************************************
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
-                        $s_hidden_fields .= '<input type="hidden" name="show_quickreply" value="' . $titanium_user_show_quickreply . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="quickreply_mode" value="' . $titanium_user_quickreply_mode . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="open_quickreply" value="' . $titanium_user_quickreply_mode . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="show_quickreply" value="' . $user_show_quickreply . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="quickreply_mode" value="' . $user_quickreply_mode . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="open_quickreply" value="' . $user_quickreply_mode . '" />';
 /*****[END]********************************************
  [ Mod:     Super Quick Reply                  v1.3.2 ]
  ******************************************************/
 
-                        $s_hidden_fields .= '<input type="hidden" name="user_status" value="' . $titanium_user_status . '" />';
-                        $s_hidden_fields .= '<input type="hidden" name="user_allowpm" value="' . $titanium_user_allowpm . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="user_status" value="' . $user_status . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="user_allowpm" value="' . $user_allowpm . '" />';
 /*****[BEGIN]******************************************
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-                        $s_hidden_fields .= '<input type="hidden" name="user_admin_notes" value="' . $titanium_user_admin_notes . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="user_admin_notes" value="' . $user_admin_notes . '" />';
 /*****[END]********************************************
  [ Mod:    Admin User Notes                    v1.0.0 ]
  ******************************************************/
-                        $s_hidden_fields .= '<input type="hidden" name="user_allowavatar" value="' . $titanium_user_allowavatar . '" />';
+                        $s_hidden_fields .= '<input type="hidden" name="user_allowavatar" value="' . $user_allowavatar . '" />';
 /*****[BEGIN]******************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
-						$s_hidden_fields .= '<input type="hidden" name="user_rank" value="' . $titanium_user_rank . '" />';
-						$s_hidden_fields .= '<input type="hidden" name="user_rank2" value="' . $titanium_user_rank2 . '" />';
-						$s_hidden_fields .= '<input type="hidden" name="user_rank3" value="' . $titanium_user_rank3 . '" />';
-						$s_hidden_fields .= '<input type="hidden" name="user_rank4" value="' . $titanium_user_rank4 . '" />';
-						$s_hidden_fields .= '<input type="hidden" name="user_rank5" value="' . $titanium_user_rank5 . '" />';
+						$s_hidden_fields .= '<input type="hidden" name="user_rank"  value="' . $user_rank  . '" />';
+						$s_hidden_fields .= '<input type="hidden" name="user_rank2" value="' . $user_rank2 . '" />';
+						$s_hidden_fields .= '<input type="hidden" name="user_rank3" value="' . $user_rank3 . '" />';
+						$s_hidden_fields .= '<input type="hidden" name="user_rank4" value="' . $user_rank4 . '" />';
+						$s_hidden_fields .= '<input type="hidden" name="user_rank5" value="' . $user_rank5 . '" />';
 /*****[END]********************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/
 
-                        $phpbb2_template->assign_vars(array(
-                                "L_USER_TITLE" => $titanium_lang['User_admin'],
-                                "L_USER_EXPLAIN" => $titanium_lang['User_admin_explain'],
-                                "L_AVATAR_GALLERY" => $titanium_lang['Avatar_gallery'],
-                                "L_SELECT_AVATAR" => $titanium_lang['Select_avatar'],
-                                "L_RETURN_PROFILE" => $titanium_lang['Return_profile'],
-                                "L_CATEGORY" => $titanium_lang['Select_category'],
-                                "L_GO" => $titanium_lang['Go'],
-
-                                "S_OPTIONS_CATEGORIES" => $s_categories,
-                                "S_COLSPAN" => $s_colspan,
-                                "S_PROFILE_ACTION" => append_titanium_sid("admin_users.$phpEx?mode=$mode"),
-                                "S_HIDDEN_FIELDS" => $s_hidden_fields)
+                        $template->assign_vars(["L_USER_TITLE" => $lang['User_admin'], 
+						                        "L_USER_EXPLAIN" => $lang['User_admin_explain'], 
+												"L_AVATAR_GALLERY" => $lang['Avatar_gallery'], 
+												"L_SELECT_AVATAR" => $lang['Select_avatar'], 
+												"L_RETURN_PROFILE" => $lang['Return_profile'], 
+												"L_CATEGORY" => $lang['Select_category'], 
+												"L_GO" => $lang['Go'], 
+												"S_OPTIONS_CATEGORIES" => $s_categories, 
+												"S_COLSPAN" => $s_colspan, 
+												"S_PROFILE_ACTION" => append_sid("admin_users.$phpEx?mode=$mode"), 
+												"S_HIDDEN_FIELDS" => $s_hidden_fields]
                         );
                 }
         }
         else
         {
-                $s_hidden_fields = '<input type="hidden" name="mode" value="save" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="coppa" value="' . $coppa . '" />';
+                $s_hidden_fields = '<input type="hidden" name="mode" value="save" /><input type="hidden" name="agreed" value="true" /><input type="hidden" name="coppa" value="' . $coppa = $coppa ?? '' . '" />';
                 $s_hidden_fields .= '<input type="hidden" name="id" value="' . $this_userdata['user_id'] . '" />';
 
-                if( !empty($titanium_user_avatar_local) )
-                {
-                        $s_hidden_fields .= '<input type="hidden" name="avatarlocal" value="' . $titanium_user_avatar_local . '" /><input type="hidden" name="avatarcatname" value="' . $titanium_user_avatar_category . '" />';
-                }
+           if( !empty($user_avatar_local) )
+           {
+             $s_hidden_fields .= '<input type="hidden" name="avatarlocal" value="' . $user_avatar_local . '" /><input type="hidden" name="avatarcatname" value="' . $user_avatar_category . '" />';
+           }
 
-                if( $titanium_user_avatar_type )
+                if( $user_avatar_type )
                 {
-                        switch( $titanium_user_avatar_type )
+                        switch( $user_avatar_type )
                         {
                                 case USER_AVATAR_UPLOAD:
-                                        $avatar = '<img src="../../../' . $phpbb2_board_config['avatar_path'] . '/' . $titanium_user_avatar . '" alt="" />';
+                                        $avatar = '<img width="200px" style="border-radius: 25px;" src="../../../' . $board_config['avatar_path'] . '/' . $user_avatar . '" alt="" />';
                                         break;
-/*****[BEGIN]******************************************
- [ Mod:     Remote Avatar Resize               v2.0.0 ]
- ******************************************************/
+                                /*****[BEGIN]******************************************
+                                 [ Mod:     Remote Avatar Resize               v2.0.0 ]
+                                 ******************************************************/
                                 case USER_AVATAR_REMOTE:
-                                        $avatar = resize_avatar($titanium_user_avatar);
+                                        $avatar = resize_avatar($user_avatar);
                                         break;
-/*****[END]********************************************
- [ Mod:     Remote Avatar Resize               v2.0.0 ]
- ******************************************************/
+                                /*****[END]********************************************
+                                 [ Mod:     Remote Avatar Resize               v2.0.0 ]
+                                 ******************************************************/
                                 case USER_AVATAR_GALLERY:
-                                        $avatar = '<img src="../../../' . $phpbb2_board_config['avatar_gallery_path'] . '/' . $titanium_user_avatar . '" alt="" />';
+                                        $avatar = '<img width="200px" style="border-radius: 25px;" src="../../../' . $board_config['avatar_gallery_path'] . '/' . $user_avatar . '" alt="" />';
                                         break;
                         }
                 }
@@ -1648,7 +1655,7 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                 $sql = "SELECT * FROM " . RANKS_TABLE . "
                         WHERE rank_special = '1'
                         ORDER BY rank_title";
-                if ( !($result = $titanium_db->sql_query($sql)) )
+                if ( !($result = $db->sql_query($sql)) )
                 {
                         message_die(GENERAL_ERROR, 'Could not obtain ranks data', '', __LINE__, __FILE__, $sql);
                 }
@@ -1661,35 +1668,35 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 				$selected3 = ( $this_userdata['user_rank3'] == '-2' ) ? ' selected="selected"' : '';
 				$selected4 = ( $this_userdata['user_rank4'] == '-2' ) ? ' selected="selected"' : '';
 				$selected5 = ( $this_userdata['user_rank5'] == '-2' ) ? ' selected="selected"' : '';
-				$rank1_select_box = '<option value="-2"' . $selected1 . '>' . $titanium_lang['No_Rank'] . '</option>';
-				$rank2_select_box = '<option value="-2"' . $selected2 . '>' . $titanium_lang['No_Rank'] . '</option>';
-				$rank3_select_box = '<option value="-2"' . $selected3 . '>' . $titanium_lang['No_Rank'] . '</option>';
-				$rank4_select_box = '<option value="-2"' . $selected4 . '>' . $titanium_lang['No_Rank'] . '</option>';
-				$rank5_select_box = '<option value="-2"' . $selected5 . '>' . $titanium_lang['No_Rank'] . '</option>';
+				$rank1_select_box = '<option value="-2"' . $selected1 . '>' . $lang['No_Rank'] . '</option>';
+				$rank2_select_box = '<option value="-2"' . $selected2 . '>' . $lang['No_Rank'] . '</option>';
+				$rank3_select_box = '<option value="-2"' . $selected3 . '>' . $lang['No_Rank'] . '</option>';
+				$rank4_select_box = '<option value="-2"' . $selected4 . '>' . $lang['No_Rank'] . '</option>';
+				$rank5_select_box = '<option value="-2"' . $selected5 . '>' . $lang['No_Rank'] . '</option>';
 				$selected1 = ( $this_userdata['user_rank'] == '-1' ) ? ' selected="selected"' : '';
 				$selected2 = ( $this_userdata['user_rank2'] == '-1' ) ? ' selected="selected"' : '';
 				$selected3 = ( $this_userdata['user_rank3'] == '-1' ) ? ' selected="selected"' : '';
 				$selected4 = ( $this_userdata['user_rank4'] == '-1' ) ? ' selected="selected"' : '';
 				$selected5 = ( $this_userdata['user_rank5'] == '-1' ) ? ' selected="selected"' : '';
-				$rank1_select_box .= '<option value="-1"' . $selected1 . '>' . $titanium_lang['Rank_Days_Count'] . '</option>';
-				$rank2_select_box .= '<option value="-1"' . $selected2 . '>' . $titanium_lang['Rank_Days_Count'] . '</option>';
-				$rank3_select_box .= '<option value="-1"' . $selected3 . '>' . $titanium_lang['Rank_Days_Count'] . '</option>';
-				$rank4_select_box .= '<option value="-1"' . $selected4 . '>' . $titanium_lang['Rank_Days_Count'] . '</option>';
-				$rank5_select_box .= '<option value="-1"' . $selected5 . '>' . $titanium_lang['Rank_Days_Count'] . '</option>';
+				$rank1_select_box .= '<option value="-1"' . $selected1 . '>' . $lang['Rank_Days_Count'] . '</option>';
+				$rank2_select_box .= '<option value="-1"' . $selected2 . '>' . $lang['Rank_Days_Count'] . '</option>';
+				$rank3_select_box .= '<option value="-1"' . $selected3 . '>' . $lang['Rank_Days_Count'] . '</option>';
+				$rank4_select_box .= '<option value="-1"' . $selected4 . '>' . $lang['Rank_Days_Count'] . '</option>';
+				$rank5_select_box .= '<option value="-1"' . $selected5 . '>' . $lang['Rank_Days_Count'] . '</option>';
 				$selected1 = ( $this_userdata['user_rank'] == '0' ) ? ' selected="selected"' : '';
 				$selected2 = ( $this_userdata['user_rank2'] == '0' ) ? ' selected="selected"' : '';
 				$selected3 = ( $this_userdata['user_rank3'] == '0' ) ? ' selected="selected"' : '';
 				$selected4 = ( $this_userdata['user_rank4'] == '0' ) ? ' selected="selected"' : '';
 				$selected5 = ( $this_userdata['user_rank5'] == '0' ) ? ' selected="selected"' : '';
-				$rank1_select_box .= '<option value="0"' . $selected1 . '>' . $titanium_lang['Rank_Posts_Count'] . '</option>';
-				$rank2_select_box .= '<option value="0"' . $selected2 . '>' . $titanium_lang['Rank_Posts_Count'] . '</option>';
-				$rank3_select_box .= '<option value="0"' . $selected3 . '>' . $titanium_lang['Rank_Posts_Count'] . '</option>';
-				$rank4_select_box .= '<option value="0"' . $selected4 . '>' . $titanium_lang['Rank_Posts_Count'] . '</option>';
-				$rank5_select_box .= '<option value="0"' . $selected5 . '>' . $titanium_lang['Rank_Posts_Count'] . '</option>';
+				$rank1_select_box .= '<option value="0"' . $selected1 . '>' . $lang['Rank_Posts_Count'] . '</option>';
+				$rank2_select_box .= '<option value="0"' . $selected2 . '>' . $lang['Rank_Posts_Count'] . '</option>';
+				$rank3_select_box .= '<option value="0"' . $selected3 . '>' . $lang['Rank_Posts_Count'] . '</option>';
+				$rank4_select_box .= '<option value="0"' . $selected4 . '>' . $lang['Rank_Posts_Count'] . '</option>';
+				$rank5_select_box .= '<option value="0"' . $selected5 . '>' . $lang['Rank_Posts_Count'] . '</option>';
 /*****[END]********************************************
  [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
  ******************************************************/ 
-                while( $row = $titanium_db->sql_fetchrow($result) )
+                while( $row = $db->sql_fetchrow($result) )
                 {
                         $rank = $row['rank_title'];
                         $rank_id = $row['rank_id'];
@@ -1712,113 +1719,83 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  ******************************************************/
                 }
 
-                $phpbb2_template->set_filenames(array(
-                        "body" => "admin/user_edit_body.tpl")
+                $template->set_filenames(["body" => "admin/user_edit_body.tpl"]
                 );
 /*****[BEGIN]******************************************
  [ Mod:     XData                              v1.0.3 ]
  ******************************************************/
                 $xd_meta = get_xd_metadata();
-                while ( list($code_name, $info) = each($xd_meta) )
-                {
-
-                	if ( xdata_auth($code_name, $userdata['user_id']) || intval($userdata['user_level']) == ADMIN )
-                	{
-                		if ($info['display_register'] == XD_DISPLAY_NORMAL)
-                		{
-                			$phpbb2_template->assign_block_vars('xdata', array(
-                				'CODE_NAME' => $code_name,
-                				'NAME' => $info['field_name'],
-                				'DESCRIPTION' => $info['field_desc'],
-                    			'VALUE' => isset($xdata[$code_name]) ? str_replace('"', '&quot;', $xdata[$code_name]) : '',
-                				'MAX_LENGTH' => ( $info['field_length'] > 0) ? ( $info['field_length'] ) : ''
-                				)
-                			);
-
-                			switch ($info['field_type'])
-                			{
-                				case 'text':
-                					$phpbb2_template->assign_block_vars('xdata.switch_type_text', array());
-                					break;
-
-                				case 'textarea':
-                					$phpbb2_template->assign_block_vars('xdata.switch_type_textarea', array());
-                					break;
-
-                				case 'checkbox':
-                					$phpbb2_template->assign_block_vars('xdata.switch_type_checkbox', array( 'CHECKED' => ($xdata[$code_name] == $titanium_lang['true']) ? ' checked="checked"' : ''  ));
-                					break;
-
-                				case 'radio':
-                					$phpbb2_template->assign_block_vars('xdata.switch_type_radio', array());
-
-                					while ( list( , $option) = each($info['values_array']) )
-                					{
-                	                	$phpbb2_template->assign_block_vars('xdata.switch_type_radio.options', array(
-                	                		'OPTION' => $option,
-                	                		'CHECKED' => ($xdata[$code_name] == $option) ? 'checked="checked"' : ''
-                							)
-                	                	);
-                					}
-                					break;
-
-                				case 'select':
-                					$phpbb2_template->assign_block_vars('xdata.switch_type_select', array());
-
-                					while ( list( , $option) = each($info['values_array']) )
-                					{
-                	                	$phpbb2_template->assign_block_vars('xdata.switch_type_select.options', array(
-                	                		'OPTION' => $option,
-                	                		'SELECTED' => ($xdata[$code_name] == $option) ? 'selected="selected"' : ''
-                							)
-                	                	);
-                					}
-                					break;
-                			}
-                		}
-                		elseif ($info['display_register'] == XD_DISPLAY_ROOT)
-                		{
-                            $phpbb2_template->assign_block_vars('xdata',
-                	 	  		array(
-                		  			'CODE_NAME' => $code_name,
-                		  			'NAME' => $xd_meta[$code_name]['field_name'],
-                		  			'DESCRIPTION' => $xd_meta[$code_name]['field_desc'],
-                       				'VALUE' => isset($xdata[$code_name]) ? str_replace('"', '&quot;', $xdata[$code_name]) : ''
-                		  		) );
-                		  	$phpbb2_template->assign_block_vars('xdata.switch_is_'.$code_name, array());
-
-                		  	switch ($info['field_type'])
-                			{
-                				case 'checkbox':
-                					$phpbb2_template->assign_block_vars('xdata.switch_type_checkbox', array( 'CHECKED' => ($xdata[$code_name] == 1) ? ' checked="checked"' : ''  ));
-                					break;
-
-                				case 'radio':
-
-                					while ( list( , $option) = each($info['values_array']) )
-                					{
-                	                	$phpbb2_template->assign_block_vars('xdata.switch_is_'.$code_name.'.options', array(
-                	                		'OPTION' => $option,
-                	                		'CHECKED' => ($xdata[$code_name] == $option) ? 'checked="checked"' : ''
-                							)
-                	                	);
-                					}
-                					break;
-
-                				case 'select':
-
-                					while ( list( , $option) = each($info['values_array']) )
-                					{
-                	                	$phpbb2_template->assign_block_vars('xdata.switch_is_'.$code_name.'.options', array(
-                	                		'OPTION' => $option,
-                	                		'SELECTED' => ($xdata[$code_name] == $option) ? 'selected="selected"' : ''
-                							)
-                	                	);
-                					}
-                					break;
-                			}
-                		}
-                	}
+                foreach ($xd_meta as $code_name => $info) {
+                    if ( xdata_auth($code_name, $userdata['user_id']) || (int) $userdata['user_level'] == ADMIN )
+                   	{
+                   		if ($info['display_register'] == XD_DISPLAY_NORMAL)
+                   		{
+                   			$template->assign_block_vars('xdata', ['CODE_NAME' => $code_name, 'NAME' => $info['field_name'], 'DESCRIPTION' => $info['field_desc'], 'VALUE' => isset($xdata[$code_name]) ? str_replace('"', '&quot;', (string) $xdata[$code_name]) : '', 'MAX_LENGTH' => ( $info['field_length'] > 0) ? ( $info['field_length'] ) : '']
+                   			);
+   
+                   			switch ($info['field_type'])
+                   			{
+                   				case 'text':
+                   					$template->assign_block_vars('xdata.switch_type_text', []);
+                   					break;
+   
+                   				case 'textarea':
+                   					$template->assign_block_vars('xdata.switch_type_textarea', []);
+                   					break;
+   
+                   				case 'checkbox':
+                   					$template->assign_block_vars('xdata.switch_type_checkbox', ['CHECKED' => ($xdata[$code_name] == $lang['true']) ? ' checked="checked"' : '']);
+                   					break;
+   
+                   				case 'radio':
+                   					$template->assign_block_vars('xdata.switch_type_radio', []);
+   
+                   					foreach ($info['values_array'] as $option) {
+                            $template->assign_block_vars('xdata.switch_type_radio.options', ['OPTION' => $option, 'CHECKED' => ($xdata[$code_name] == $option) ? 'checked="checked"' : '']
+          	                	);
+                        }
+                   					break;
+   
+                   				case 'select':
+                   					$template->assign_block_vars('xdata.switch_type_select', []);
+   
+                   					foreach ($info['values_array'] as $option) {
+                            $template->assign_block_vars('xdata.switch_type_select.options', ['OPTION' => $option, 'SELECTED' => ($xdata[$code_name] == $option) ? 'selected="selected"' : '']
+          	                	);
+                        }
+                   					break;
+                   			}
+                   		}
+                   		elseif ($info['display_register'] == XD_DISPLAY_ROOT)
+                   		{
+                               $template->assign_block_vars('xdata',
+                   	 	  		['CODE_NAME' => $code_name, 'NAME' => $xd_meta[$code_name]['field_name'], 'DESCRIPTION' => $xd_meta[$code_name]['field_desc'], 'VALUE' => isset($xdata[$code_name]) ? str_replace('"', '&quot;', (string) $xdata[$code_name]) : ''] );
+                   		  	$template->assign_block_vars('xdata.switch_is_'.$code_name, []);
+   
+                   		  	switch ($info['field_type'])
+                   			{
+                   				case 'checkbox':
+                   					$template->assign_block_vars('xdata.switch_type_checkbox', ['CHECKED' => ($xdata[$code_name] == 1) ? ' checked="checked"' : '']);
+                   					break;
+   
+                   				case 'radio':
+   
+                   					foreach ($info['values_array'] as $option) {
+                            $template->assign_block_vars('xdata.switch_is_'.$code_name.'.options', ['OPTION' => $option, 'CHECKED' => ($xdata[$code_name] == $option) ? 'checked="checked"' : '']
+          	                	);
+                        }
+                   					break;
+   
+                   				case 'select':
+   
+                   					foreach ($info['values_array'] as $option) {
+                            $template->assign_block_vars('xdata.switch_is_'.$code_name.'.options', ['OPTION' => $option, 'SELECTED' => ($xdata[$code_name] == $option) ? 'selected="selected"' : '']
+          	                	);
+                        }
+                   					break;
+                   			}
+                   		}
+                   	}
                 }
 /*****[END]********************************************
  [ Mod:     XData                              v1.0.3 ]
@@ -1829,32 +1806,19 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
  ******************************************************/
                 $l_time_mode_0 = "";
                 $l_time_mode_1 = "";
-                $l_time_mode_2 = $titanium_lang['time_mode_dst_server'];
-                $l_time_mode_3 = $titanium_lang['time_mode_full_server'];
-                $l_time_mode_4 = $titanium_lang['time_mode_server_pc'];
-                $l_time_mode_6 = $titanium_lang['time_mode_full_pc'];
+                $l_time_mode_2 = $lang['time_mode_dst_server'];
+                $l_time_mode_3 = $lang['time_mode_full_server'];
+                $l_time_mode_4 = $lang['time_mode_server_pc'];
+                $l_time_mode_6 = $lang['time_mode_full_pc'];
 
-                switch ($phpbb2_board_config['default_time_mode'])
-                {
-                    case MANUAL_DST:
-                        $l_time_mode_1 = $l_time_mode_1 . "*";
-                        break;
-                    case SERVER_SWITCH:
-                        $l_time_mode_2 = $l_time_mode_2 . "*";
-                        break;
-                    case FULL_SERVER:
-                        $l_time_mode_3 = $l_time_mode_3 . "*";
-                        break;
-                    case SERVER_PC:
-                        $l_time_mode_4 = $l_time_mode_4 . "*";
-                        break;
-                    case FULL_PC:
-                        $l_time_mode_6 = $l_time_mode_6 . "*";
-                        break;
-                    default:
-                        $l_time_mode_0 = $l_time_mode_0 . "*";
-                        break;
-                }
+                match ($board_config['default_time_mode']) {
+                    MANUAL_DST => $l_time_mode_1 .= "*",
+                    SERVER_SWITCH => $l_time_mode_2 .= "*",
+                    FULL_SERVER => $l_time_mode_3 .= "*",
+                    SERVER_PC => $l_time_mode_4 .= "*",
+                    FULL_PC => $l_time_mode_6 .= "*",
+                    default => $l_time_mode_0 .= "*",
+                };
 
                 switch ($time_mode)
                 {
@@ -1897,36 +1861,39 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
                 // us from doing file uploads....
                 //
                 $ini_val = ( phpversion() >= '4.0.0' ) ? 'ini_get' : 'get_cfg_var';
-                $form_enctype = ( !@$ini_val('file_uploads') || phpversion() == '4.0.4pl1' || !$phpbb2_board_config['allow_avatar_upload'] || ( phpversion() < '4.0.3' && @$ini_val('open_basedir') != '' ) ) ? '' : 'enctype="multipart/form-data"';
+                $form_enctype = ( !$ini_val('file_uploads') || phpversion() == '4.0.4pl1' || !$board_config['allow_avatar_upload'] || ( phpversion() < '4.0.3' && $ini_val('open_basedir') != '' ) ) ? '' : 'enctype="multipart/form-data"';
 /*****[BEGIN]******************************************
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
 				$sql = "SELECT *
 					FROM " . FLAG_TABLE . "
 					ORDER BY flag_id";
-				if(!$flags_result = $titanium_db->sql_query($sql))
+				if(!$flags_result = $db->sql_query($sql))
 				{
 					message_die(GENERAL_ERROR, "Couldn't obtain flags information.", "", __LINE__, __FILE__, $sql);
 				}
-				$flag_row = $titanium_db->sql_fetchrowset($ranksresult);
-				$num_flags = $titanium_db->sql_numrows($ranksresult) ;
+				if(!isset($ranksresult))
+				$ranksresult = '';
+				
+				$flag_row = $db->sql_fetchrowset($ranksresult);
+				$num_flags = $db->sql_numrows($ranksresult) ;
 
 			
 				$flag_start_image = 'blank' ;
-				$selected = ( isset($titanium_user_flag) ) ? '' : ' selected="selected"'  ;
+				$selected = ( isset($user_flag) ) ? '' : ' selected="selected"'  ;
 				// $flag_select  = '<select name="user_flag" onChange="document.images['user_flag'].src = "../../../images/flags/"+ this.value;">';
                 $flag_select  = '<select class="user_from_flag_select" name="user_flag">';
-				$flag_select .= '  <option value="blank"'.$selected.'>'.$titanium_lang['Select_Country'].'</option>';
+				$flag_select .= '  <option value="blank"'.$selected.'>'.$lang['Select_Country'].'</option>';
 				for ($i = 0; $i < $num_flags; $i++)
 				{
 					$flag_name = $flag_row[$i]['flag_name'];
 					$flag_image = $flag_row[$i]['flag_image'];
-					$selected = ( isset( $titanium_user_flag) ) ? ((str_replace('.png','',$titanium_user_flag) == str_replace('.png','',$flag_image)) ? 'selected="selected"' : '' ) : '' ;
+					$selected = ( isset( $user_flag) ) ? ((str_replace('.png','',(string) $user_flag) === str_replace('.png','',(string) $flag_image)) ? 'selected="selected"' : '' ) : '' ;
 					$flag_select .= '  <option value="'.$flag_image.'"'.$selected.'>'.$flag_name.'</option>';
-					if ( isset($titanium_user_flag) && ($titanium_user_flag == $flag_image))
+					if ( isset($user_flag) && ($user_flag == $flag_image))
 					{
 						// $flag_start_image = $flag_image;
-                        $flag_start_image = str_replace('.png','',$flag_image);
+                        $flag_start_image = str_replace('.png','',(string) $flag_image);
 					}
 				}
 				$flag_select .= '</select>';
@@ -1937,445 +1904,429 @@ if ( $mode == 'edit' || $mode == 'save' && ( isset($HTTP_POST_VARS['username']) 
 /*****[END]********************************************
  [ Mod:     Member Country Flags               v2.0.7 ]
  ******************************************************/
-                $phpbb2_template->assign_vars(array(
-                        'USERNAME' => $titanium_username,
-                        'EMAIL' => $email,
-/*****[BEGIN]******************************************
- [ Mod:     Users Reputations Systems          v1.0.0 ]
- ******************************************************/
-                        'REPUTATION' => $reputation,
-/*****[END]********************************************
- [ Mod:     Users Reputations System           v1.0.0 ]
- ******************************************************/
-						'FACEBOOK' => $facebook,
-                        'OCCUPATION' => $occupation,
-                        'INTERESTS' => $interests,
-/*****[BEGIN]******************************************
- [ Mod:    Gender                              v1.2.6 ]
- ******************************************************/
-                        'GENDER' => $gender, 
-                        'GENDER_NO_SPECIFY_CHECKED' => $gender_no_specify_checked, 
-                        'GENDER_MALE_CHECKED' => $gender_male_checked, 
-                        'GENDER_FEMALE_CHECKED' => $gender_female_checked,
-/*****[END]********************************************
- [ Mod:    Gender                              v1.2.6 ]
- ******************************************************/
-/*****[BEGIN]******************************************
- [ Mod:    At a Glance Options                 v1.0.0 ]
- *****************************************************/
-                        'GLANCE_SHOW' => glance_option_select($glance_show, 'glance_show'),
-                        'L_GLANCE_SHOW' => $titanium_lang['glance_show'],
-/*****[END]********************************************
- [ Mod:    At a Glance Options                 v1.0.0 ]
- *****************************************************/
-/*****[BEGIN]******************************************
- [ Mod:    Edit User Post Count                v1.0.0 ]
- *****************************************************/
-                        'USER_POSTS' => $titanium_user_posts,
-                        'L_USER_POSTS' => $titanium_lang['user_posts'],
-/*****[END]********************************************
- [ Mod:    Edit User Post Count                v1.0.0 ]
- *****************************************************/
- /*****[BEGIN]******************************************
- [ Mod:    Hide Images                         v1.0.0 ]
- ******************************************************/
-                        'HIDE_IMAGES_YES' => ( $hide_images ) ? 'checked="checked"' : '',
-                        'HIDE_IMAGES_NO' => ( !$hide_images ) ? 'checked="checked"' : '',
-                        'L_HIDE_IMAGES' => $titanium_lang['user_hide_images'],
-/*****[END]********************************************
- [ Mod:    Hide Images                         v1.0.0 ]
- ******************************************************/
-                        'LOCATION' => $location,
-/*****[BEGIN]******************************************
- [ Mod:     Member Country Flags               v2.0.7 ]
- ******************************************************/
-						'L_FLAG' => $titanium_lang['Country_Flag'],
-						'FLAG_SELECT' => $flag_select,
-						'FLAG_START' => $flag_start_image,
-/*****[END]********************************************
- [ Mod:     Member Country Flags               v2.0.7 ]
- ******************************************************/
-                        'WEBSITE' => $website,
-/*****[BEGIN]******************************************
- [ Mod:    Birthdays                           v3.0.0 ]
- ******************************************************/
-						'BDAY_MONTH' => ($bday_month != 0) ? $bday_month : $titanium_lang['Default_Month'],
-						'BDAY_DAY' => ($bday_day != 0) ? $bday_day : $titanium_lang['Default_Day'],
-						'BDAY_YEAR' => ($phpbb2_bday_year != 0) ? $phpbb2_bday_year : $titanium_lang['Default_Year'],
-						'BIRTHDAY_ALL' => BIRTHDAY_ALL,
-						'BIRTHDAY_ALL_SELECTED' => ( $birthday_display == BIRTHDAY_ALL ) ? ' selected="selected"' : '',
-						'BIRTHDAY_DATE' => BIRTHDAY_DATE,
-						'BIRTHDAY_DATE_SELECTED' => ( $birthday_display == BIRTHDAY_DATE ) ? ' selected="selected"' : '',
-						'BIRTHDAY_AGE' => BIRTHDAY_AGE,
-						'BIRTHDAY_AGE_SELECTED' => ( $birthday_display == BIRTHDAY_AGE ) ? ' selected="selected"' : '',
-						'BIRTHDAY_NONE' => BIRTHDAY_NONE,
-						'BIRTHDAY_NONE_SELECTED' => ( $birthday_display == BIRTHDAY_NONE ) ? ' selected="selected"' : '',
-						'BDAY_NONE_ENABLED' => ( !$birthday_greeting ) ? ' checked="checked"' : '',
-						'BDAY_EMAIL' => BIRTHDAY_EMAIL,
-						'BDAY_EMAIL_ENABLED' => ( $birthday_greeting == BIRTHDAY_EMAIL ) ? ' checked="checked"' : '',
-						'BDAY_PM' => BIRTHDAY_PM,
-						'BDAY_PM_ENABLED' => ( $birthday_greeting == BIRTHDAY_PM ) ? ' checked="checked"' : '', 
-						'BDAY_POPUP' => BIRTHDAY_POPUP,
-						'BDAY_POPUP_ENABLED' => ( $birthday_greeting == BIRTHDAY_POPUP ) ? ' checked="checked"' : '',
-/*****[END]********************************************
- [ Mod:    Birthdays                           v3.0.0 ]
- ******************************************************/
-                        'SIGNATURE' => str_replace('<br />', "\n", $signature),
-                        'VIEW_EMAIL_YES' => ($viewemail) ? 'checked="checked"' : '',
-                        'VIEW_EMAIL_NO' => (!$viewemail) ? 'checked="checked"' : '',
-                        'HIDE_USER_YES' => (!$allowviewonline) ? 'checked="checked"' : '',
-                        'HIDE_USER_NO' => ($allowviewonline) ? 'checked="checked"' : '',
-                        'NOTIFY_PM_YES' => ($notifypm) ? 'checked="checked"' : '',
-                        'NOTIFY_PM_NO' => (!$notifypm) ? 'checked="checked"' : '',
-                        'POPUP_PM_YES' => ($popuppm) ? 'checked="checked"' : '',
-                        'POPUP_PM_NO' => (!$popuppm) ? 'checked="checked"' : '',
-                        'ALWAYS_ADD_SIGNATURE_YES' => ($attachsig) ? 'checked="checked"' : '',
-                        'ALWAYS_ADD_SIGNATURE_NO' => (!$attachsig) ? 'checked="checked"' : '',
-                        'NOTIFY_REPLY_YES' => ( $notifyreply ) ? 'checked="checked"' : '',
-                        'NOTIFY_REPLY_NO' => ( !$notifyreply ) ? 'checked="checked"' : '',
-                        'ALWAYS_ALLOW_BBCODE_YES' => ($allowbbcode) ? 'checked="checked"' : '',
-                        'ALWAYS_ALLOW_BBCODE_NO' => (!$allowbbcode) ? 'checked="checked"' : '',
-                        'ALWAYS_ALLOW_HTML_YES' => ($allowhtml) ? 'checked="checked"' : '',
-                        'ALWAYS_ALLOW_HTML_NO' => (!$allowhtml) ? 'checked="checked"' : '',
-                        'ALWAYS_ALLOW_SMILIES_YES' => ($allowsmilies) ? 'checked="checked"' : '',
-                        'ALWAYS_ALLOW_SMILIES_NO' => (!$allowsmilies) ? 'checked="checked"' : '',
-/*****[BEGIN]******************************************
- [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
- ******************************************************/
-                        'SHOW_AVATARS_YES' => ($showavatars) ? 'checked="checked"' : '',
-                        'SHOW_AVATARS_NO' => (!$showavatars) ? 'checked="checked"' : '',
-                        'SHOW_SIGNATURES_YES' => ($showsignatures) ? 'checked="checked"' : '',
-                        'SHOW_SIGNATURES_NO' => (!$showsignatures) ? 'checked="checked"' : '',
-/*****[END]********************************************
- [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
- ******************************************************/
-                        'AVATAR' => $avatar,
-/*****[BEGIN]******************************************
- [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
- ******************************************************/
-                        'WRAP_ROW' => $titanium_user_wordwrap,
-/*****[END]********************************************
- [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
- ******************************************************/
-                        'LANGUAGE_SELECT' => language_select($titanium_user_lang, 'language', NUKE_MODULES_DIR.'Forums/language'),
-/*****[BEGIN]******************************************
- [ Mod:    Birthdays                           v3.0.0 ]
- ******************************************************/
-						'BIRTHMONTH_SELECT' => bday_month_select($bday_month, 'bday_month'),
-						'BIRTHDAY_SELECT' => bday_day_select($bday_day, 'bday_day'),
-						'BIRTHYEAR_SELECT' => bday_year_select($phpbb2_bday_year, 'bday_year'),
-/*****[END]********************************************
- [ Mod:    Birthdays                           v3.0.0 ]
- ******************************************************/
-                        'TIMEZONE_SELECT' => tz_select($titanium_user_timezone),
-/*****[END]********************************************
- [ Mod:    Advanced Time Management            v2.2.0 ]
- ******************************************************/
-                        'TIME_MODE' => $time_mode,
-                        'TIME_MODE_MANUAL_CHECKED' => $time_mode_manual_checked,
-                        'TIME_MODE_MANUAL_DST_CHECKED' => $time_mode_manual_dst_checked,
-                        'TIME_MODE_SERVER_SWITCH_CHECKED' => $time_mode_server_switch_checked,
-                        'TIME_MODE_FULL_SERVER_CHECKED' => $time_mode_full_server_checked,
-                        'TIME_MODE_SERVER_PC_CHECKED' => $time_mode_server_pc_checked,
-                        'TIME_MODE_FULL_PC_CHECKED' => $time_mode_full_pc_checked,
-                        'DST_TIME_LAG' => $dst_time_lag,
-/*****[BEGIN]******************************************
- [ Mod:    Advanced Time Management            v2.2.0 ]
- ******************************************************/
-/*****[BEGIN]******************************************
- [ Base:    Theme Management                   v1.0.2 ]
- ******************************************************/
-                        'STYLE_SELECT' => GetThemeSelect('theme', 'active', $this_userdata),
-/*****[END]********************************************
- [ Base:    Theme Management                   v1.0.2 ]
- ******************************************************/
-                        'DATE_FORMAT' => $titanium_user_dateformat,
-/*****[BEGIN]******************************************
- [ Mod:     Super Quick Reply                  v1.3.2 ]
- ******************************************************/
-                        'QUICK_REPLY_SELECT' => quick_reply_select($titanium_user_show_quickreply, 'show_quickreply'),
-                        'QUICK_REPLY_MODE_BASIC' => ( $titanium_user_quickreply_mode==0 ) ? 'checked="checked"' : '',
-                        'QUICK_REPLY_MODE_ADVANCED' => ( $titanium_user_quickreply_mode!=0 ) ? 'checked="checked"' : '',
-                        'OPEN_QUICK_REPLY_YES' => ( $titanium_user_open_quickreply ) ? 'checked="checked"' : '',
-                        'OPEN_QUICK_REPLY_NO' => ( !$titanium_user_open_quickreply ) ? 'checked="checked"' : '',
-/*****[END]********************************************
- [ Mod:     Super Quick Reply                  v1.3.2 ]
- ******************************************************/
-                        'ALLOW_PM_YES' => ($titanium_user_allowpm) ? 'checked="checked"' : '',
-                        'ALLOW_PM_NO' => (!$titanium_user_allowpm) ? 'checked="checked"' : '',
-                        'ALLOW_AVATAR_YES' => ($titanium_user_allowavatar) ? 'checked="checked"' : '',
-                        'ALLOW_AVATAR_NO' => (!$titanium_user_allowavatar) ? 'checked="checked"' : '',
-                        'USER_ACTIVE_YES' => ($titanium_user_status) ? 'checked="checked"' : '',
-                        'USER_ACTIVE_NO' => (!$titanium_user_status) ? 'checked="checked"' : '',
-/*****[BEGIN]******************************************
- [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
- ******************************************************/
-						'RANK1_SELECT_BOX' => $rank1_select_box,
-						'RANK2_SELECT_BOX' => $rank2_select_box,
-						'RANK3_SELECT_BOX' => $rank3_select_box,
-						'RANK4_SELECT_BOX' => $rank4_select_box,
-						'RANK5_SELECT_BOX' => $rank5_select_box,
-/*****[END]********************************************
- [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
- ******************************************************/
-
-/*****[BEGIN]******************************************
- [ Mod:    Admin User Notes                    v1.0.0 ]
- ******************************************************/
-                        'ADMIN_NOTES' => $admin_notes,
-                        'L_ADMIN_NOTES' =>  $titanium_lang['Admin_notes'],
-/*****[END]********************************************
- [ Mod:    Admin User Notes                    v1.0.0 ]
- ******************************************************/ 
-
-                        'L_USERNAME' => $titanium_lang['Username'],
-                        'L_USER_TITLE' => $titanium_lang['User_admin'],
-                        'L_USER_EXPLAIN' => $titanium_lang['User_admin_explain'],
-                        'L_NEW_PASSWORD' => $titanium_lang['New_password'],
-                        'L_PASSWORD_IF_CHANGED' => $titanium_lang['password_if_changed'],
-                        'L_CONFIRM_PASSWORD' => $titanium_lang['Confirm_password'],
-                        'L_PASSWORD_CONFIRM_IF_CHANGED' => $titanium_lang['password_confirm_if_changed'],
-                        'L_SUBMIT' => $titanium_lang['Submit'],
-                        'L_RESET' => $titanium_lang['Reset'],
-                        'L_REQUIRED' => $titanium_lang['Required'],
-/*****[BEGIN]******************************************
- [ Mod:    Birthdays                           v3.0.0 ]
- ******************************************************/
-						'L_CLEAR' => $titanium_lang['Clear'],
-						'L_BIRTHDAY' => $titanium_lang['Birthday'],
-						'L_MONTH' => $titanium_lang['Month'],
-						'L_DAY' => $titanium_lang['Day'],
-						'L_YEAR' => ( $phpbb2_board_config['bday_year'] ) ? $titanium_lang['Year'] : $titanium_lang['Year_Optional'],
-						'L_OPTIONAL' => ( $phpbb2_board_config['bday_year'] ) ? '' : $titanium_lang['Optional'],
-						'L_BIRTHDAY_DISPLAY' => $titanium_lang['Birthday_Display'],
-						'L_BIRTHDAY_ALL' => $titanium_lang['Display_all'],
-						'L_BIRTHDAY_YEAR' => $titanium_lang['Display_day_and_month'],
-						'L_BIRTHDAY_AGE' => $titanium_lang['Display_age'],
-						'L_BIRTHDAY_NONE' => $titanium_lang['Display_nothing'],
-						'L_BDAY_SEND_GREETING' => $titanium_lang['bday_send_greeting'],
-						'L_BDAY_SEND_GREETING_EXPLAIN' => $titanium_lang['bday_send_greeting_user_explain'],
-						'L_NONE' => $titanium_lang['Do_not_send'],
-						'L_EMAIL' => $titanium_lang['Email'],
-						'L_PM' => $titanium_lang['PM'],
-						'L_POPUP' => $titanium_lang['Popup'],
-/*****[END]********************************************
- [ Mod:    Birthdays                           v3.0.0 ]
- ******************************************************/
- 
- /*****[BEGIN]******************************************
- [ Mod:     Users Reputations Systems          v1.0.0 ]
- ******************************************************/
-                        'L_REPUTATION' => $titanium_lang['Reputation'],
-/*****[END]********************************************
- [ Mod:     Users Reputations System           v1.0.0 ]
- ******************************************************/
-                        'L_WEBSITE' => $titanium_lang['Website'],
-						'L_FACEBOOK' => $titanium_lang['FACEBOOK'],
-                        'L_LOCATION' => $titanium_lang['Location'],
-                        'L_OCCUPATION' => $titanium_lang['Occupation'],						
-/*****[BEGIN]******************************************
- [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
- ******************************************************/
-                        'L_WORD_WRAP' => $titanium_lang['Word_Wrap'],
-                        'L_WORD_WRAP_EXPLAIN' => $titanium_lang['Word_Wrap_Explain'],
-                        'L_WORD_WRAP_EXTRA' => strtr($titanium_lang['Word_Wrap_Extra'],array('%min%' => $phpbb2_board_config['wrap_min'], '%max%' => $phpbb2_board_config['wrap_max'])),
-/*****[END]********************************************
- [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
- ******************************************************/
-                        'L_BOARD_LANGUAGE' => $titanium_lang['Board_lang'],
-                        'L_BOARD_STYLE' => $titanium_lang['theme'],
-                        'L_TIMEZONE' => $titanium_lang['Timezone'],
-/*****[BEGIN]******************************************
- [ Mod:    Advanced Time Management            v2.2.0 ]
- ******************************************************/
-                        'L_TIME_MODE' => $titanium_lang['time_mode'],
-                        'L_TIME_MODE_TEXT' => $titanium_lang['time_mode_text'],
-                        'L_TIME_MODE_MANUAL' => $titanium_lang['time_mode_manual'],
-                        'L_TIME_MODE_DST' => $titanium_lang['time_mode_dst'],
-                        'L_TIME_MODE_DST_OFF' => $l_time_mode_0,
-                        'L_TIME_MODE_DST_ON' => $l_time_mode_1,
-                        'L_TIME_MODE_DST_SERVER' => $l_time_mode_2,
-                        'L_TIME_MODE_DST_TIME_LAG' => $titanium_lang['time_mode_dst_time_lag'],
-                        'L_TIME_MODE_DST_MN' => $titanium_lang['time_mode_dst_mn'],
-                        'L_TIME_MODE_TIMEZONE' => $titanium_lang['time_mode_timezone'],
-                        'L_TIME_MODE_AUTO' => $titanium_lang['time_mode_auto'],
-                        'L_TIME_MODE_FULL_SERVER' => $l_time_mode_3,
-                        'L_TIME_MODE_SERVER_PC' => $l_time_mode_4,
-                        'L_TIME_MODE_FULL_PC' => $l_time_mode_6,
-/*****[END]********************************************
- [ Mod:    Advanced Time Management            v2.2.0 ]
- ******************************************************/
-                        'L_DATE_FORMAT' => $titanium_lang['Date_format'],
-                        'L_DATE_FORMAT_EXPLAIN' => $titanium_lang['Date_format_explain'],
-/*****[BEGIN]******************************************
- [ Mod:     Super Quick Reply                  v1.3.2 ]
- ******************************************************/
-                        'L_QUICK_REPLY_PANEL' => $titanium_lang['Quick_reply_panel'],
-                        'L_SHOW_QUICK_REPLY' => $titanium_lang['Show_quick_reply'],
-                        'L_QUICK_REPLY_MODE' => $titanium_lang['Quick_reply_mode'],
-                        'L_QUICK_REPLY_MODE_BASIC' => $titanium_lang['Quick_reply_mode_basic'],
-                        'L_QUICK_REPLY_MODE_ADVANCED' => $titanium_lang['Quick_reply_mode_advanced'],
-                        'L_OPEN_QUICK_REPLY' => $titanium_lang['Open_quick_reply'],
-/*****[END]********************************************
- [ Mod:     Super Quick Reply                  v1.3.2 ]
- ******************************************************/
-                        'L_YES' => $titanium_lang['Yes'],
-                        'L_NO' => $titanium_lang['No'],
-
-                        'L_INTERESTS' => $titanium_lang['Interests'],
-
-/*****[BEGIN]******************************************
- [ Mod:    Gender                              v1.2.6 ]
- ******************************************************/
-                        'L_GENDER' =>$titanium_lang['Gender'], 
-                        'L_GENDER_MALE' =>$titanium_lang['Male'], 
-                        'L_GENDER_FEMALE' =>$titanium_lang['Female'], 
-                        'L_GENDER_NOT_SPECIFY' =>$titanium_lang['No_gender_specify'],
-/*****[END]********************************************
- [ Mod:    Gender                              v1.2.6 ]
- ******************************************************/
-                        'L_ALWAYS_ALLOW_SMILIES' => $titanium_lang['Always_smile'],
-/*****[BEGIN]******************************************
- [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
- ******************************************************/
-                        'L_SHOW_AVATARS' => $titanium_lang['Show_avatars'],
-                        'L_SHOW_SIGNATURES' => $titanium_lang['Show_signatures'],
-/*****[END]********************************************
- [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
- ******************************************************/
-                        'L_ALWAYS_ALLOW_BBCODE' => $titanium_lang['Always_bbcode'],
-                        'L_ALWAYS_ALLOW_HTML' => $titanium_lang['Always_html'],
-                        'L_HIDE_USER' => $titanium_lang['Hide_user'],
-                        'L_ALWAYS_ADD_SIGNATURE' => $titanium_lang['Always_add_sig'],
-
-                        'L_SPECIAL' => $titanium_lang['User_special'],
-                        'L_SPECIAL_EXPLAIN' => $titanium_lang['User_special_explain'],
-                        'L_USER_ACTIVE' => $titanium_lang['User_status'],
-                        'L_ALLOW_PM' => $titanium_lang['User_allowpm'],
-                        'L_ALLOW_AVATAR' => $titanium_lang['User_allowavatar'],
-
-                        'L_AVATAR_PANEL' => $titanium_lang['Avatar_panel'],
-                        'L_AVATAR_EXPLAIN' => $titanium_lang['Admin_avatar_explain'],
-                        'L_DELETE_AVATAR' => $titanium_lang['Delete_Image'],
-                        'L_CURRENT_IMAGE' => $titanium_lang['Current_Image'],
-                        'L_UPLOAD_AVATAR_FILE' => $titanium_lang['Upload_Avatar_file'],
-                        'L_UPLOAD_AVATAR_URL' => $titanium_lang['Upload_Avatar_URL'],
-                        'L_AVATAR_GALLERY' => $titanium_lang['Select_from_gallery'],
-                        'L_SHOW_GALLERY' => $titanium_lang['View_avatar_gallery'],
-                        'L_LINK_REMOTE_AVATAR' => $titanium_lang['Link_remote_Avatar'],
-
-
-                        'L_SIGNATURE' => $titanium_lang['Signature'],
-
-                        'L_SIGNATURE_EXPLAIN' => sprintf($titanium_lang['Signature_explain'], $phpbb2_board_config['max_sig_chars'] ),
-                        'L_NOTIFY_ON_PRIVMSG' => $titanium_lang['Notify_on_privmsg'],
-                        'L_NOTIFY_ON_REPLY' => $titanium_lang['Always_notify'],
-                        'L_POPUP_ON_PRIVMSG' => $titanium_lang['Popup_on_privmsg'],
-                        'L_PREFERENCES' => $titanium_lang['Preferences'],
-                        'L_PUBLIC_VIEW_EMAIL' => $titanium_lang['Public_view_email'],
-                        'L_ITEMS_REQUIRED' => $titanium_lang['Items_required'],
-                        'L_REGISTRATION_INFO' => $titanium_lang['Registration_info'],
-                        'L_PROFILE_INFO' => $titanium_lang['Profile_info'],
-                        'L_PROFILE_INFO_NOTICE' => $titanium_lang['Profile_info_warn'],
-                        'L_EMAIL_ADDRESS' => $titanium_lang['Email_address'],
-                        'S_FORM_ENCTYPE' => $form_enctype,
-
-                        'HTML_STATUS' => $html_status,
-                        'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="../' . append_titanium_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
-                        'SMILIES_STATUS' => $smilies_status,
-
-                        'L_DELETE_USER' => $titanium_lang['User_delete'],
-                        'L_DELETE_USER_EXPLAIN' => $titanium_lang['User_delete_explain'],
-/*****[BEGIN]******************************************
- [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
- ******************************************************/
-						'L_SELECT_RANK1' => $titanium_lang['Rank1_title'],
-						'L_SELECT_RANK2' => $titanium_lang['Rank2_title'],
-						'L_SELECT_RANK3' => $titanium_lang['Rank3_title'],
-						'L_SELECT_RANK4' => $titanium_lang['Rank4_title'],
-						'L_SELECT_RANK5' => $titanium_lang['Rank5_title'],
-/*****[END]********************************************
- [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
- ******************************************************/
-
-                        'S_HIDDEN_FIELDS' => $s_hidden_fields,
-                        'S_PROFILE_ACTION' => append_titanium_sid("admin_users.$phpEx"))
+                $template->assign_vars([
+                    'USERNAME' => $username,
+                    'EMAIL' => $email,
+                    /*****[BEGIN]******************************************
+                     [ Mod:     Users Reputations Systems          v1.0.0 ]
+                     ******************************************************/
+                    'REPUTATION' => $reputation,
+                    /*****[END]********************************************
+                     [ Mod:     Users Reputations System           v1.0.0 ]
+                     ******************************************************/
+                    'FACEBOOK' => $facebook,
+                    'OCCUPATION' => $occupation,
+                    'INTERESTS' => $interests,
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Gender                              v1.2.6 ]
+                     ******************************************************/
+                    'GENDER' => $gender,
+                    'GENDER_NO_SPECIFY_CHECKED' => $gender_no_specify_checked = $gender_no_specify_checked ?? '',
+                    'GENDER_MALE_CHECKED' => $gender_male_checked = $gender_male_checked ?? '',
+                    'GENDER_FEMALE_CHECKED' => $gender_female_checked = $gender_female_checked ?? '',
+                    /*****[END]********************************************
+                     [ Mod:    Gender                              v1.2.6 ]
+                     ******************************************************/
+                    /*****[BEGIN]******************************************
+                     [ Mod:    At a Glance Options                 v1.0.0 ]
+                     *****************************************************/
+                    'GLANCE_SHOW' => glance_option_select($glance_show, 'glance_show'),
+                    'L_GLANCE_SHOW' => $lang['glance_show'],
+                    /*****[END]********************************************
+                     [ Mod:    At a Glance Options                 v1.0.0 ]
+                     *****************************************************/
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Edit User Post Count                v1.0.0 ]
+                     *****************************************************/
+                    'USER_POSTS' => $user_posts,
+                    'L_USER_POSTS' => $lang['user_posts'],
+                    /*****[END]********************************************
+                     [ Mod:    Edit User Post Count                v1.0.0 ]
+                     *****************************************************/
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Hide Images                         v1.0.0 ]
+                     ******************************************************/
+                    'HIDE_IMAGES_YES' => ( $hide_images ) ? 'checked="checked"' : '',
+                    'HIDE_IMAGES_NO' => ( $hide_images ) ? '' : 'checked="checked"',
+                    'L_HIDE_IMAGES' => $lang['user_hide_images'],
+                    /*****[END]********************************************
+                     [ Mod:    Hide Images                         v1.0.0 ]
+                     ******************************************************/
+                    'LOCATION' => $location,
+                    /*****[BEGIN]******************************************
+                     [ Mod:     Member Country Flags               v2.0.7 ]
+                     ******************************************************/
+                    'L_FLAG' => $lang['Country_Flag'],
+                    'FLAG_SELECT' => $flag_select,
+                    'FLAG_START' => $flag_start_image,
+                    /*****[END]********************************************
+                     [ Mod:     Member Country Flags               v2.0.7 ]
+                     ******************************************************/
+                    'WEBSITE' => $website,
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Birthdays                           v3.0.0 ]
+                     ******************************************************/
+                    'BDAY_MONTH' => ($bday_month != 0) ? $bday_month : $lang['Default_Month'],
+                    'BDAY_DAY' => ($bday_day != 0) ? $bday_day : $lang['Default_Day'],
+                    'BDAY_YEAR' => ($bday_year != 0) ? $bday_year : $lang['Default_Year'],
+                    'BIRTHDAY_ALL' => BIRTHDAY_ALL,
+                    'BIRTHDAY_ALL_SELECTED' => ( $birthday_display == BIRTHDAY_ALL ) ? ' selected="selected"' : '',
+                    'BIRTHDAY_DATE' => BIRTHDAY_DATE,
+                    'BIRTHDAY_DATE_SELECTED' => ( $birthday_display == BIRTHDAY_DATE ) ? ' selected="selected"' : '',
+                    'BIRTHDAY_AGE' => BIRTHDAY_AGE,
+                    'BIRTHDAY_AGE_SELECTED' => ( $birthday_display == BIRTHDAY_AGE ) ? ' selected="selected"' : '',
+                    'BIRTHDAY_NONE' => BIRTHDAY_NONE,
+                    'BIRTHDAY_NONE_SELECTED' => ( $birthday_display == BIRTHDAY_NONE ) ? ' selected="selected"' : '',
+                    'BDAY_NONE_ENABLED' => ( $birthday_greeting ) ? '' : ' checked="checked"',
+                    'BDAY_EMAIL' => BIRTHDAY_EMAIL,
+                    'BDAY_EMAIL_ENABLED' => ( $birthday_greeting == BIRTHDAY_EMAIL ) ? ' checked="checked"' : '',
+                    'BDAY_PM' => BIRTHDAY_PM,
+                    'BDAY_PM_ENABLED' => ( $birthday_greeting == BIRTHDAY_PM ) ? ' checked="checked"' : '',
+                    'BDAY_POPUP' => BIRTHDAY_POPUP,
+                    'BDAY_POPUP_ENABLED' => ( $birthday_greeting == BIRTHDAY_POPUP ) ? ' checked="checked"' : '',
+                    /*****[END]********************************************
+                     [ Mod:    Birthdays                           v3.0.0 ]
+                     ******************************************************/
+                    'SIGNATURE' => str_replace('<br />', "\n", (string) $signature),
+                    'VIEW_EMAIL_YES' => ($viewemail) ? 'checked="checked"' : '',
+                    'VIEW_EMAIL_NO' => ($viewemail) ? '' : 'checked="checked"',
+                    'HIDE_USER_YES' => ($allowviewonline) ? '' : 'checked="checked"',
+                    'HIDE_USER_NO' => ($allowviewonline) ? 'checked="checked"' : '',
+                    'NOTIFY_PM_YES' => ($notifypm) ? 'checked="checked"' : '',
+                    'NOTIFY_PM_NO' => ($notifypm) ? '' : 'checked="checked"',
+                    'POPUP_PM_YES' => ($popuppm) ? 'checked="checked"' : '',
+                    'POPUP_PM_NO' => ($popuppm) ? '' : 'checked="checked"',
+                    'ALWAYS_ADD_SIGNATURE_YES' => ($attachsig) ? 'checked="checked"' : '',
+                    'ALWAYS_ADD_SIGNATURE_NO' => ($attachsig) ? '' : 'checked="checked"',
+                    'NOTIFY_REPLY_YES' => ( $notifyreply ) ? 'checked="checked"' : '',
+                    'NOTIFY_REPLY_NO' => ( $notifyreply ) ? '' : 'checked="checked"',
+                    'ALWAYS_ALLOW_BBCODE_YES' => ($allowbbcode) ? 'checked="checked"' : '',
+                    'ALWAYS_ALLOW_BBCODE_NO' => ($allowbbcode) ? '' : 'checked="checked"',
+                    'ALWAYS_ALLOW_HTML_YES' => ($allowhtml) ? 'checked="checked"' : '',
+                    'ALWAYS_ALLOW_HTML_NO' => ($allowhtml) ? '' : 'checked="checked"',
+                    'ALWAYS_ALLOW_SMILIES_YES' => ($allowsmilies) ? 'checked="checked"' : '',
+                    'ALWAYS_ALLOW_SMILIES_NO' => ($allowsmilies) ? '' : 'checked="checked"',
+                    /*****[BEGIN]******************************************
+                     [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
+                     ******************************************************/
+                    'SHOW_AVATARS_YES' => ($showavatars) ? 'checked="checked"' : '',
+                    'SHOW_AVATARS_NO' => ($showavatars) ? '' : 'checked="checked"',
+                    'SHOW_SIGNATURES_YES' => ($showsignatures) ? 'checked="checked"' : '',
+                    'SHOW_SIGNATURES_NO' => ($showsignatures) ? '' : 'checked="checked"',
+                    /*****[END]********************************************
+                     [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
+                     ******************************************************/
+                    'AVATAR' => $avatar,
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
+                     ******************************************************/
+                    'WRAP_ROW' => $user_wordwrap,
+                    /*****[END]********************************************
+                     [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
+                     ******************************************************/
+                    'LANGUAGE_SELECT' => language_select($user_lang, 'language', NUKE_MODULES_DIR.'Forums/language'),
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Birthdays                           v3.0.0 ]
+                     ******************************************************/
+                    'BIRTHMONTH_SELECT' => bday_month_select($bday_month, 'bday_month'),
+                    'BIRTHDAY_SELECT' => bday_day_select($bday_day, 'bday_day'),
+                    'BIRTHYEAR_SELECT' => bday_year_select($bday_year, 'bday_year'),
+                    /*****[END]********************************************
+                     [ Mod:    Birthdays                           v3.0.0 ]
+                     ******************************************************/
+                    'TIMEZONE_SELECT' => tz_select($user_timezone),
+                    /*****[END]********************************************
+                     [ Mod:    Advanced Time Management            v2.2.0 ]
+                     ******************************************************/
+                    'TIME_MODE' => $time_mode,
+                    'TIME_MODE_MANUAL_CHECKED' => $time_mode_manual_checked = $time_mode_manual_checked ?? '',
+                    'TIME_MODE_MANUAL_DST_CHECKED' => $time_mode_manual_dst_checked = $time_mode_manual_dst_checked ?? '',
+                    'TIME_MODE_SERVER_SWITCH_CHECKED' => $time_mode_server_switch_checked = $time_mode_server_switch_checked ?? '',
+                    'TIME_MODE_FULL_SERVER_CHECKED' => $time_mode_full_server_checked = $time_mode_full_server_checked ?? '',
+                    'TIME_MODE_SERVER_PC_CHECKED' => $time_mode_server_pc_checked = $time_mode_server_pc_checked ?? '',
+                    'TIME_MODE_FULL_PC_CHECKED' => $time_mode_full_pc_checked = $time_mode_full_pc_checked ?? '',
+                    'DST_TIME_LAG' => $dst_time_lag,
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Advanced Time Management            v2.2.0 ]
+                     ******************************************************/
+                    /*****[BEGIN]******************************************
+                     [ Base:    Theme Management                   v1.0.2 ]
+                     ******************************************************/
+                    'STYLE_SELECT' => GetThemeSelect('theme', 'active', $this_userdata),
+                    /*****[END]********************************************
+                     [ Base:    Theme Management                   v1.0.2 ]
+                     ******************************************************/
+                    'DATE_FORMAT' => $user_dateformat,
+                    /*****[BEGIN]******************************************
+                     [ Mod:     Super Quick Reply                  v1.3.2 ]
+                     ******************************************************/
+                    'QUICK_REPLY_SELECT' => quick_reply_select($user_show_quickreply, 'show_quickreply'),
+                    'QUICK_REPLY_MODE_BASIC' => ( $user_quickreply_mode==0 ) ? 'checked="checked"' : '',
+                    'QUICK_REPLY_MODE_ADVANCED' => ( $user_quickreply_mode != 0 ) ? 'checked="checked"' : '',
+                    'OPEN_QUICK_REPLY_YES' => ( $user_open_quickreply ) ? 'checked="checked"' : '',
+                    'OPEN_QUICK_REPLY_NO' => ( $user_open_quickreply ) ? '' : 'checked="checked"',
+                    /*****[END]********************************************
+                     [ Mod:     Super Quick Reply                  v1.3.2 ]
+                     ******************************************************/
+                    'ALLOW_PM_YES' => ($user_allowpm) ? 'checked="checked"' : '',
+                    'ALLOW_PM_NO' => ($user_allowpm) ? '' : 'checked="checked"',
+                    'ALLOW_AVATAR_YES' => ($user_allowavatar) ? 'checked="checked"' : '',
+                    'ALLOW_AVATAR_NO' => ($user_allowavatar) ? '' : 'checked="checked"',
+                    'USER_ACTIVE_YES' => ($user_status) ? 'checked="checked"' : '',
+                    'USER_ACTIVE_NO' => ($user_status) ? '' : 'checked="checked"',
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
+                     ******************************************************/
+                    'RANK1_SELECT_BOX' => $rank1_select_box,
+                    'RANK2_SELECT_BOX' => $rank2_select_box,
+                    'RANK3_SELECT_BOX' => $rank3_select_box,
+                    'RANK4_SELECT_BOX' => $rank4_select_box,
+                    'RANK5_SELECT_BOX' => $rank5_select_box,
+                    /*****[END]********************************************
+                     [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
+                     ******************************************************/
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Admin User Notes                    v1.0.0 ]
+                     ******************************************************/
+                    'ADMIN_NOTES' => $admin_notes,
+                    'L_ADMIN_NOTES' =>  $lang['Admin_notes'],
+                    /*****[END]********************************************
+                     [ Mod:    Admin User Notes                    v1.0.0 ]
+                     ******************************************************/
+                    'L_USERNAME' => $lang['Username'],
+                    'L_USER_TITLE' => $lang['User_admin'],
+                    'L_USER_EXPLAIN' => $lang['User_admin_explain'],
+                    'L_NEW_PASSWORD' => $lang['New_password'],
+                    'L_PASSWORD_IF_CHANGED' => $lang['password_if_changed'],
+                    'L_CONFIRM_PASSWORD' => $lang['Confirm_password'],
+                    'L_PASSWORD_CONFIRM_IF_CHANGED' => $lang['password_confirm_if_changed'],
+                    'L_SUBMIT' => $lang['Submit'],
+                    'L_RESET' => $lang['Reset'],
+                    'L_REQUIRED' => $lang['Required'],
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Birthdays                           v3.0.0 ]
+                     ******************************************************/
+                    'L_CLEAR' => $lang['Clear'],
+                    'L_BIRTHDAY' => $lang['Birthday'],
+                    'L_MONTH' => $lang['Month'],
+                    'L_DAY' => $lang['Day'],
+                    'L_YEAR' => ( $board_config['bday_year'] ) ? $lang['Year'] : $lang['Year_Optional'],
+                    'L_OPTIONAL' => ( $board_config['bday_year'] ) ? '' : $lang['Optional'],
+                    'L_BIRTHDAY_DISPLAY' => $lang['Birthday_Display'],
+                    'L_BIRTHDAY_ALL' => $lang['Display_all'],
+                    'L_BIRTHDAY_YEAR' => $lang['Display_day_and_month'],
+                    'L_BIRTHDAY_AGE' => $lang['Display_age'],
+                    'L_BIRTHDAY_NONE' => $lang['Display_nothing'],
+                    'L_BDAY_SEND_GREETING' => $lang['bday_send_greeting'],
+                    'L_BDAY_SEND_GREETING_EXPLAIN' => $lang['bday_send_greeting_user_explain'],
+                    'L_NONE' => $lang['Do_not_send'],
+                    'L_EMAIL' => $lang['Email'],
+                    'L_PM' => $lang['PM'],
+                    'L_POPUP' => $lang['Popup'],
+                    /*****[END]********************************************
+                     [ Mod:    Birthdays                           v3.0.0 ]
+                     ******************************************************/
+                    /*****[BEGIN]******************************************
+                     [ Mod:     Users Reputations Systems          v1.0.0 ]
+                     ******************************************************/
+                    'L_REPUTATION' => $lang['Reputation'],
+                    /*****[END]********************************************
+                     [ Mod:     Users Reputations System           v1.0.0 ]
+                     ******************************************************/
+                    'L_WEBSITE' => $lang['Website'],
+                    'L_FACEBOOK' => $lang['FACEBOOK'] = $lang['FACEBOOK'] ?? 'Facebook',
+                    'L_LOCATION' => $lang['Location'],
+                    'L_OCCUPATION' => $lang['Occupation'],
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
+                     ******************************************************/
+                    'L_WORD_WRAP' => $lang['Word_Wrap'],
+                    'L_WORD_WRAP_EXPLAIN' => $lang['Word_Wrap_Explain'],
+                    'L_WORD_WRAP_EXTRA' => strtr($lang['Word_Wrap_Extra'],['%min%' => $board_config['wrap_min'], '%max%' => $board_config['wrap_max']]),
+                    /*****[END]********************************************
+                     [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
+                     ******************************************************/
+                    'L_BOARD_LANGUAGE' => $lang['Board_lang'],
+                    'L_BOARD_STYLE' => $lang['theme'],
+                    'L_TIMEZONE' => $lang['Timezone'],
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Advanced Time Management            v2.2.0 ]
+                     ******************************************************/
+                    'L_TIME_MODE' => $lang['time_mode'],
+                    'L_TIME_MODE_TEXT' => $lang['time_mode_text'],
+                    'L_TIME_MODE_MANUAL' => $lang['time_mode_manual'],
+                    'L_TIME_MODE_DST' => $lang['time_mode_dst'],
+                    'L_TIME_MODE_DST_OFF' => $l_time_mode_0,
+                    'L_TIME_MODE_DST_ON' => $l_time_mode_1,
+                    'L_TIME_MODE_DST_SERVER' => $l_time_mode_2,
+                    'L_TIME_MODE_DST_TIME_LAG' => $lang['time_mode_dst_time_lag'],
+                    'L_TIME_MODE_DST_MN' => $lang['time_mode_dst_mn'],
+                    'L_TIME_MODE_TIMEZONE' => $lang['time_mode_timezone'],
+                    'L_TIME_MODE_AUTO' => $lang['time_mode_auto'],
+                    'L_TIME_MODE_FULL_SERVER' => $l_time_mode_3,
+                    'L_TIME_MODE_SERVER_PC' => $l_time_mode_4,
+                    'L_TIME_MODE_FULL_PC' => $l_time_mode_6,
+                    /*****[END]********************************************
+                     [ Mod:    Advanced Time Management            v2.2.0 ]
+                     ******************************************************/
+                    'L_DATE_FORMAT' => $lang['Date_format'],
+                    'L_DATE_FORMAT_EXPLAIN' => $lang['Date_format_explain'],
+                    /*****[BEGIN]******************************************
+                     [ Mod:     Super Quick Reply                  v1.3.2 ]
+                     ******************************************************/
+                    'L_QUICK_REPLY_PANEL' => $lang['Quick_reply_panel'],
+                    'L_SHOW_QUICK_REPLY' => $lang['Show_quick_reply'],
+                    'L_QUICK_REPLY_MODE' => $lang['Quick_reply_mode'],
+                    'L_QUICK_REPLY_MODE_BASIC' => $lang['Quick_reply_mode_basic'],
+                    'L_QUICK_REPLY_MODE_ADVANCED' => $lang['Quick_reply_mode_advanced'],
+                    'L_OPEN_QUICK_REPLY' => $lang['Open_quick_reply'],
+                    /*****[END]********************************************
+                     [ Mod:     Super Quick Reply                  v1.3.2 ]
+                     ******************************************************/
+                    'L_YES' => $lang['Yes'],
+                    'L_NO' => $lang['No'],
+                    'L_INTERESTS' => $lang['Interests'],
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Gender                              v1.2.6 ]
+                     ******************************************************/
+                    'L_GENDER' =>$lang['Gender'],
+                    'L_GENDER_MALE' =>$lang['Male'],
+                    'L_GENDER_FEMALE' =>$lang['Female'],
+                    'L_GENDER_NOT_SPECIFY' =>$lang['No_gender_specify'],
+                    /*****[END]********************************************
+                     [ Mod:    Gender                              v1.2.6 ]
+                     ******************************************************/
+                    'L_ALWAYS_ALLOW_SMILIES' => $lang['Always_smile'],
+                    /*****[BEGIN]******************************************
+                     [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
+                     ******************************************************/
+                    'L_SHOW_AVATARS' => $lang['Show_avatars'],
+                    'L_SHOW_SIGNATURES' => $lang['Show_signatures'],
+                    /*****[END]********************************************
+                     [ Mod:     View/Disable Avatars/Signatures    v1.1.2 ]
+                     ******************************************************/
+                    'L_ALWAYS_ALLOW_BBCODE' => $lang['Always_bbcode'],
+                    'L_ALWAYS_ALLOW_HTML' => $lang['Always_html'],
+                    'L_HIDE_USER' => $lang['Hide_user'],
+                    'L_ALWAYS_ADD_SIGNATURE' => $lang['Always_add_sig'],
+                    'L_SPECIAL' => $lang['User_special'],
+                    'L_SPECIAL_EXPLAIN' => $lang['User_special_explain'],
+                    'L_USER_ACTIVE' => $lang['User_status'],
+                    'L_ALLOW_PM' => $lang['User_allowpm'],
+                    'L_ALLOW_AVATAR' => $lang['User_allowavatar'],
+                    'L_AVATAR_PANEL' => $lang['Avatar_panel'],
+                    'L_AVATAR_EXPLAIN' => $lang['Admin_avatar_explain'],
+                    'L_DELETE_AVATAR' => $lang['Delete_Image'],
+                    'L_CURRENT_IMAGE' => $lang['Current_Image'],
+                    'L_UPLOAD_AVATAR_FILE' => $lang['Upload_Avatar_file'],
+                    'L_UPLOAD_AVATAR_URL' => $lang['Upload_Avatar_URL'],
+                    'L_AVATAR_GALLERY' => $lang['Select_from_gallery'],
+                    'L_SHOW_GALLERY' => $lang['View_avatar_gallery'],
+                    'L_LINK_REMOTE_AVATAR' => $lang['Link_remote_Avatar'],
+                    'L_SIGNATURE' => $lang['Signature'],
+                    'L_SIGNATURE_EXPLAIN' => sprintf($lang['Signature_explain'], $board_config['max_sig_chars'] ),
+                    'L_NOTIFY_ON_PRIVMSG' => $lang['Notify_on_privmsg'],
+                    'L_NOTIFY_ON_REPLY' => $lang['Always_notify'],
+                    'L_POPUP_ON_PRIVMSG' => $lang['Popup_on_privmsg'],
+                    'L_PREFERENCES' => $lang['Preferences'],
+                    'L_PUBLIC_VIEW_EMAIL' => $lang['Public_view_email'],
+                    'L_ITEMS_REQUIRED' => $lang['Items_required'],
+                    'L_REGISTRATION_INFO' => $lang['Registration_info'],
+                    'L_PROFILE_INFO' => $lang['Profile_info'],
+                    'L_PROFILE_INFO_NOTICE' => $lang['Profile_info_warn'],
+                    'L_EMAIL_ADDRESS' => $lang['Email_address'],
+                    'S_FORM_ENCTYPE' => $form_enctype,
+                    'HTML_STATUS' => $html_status,
+                    'BBCODE_STATUS' => sprintf($bbcode_status, '<a href="../' . append_sid("faq.$phpEx?mode=bbcode") . '" target="_phpbbcode">', '</a>'),
+                    'SMILIES_STATUS' => $smilies_status,
+                    'L_DELETE_USER' => $lang['User_delete'],
+                    'L_DELETE_USER_EXPLAIN' => $lang['User_delete_explain'],
+                    /*****[BEGIN]******************************************
+                     [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
+                     ******************************************************/
+                    'L_SELECT_RANK1' => $lang['Rank1_title'],
+                    'L_SELECT_RANK2' => $lang['Rank2_title'],
+                    'L_SELECT_RANK3' => $lang['Rank3_title'],
+                    'L_SELECT_RANK4' => $lang['Rank4_title'],
+                    'L_SELECT_RANK5' => $lang['Rank5_title'],
+                    /*****[END]********************************************
+                     [ Mod:    Multiple Ranks And Staff View       v2.0.3 ]
+                     ******************************************************/
+                    'S_HIDDEN_FIELDS' => $s_hidden_fields,
+                    'S_PROFILE_ACTION' => append_sid("admin_users.$phpEx"),
+                ]
                 );
 				
 /*****[BEGIN]******************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
-				$block = ( $phpbb2_board_config['bday_require'] == TRUE ) ? 'birthday_required' : 'birthday_optional';
-				$phpbb2_template->assign_block_vars($block, array());
-				$phpbb2_template->birthday_interface();
+				$block = ( $board_config['bday_require'] == TRUE ) ? 'birthday_required' : 'birthday_optional';
+				$template->assign_block_vars($block, []);
+				$template->birthday_interface();
 		
-				if ( $phpbb2_board_config['bday_greeting'] != 0 )
+				if ( $board_config['bday_greeting'] != 0 )
 				{
-					$phpbb2_template->assign_block_vars('birthdays_greeting',array());
-					if ($phpbb2_board_config['bday_greeting'] & (1<<(BIRTHDAY_EMAIL-1)))
+					$template->assign_block_vars('birthdays_greeting',[]);
+					if (($board_config['bday_greeting'] & (1<<(BIRTHDAY_EMAIL-1))) !== 0)
 					{
-						$phpbb2_template->assign_block_vars('birthdays_greeting.birthdays_email',array());
+						$template->assign_block_vars('birthdays_greeting.birthdays_email',[]);
 					}
-					if ($phpbb2_board_config['bday_greeting'] & (1<<(BIRTHDAY_PM-1)))
+					if (($board_config['bday_greeting'] & (1<<(BIRTHDAY_PM-1))) !== 0)
 					{
-							$phpbb2_template->assign_block_vars('birthdays_greeting.birthdays_pm',array());
+							$template->assign_block_vars('birthdays_greeting.birthdays_pm',[]);
 					}
-					if ($phpbb2_board_config['bday_greeting'] & (1<<(BIRTHDAY_POPUP-1)))
+					if (($board_config['bday_greeting'] & (1<<(BIRTHDAY_POPUP-1))) !== 0)
 					{
-						$phpbb2_template->assign_block_vars('birthdays_greeting.birthdays_popup',array());
+						$template->assign_block_vars('birthdays_greeting.birthdays_popup',[]);
 					}
 				}
 /*****[END]********************************************
  [ Mod:    Birthdays                           v3.0.0 ]
  ******************************************************/
 
-                if( file_exists(@phpbb_realpath('./../' . $phpbb2_board_config['avatar_path'])) && ($phpbb2_board_config['allow_avatar_upload'] == TRUE) )
+                if( file_exists(phpbb_realpath('./../' . $board_config['avatar_path'])) && ($board_config['allow_avatar_upload'] == TRUE) )
                 {
                         if ( $form_enctype != '' )
                         {
-                                $phpbb2_template->assign_block_vars('avatar_local_upload', array() );
+                                $template->assign_block_vars('avatar_local_upload', [] );
                         }
-                        $phpbb2_template->assign_block_vars('avatar_remote_upload', array() );
+                        $template->assign_block_vars('avatar_remote_upload', [] );
                 }
 
-                if( file_exists(@phpbb_realpath('./../' . $phpbb2_board_config['avatar_gallery_path'])) && ($phpbb2_board_config['allow_avatar_local'] == TRUE) )
+                if( file_exists(phpbb_realpath('./../' . $board_config['avatar_gallery_path'])) && ($board_config['allow_avatar_local'] == TRUE) )
                 {
-                        $phpbb2_template->assign_block_vars('avatar_local_gallery', array() );
+                        $template->assign_block_vars('avatar_local_gallery', [] );
                 }
 
-                if( $phpbb2_board_config['allow_avatar_remote'] == TRUE )
+                if( $board_config['allow_avatar_remote'] == TRUE )
                 {
-                        $phpbb2_template->assign_block_vars('avatar_remote_link', array() );
+                        $template->assign_block_vars('avatar_remote_link', [] );
                 }
         }
 
-        $phpbb2_template->pparse('body');
+        $template->pparse('body');
 }
 else
 {
         //
         // Default user selection box
         //
-        $phpbb2_template->set_filenames(array(
-                'body' => 'admin/user_select_body.tpl')
+        $template->set_filenames(['body' => 'admin/user_select_body.tpl']
         );
 
-        $phpbb2_template->assign_vars(array(
-                'L_USER_TITLE' => $titanium_lang['User_admin'],
-                'L_USER_EXPLAIN' => $titanium_lang['User_admin_explain'],
-                'L_USER_SELECT' => $titanium_lang['Select_a_User'],
-                'L_LOOK_UP' => $titanium_lang['Look_up_user'],
-                'L_FIND_USERNAME' => $titanium_lang['Find_username'],
-
-                'U_SEARCH_USER' => append_titanium_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"),
-
-                'S_USER_ACTION' => append_titanium_sid("admin_users.$phpEx"),
-                'S_USER_SELECT' => $select_list)
+        $template->assign_vars(['L_USER_TITLE' => $lang['User_admin'], 
+		                        'L_USER_EXPLAIN' => $lang['User_admin_explain'], 
+								'L_USER_SELECT' => $lang['Select_a_User'], 
+								'L_LOOK_UP' => $lang['Look_up_user'], 
+								'L_FIND_USERNAME' => $lang['Find_username'], 
+								'U_SEARCH_USER' => append_sid("search.$phpEx?mode=searchuser&popup=1&menu=1"), 
+								'S_USER_ACTION' => append_sid("admin_users.$phpEx"), 
+								'S_USER_SELECT' => $select_list = $select_list ?? '']
         );
-        $phpbb2_template->pparse('body');
+        $template->pparse('body');
 
 }
 
-include('./page_footer_admin.'.$phpEx);
+include(__DIR__ . '/page_footer_admin.'.$phpEx);
 
 ?>

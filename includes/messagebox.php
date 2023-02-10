@@ -26,7 +26,7 @@ exit('Access Denied');
 
 include_once(NUKE_INCLUDE_DIR.'nbbcode.php');
 
-global $bgcolor1, $bgcolor2, $textcolor2, $titanium_prefix, $multilingual, $currentlang, $titanium_db, $admin_file, $userinfo;
+global $bgcolor1, $bgcolor2, $textcolor2, $prefix, $multilingual, $currentlang, $db, $admin_file, $userinfo;
 
 $query = ($multilingual) ? "AND (mlanguage='$currentlang' OR mlanguage='')" : '';
 
@@ -40,11 +40,11 @@ if (!is_admin())
 else 
     $query .= ' AND view<>2';
 
-$result = $titanium_db->sql_query("SELECT `mid`, `title`, `content`, `date`, `expire`, `view`, `groups` FROM `".$titanium_prefix."_message` WHERE `active` = 1 ".$query." ORDER BY `date` DESC", true);
+$result = $db->sql_query("SELECT `mid`, `title`, `content`, `date`, `expire`, `view`, `groups` FROM `".$prefix."_message` WHERE `active` = 1 ".$query." ORDER BY `date` DESC", true);
 
 $query = '';
 
-while (list($mid, $title, $content, $date, $expire, $view, $groups) = $titanium_db->sql_fetchrow($result)) 
+while (list($mid, $title, $content, $date, $expire, $view, $groups) = $db->sql_fetchrow($result)) 
 {
 	$content = decode_bb_all($content, 1, true);
 
@@ -100,7 +100,7 @@ while (list($mid, $title, $content, $date, $expire, $view, $groups) = $titanium_
 					$remain = ($etime < 1) ? _EXPIRELESSHOUR : _EXPIREIN." $etime "._HOURS;
 				}
 			}
-			$content = evo_img_tag_to_resize($content);
+			$content = img_tag_to_resize($content);
 			
 			OpenTable();
 			
@@ -122,9 +122,9 @@ while (list($mid, $title, $content, $date, $expire, $view, $groups) = $titanium_
 		if ($expire != 0) 
 		{
 			if ($date+$expire < time()) 
-			$titanium_db->sql_query("UPDATE ".$titanium_prefix."_message SET active='0' WHERE mid='$mid'");
+			$db->sql_query("UPDATE ".$prefix."_message SET active='0' WHERE mid='$mid'");
 		}
 	}
 }
-$titanium_db->sql_freeresult($result);
+$db->sql_freeresult($result);
 ?>

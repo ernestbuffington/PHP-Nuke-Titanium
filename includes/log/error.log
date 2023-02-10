@@ -1,45 +1,45 @@
----------[SQL Error]------------------------------------------------------------------------------------------------------------
-- [24 Sep 2022 - 15:00:56] - 
-User: <span style="color: #ff632a">TheGhost</span>
-IP: 47.206.216.196
-URL: <a href="http://www.php-nuke-titanium.86it.us/admin.php?op=menu&go=send">/admin.php?op=menu&go=send</a>
+---------[Message die() called multiple times]------------------------------------------------------------------------------------------------------------
+- [27 Jan 2023 - 06:26:19] - 
+User: 
+IP: 162.55.85.221
+URL: <a href="http://www.php-nuke-titanium.86it.us/modules.php?name=Forums&file=viewtopic&printertopic=1&t=113&start=0&postdays=0&postorder=asc&vote=viewresult">/modules.php?name=Forums&file=viewtopic&printertopic=1&t=113&start=0&postdays=0&postorder=asc&vote=viewresult</a>
 
-File: /home/dev4/public_html/admin/modules/menu.php
-Line: 1640
-Message: Incorrect integer value: '' for column `dev4_engine`.`titanium_menu`.`invisible` at row 1
-Code: 1366
-Query: INSERT INTO titanium_menu (groupmenu, 
-                                         name, 
-										image, 
-										 lien, 
-										   hr, 
-									   center, 
-									  bgcolor, 
-									invisible, 
-									    class, 
-										 bold, 
-										  new, 
-									  listbox, 
-									  dynamic, 
-								   date_debut, 
-								     date_fin, 
-									     days) 
+Error Code: 202
+Error Message : You must first vote to see the results of this poll
+Error Title: 
+Error Line: 
+Error File: 
+Error SQL: 
 
-VALUES (99, 
-        'menunoadmindisplay', 
-		NULL, 
-		NULL, 
-		NULL, 
-		NULL, 
-		NULL, 
-		'', 
-		NULL, 
-		NULL, 
-		NULL, 
-		NULL,
-		'', 
-		0, 
-		0, 
-		NULL)
----------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------[Message die() called multiple times]------------------------------------------------------------------------------------------------------------
+- [27 Jan 2023 - 06:28:33] - 
+User: 
+IP: 162.55.85.221
+URL: <a href="http://www.php-nuke-titanium.86it.us/modules.php?name=Forums&file=viewtopic&printertopic=1&t=154&start=0&postdays=0&postorder=asc&vote=viewresult">/modules.php?name=Forums&file=viewtopic&printertopic=1&t=154&start=0&postdays=0&postorder=asc&vote=viewresult</a>
+
+Error Code: 202
+Error Message : You must first vote to see the results of this poll
+Error Title: 
+Error Line: 
+Error File: 
+Error SQL: 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
+
+---------[Message die() called multiple times]------------------------------------------------------------------------------------------------------------
+- [27 Jan 2023 - 06:28:56] - 
+User: 
+IP: 162.55.85.221
+URL: <a href="http://www.php-nuke-titanium.86it.us/modules.php?name=Forums&file=viewtopic&printertopic=1&t=165&start=0&postdays=0&postorder=asc&vote=viewresult">/modules.php?name=Forums&file=viewtopic&printertopic=1&t=165&start=0&postdays=0&postorder=asc&vote=viewresult</a>
+
+Error Code: 202
+Error Message : You must first vote to see the results of this poll
+Error Title: 
+Error Line: 
+Error File: 
+Error SQL: 
+
+-----------------------------------------------------------------------------------------------------------------------------------------------------------
 

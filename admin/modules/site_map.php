@@ -9,7 +9,7 @@ if ( !defined('ADMIN_FILE') ) die ("Access Denied");
 
 if (!is_mod_admin()) die ("Access Denied");
 
-global $titanium_prefix, $titanium_db, $sitename, $currentlang, $admin_file;
+global $prefix, $db, $currentlang, $admin_file;
 
 if (file_exists(NUKE_MODULES_DIR.'Google-Site-Map/language/lang-'.$currentlang.'.php')):
     include_once(NUKE_MODULES_DIR.'Google-Site-Map/language/lang-'.$currentlang.'.php');
@@ -18,34 +18,34 @@ else:
 endif;
 
 
-$result = $titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_jmap");
+$result = $db->sql_query("SELECT * FROM ".$prefix."_jmap");
     
-	while ($row=$titanium_db->sql_fetchrow($result)):
+	while ($row=$db->sql_fetchrow($result)):
         $nametask = $row["name"];
         $value = $row["value"];
         $conf[$nametask]=$value;
     endwhile;
 	  
-$xml = $conf["xml"];
-$ndown = $conf["ndown"];
-$nnews = $conf["nnews"];
-$nrev = $conf["nrev"];
+$xml     = $conf["xml"];
+$ndown   = $conf["ndown"];
+$nnews   = $conf["nnews"];
+$nrev    = $conf["nrev"];
 $ntopics = $conf["ntopics"];
-$nuser = $conf["nuser"];
+$nuser   = $conf["nuser"];
 
 include(NUKE_BASE_DIR.'header.php');
 
 Opentable();
-print '<div align="center"><strong>'._GOOGLE_SITEMAPADMIN.'</strong></div><br />';
+echo '<div align="center"><strong>'._GOOGLE_SITEMAPADMIN.'</strong></div><br />';
 
-print '<div align="center">';
-print '<table class="googlesitemap" align="center" border="5" cellpadding="15" cellspacing="20" dir="ltr" id="googlesitemap">';
-print '<tbody>';
-print '<tr>';
-print '<td>';
+echo '<div align="center">';
+echo '<table class="googlesitemap" align="center" border="5" cellpadding="15" cellspacing="20" dir="ltr" id="googlesitemap">';
+echo '<tbody>';
+echo '<tr>';
+echo '<td>';
 
-            print'
-                <form action="'.$PHP_SELF.'" method="post">
+            echo'
+                <form action="'.isset($PHP_SELF).'" method="post">
                     <table border="0" id="table6" width="50%" align="center">
                         <tr>
                             <td width="50%" height="30%" align="center">
@@ -55,14 +55,14 @@ print '<td>';
                                 <p align="left">'._XMLCREATE.'</td>
                             <td height="102">';
         if($xml==1) {
-            print '<p align="left">'._YES.'&nbsp;<input name="xml" type="radio" value="1" checked>
+            echo '<p align="left">'._YES.'&nbsp;<input name="xml" type="radio" value="1" checked>
                                                 '._NO.'&nbsp;<input name="xml" type="radio" value="0" ></p>';
         }
         else {
-            print '<p align="left">'._YES.'&nbsp;<input name="xml" type="radio" value="1" >
+            echo '<p align="left">'._YES.'&nbsp;<input name="xml" type="radio" value="1" >
                                                 '._NO.'&nbsp;<input name="xml" type="radio" value="0" checked></p>';
         }
-            print '            </td>
+            echo '            </td>
                             <td height="102">
                                 <p align="left">'._BDOWN.'</td>
                             <td height="102">
@@ -113,7 +113,19 @@ print '<td>';
             </table>
             </form>
 ';
-
+            if(!isset($_POST['xml']))
+			$_POST['xml'] = '';
+            if(!isset($_POST['nnews']))
+			$_POST['nnews'] = '';
+            if(!isset($_POST['ntopics']))
+			$_POST['ntopics'] = '';
+            if(!isset($_POST['ndown']))
+			$_POST['ndown'] = '';
+            if(!isset($_POST['nrev']))
+			$_POST['nrev'] = '';
+            if(!isset($_POST['nuser']))
+			$_POST['nuser'] = '';
+			
             $xml=htmlspecialchars($_POST['xml']);
             $nnews=htmlspecialchars($_POST['nnews']);
             $ntopics=htmlspecialchars($_POST['ntopics']);
@@ -123,30 +135,29 @@ print '<td>';
 
             if( $xml!="" && $nnews!="" && $ntopics!="" && $ndown!="" && $nrev!="" && $nuser!="" )
             {
-            //$titanium_db->sql_query("UPDATE ".$titanium_prefix."_jmap SET xml = ".$xml.", nnews = ".$nnews.", ntopics = ".$ntopics.", ndown = ".$ndown.", nrev = ".$nrev.", nuser = ".$nuser);
-            $titanium_db->sql_query("UPDATE " . $titanium_prefix . "_jmap SET value = '".$xml."' WHERE name = 'xml'");
-            $titanium_db->sql_query("UPDATE " . $titanium_prefix . "_jmap SET value = '".$nnews."' WHERE name = 'nnews'");
-            $titanium_db->sql_query("UPDATE " . $titanium_prefix . "_jmap SET value = '".$ntopics."' WHERE name = 'ntopics'");
-            $titanium_db->sql_query("UPDATE " . $titanium_prefix . "_jmap SET value = '".$ndown."' WHERE name = 'ndown'");
-            $titanium_db->sql_query("UPDATE " . $titanium_prefix . "_jmap SET value = '".$nrev."' WHERE name = 'nrev'");
-            $titanium_db->sql_query("UPDATE " . $titanium_prefix . "_jmap SET value = '".$nuser."' WHERE name = 'nuser'");
+            $db->sql_query("UPDATE " . $prefix . "_jmap SET value = '".$xml."' WHERE name = 'xml'");
+            $db->sql_query("UPDATE " . $prefix . "_jmap SET value = '".$nnews."' WHERE name = 'nnews'");
+            $db->sql_query("UPDATE " . $prefix . "_jmap SET value = '".$ntopics."' WHERE name = 'ntopics'");
+            $db->sql_query("UPDATE " . $prefix . "_jmap SET value = '".$ndown."' WHERE name = 'ndown'");
+            $db->sql_query("UPDATE " . $prefix . "_jmap SET value = '".$nrev."' WHERE name = 'nrev'");
+            $db->sql_query("UPDATE " . $prefix . "_jmap SET value = '".$nuser."' WHERE name = 'nuser'");
 
             Header("Location: ".$admin_file.".php?op=site_map");
             }
 
 
-           print '<div align="center">[ <a href="'.$admin_file.'.php?op=site_map">'._GOOGLE_SITEMAP_ADMIN_HEADER.'</a> ]</div>';
-           print '<div align="center">[ <a href="'.$admin_file.'.php">' . _GOOGLE_SITEMAP_RETURNMAIN . '</a> ]</div>';
+           echo '<div align="center">[ <a href="'.$admin_file.'.php?op=site_map">'._GOOGLE_SITEMAP_ADMIN_HEADER.'</a> ]</div>';
+           echo '<div align="center">[ <a href="'.$admin_file.'.php">' . _GOOGLE_SITEMAP_RETURNMAIN . '</a> ]</div>';
 
 
-print '</td>';
-print '</tr>';
-print '</tbody>';
-print '</table>';
-print '</div>';
+echo '</td>';
+echo '</tr>';
+echo '</tbody>';
+echo '</table>';
+echo '</div>';
 
-print'
-<script type="text/javascript">
+echo'
+<script>
  <!--
  function copy() {
    var w = 400;
@@ -157,7 +168,7 @@ print'
  }
  //-->
 </script>';
-print '<div align="center"><a href="javascript:copy()">&copy; Google Site Map</a></div>';
+echo '<div align="center"><a href="javascript:copy()">&copy; Google Site Map</a></div>';
 
 Closetable();
 

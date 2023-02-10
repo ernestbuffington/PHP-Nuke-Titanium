@@ -3,7 +3,6 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-
 /************************************************************************
    Nuke-Evolution: Admin / Error Tracker
    ============================================
@@ -28,7 +27,6 @@
 -=[Mod]=-
       Advanced Username Color                  v1.0.5       06/11/2005
  ************************************************************************/
-
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
     exit('Access Denied');
 }
@@ -37,15 +35,15 @@ function log_write($file, $output, $title = 'General Error') {
     global $cookie, $identify;
 
     if(isset($cookie) && is_array($cookie)) {
-        $titanium_username = $cookie[1];
+        $username = $cookie[1];
     } else {
         if(isset($_COOKIE['user']) && !empty($_COOKIE['user'])) {
             $ucookie = explode(':', base64_decode($_COOKIE['user']));
         }
         if(isset($ucookie) && is_array($ucookie) && !empty($ucookie[1])) {
-            $titanium_username = $ucookie[1];
+            $username = $ucookie[1];
         } else {
-            $titanium_username = _ANONYMOUS;
+            $username = _ANONYMOUS;
         }
     }
     $ip = GetHostByName($identify->get_ip());
@@ -61,7 +59,7 @@ function log_write($file, $output, $title = 'General Error') {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-    $wdata .= "User: ".UsernameColor($titanium_username)."\n";
+    $wdata .= "User: ".UsernameColor($username)."\n";
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
@@ -85,7 +83,7 @@ function log_write($file, $output, $title = 'General Error') {
 }
 
 function log_size($file) {
-    global $titanium_db, $titanium_prefix;
+    global $db, $prefix;
 
     $filename = NUKE_INCLUDE_DIR.'log/' . $file . '.log';
     if(!is_file($filename)) {
@@ -105,7 +103,7 @@ function log_size($file) {
         return -1;
     }
     $file_num = substr_count($content, "\n");
-    $row_log = $titanium_db->sql_ufetchrow('SELECT ' . $file . '_log_lines FROM '.$titanium_prefix.'_config');
+    $row_log = $db->sql_ufetchrow('SELECT ' . $file . '_log_lines FROM '.$prefix.'_config');
     if($row_log[0] != $file_num) {
         return 1;
     }

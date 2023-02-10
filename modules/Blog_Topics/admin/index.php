@@ -1,6 +1,6 @@
 <?php
 /*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+ PHP-Nuke Titanium v4.0.3 : Enhanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -19,23 +19,42 @@
 /*                           2003 chatserv                              */
 /*      http://www.nukefixes.com -- http://www.nukeresources.com        */
 /************************************************************************/
+
+/*****[CHANGES]**********************************************************
+-=[Base]=-
+      Nuke Patched                             v3.1.0       06/26/2005
+      Caching System                           v1.0.0       10/31/2005
+	  Titanium Patched                         v4.0.3       01/25/2023
+-=[Mod]=-
+      Blogs BBCodes                            v1.0.0       10/05/2005
+      Custom Text Area                         v1.0.0       11/23/2005
+-=[Applied Rules]=-
+ * LongArrayToShortArrayRector
+ * AddDefaultValueForUndefinedVariableRector (https://github.com/vimeo/psalm/blob/29b70442b11e3e66113935a2ee22e165a70c74a4/docs/fixing_code.md#possiblyundefinedvariable)
+ * MultiDirnameRector
+ * ListToArrayDestructRector (https://wiki.php.net/rfc/short_list_syntax https://www.php.net/manual/en/migration71.new-features.php#migration71.new-features.symmetric-array-destructuring)
+ * NullToStrictStringFuncCallArgRector
+ ************************************************************************/
+
 /********************************************************/
-/* NSN News                                             */
+/* NSN Blogs                                            */
 /* By: NukeScripts Network (webmaster@nukescripts.net)  */
+/* Contributer(s): Ernest Buffington aka TheGhost       */
 /* http://www.nukescripts.net                           */
-/* Copyright (c) 2000-2005 by NukeScripts Network         */
+/* Copyright (c) 2000-2005 by NukeScripts Network       */
 /********************************************************/
 
-if (!defined('ADMIN_FILE')) 
-   exit ("Access Denied");
+if (!defined('ADMIN_FILE')) {
+    exit("Access Denied");
+}
 
 
-global $titanium_prefix, $titanium_db, $admdata;
-$titanium_module_name = basename(dirname(dirname(__FILE__)));
-if(is_mod_admin($titanium_module_name)) {
+global $prefix, $db, $admdata;
+$module_name = basename(dirname(__FILE__, 2));
+if(is_mod_admin($module_name)) {
 
-include_once(NUKE_INCLUDE_DIR.'nsnne_func.php');
-$blog_config = blog_get_configs();
+include_once(NUKE_INCLUDE_DIR.'functions_blog.php');
+$pnt_blogs_config = get_blog_configs();
 
 /*********************************************************/
 /* Topics Manager Functions                              */
@@ -43,28 +62,33 @@ $blog_config = blog_get_configs();
 
 function topicsmanager() 
 {
-    global $titanium_prefix, $titanium_db, $admin_file, $tipath;
+    $topicname = null;
+    $topictext = null;
+	$result = [];
+    global $prefix, $db, $admin_file, $tipath;
 
     include(NUKE_BASE_DIR."header.php");
 
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=topicsmanager\">" . _TOPICS_ADMIN_HEADER . "</a></div>\n";
 	echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _TOPICS_RETURNMAIN . "</a> ]</div>\n";
-    echo "<center><span class=\"title\"><strong>"._TOPICSMANAGER . "</strong></span></center>";
+    echo "<div align=\"center\"><span class=\"title\"><strong>"._TOPICSMANAGER . "</strong></span></div>";
     CloseTable();
    
     OpenTable();
-    echo "<center><span class=\"option\"><strong>"._CURRENTTOPICS . "</strong></span><br />"._CLICK2EDIT . "</span></center><br />"
+    echo "<div align=\"center\"><span class=\"option\"><strong>"._CURRENTTOPICS . "</strong></span><br />"._CLICK2EDIT . "</span></div><br />"
         ."<table border=\"0\" width=\"100%\" align=\"center\" cellpadding=\"2\">";
     $count = 0;
-    $result = $titanium_db->sql_query("SELECT topicid, topicname, topicimage, topictext from " . $titanium_prefix . "_topics order by topicname");
-    while ($row = $titanium_db->sql_fetchrow($result)):
+
+    $result = $db->sql_query("SELECT topicid, topicname, topicimage, topictext from " . $prefix . "_blogs_topics order by topicname");
+
+    while ($row = $db->sql_fetchrow($result)):
         $topicid = intval($row['topicid']);
         $topicname = $row['topicname'];
         $topicimage = $row['topicimage'];
         $topictext = $row['topictext'];
         echo "<td align=\"center\" width='17%' valign='top'>"
-            ."<a href=\"".$admin_file.".php?op=topicedit&amp;topicid=$topicid\"><img src=\"$tipath$topicimage\" border=\"0\" alt=\"\" /></a><br />"
+            ."<a href=\"".$admin_file.".php?op=topicedit&amp;topicid=$topicid\"><img src=\"$tipath$topicimage\" alt=\"\" /></a><br />"
             ."<span class=\"content\"><strong>$topictext</td>";
         $count++;
 
@@ -88,35 +112,38 @@ function topicsmanager()
     echo "<strong>"._TOPICIMAGE . ":</strong><br />";
 
     # display the topic image using JQuery 
-    ?>
-    <script>
-    $(document).ready(function() {
-    $("#imageSelector").change(function() {
-        var src = $(this).val();
-        $("#imagePreview").html(src ? "<img src=<?php echo $tipath ?>" + src + ">" : "");
-    });
-    });
-    </script>
-    <?
-
+    echo '<script>';
+    echo '$(document).ready(function() {';
+    echo '$("#imageSelector").change(function() {';
+    echo '    var src = $(this).val();';
+    echo '    $("#imagePreview").html(src ? "<img src='.$tipath.'" + src + ">" : "");';
+    echo '});';
+    echo '});';
+    echo '</script>';
+    
+     
     echo "<select id=\"imageSelector\" name=\"topicimage\" required>";
 	$handle=opendir($tipath);
-    
-	while($file = readdir($handle)): 
-      if((preg_match("~^([_0-9a-zA-Z]+)([.]{1})([_0-9a-zA-Z]{3})$~",$file)) AND $file != "AllTopics.gif") 
-      $tlist .= "$file ";
-    endwhile;
+	while(($file = readdir($handle)) !== false): 
+            if ((preg_match("~^([_0-9a-zA-Z]+)([.]{1})([_0-9a-zA-Z]{3})$~", $file)) AND $file != "index.html") {
+				$tlist .= "$file ";
+				
+            }
+        endwhile;
     closedir($handle);
-    $tlist = explode(" ", $tlist);
+    $tlist = explode(" ", (string) $tlist);
     sort($tlist);
-    for ($i=0; $i < count($tlist); $i++): 
-      if(!empty($tlist[$i])) 
-      echo "<option name=\"topicimage\" value=\"$tlist[$i]\">$tlist[$i]\n";
+    
+	for ($i=0; $i < (is_countable($tlist) ? count($tlist) : 0); $i++): 
+
+        if (isset($tlist[$i])) {
+                echo "<option name=\"topicimage\" value=\"$tlist[$i]\">$tlist[$i]\n";
+            }
     endfor;
  
     echo "</select>";
 	echo '<div align="center" id="imagePreview"></div>';
-    echo '<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>';
+    echo '<script src="assets/jquery/jquery.js"></script>';
     
 	echo "<input type=\"hidden\" name=\"op\" value=\"topicmake\">";
     
@@ -133,18 +160,24 @@ function topicsmanager()
 	
     CloseTable();
     include(NUKE_BASE_DIR."footer.php");
+  
 }
 
 function topicedit($topicid) 
 {
-    global $titanium_prefix, $titanium_db, $admin_file, $tipath;
+    
+    $topicname = null;
+    $topictext = null;
+    $query = [];
+
+    global $prefix, $db, $admin_file, $tipath;
 
     include(NUKE_BASE_DIR."header.php");
 
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=topicsmanager\">"._TOPICS_ADMIN_HEADER."</a></div>\n";
 	echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">"._TOPICS_RETURNMAIN."</a> ]</div>\n";
-    echo "<center><span class=\"title\"><strong>"._TOPICSMANAGER."</strong></span></center>";
+    echo "<div align=\"center\"><span class=\"title\"><strong>"._TOPICSMANAGER."</strong></span></div>";
     CloseTable();
    
     OpenTable();
@@ -152,9 +185,8 @@ function topicedit($topicid)
 	# 6 pixel spacer
     echo '<div align="center" style="padding-top:6px;">';
     echo '</div>';
-
-    $query = $titanium_db->sql_query("SELECT topicid, topicname, topicimage, topictext from ".$titanium_prefix . "_topics where topicid='$topicid'");
-    list($topicid, $topicname, $topicimage, $topictext) = $titanium_db->sql_fetchrow($query);
+    $query = $db->sql_query("SELECT topicid, topicname, topicimage, topictext from ".$prefix . "_blogs_topics where topicid='$topicid'");
+    [$topicid, $topicname, $topicimage, $topictext] = $db->sql_fetchrow($query);
     $topicid = intval($topicid);
     echo "<img src=\"$tipath$topicimage\" align=\"right\" alt=\"$topictext\" />";
     echo "<span class=\"option\"><strong><span class=\"over-ride\">"._EDITTOPIC.": $topictext</span></strong></span>";
@@ -168,44 +200,44 @@ function topicedit($topicid)
     echo "<strong>"._TOPICIMAGE.":</strong><br />";
 
     # display the topic image using JQuery 
-    ?>
-    <script>
-    $(document).ready(function() {
-    $("#imageSelector").change(function() {
-        var src = $(this).val();
-        $("#imagePreview").html(src ? "<img src=<?php echo $tipath ?>" + src + ">" : "");
-    });
-    });
-    </script>
-    <?
-
+    
+    echo '<script>';
+    echo '$(document).ready(function() {';
+    echo '$("#imageSelector").change(function() {';
+    echo '    var src = $(this).val();';
+    echo '    $("#imagePreview").html(src ? "<img src='.$tipath.'" + src + ">" : "");';
+    echo '});';
+    echo '});';
+    echo '</script>';
+   
     echo "<select id=\"imageSelector\" name=\"topicimage\">";
     
 	$handle=opendir($tipath);
     
 	while ($file = readdir($handle)):
-      if ( (preg_match("#^([_0-9a-zA-Z]+)([.]{1})([_0-9a-zA-Z]{3})$#",$file)) AND $file != "AllTopics.gif") 
-      $tlist .= "$file ";
+      if ((preg_match("#^([_0-9a-zA-Z]+)([.]{1})([_0-9a-zA-Z]{3})$#", $file)) AND $file != "AllTopics.gif") 
+	  {
+		$tlist .= "$file ";
+      }
     endwhile;
     
 	closedir($handle);
     
-	$tlist = explode(" ", $tlist);
+	$tlist = explode(" ", (string) $tlist);
     
 	sort($tlist);
     
-	for($i=0; $i < count($tlist); $i++): 
-      if(!empty($tlist[$i])): 
-        if ($topicimage == $tlist[$i]) 
-        $sel = "selected";
-        else
-        $sel = "";
-        echo "<option name=\"topicimage\" value=\"$tlist[$i]\" $sel>$tlist[$i]\n";
-      endif;
+	for($i=0; $i < (is_countable($tlist) ? count($tlist) : 0); $i++): 
+		  if ($topicimage == $tlist[$i]) 
+            $sel = "selected";
+		  else 
+            $sel = "";
+          echo "<option name=\"topicimage\" value=\"$tlist[$i]\" $sel>$tlist[$i]\n";
     endfor;
+	
     echo "</select><br /><br />";
 	echo '<div align="center" id="imagePreview"></div>';
-    echo '<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>';
+    echo '<script src="assets/jquery/jquery.js"></script>';
 
     echo "<strong>"._ADDRELATED . ":</strong><br />";
     
@@ -222,16 +254,17 @@ function topicedit($topicid)
 	echo ""._URL . ": <input type=\"text\" name=\"url\" value=\"http://\" size=\"50\" maxlength=\"200\"><br /><br />";
     echo "<strong>"._ACTIVERELATEDLINKS . ":</strong><br />";
     echo "<table width=\"100%\" border=\"0\">";
-    $res = $titanium_db->sql_query("SELECT rid, name, url from ".$titanium_prefix . "_related where tid='$topicid'");
-    $num = $titanium_db->sql_numrows($res);
+    $res = $db->sql_query("SELECT rid, name, url from ".$prefix . "_related where tid='$topicid'");
+    $num = $db->sql_numrows($res);
     
-	if ($num == 0) 
-    echo "<tr><td><span class=\"tiny\">"._NORELATED . "</span></td></tr>";
-    
-        while($row2 = $titanium_db->sql_fetchrow($res)):
+    if ($num == 0) {
+            echo "<tr><td><span class=\"tiny\">" . _NORELATED . "</span></td></tr>";
+        }
+
+        while($row2 = $db->sql_fetchrow($res)):
             $rid = intval($row2['rid']);
             $name = $row2['name'];
-            $url = stripslashes($row2['url']);
+            $url = stripslashes((string) $row2['url']);
         echo "<tr><td align=\"left\"><span class=\"content\"><strong><big>&middot;</big></strong>&nbsp;&nbsp;<a href=\"$url\">$name</a></td>"
             ."<td align=\"center\"><span class=\"content\"><a 
 			href=\"$url\">$url</a></td><td align=\"right\"><span class=\"content\">[ <a 
@@ -255,31 +288,29 @@ function topicedit($topicid)
 }
 
 function relatededit($tid, $rid) {
-    global $titanium_prefix, $titanium_db, $admin_file;
+    global $prefix, $db, $admin_file;
     include(NUKE_BASE_DIR."header.php");
     OpenTable();
 	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=topicsmanager\">" . _TOPICS_ADMIN_HEADER . "</a></div>\n";
-   // echo "<br /><br />";
 	echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _TOPICS_RETURNMAIN . "</a> ]</div>\n";
-	//CloseTable();
-	
-   // OpenTable();
-    echo "<center><span class=\"title\"><strong>"._TOPICSMANAGER . "</strong></span></center>";
+
+    echo "<div align=\"center\"><span class=\"title\"><strong>"._TOPICSMANAGER . "</strong></span></div>";
     CloseTable();
    
     $rid = intval($rid);
     $tid = intval($tid);
-    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT name, url from ".$titanium_prefix . "_related where rid='$rid'"));
-        $name = $row['name'];
-        $url = $row['url'];
-    $row2 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT topictext, topicimage from ".$titanium_prefix . "_topics where topicid='$tid'"));
-        $topictext = $row2['topictext'];
-        $topicimage = $row2['topicimage'];
-    OpenTable();
-    echo "<center>"
+    $row = $db->sql_fetchrow($db->sql_query("SELECT name, url from ".$prefix . "_related where rid='$rid'"));
+    $name = $row['name'];
+    $url = $row['url'];
+    $row2 = $db->sql_fetchrow($db->sql_query("SELECT topictext, topicimage from ".$prefix . "_blogs_topics where topicid='$tid'"));
+    $topictext = $row2['topictext'];
+    $topicimage = $row2['topicimage'];
+    
+	OpenTable();
+    echo "<div align=\"center\">"
         ."<img src=\"images/topics/$topicimage\" align=\"right\" alt=\"$topictext\" />"
         ."<span class=\"option\"><strong>"._EDITRELATED . "</strong></span><br />"
-        ."<strong>"._TOPIC . ":</strong> $topictext</center>"
+        ."<strong>"._TOPIC . ":</strong> $topictext</div>"
         ."<form action=\"".$admin_file.".php\" method=\"post\">"
         .""._SITENAME . ": <input type=\"text\" name=\"name\" value=\"$name\" size=\"30\" maxlength=\"30\"><br /><br />"
         .""._URL . ": <input type=\"text\" name=\"url\" value=\"$url\" size=\"60\" maxlength=\"200\"><br /><br />"
@@ -293,82 +324,78 @@ function relatededit($tid, $rid) {
 }
 
 function relatedsave($tid, $rid, $name, $url) {
-    global $titanium_prefix, $titanium_db, $admin_file;
+    global $prefix, $db, $admin_file;
     $rid = intval($rid);
-    $titanium_db->sql_query("update ".$titanium_prefix . "_related set name='$name', url='$url' where rid='$rid'");
-    redirect_titanium($admin_file.".php?op=topicedit&topicid=$tid");
+    $db->sql_query("update ".$prefix . "_related set name='$name', url='$url' where rid='$rid'");
+    redirect($admin_file.".php?op=topicedit&topicid=$tid");
 }
 
 function relateddelete($tid, $rid) {
-    global $titanium_prefix, $titanium_db, $admin_file;
+    global $prefix, $db, $admin_file;
     $rid = intval($rid);
-    $titanium_db->sql_query("delete from ".$titanium_prefix . "_related where rid='$rid'");
-    redirect_titanium($admin_file.".php?op=topicedit&topicid=$tid");
+    $db->sql_query("delete from ".$prefix . "_related where rid='$rid'");
+    redirect($admin_file.".php?op=topicedit&topicid=$tid");
 }
 
 function topicmake($topicname, $topicimage, $topictext) {
-    global $titanium_prefix, $titanium_db, $admin_file;
+    global $prefix, $db, $admin_file;
     $topicname = Fix_Quotes($topicname);
     $topicimage = Fix_Quotes($topicimage);
     $topictext = Fix_Quotes($topictext);
-    $titanium_db->sql_query("INSERT INTO ".$titanium_prefix . "_topics VALUES (NULL,'$topicname','$topicimage','$topictext','0')");
-    redirect_titanium($admin_file.".php?op=topicsmanager#Add");
+    $db->sql_query("INSERT INTO ".$prefix . "_blogs_topics VALUES (NULL,'$topicname','$topicimage','$topictext','0')");
+    redirect($admin_file.".php?op=topicsmanager#Add");
 }
 
 function topicchange($topicid, $topicname, $topicimage, $topictext, $name, $url) {
-    global $titanium_prefix, $titanium_db, $admin_file;
+    global $prefix, $db, $admin_file;
     $topicname = Fix_Quotes($topicname);
     $topicimage = Fix_Quotes($topicimage);
     $topictext = Fix_Quotes($topictext);
     $name = Fix_Quotes($name);
     $url = Fix_Quotes($url);
     $topicid = intval($topicid);
-    $titanium_db->sql_query("update ".$titanium_prefix . "_topics set topicname='$topicname', topicimage='$topicimage', topictext='$topictext' where topicid='$topicid'");
+    $db->sql_query("update ".$prefix . "_blogs_topics set topicname='$topicname', topicimage='$topicimage', topictext='$topictext' where topicid='$topicid'");
     if (!$name) {
     } else {
-        $titanium_db->sql_query("insert into ".$titanium_prefix . "_related VALUES (NULL, '$topicid','$name','$url')");
+        $db->sql_query("insert into ".$prefix . "_related VALUES (NULL, '$topicid','$name','$url')");
     }
-    redirect_titanium($admin_file.".php?op=topicedit&topicid=$topicid");
+    redirect($admin_file.".php?op=topicedit&topicid=$topicid");
 }
 
 function topicdelete($topicid, $ok=0) {
-    global $titanium_prefix, $titanium_db, $blog_config, $admin_file;
+    global $prefix, $db, $pnt_blogs_config, $admin_file;
     $topicid = intval($topicid);
     if ($ok==1) {
-    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT sid from " . $titanium_prefix . "_stories where topic='$topicid'"));
+    $row = $db->sql_fetchrow($db->sql_query("SELECT sid from " . $prefix . "_blogs where topic='$topicid'"));
         $sid = intval($row['sid']);
         // Copyright (c) 2000-2005 by NukeScripts Network
-        if($blog_config['hometopic'] == $topicid) { blogs_save_config("hometopic", "0"); }
+        if($pnt_blogs_config['hometopic'] == $topicid) { blog_save_config("hometopic", "0"); }
         // Copyright (c) 2000-2005 by NukeScripts Network
-        $titanium_db->sql_query("delete from " . $titanium_prefix . "_stories where topic='$topicid'");
-        $titanium_db->sql_query("delete from " . $titanium_prefix . "_topics where topicid='$topicid'");
-        $titanium_db->sql_query("delete from " . $titanium_prefix . "_related where tid='$topicid'");
-    $row2 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT sid from " . $titanium_prefix . "_comments where sid='$sid'"));
+        $db->sql_query("delete from " . $prefix . "_blogs where topic='$topicid'");
+        $db->sql_query("delete from " . $prefix . "_blogs_topics where topicid='$topicid'");
+        $db->sql_query("delete from " . $prefix . "_related where tid='$topicid'");
+    $row2 = $db->sql_fetchrow($db->sql_query("SELECT sid from " . $prefix . "_blogs_comments where sid='$sid'"));
         $sid = intval($row2['sid']);
-        $titanium_db->sql_query("delete from " . $titanium_prefix . "_comments where sid='$sid'");
-        redirect_titanium($admin_file.".php?op=topicsmanager");
+        $db->sql_query("delete from " . $prefix . "_blogs_comments where sid='$sid'");
+        redirect($admin_file.".php?op=topicsmanager");
     } else {
         global $topicimage;
         include(NUKE_BASE_DIR."header.php");
         OpenTable();
 	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=topicsmanager\">" . _TOPICS_ADMIN_HEADER . "</a></div>\n";
-        //echo "<br /><br />";
 	    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _TOPICS_RETURNMAIN . "</a> ]</div>\n";
-	   // CloseTable();
-	    
-        //OpenTable();
-        echo "<center><span class=\"title\"><strong>" . _TOPICSMANAGER . "</strong></span></center>";
+        echo "<div align=\"center\"><span class=\"title\"><strong>" . _TOPICSMANAGER . "</strong></span></div>";
         CloseTable();
        
-    $row3 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT topicimage, topictext from " . $titanium_prefix . "_topics where topicid='$topicid'"));
+        $row3 = $db->sql_fetchrow($db->sql_query("SELECT topicimage, topictext from " . $prefix . "_blogs_topics where topicid='$topicid'"));
         $topicimage = $row3['topicimage'];
         $topictext = $row3['topictext'];
         OpenTable();
-        echo "<center><img src=\"images/topics/$topicimage\" alt=\"$topictext\" /><br /><br />"
+        echo "<div align=\"center\"><br /><br />"
             ."<strong>" . _DELETETOPIC . " $topictext</strong><br /><br />"
             ."" . _TOPICDELSURE . " <i>$topictext</i>?<br />"
             ."" . _TOPICDELSURE1 . "<br /><br />"
-            ."[ <a href=\"".$admin_file.".php?op=topicsmanager\">" . _NO . "</a> | <a href=\"".$admin_file.".php?op=topicdelete&amp;topicid=$topicid&amp;ok=1\">" . _YES . "</a> ]</center><br /><br />";
+            ."[ <a href=\"".$admin_file.".php?op=topicsmanager\">" . _NO . "</a> | <a href=\"".$admin_file.".php?op=topicdelete&amp;topicid=$topicid&amp;ok=1\">" . _YES . "</a> ]</div><br /><br />";
         CloseTable();
         include(NUKE_BASE_DIR."footer.php");
     }
@@ -389,6 +416,8 @@ switch ($op) {
     break;
 
     case "topicdelete":
+	if(!isset($ok))
+	$ok = '';
     topicdelete($topicid, $ok);
     break;
 
@@ -413,17 +442,12 @@ switch ($op) {
 } 
 else 
 {
-        include(NUKE_BASE_DIR."header.php");
-        OpenTable();
-	    echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=topicsmanager\">" . _TOPICS_ADMIN_HEADER . "</a></div>\n";
-       // echo "<br /><br />";
-	    echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _TOPICS_RETURNMAIN . "</a> ]</div>\n";
-	   // CloseTable();
-
-       // OpenTable();
-        echo "<center><strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$titanium_module_name\"</center>";
-        CloseTable();
-        include(NUKE_BASE_DIR."footer.php");
+   include(NUKE_BASE_DIR."header.php");
+   OpenTable();
+   echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=topicsmanager\">" . _TOPICS_ADMIN_HEADER . "</a></div>\n";
+   echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" . _TOPICS_RETURNMAIN . "</a> ]</div>\n";
+   echo "<div align=\"center\"><strong>"._ERROR."</strong><br /><br />You do not have administration permission for module \"$module_name\"</div>";
+   CloseTable();
+   include(NUKE_BASE_DIR."footer.php");
 }
 
-?>

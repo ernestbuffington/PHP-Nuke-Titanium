@@ -38,11 +38,11 @@ if (!defined('CNBYA')) {
 }
 
 if (is_user()) {
-$titanium_module_name = basename(dirname(__FILE__));
-get_lang($titanium_module_name);
-include_once(NUKE_MODULES_DIR.$titanium_module_name.'/includes/functions.php');
+$module_name = basename(dirname(__FILE__));
+get_lang($module_name);
+include_once(NUKE_MODULES_DIR.$module_name.'/includes/functions.php');
 
-global $titanium_prefix, $titanium_db, $titanium_user_prefix, $ya_config, $thmcount;
+global $prefix, $db, $user_prefix, $ya_config, $thmcount;
 
 // menelaos: removed because it is already called in /modules/Your_Account/includes/mainfileend.php
 $ya_config = ya_get_configs();
@@ -87,7 +87,7 @@ $ya_config = ya_get_configs();
 
     function nav($main_up=0) 
 	{
-        global $titanium_module_name, $admin, $ya_config, $thmcount, $tdwidth, $articlecomm;
+        global $module_name, $admin, $ya_config, $thmcount, $tdwidth, $articlecomm;
         echo "<table border=\"0\" width=\"100%\" align=\"center\"><tr>\n";
 
         $menuimg = menuimg("info.png");

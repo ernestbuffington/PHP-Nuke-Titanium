@@ -1,6 +1,6 @@
 <div id="overDiv" style="position:absolute; visibility:hidden; z-index:1000;"></div>
-<script type="text/javascript" language="JavaScript" src="../templates/subSilver/images/auth_overall_forum/overlib.js"></script>
-<script type="text/javascript" language="JavaScript" src="../templates/subSilver/images/auth_overall_forum/admin_overall_forumauth.js"></script>
+<script src="../templates/subSilver/images/auth_overall_forum/overlib.js"></script>
+<script src="../templates/subSilver/images/auth_overall_forum/admin_overall_forumauth.js"></script>
 <h1>{L_FORUM_TITLE}</h1>
 
 <p>{L_FORUM_EXPLAIN}</p>
@@ -65,6 +65,6 @@
 	<!-- END forumrow -->
 	<!-- END catrow -->
 	<tr>
-		<td colspan="14" class="catBottom" align="center"><input type="submit" class="titaniumbutton" name="submit" value="{L_SUBMIT}" /></td>
+		<td colspan="14" class="catBottom" align="center"><input type="submit" class="liteoption" name="submit" value="{L_SUBMIT}" /></td>
 	</tr>
 </table></form>

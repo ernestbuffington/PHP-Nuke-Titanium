@@ -1,249 +1,4 @@
 <?php
-
-/**
- * Send mail, similar to PHP's mail
- *
- * @since 2.0.9e
- *
- * A true return value does not automatically mean that the user received the
- * email successfully. It just only means that the method used was able to
- * process the request without any errors.
- *
- * @global PHPMailer $mail
- *
- * @param string|array $to          Array or comma-separated list of email addresses to send message.
- * @param string       $subject     Email subject
- * @param string       $message     Message contents
- * @param string|array $headers     Optional. Additional headers.
- * @param string|array $attachments Optional. Files to attach.
- * @return bool Whether the email contents were sent successfully.
- */
-function evo_phpmailer($to, $subject, $message, $headers = '', $attachments = array())
-{
-	global $mail, $phpbb2_board_config, $nuke_titanium_config;
-
-	if ( ! ( $mail instanceof PHPMailer ) ) {
-		require_once 'includes/classes/class.phpmailer.php';
-		require_once 'includes/classes/class.smtp.php';
-		$mail = new PHPMailer;
-	}
-
-	if ( isset( $to ) ) {
-		$to = $to;
-	}
- 
-	if ( !is_array( $to ) ) {
-		$to = explode( ',', $to );
-	}
-
-	// Headers
-	$cc = $bcc = $reply_to = array();
-
-	// $mail->SMTPDebug = 2;
-
-	if ( $phpbb2_board_config['smtp_delivery'] == '1' ):
-
-		$mail->Host = $phpbb2_board_config['smtp_host'];
-		$mail->Port = $phpbb2_board_config['smtp_port'];
-
-		$mail->isSMTP();
-
-		$mail->SMTPSecure = $phpbb2_board_config['smtp_encryption'];
-
-		// if ( $phpbb2_board_config['smtp_encryption'] != 'none' ):
-		//     $mail->SMTPSecure = $phpbb2_board_config['smtp_encryption'];
-		// endif;
-
-		if ( 'none' === $phpbb2_board_config['smtp_encryption'] ):
-
-			$mail->SMTPSecure  = '';
-			$mail->SMTPAutoTLS = false;
-
-		endif;
-
-		if ( $phpbb2_board_config['smtp_auth'] == 1 ):
-
-			$mail->SMTPAuth = true;
-			$mail->Username = $phpbb2_board_config['smtp_username'];
-
-			if( defined('SMTP_Password') && SMTP_Password ):
-				$mail->Password = SMTP_Password;
-			else:
-				$mail->Password = $phpbb2_board_config['smtp_password'];
-			endif;
-
-		else:
-			$mail->SMTPAuth = false;
-		endif;
-
-	else:
-		$mail->IsMail();
-	endif;
-
-	/* sort the headers */
-	if ( empty( $headers ) ) 
-	{
-		$headers = array();
-	}
-	else
-	{
-		if ( !is_array( $headers ) ) {
-			// Explode the headers out, so this function can take both
-			// string headers and an array of headers.
-			$tempheaders = explode( "\n", str_replace( "\r\n", "\n", $headers ) );
-		} 
-		else 
-		{
-			$tempheaders = $headers;
-		}
-
-		// If it's actually got contents
-		if ( !empty( $tempheaders ) ) {
-			// Iterate through the raw headers
-			foreach ( (array) $tempheaders as $header ) {
-				if ( strpos($header, ':') === false ) {
-					if ( false !== stripos( $header, 'boundary=' ) ) {
-						$parts = preg_split('/boundary=/i', trim( $header ) );
-						$boundary = trim( str_replace( array( "'", '"' ), '', $parts[1] ) );
-					}
-					continue;
-				}
-				// Explode them out
-				list( $name, $content ) = explode( ':', trim( $header ), 2 );
- 
-				// Cleanup crew
-				$name    = trim( $name    );
-				$content = trim( $content );
- 
-				switch ( strtolower( $name ) ) 
-				{
-					case 'from':
-						$bracket_pos = strpos( $content, '<' );
-						if ( $bracket_pos !== false ) {
-							// Text before the bracketed email is the "From" name.
-							if ( $bracket_pos > 0 ) {
-								$from_name = substr( $content, 0, $bracket_pos - 1 );
-								$from_name = str_replace( '"', '', $from_name );
-								$from_name = trim( $from_name );
-							}
- 
-							$from_email = substr( $content, $bracket_pos + 1 );
-							$from_email = str_replace( '>', '', $from_email );
-							$from_email = trim( $from_email );
- 
-						// Avoid setting an empty $from_email.
-						} elseif ( '' !== trim( $content ) ) {
-							$from_email = trim( $content );
-						}
-						break;
-					case 'content-type':
-						if ( strpos( $content, ';' ) !== false ) {
-							list( $type, $charset_content ) = explode( ';', $content );
-							$content_type = trim( $type );
-							if ( false !== stripos( $charset_content, 'charset=' ) ) {
-								$charset = trim( str_replace( array( 'charset=', '"' ), '', $charset_content ) );
-							} elseif ( false !== stripos( $charset_content, 'boundary=' ) ) {
-								$boundary = trim( str_replace( array( 'BOUNDARY=', 'boundary=', '"' ), '', $charset_content ) );
-								$charset = '';
-							}
- 
-						// Avoid setting an empty $content_type.
-						} elseif ( '' !== trim( $content ) ) {
-							$content_type = trim( $content );
-						}
-						break;
-					case 'cc':
-						$cc = array_merge( (array) $cc, explode( ',', $content ) );
-						break;
-					case 'bcc':
-						$bcc = array_merge( (array) $bcc, explode( ',', $content ) );
-						break;
-					case 'reply-to':
-						$reply_to = array_merge( (array) $reply_to, explode( ',', $content ) );
-						break;
-					default:
-						// Add it to our grand headers array
-						$headers[trim( $name )] = trim( $content );
-						break;
-				}
-			}
-		}
-	}
-
-	$address_headers = compact( 'to', 'cc', 'bcc', 'reply_to' );
-	foreach ( $address_headers as $address_header => $addresses ) 
-	{
-		if ( empty( $addresses ) ) {
-			continue;
-		}
- 
-		foreach ( (array) $addresses as $address ) {
-			try {
-				// Break $recipient into name and address parts if in the format "Foo <bar@baz.com>"
-				$recipient_name = '';
- 
-				if ( preg_match( '/(.*)<(.+)>/', $address, $matches ) ) {
-					if ( count( $matches ) == 3 ) {
-						$recipient_name = $matches[1];
-						$address        = $matches[2];
-					}
-				}
- 
-				switch ( $address_header ) {
-					case 'to':
-						$mail->addAddress( $address, $recipient_name );
-						break;
-					case 'cc':
-						$mail->addCc( $address, $recipient_name );
-						break;
-					case 'bcc':
-						$mail->addBcc( $address, $recipient_name );
-						break;
-					case 'reply_to':
-						$mail->addReplyTo( $address, $recipient_name );
-						break;
-				}
-			} catch ( phpmailerException $e ) {
-				continue;
-			}
-		}
-	}
-
-	if ( !isset( $from_name ) )
-		$from_name = $phpbb2_board_config['sitename'];
-
-	if ( !isset( $from_email ) ) 
-		$from_email = $nuke_titanium_config['adminmail'];
-
-	$mail->ContentType = ( !isset($content_type) ) ? 'text/plain' : $content_type;
-	$mail->CharSet = ( !isset( $charset ) ) ? 'utf-8' : $charset;
-	$mail->From = $from_email;
-	$mail->FromName = $from_name;
-
-	// Set whether it's plaintext, depending on $content_type
-	if ( 'text/html' == $content_type )
-		$mail->isHTML(true);
-
-	$mail->Subject = $subject;
-	$mail->Body = $message;
-
-	if (!$mail->send()) {
-		$mail->ErrorInfo;
-		$mail->clearAllRecipients();
-		$mail->clearReplyTos();
-		OpenTable();
-		echo 'Message could not be sent.<br />';
-		CloseTable();
-		include_once(NUKE_BASE_DIR.'footer.php');
-		exit;
-		// return FALSE;
-	} else { 
-		$mail->clearAllRecipients();
-		$mail->clearReplyTos();      
-		return TRUE;
-	}
-}
-
 /**
  * Gets the variable and runs all the proper sub functions
  *
@@ -295,8 +50,8 @@ function get_admin_filename()
  */
 function the_module()
 {
-	global $titanium_module_name;
-	return $titanium_module_name;
+	global $module_name;
+	return $module_name;
 }
 
 /**
@@ -466,10 +221,10 @@ function get_image_viewer($slideshow = '',$caption = '')
 			 * @license GPL-3.0
 			 * @link    http://www.jacklmoore.com/colorbox
 			 */
-			$phpbb2_colorbox  = ' data-colorbox';
-			$phpbb2_colorbox .= (($slideshow) ? ' rel="'.$slideshow.'"' : '');
-			$phpbb2_colorbox .= (($caption) ? ' title="'.$caption.'"' : '');
-			return $phpbb2_colorbox;
+			$colorbox  = ' data-colorbox';
+			$colorbox .= (($slideshow) ? ' rel="'.$slideshow.'"' : '');
+			$colorbox .= (($caption) ? ' title="'.$caption.'"' : '');
+			return $colorbox;
 			break;
 
 		case 'fancybox':
@@ -554,14 +309,14 @@ function get_image_viewer($slideshow = '',$caption = '')
  * @param int    $strip_html    Provide the maximum value.
  * @return string Displays the progress bar.
  */
-function display_progress_bar($type='css3',$class='progress-bar blue stripes', $value='0', $max='100')
+function display_progress_bar($type='css3',$class='progress-bar', $value='0', $max='100')
 {
 	if ($type == 'css3'):
 		$progress_bar  = '<div class="'.$class.'">';
-		$progress_bar .= '  <span data-percentage="'.$value.'" style="max-width:100%;"></span>';
+		$progress_bar .= '  <span style="border-radius: 15px; -moz-border-radius: 15px; max-width:100%;" data-percentage="'.$value.'"></span>';
 		$progress_bar .= '</div>';
 	else:
-		$progress_bar = '<progress class="'.$class.'" data-percentage="'.$value.'" value="'.$value.'" max="'.$max.'"></progress>';
+		$progress_bar = '<progress style="border-radius: 15px; -moz-border-radius: 15px;" class="'.$class.'" data-percentage="'.$value.'" value="'.$value.'" max="'.$max.'"></progress>';
 	endif;
 	return $progress_bar;
 }
@@ -626,8 +381,8 @@ function has_new_or_unread_private_messages()
  */
 function get_evo_option($name, $type='string')
 {
-	global $titanium_config;
-	return ($type == 'string') ? $titanium_config[$name] : intval($titanium_config[$name]);
+	global $evoconfig;
+	return ($type == 'string') ? $evoconfig[$name] : intval($evoconfig[$name]);
 }
 
 /**
@@ -655,7 +410,7 @@ function get_theme_option($name, $type='string')
  * @param bool    $force_refresh         Choose whether to force an update, Default: false.
  * @return array  Return a json object with all the version information.
  */
-function cache_json_data($version_check_url,$local_cache_location,$force_refresh = false,$headers = '[],$cache_time = 86400') 
+function cache_json_data($version_check_url,$local_cache_location,$force_refresh = false,$headers = [],$cache_time = 86400) 
 {
 	$url = $version_check_url;
 	$cache = $local_cache_location;
@@ -796,14 +551,14 @@ function stripslashes_deep( $string )
  *
  * @since 2.0.9e
  *
- * @global db $titanium_db Evolution Xtreme database abstraction object.
+ * @global db $db Evolution Xtreme database abstraction object.
  *
  * @param string|array $data Unescaped data
  * @return string|array Escaped data
  */
 function esc_sql( $data ) {
-	global $titanium_db;
-	return $titanium_db->sql_escapestring( $data );
+	global $db;
+	return $db->sql_escapestring( $data );
 }
 
 /**
@@ -830,88 +585,54 @@ function url_shorten( $url, $length = 35 ) {
  *
  * @since 2.0.9e
  *
- * @global db $titanium_db Evolution Xtreme database abstraction object.
- * @global board_config $phpbb2_board_config Forum configuration variable.
+ * @global db $db Evolution Xtreme database abstraction object.
+ * @global board_config $board_config Forum configuration variable.
  * @global userinfo $userinfo Get the logged in users account information.
  */
-function get_user_avatar($titanium_user_id) {
-	global $titanium_db, $phpbb2_board_config, $userinfo;
+function get_user_avatar($user_id) {
+	global $db, $board_config, $userinfo;
 	static $avatarData;
-
-	if(is_array($avatarData[$titanium_user_id]) && !empty($avatarData[$titanium_user_id])) { return $avatarData[$titanium_user_id]; }
-	if ( $titanium_user_id == $userinfo['user_id'] ) {
-		 $titanium_user_avatar       = $userinfo['user_avatar'];
-		 $titanium_user_avatar_type  = $userinfo['user_avatar_type'];
-		 $titanium_user_avatar_allow = $userinfo['user_allowavatar'];
-		 $titanium_user_avatar_show  = $userinfo['user_showavatars'];
+    
+	if(!isset($avatarData[$user_id]))
+    $avatarData[$user_id] = '';
+		
+	if(is_array($avatarData[$user_id]) && !empty($avatarData[$user_id])) { return $avatarData[$user_id]; }
+	if ( $user_id == $userinfo['user_id'] ) {
+		 $user_avatar       = $userinfo['user_avatar'];
+		 $user_avatar_type  = $userinfo['user_avatar_type'];
+		 $user_avatar_allow = $userinfo['user_allowavatar'];
+		 $user_avatar_show  = $userinfo['user_showavatars'];
 	} else {
-		list($titanium_user_avatar, $titanium_user_avatar_type, $titanium_user_avatar_allow, $titanium_user_avatar_show) = $titanium_db->sql_ufetchrow("SELECT user_avatar, user_avatar_type, user_allowavatar, user_showavatars FROM ".USERS_TABLE." WHERE user_id = '" . $titanium_user_id . "' LIMIT 1");
+		list($user_avatar, $user_avatar_type, $user_avatar_allow, $user_avatar_show) = $db->sql_ufetchrow("SELECT user_avatar, user_avatar_type, user_allowavatar, user_showavatars FROM ".USERS_TABLE." WHERE user_id = '" . $user_id . "' LIMIT 1");
 	}
-	$phpbb2_poster_avatar = '';
-	if ( $titanium_user_avatar_type && $titanium_user_id != ANONYMOUS && $titanium_user_avatar_allow && $titanium_user_avatar_show && !empty($titanium_user_avatar)) {
-		switch( $titanium_user_avatar_type ) {
+	$poster_avatar = '';
+	if ( $user_avatar_type && $user_id != ANONYMOUS && $user_avatar_allow && $user_avatar_show && !empty($user_avatar)) {
+		switch( $user_avatar_type ) {
 			case USER_AVATAR_UPLOAD:
-				$phpbb2_poster_avatar = ( $phpbb2_board_config['allow_avatar_upload'] ) ? avatar_resize($phpbb2_board_config['avatar_path'] . '/' . $titanium_user_avatar) : '';
+				$poster_avatar = ( $board_config['allow_avatar_upload'] ) ? avatar_resize($board_config['avatar_path'] . '/' . $user_avatar) : '';
 				break;
 			case USER_AVATAR_REMOTE:
-				$phpbb2_poster_avatar = avatar_resize($titanium_user_avatar);
+				$poster_avatar = avatar_resize($user_avatar);
 				break;
 			case USER_AVATAR_GALLERY:
-				$phpbb2_poster_avatar = ( $phpbb2_board_config['allow_avatar_local'] ) ? avatar_resize($phpbb2_board_config['avatar_gallery_path'] . '/' . $titanium_user_avatar) : '';
+				$poster_avatar = ( $board_config['allow_avatar_local'] ) ? avatar_resize($board_config['avatar_gallery_path'] . '/' . $user_avatar) : '';
 				break;
 		}
 	}
-	$default_member_avatar = evo_image('avatar_member.png', 'Forums');
-	$default_guest_avatar  = evo_image('avatar_guest.png', 'Forums');
-	if ( empty($phpbb2_poster_avatar) && $titanium_user_id != ANONYMOUS) {
-		$phpbb2_poster_avatar = '<img class="rounded-corners-user-info" src="'.  $default_member_avatar .'" alt="" border="0" />';
+	$default_member_avatar = img('blank.png', 'Forums');
+	$default_guest_avatar  = img('blank.png', 'Forums');
+	if ( empty($poster_avatar) && $user_id != ANONYMOUS) {
+		$poster_avatar = '<img src="'.  $default_member_avatar .'" alt="" border="0" />';
 	}
-	if ( $titanium_user_id == ANONYMOUS ) {
-		$phpbb2_poster_avatar = '<img class="rounded-corners-user-info" src="'.  $default_guest_avatar .'" alt="" border="0" />';
+	if ( $user_id == ANONYMOUS ) {
+		$poster_avatar = '<img src="'.  $default_guest_avatar .'" alt="" border="0" />';
 	}
-	$avatarData[$titanium_user_id] = $poser_avatar;
-	return ($phpbb2_poster_avatar);
-}
-
-// evo_image function by ReOrGaNiSaTiOn
-function get_evo_image($imgfile='', $mymodule='') {
-	global $currentlang, $ThemeSel, $Default_Theme, $cache;
-	$tmp_imgfile = explode('.', $imgfile);
-	$cache_imgfile = $tmp_imgfile[0];
-	$evoimage = $cache->load($mymodule, 'EvoImage');
-	if(!empty($evoimage[$ThemeSel][$currentlang][$cache_imgfile])) {
-		return($evoimage[$ThemeSel][$currentlang][$cache_imgfile]);
-	}
-
-	if (@file_exists(NUKE_THEMES_DIR . $ThemeSel . '/images/' . $mymodule . '/lang_' . $currentlang . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$ThemeSel."/images/$mymodule/lang_".$currentlang."/$imgfile";
-	} elseif (@file_exists(NUKE_THEMES_DIR . $ThemeSel . '/images/lang_' . $currentlang . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$ThemeSel."/images/lang_".$currentlang."/$imgfile";
-	} elseif (@file_exists(NUKE_THEMES_DIR . $ThemeSel . '/images/' . $mymodule . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$ThemeSel."/images/$mymodule/$imgfile";
-	} elseif (@file_exists(NUKE_THEMES_DIR . $ThemeSel . '/images/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$ThemeSel."/images/$imgfile";
-	} elseif (@file_exists(NUKE_THEMES_DIR . $Default_Theme . '/images/' . $mymodule . '/lang_' . $currentlang . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$Default_Theme."/images/$mymodule/lang_".$currentlang."/$imgfile";
-	} elseif (@file_exists(NUKE_THEMES_DIR . $Default_Theme . '/images/lang_' . $currentlang . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$Default_Theme."/images/lang_".$currentlang."/$imgfile";
-	} elseif (@file_exists(NUKE_THEMES_DIR . $Default_Theme . '/images/' . $mymodule . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$Default_Theme."/images/$mymodule/$imgfile";
-	} elseif (@file_exists(NUKE_THEMES_DIR . $Default_Theme . '/images/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "themes/".$Default_Theme."/images/$imgfile";
-	} elseif (@file_exists(NUKE_MODULES_DIR . $mymodule . '/images/lang_' . $currentlang . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "modules/".$mymodule."/images/lang_".$currentlang."/$imgfile";
-	} elseif (@file_exists(NUKE_MODULES_DIR . $mymodule . '/images/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] =  "modules/".$mymodule."/images/$imgfile";
-	} elseif (@file_exists(NUKE_IMAGES_DIR . $mymodule . '/' . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "images/".$mymodule."/$imgfile";
-	} elseif (@file_exists(NUKE_IMAGES_DIR . $imgfile)) {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = "images/$imgfile";
-	} else {
-		$evoimage[$ThemeSel][$currentlang][$cache_imgfile] = '';
-	}
-	$cache->save($mymodule, 'EvoImage', $evoimage);
-	return($evoimage[$ThemeSel][$currentlang][$cache_imgfile]);
+	
+	if(!isset($poser_avatar))
+    $poser_avatar = '';
+	
+	$avatarData[$user_id] = $poser_avatar;
+	return ($poster_avatar);
 }
 
 /**
@@ -930,19 +651,19 @@ function get_mod_admin_uri()
  *
  * @global $admlang, $customlang
  *
- * @param string    $titanium_lang         Language define you wish to have translated.
+ * @param string    $lang         Language define you wish to have translated.
  * @param string    $var          Variable name of the language locale.
  * @return string   Translated string.
  */
 if( !function_exists('__') ):
 
-	function __( $titanium_lang, $var = 'customlang', $titanium_module_name = '' ) 
+	function __( $lang, $var = 'customlang', $module_name = '' ) 
 	{
 		global $$var;
-		if ( empty($titanium_module_name) ):
-			return $$var[the_module()][$titanium_lang];
+		if ( empty($module_name) ):
+			return $$var[the_module()][$lang];
 		else:
-			return $$var[$titanium_module_name][$titanium_lang];
+			return $$var[$module_name][$lang];
 		endif;
 	}
 
@@ -954,20 +675,20 @@ endif;
  * @param string $text Text to be translated.
  * @return string
  */
-function _e( $titanium_lang, $var = 'customlang', $titanium_module_name = '' )
+function _e( $lang, $var = 'customlang', $module_name = '' )
 {
-	echo __( $titanium_lang, $var, $titanium_module_name );
+	echo __( $lang, $var, $module_name );
 }
 
-function sprintf__( $titanium_lang, $var = 'customlang', $titanium_module_name = '', $replacement='' )
+function sprintf__( $lang, $var = 'customlang', $module_name = '', $replacement='' )
 {
-	$sprintf__ = vsprintf( __( $titanium_lang, $var, $titanium_module_name ), $replacement );
+	$sprintf__ = vsprintf( __( $lang, $var, $module_name ), $replacement );
 	return $sprintf__;
 }
 
-function sprintf_e( $titanium_lang, $var = 'customlang', $titanium_module_name = '', $replacement='' )
+function sprintf_e( $lang, $var = 'customlang', $module_name = '', $replacement='' )
 {
-	$sprintf__ = vsprintf( __( $titanium_lang, $var, $titanium_module_name ), $replacement );
+	$sprintf__ = vsprintf( __( $lang, $var, $module_name ), $replacement );
 	echo $sprintf__;
 }
 
@@ -1119,14 +840,14 @@ function get_file_name( $file )
 
 function get_bootstrap_pagination()
 {
-    global $phpbb2_board_config;
+    global $board_config;
 
     $page      = get_query_var('page', 'get', 'int', 1);
 
     /*
-    'url' => append_titanium_sid('privmsg'.$phpEx.'?folder='.$folder), 
+    'url' => append_sid('privmsg'.$phpEx.'?folder='.$folder), 
     'total' => $pm_total,
-    'per-page' => $phpbb2_board_config['topics_per_page']
+    'per-page' => $board_config['topics_per_page']
     */
 
     $args = func_get_args();
@@ -1143,28 +864,28 @@ function get_bootstrap_pagination()
 
     if($total > $a['per-page']):
 
-        $total_phpbb2_pages = ceil($total / $a['per-page']);
+        $total_pages = ceil($total / $a['per-page']);
 
-        if($total_phpbb2_pages <= (1+($adjacents * 2))) 
+        if($total_pages <= (1+($adjacents * 2))) 
         {
-            $phpbb2_start = 1;
-            $phpbb2_end   = $total_phpbb2_pages;
+            $start = 1;
+            $end   = $total_pages;
         } 
         else 
         {
             if(($page - $adjacents) > 1) 
             {                 
                 //Checking if the current page minus adjacent is greateer than one.
-                if(($page + $adjacents) < $total_phpbb2_pages) {  //Checking if current page plus adjacents is less than total pages.
-                    $phpbb2_start = ($page - $adjacents);         //If true, then we will substract and add adjacent from and to the current page number  
-                    $phpbb2_end   = ($page + $adjacents);         //to get the range of the page numbers which will be display in the pagination.
+                if(($page + $adjacents) < $total_pages) {  //Checking if current page plus adjacents is less than total pages.
+                    $start = ($page - $adjacents);         //If true, then we will substract and add adjacent from and to the current page number  
+                    $end   = ($page + $adjacents);         //to get the range of the page numbers which will be display in the pagination.
                 } else {                                   //If current page plus adjacents is greater than total pages.
-                    $phpbb2_start = ($total_phpbb2_pages - (1+($adjacents*2)));  //then the page range will start from total pages minus 1+($adjacents*2)
-                    $phpbb2_end   = $total_phpbb2_pages;                         //and the end will be the last page number that is total pages number.
+                    $start = ($total_pages - (1+($adjacents*2)));  //then the page range will start from total pages minus 1+($adjacents*2)
+                    $end   = $total_pages;                         //and the end will be the last page number that is total pages number.
                 }
             } else {                                       //If the current page minus adjacent is less than one.
-                $phpbb2_start = 1;                                //then start will be start from page number 1
-                $phpbb2_end   = (1+($adjacents * 2));             //and end will be the (1+($adjacents * 2)).
+                $start = 1;                                //then start will be start from page number 1
+                $end   = (1+($adjacents * 2));             //and end will be the (1+($adjacents * 2)).
             }
         }
 
@@ -1183,18 +904,18 @@ function get_bootstrap_pagination()
         endif;
 
         // Links of the pages with page number
-        for($i=$phpbb2_start; $i<=$phpbb2_end; $i++):
+        for($i=$start; $i<=$end; $i++):
             $pagination .= '  <li class="page-item'.(( $page == $i ) ? ' active' : '').'"><a class="page-link" href="'.$url.'&amp;page='.$i.'">'.$i.'</a></li>';
         endfor;
 
         if ( $next_previous == true ):
             // Link of the next page
-            $pagination .= '  <li class="page-item'.(( $page >= $total_phpbb2_pages ) ? ' disabled' : '').'"><a class="page-link" href="'.$url.'&amp;page='.(( $page < $total_phpbb2_pages ) ? $page+1 : $total_phpbb2_pages).'">&gt;</a></li>';
+            $pagination .= '  <li class="page-item'.(( $page >= $total_pages ) ? ' disabled' : '').'"><a class="page-link" href="'.$url.'&amp;page='.(( $page < $total_pages ) ? $page+1 : $total_pages).'">&gt;</a></li>';
         endif;
 
         if ( $first_last == true ):
             // Link of the last page
-            $pagination .= '  <li class="page-item'.(( $page >= $total_phpbb2_pages ) ? ' disabled' : '').'"><a class="page-link" href="'.$url.'&amp;page='.$total_phpbb2_pages.'">&gt;&gt;</a>';
+            $pagination .= '  <li class="page-item'.(( $page >= $total_pages ) ? ' disabled' : '').'"><a class="page-link" href="'.$url.'&amp;page='.$total_pages.'">&gt;&gt;</a>';
         endif;
 
         $pagination .= '</ul>';
@@ -1211,13 +932,13 @@ function get_bootstrap_pagination()
 
 function bootstrap_pagination() {
 
-    global $phpbb2_board_config;
+    global $board_config;
 
     $page      = get_query_var('page', 'get', 'int', 1);
     // $adjacents = 2;
 
-    // $calc           = $phpbb2_board_config['topics_per_page'] * $page;
-    // $phpbb2_start          = $calc - $phpbb2_board_config['topics_per_page'];
+    // $calc           = $board_config['topics_per_page'] * $page;
+    // $start          = $calc - $board_config['topics_per_page'];
 
     $args = func_get_args();
     foreach ($args as &$a):
@@ -1234,30 +955,30 @@ function bootstrap_pagination() {
 
     $request_uri = ( strpos($_SERVER['REQUEST_URI'], "&") !== false ) ? strstr($_SERVER['REQUEST_URI'], '&', true) : $_SERVER['REQUEST_URI'];
 
-    if($result['total'] > $phpbb2_board_config['topics_per_page']):
+    if($result['total'] > $board_config['topics_per_page']):
 
-        $total_phpbb2_pages = ceil($result['total'] / $phpbb2_board_config['topics_per_page']);
+        $total_pages = ceil($result['total'] / $board_config['topics_per_page']);
 
-        if($total_phpbb2_pages <= (1+($adjacents * 2))) 
+        if($total_pages <= (1+($adjacents * 2))) 
         {
-            $phpbb2_start = 1;
-            $phpbb2_end   = $total_phpbb2_pages;
+            $start = 1;
+            $end   = $total_pages;
         } 
         else 
         {
             if(($page - $adjacents) > 1) 
             {                 
                 //Checking if the current page minus adjacent is greateer than one.
-                if(($page + $adjacents) < $total_phpbb2_pages) {  //Checking if current page plus adjacents is less than total pages.
-                    $phpbb2_start = ($page - $adjacents);         //If true, then we will substract and add adjacent from and to the current page number  
-                    $phpbb2_end   = ($page + $adjacents);         //to get the range of the page numbers which will be display in the pagination.
+                if(($page + $adjacents) < $total_pages) {  //Checking if current page plus adjacents is less than total pages.
+                    $start = ($page - $adjacents);         //If true, then we will substract and add adjacent from and to the current page number  
+                    $end   = ($page + $adjacents);         //to get the range of the page numbers which will be display in the pagination.
                 } else {                                   //If current page plus adjacents is greater than total pages.
-                    $phpbb2_start = ($total_phpbb2_pages - (1+($adjacents*2)));  //then the page range will start from total pages minus 1+($adjacents*2)
-                    $phpbb2_end   = $total_phpbb2_pages;                         //and the end will be the last page number that is total pages number.
+                    $start = ($total_pages - (1+($adjacents*2)));  //then the page range will start from total pages minus 1+($adjacents*2)
+                    $end   = $total_pages;                         //and the end will be the last page number that is total pages number.
                 }
             } else {                                       //If the current page minus adjacent is less than one.
-                $phpbb2_start = 1;                                //then start will be start from page number 1
-                $phpbb2_end   = (1+($adjacents * 2));             //and end will be the (1+($adjacents * 2)).
+                $start = 1;                                //then start will be start from page number 1
+                $end   = (1+($adjacents * 2));             //and end will be the (1+($adjacents * 2)).
             }
         }
 
@@ -1276,18 +997,18 @@ function bootstrap_pagination() {
         endif;
 
         // Links of the pages with page number
-        for($i=$phpbb2_start; $i<=$phpbb2_end; $i++):
+        for($i=$start; $i<=$end; $i++):
             $pagination .= '  <li class="page-item'.(( $page == $i ) ? ' active' : '').'"><a class="page-link" href="'.$request_uri.'&amp;page='.$i.'">'.$i.'</a></li>';
         endfor;
 
         if ( $next_previous == true ):
             // Link of the next page
-            $pagination .= '  <li class="page-item'.(( $page >= $total_phpbb2_pages ) ? ' disabled' : '').'"><a class="page-link" href="'.$request_uri.'&amp;page='.(( $page < $total_phpbb2_pages ) ? $page+1 : $total_phpbb2_pages).'">&gt;</a></li>';
+            $pagination .= '  <li class="page-item'.(( $page >= $total_pages ) ? ' disabled' : '').'"><a class="page-link" href="'.$request_uri.'&amp;page='.(( $page < $total_pages ) ? $page+1 : $total_pages).'">&gt;</a></li>';
         endif;
 
         if ( $first_last == true ):
             // Link of the last page
-            $pagination .= '  <li class="page-item'.(( $page >= $total_phpbb2_pages ) ? ' disabled' : '').'"><a class="page-link" href="'.$request_uri.'&amp;page='.$total_phpbb2_pages.'">&gt;&gt;</a>';
+            $pagination .= '  <li class="page-item'.(( $page >= $total_pages ) ? ' disabled' : '').'"><a class="page-link" href="'.$request_uri.'&amp;page='.$total_pages.'">&gt;&gt;</a>';
         endif;
 
         $pagination .= '</ul>';

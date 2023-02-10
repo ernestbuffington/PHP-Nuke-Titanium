@@ -34,13 +34,16 @@ class Wysiwyg
 		
 		global $name;
 		
-		if($name === 'Forums')
+		if($name == 'Forums')
 		$wysiwyg = 'sceditor';
 
-		//if((isset($_COOKIE["CKEditor_4_Access"])) && ($name === Forums))
+		//if((isset($_COOKIE["CKEditor_4_Access"])) && ($name == Forums))
 		//$wysiwyg = 'ckeditor';
 		
-		if($name === 'Private_Messages')
+		if($name == 'Private_Messages')
+		$wysiwyg = 'sceditor';
+
+		if($name == 'Reviews')
 		$wysiwyg = 'sceditor';
 
 		if((!isset($wysiwyg) || empty($wysiwyg)) && ($name != 'Forums'))
@@ -85,15 +88,18 @@ class Wysiwyg
 
 		global $name;
         
-		if($name === 'Forums')
+		if($name == 'Forums')
 		$wysiwyg = 'sceditor';
 		
-		//if((isset($_COOKIE["CKEditor_4_Access"])) && ($name === Forums))
+		//if((isset($_COOKIE["CKEditor_4_Access"])) && ($name == Forums))
 		//$wysiwyg = 'ckeditor';
 		
-		if($name === 'Private_Messages')
+		if($name == 'Private_Messages')
 		$wysiwyg = 'sceditor';
 		
+		if($name == 'Reviews')
+		$wysiwyg = 'sceditor';
+
 		if((!isset($wysiwyg) || empty($wysiwyg)) && ($name != 'Forums'))
 		$wysiwyg = 'ckeditor';
 
@@ -108,13 +114,16 @@ class Wysiwyg
 
 		global $name;
 
-		if($name === 'Forums')
+		if($name == 'Forums')
 		$dir = 'sceditor';
 		
-		//if((isset($_COOKIE["CKEditor_4_Access"])) && ($name === Forums))
+		//if((isset($_COOKIE["CKEditor_4_Access"])) && ($name == Forums))
 		//$dir = 'ckeditor';
 
-		if($name === 'Private_Messages')
+		if($name == 'Private_Messages')
+		$dir = 'sceditor';
+
+		if($name == 'Reviews')
 		$dir = 'sceditor';
 		
 		if((!isset($dir) || empty($dir)) && ($name != 'Forums'))
@@ -130,7 +139,7 @@ class Wysiwyg
 
 	function getHTML()
 	{
-		global $phpbb2_board_config, $name, $titanium_lang, $userinfo;
+		global $board_config, $name, $lang, $userinfo;
 
 		# FORM CHECKING HAS BEEN MOVED TO HERE, AS THERE IS NOW MORE THAN ONE EDITOR TO USE
 		# FORM CHECKING SHOULD BE LEFT HERE, SO THAT IT CAN BE USED FOR BOTH THE BBCODE TABLE AND THE STANDARD TABLE
@@ -147,7 +156,7 @@ class Wysiwyg
 		
 		elseif($this->type == 'bbcode'): 
 		
-		  $allowed = ($name === 'Profile') ? false : true;
+		  $allowed = ($name == 'Profile') ? false : true;
 		  $HTMLtable .= '<table border="0" cellpadding="4" cellspacing="1" width="100%" class="forumline">';
 
 		  $setting['bbcode_button_location'] = 'top';
@@ -177,7 +186,7 @@ class Wysiwyg
 			$HTMLtable .= '</tr>';
 		  endif;
 
-		  if($phpbb2_board_config['allow_smilies'] && $this->smilies && ($userdata['user_id'] != ANONYMOUS)):
+		  if($board_config['allow_smilies'] && $this->smilies && ($userdata['user_id'] != ANONYMOUS)):
 			$HTMLtable .= '<tr>';
 			$HTMLtable .= '<td class="row1" style="width: 100%;">'.smilies_table('onerow',$this->field, $this->form).'</td>';
 			$HTMLtable .= '</tr>';

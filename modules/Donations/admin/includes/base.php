@@ -18,15 +18,15 @@ include_once(NUKE_DONATIONS_INCLUDES . 'base.php');
     Notes:       Displays the page header, graphic admin, and the title
 ================================================================================================*/
 function head_open ($title='') {
-    global $sitename, $titanium_lang_donate, $admin_file;
+    global $sitename, $lang_donate, $admin_file;
     include_once(NUKE_BASE_DIR.'header.php');
     OpenTable();
-	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Donations\">" .$titanium_lang_donate['ADMIN_HEADER']. "</a></div>\n";
+	echo "<div align=\"center\">\n<a href=\"$admin_file.php?op=Donations\">" .$lang_donate['ADMIN_HEADER']. "</a></div>\n";
     echo "<br /><br />";
-	echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$titanium_lang_donate['RETURNMAIN']. "</a> ]</div>\n";
+	echo "<div align=\"center\">\n[ <a href=\"$admin_file.php\">" .$lang_donate['RETURNMAIN']. "</a> ]</div>\n";
 	CloseTable();
-	echo "<br />";
-    title("<div align=\"center\">\n".$title."</div>\n");
+	//echo "<br />";
+    //title("<div align=\"center\">\n".$title."</div>\n");
     OpenTable();
     return;
 }
@@ -62,18 +62,18 @@ function br2nl($str) {
 ================================================================================================*/
 function config_select () 
 {
-    global $titanium_lang_donate, $admin_file;
+    global $lang_donate, $admin_file;
     echo '<table style="margin: auto; width: 50%;" cellpadding="4" cellspacing="1" border="0" class="forumline">';
     echo '  <tr>';
-    echo '    <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=current">'.$titanium_lang_donate['CURRENT_DONATIONS'].'</a></td>';
-    echo '    <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=add">'.$titanium_lang_donate['ADD_DONATION'].'</a></td>';
-    echo '    <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=values">'.$titanium_lang_donate['DONATION_VALUES'].'</a></td>';
+    echo '    <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=current">'.$lang_donate['CURRENT_DONATIONS'].'</a></td>';
+    echo '    <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=add">'.$lang_donate['ADD_DONATION'].'</a></td>';
+    echo '    <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=values">'.$lang_donate['DONATION_VALUES'].'</a></td>';
     echo '  </tr>';
 
     echo '  <tr>';
-    echo '    <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=config_block">'.$titanium_lang_donate['CONFIG_BLOCK'].'</a></td>';
-     echo '   <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=config_donations">'.$titanium_lang_donate['CONFIG_GENERAL'].'</a></td>';
-    echo '    <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=config_page">'.$titanium_lang_donate['CONFIG_PAGE'].'</a></td>';
+    echo '    <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=config_block">'.$lang_donate['CONFIG_BLOCK'].'</a></td>';
+     echo '   <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=config_donations">'.$lang_donate['CONFIG_GENERAL'].'</a></td>';
+    echo '    <td class="row1"><a href="'.$admin_file.'.php?op=Donations&amp;file=config_page">'.$lang_donate['CONFIG_PAGE'].'</a></td>';
     echo '  </tr>';
     echo '</table>';
 }
@@ -88,9 +88,9 @@ function config_select ()
     Notes:       Displays an error message
 ================================================================================================*/
 function DonateError($text, $close=1) {
-    global $titanium_lang_donate;
+    global $lang_donate;
     echo '<div align="center">';
-    echo $titanium_lang_donate['ERROR'] . '<br />';
+    echo $lang_donate['ERROR'] . '<br />';
     echo $text;
     echo '</div>';
     if ($close) {
@@ -115,6 +115,8 @@ function donate_radio ($data, $br=0) {
         // if (isset($single['mouseover'])) {
         //     $mouseover = $single['mouseover'];
         // }
+		if(!isset($single['help']))
+		$single['help'] = '';
         $out .= "<input type=\"radio\" name=\"".$single['name']."\" value=\"".$single['value']."\" ".$single['help']." ".$single['checked']." ".$mouseover.">".$single['text']."\n";
         // if($br) {
         //     $out .= "<br />";
@@ -159,7 +161,14 @@ function donate_text ($name, $text, $size='', $max='', $help='') {
     Notes:       N/A
 ================================================================================================*/
 function donate_text_area ($name, $text, $rows=5, $cols=20, $help='') {
-    $size = ($size) ? "size=\"".$size."\"" : '';
+    
+	if(!isset($size))
+	$size = '';
+
+	if(!isset($max))
+	$max = '';
+	
+	$size = ($size) ? "size=\"".$size."\"" : '';
     $max = ($max) ? "maxlength=\"".$max."\"" : '';
     return "<TEXTAREA name=\"".$name."\" rows=\"".$rows."\" cols=\"".$cols."\" $help />".$text."</TEXTAREA>";
 }

@@ -1,10 +1,11 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
+
 /***************************************************************************
- *                                arcade.php
+ *                                arcade.php 
  *                            -------------------
  *   THIS FILE SHOULD BE AT THE SITE ROOT
  *   PHPNuke Ported Arcade - http://www.nukearcade.com
@@ -14,15 +15,15 @@
 
 define('IN_PHPBB', true);
 include(dirname(__FILE__).'/mainfile.php');
-$phpbb2_root_path = NUKE_FORUMS_DIR;
-include($phpbb2_root_path . 'extension.inc');
-include($phpbb2_root_path . 'common.'.$phpEx);
+$phpbb_root_path = NUKE_FORUMS_DIR;
+include($phpbb_root_path . 'extension.inc');
+include($phpbb_root_path . 'common.'.$phpEx);
 include('includes/functions_arcade.' . $phpEx);
-require( $phpbb2_root_path . 'gf_funcs/gen_funcs.' . $phpEx );
+require( $phpbb_root_path . 'gf_funcs/gen_funcs.' . $phpEx );
 include('includes/constants.php');
 
-$userdata = session_pagestart($user_ip, PAGE_GAME, $nukeuser);
-//init_userprefs($userdata);
+$userdata = session_pagestart($user_ip, PAGE_GAME);
+init_userprefs($userdata);
 
 $sessdo = get_var_gf(array('name'=>'sessdo', 'method'=>'POST', 'default'=>''));
 
@@ -35,7 +36,7 @@ if (!empty($sessdo))
   $fakekey = get_var_gf(array('name'=>'fakekey', 'method'=>'POST', 'default'=>''));
   $gametime = get_var_gf(array('name'=>'gametime', 'method'=>'POST', 'default'=>''));
   
-  $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
+  $header_location = ( preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
 
   switch($sessdo)
   {
@@ -83,11 +84,12 @@ if (!empty($sessdo))
      break;
      
     case 'burn' :
-        $header_location = ( @preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
+        $header_location = ( preg_match("/Microsoft|WebSTAR|Xitami/", getenv("SERVER_SOFTWARE")) ) ? "Refresh: 0; URL=" : "Location: ";
         $tbinfos = explode('|',$microone);
         $newhash = substr( $tbinfos[2] , 24 , 8 ) . substr( $tbinfos[2] , 0 , 24 ) ;
         header($header_location . "modules.php?name=Forums&file=proarcade&" . $tbinfos[1] . "=" . $tbinfos[0] . "&gid=$id&newhash=$newhash&hashoffset=8&settime=$gametime&gpaver=GFARV2");
         exit;
     }
 }
+
 ?>

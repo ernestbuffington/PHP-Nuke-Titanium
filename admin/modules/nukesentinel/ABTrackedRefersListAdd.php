@@ -16,7 +16,7 @@ if (!defined('NUKESENTINEL_ADMIN')) {
 }
 
 $tid = intval($tid);
-$deleterow = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `refered_from` FROM `".$titanium_prefix."_nsnst_tracked_ips` WHERE `tid`='$tid' LIMIT 0,1"));
+$deleterow = $db->sql_fetchrow($db->sql_query("SELECT `refered_from` FROM `".$prefix."_nsnst_tracked_ips` WHERE `tid`='$tid' LIMIT 0,1"));
 include_once(NUKE_BASE_DIR.'header.php');
 OpenTable();
 OpenMenu(_AB_ADDREFERER);
@@ -25,7 +25,7 @@ CarryMenu();
 trackedmenu();
 CloseMenu();
 CloseTable();
-echo '<br />'."\n";
+
 OpenTable();
 echo '<form action="'.$admin_file.'.php" method="post">'."\n";
 echo '<input type="hidden" name="op" value="ABTrackedRefersListAddSave" />'."\n";

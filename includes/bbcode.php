@@ -44,8 +44,9 @@
 	  Lytebox Resize Images                    v3.2.2
 	  Hide BBCode                              v1.2.0
  ************************************************************************/
-if (!defined('IN_PHPBB2'))
-exit('ACCESS DENIED');
+if (!defined('IN_PHPBB')) {
+    exit('Hacking attempt');
+}
 
 define("BBCODE_UID_LEN", 10);
 # global that holds loaded-and-prepared bbcode templates, so we only have to do
@@ -60,8 +61,8 @@ $bbcode_tpl = null;
 # Nathan Codding, Sept 26 2001.
 function load_bbcode_template()
 {
-    global $phpbb2_template;
-    $tpl_filename = $phpbb2_template->make_filename('bbcode.tpl');
+    global $template;
+    $tpl_filename = $template->make_filename('bbcode.tpl');
     $tpl = fread(fopen($tpl_filename, 'r'), filesize($tpl_filename));
 
     # replace \ with \\ and then ' with \'.
@@ -88,7 +89,7 @@ function load_bbcode_template()
 # Nathan Codding, Sept 26 2001
 function prepare_bbcode_template($bbcode_tpl)
 {
-    global $titanium_lang, $titanium_db;
+    global $lang, $board_config;
 
     $bbcode_tpl['olist_open'] = str_replace('{LIST_TYPE}','\\1',$bbcode_tpl['olist_open']);
 
@@ -98,41 +99,43 @@ function prepare_bbcode_template($bbcode_tpl)
     # ----- new bbcode addition to v3 ----- END
 
     // $bbcode_tpl['size_open'] = str_replace('{SIZE}', '\\1', $bbcode_tpl['size_open']);
-    // $bbcode_tpl['quote_open'] = str_replace('{L_QUOTE}', $titanium_lang['Quote'], $bbcode_tpl['quote_open']);
-    $bbcode_tpl['quote_username_open'] = str_replace('{L_QUOTE}',$titanium_lang['Quote'],$bbcode_tpl['quote_username_open']);
-    $bbcode_tpl['quote_username_open'] = str_replace('{L_WROTE}',$titanium_lang['wrote'],$bbcode_tpl['quote_username_open']);
+    // $bbcode_tpl['quote_open'] = str_replace('{L_QUOTE}', $lang['Quote'], $bbcode_tpl['quote_open']);
+    $bbcode_tpl['quote_username_open'] = str_replace('{L_QUOTE}',$lang['Quote'],$bbcode_tpl['quote_username_open']);
+    $bbcode_tpl['quote_username_open'] = str_replace('{L_WROTE}',$lang['wrote'],$bbcode_tpl['quote_username_open']);
     $bbcode_tpl['quote_username_open'] = str_replace('{USERNAME}',UsernameColor('\\1'),$bbcode_tpl['quote_username_open']);
-    // $bbcode_tpl['quote_close'] = str_replace('{USERNAME}', UsernameColor('\\1'), $bbcode_tpl['quote_close']);
+    
+	
+	// $bbcode_tpl['quote_close'] = str_replace('{USERNAME}', UsernameColor('\\1'), $bbcode_tpl['quote_close']);
 
     # Mod: Extended Quote Tag v1.0.0 START
-    $bbcode_tpl['quote_post_open'] = str_replace('{L_QUOTE}',$titanium_lang['Quote'],$bbcode_tpl['quote_post_open']);
-    $temp_url = append_titanium_sid('show_post.php?p=\\1');
+    $bbcode_tpl['quote_post_open'] = str_replace('{L_QUOTE}',$lang['Quote'],$bbcode_tpl['quote_post_open']);
+    $temp_url = append_sid('show_post.php?p=\\1');
     
 	$bbcode_tpl['quote_post_open'] = str_replace('{U_VIEW_POST}', '<a href="'.$temp_url.'" onClick=
-	"javascript:open_postreview( \''.$temp_url.'\' );">'.$titanium_lang['View_post'].'</a>', $bbcode_tpl['quote_post_open']);
+	"javascript:open_postreview( \''.$temp_url.'\' );">'.$lang['View_post'].'</a>', $bbcode_tpl['quote_post_open']);
 
-    $bbcode_tpl['quote_username_post_open'] = str_replace('{L_QUOTE}',$titanium_lang['Quote'],$bbcode_tpl['quote_username_post_open']);
-    $bbcode_tpl['quote_username_post_open'] = str_replace('{L_WROTE}', $titanium_lang['wrote'],$bbcode_tpl['quote_username_post_open']);
+    $bbcode_tpl['quote_username_post_open'] = str_replace('{L_QUOTE}',$lang['Quote'],$bbcode_tpl['quote_username_post_open']);
+    $bbcode_tpl['quote_username_post_open'] = str_replace('{L_WROTE}', $lang['wrote'],$bbcode_tpl['quote_username_post_open']);
     $bbcode_tpl['quote_username_post_open'] = str_replace('{USERNAME}','\\1',$bbcode_tpl['quote_username_post_open']);
-    $temp_url = append_titanium_sid('show_post.php?p=\\2');
+    $temp_url = append_sid('show_post.php?p=\\2');
     $bbcode_tpl['quote_username_post_open'] = str_replace('{U_VIEW_POST}', '<a href="'.$temp_url.'" onClick=
-	"javascript:open_postreview( \''.$temp_url.'\' );">'.$titanium_lang['View_post'] . '</a>',$bbcode_tpl['quote_username_post_open']);
+	"javascript:open_postreview( \''.$temp_url.'\' );">'.$lang['View_post'] . '</a>',$bbcode_tpl['quote_username_post_open']);
 
     # Mod: Advanced Username Color v1.0.5 START
     $bbcode_tpl['quote_username_post_open'] = str_replace('{USERNAME}', UsernameColor('\\1'), $bbcode_tpl['quote_username_post_open']);
     # Mod: Advanced Username Color v1.0.5 END
 
-    $temp_url = append_titanium_sid('show_post.php?p=\\2');
+    $temp_url = append_sid('show_post.php?p=\\2');
     $bbcode_tpl['quote_username_post_open'] = str_replace('{U_VIEW_POST}', '<a href="#_somewhat" onClick=
-	"javascript:open_postreview( \''.$temp_url.'\' );">'.$titanium_lang['View_post'].'</a>', $bbcode_tpl['quote_username_post_open']);
+	"javascript:open_postreview( \''.$temp_url.'\' );">'.$lang['View_post'].'</a>', $bbcode_tpl['quote_username_post_open']);
     # Mod: Extended Quote Tag v1.0.0 END
 
-    $bbcode_tpl['code_open'] = str_replace('{L_CODE}', $titanium_lang['Code'], $bbcode_tpl['code_open']);
+    $bbcode_tpl['code_open'] = str_replace('{L_CODE}', $lang['Code'], $bbcode_tpl['code_open']);
 
 /*****[BEGIN]******************************************
  [ Mod:     PHP Syntax Highlighter BBCode      v3.0.7 ]
  ******************************************************/
-    $bbcode_tpl['php_open'] = str_replace('{L_PHP}', $titanium_lang['PHPCode'], $bbcode_tpl['php_open']); // PHP MOD
+    $bbcode_tpl['php_open'] = str_replace('{L_PHP}', $lang['PHPCode'], $bbcode_tpl['php_open']); // PHP MOD
 /*****[END]********************************************
  [ Mod:     PHP Syntax Highlighter BBCode      v3.0.7 ]
  ******************************************************/
@@ -178,9 +181,9 @@ function prepare_bbcode_template($bbcode_tpl)
 /*****[BEGIN]******************************************
  [ Mod:     Advanced BBCode Box               v5.0.0a ]
  ******************************************************/
-    $bbcode_tpl['spoil_open'] = str_replace('{L_BBCODEBOX_HIDDEN}', $titanium_lang['BBCode_box_hidden'], $bbcode_tpl['spoil_open']);
-    $bbcode_tpl['spoil_open'] = str_replace('{L_BBCODEBOX_VIEW}', $titanium_lang['BBcode_box_view'], $bbcode_tpl['spoil_open']);
-    $bbcode_tpl['spoil_open'] = str_replace('{L_BBCODEBOX_HIDE}', $titanium_lang['BBcode_box_hide'], $bbcode_tpl['spoil_open']);
+    $bbcode_tpl['spoil_open'] = str_replace('{L_BBCODEBOX_HIDDEN}', $lang['BBCode_box_hidden'], $bbcode_tpl['spoil_open']);
+    $bbcode_tpl['spoil_open'] = str_replace('{L_BBCODEBOX_VIEW}', $lang['BBcode_box_view'], $bbcode_tpl['spoil_open']);
+    $bbcode_tpl['spoil_open'] = str_replace('{L_BBCODEBOX_HIDE}', $lang['BBcode_box_hide'], $bbcode_tpl['spoil_open']);
     $bbcode_tpl['align_open'] = str_replace('{ALIGN}', '\\1', $bbcode_tpl['align_open']);
     // $bbcode_tpl['marq_open'] = str_replace('{MARQ}', '\\1', $bbcode_tpl['marq_open']);
     // $bbcode_tpl['table_open'] = str_replace('{TABLE}', '\\1', $bbcode_tpl['table_open']);
@@ -190,8 +193,8 @@ function prepare_bbcode_template($bbcode_tpl)
     $bbcode_tpl['youtubeV209'] = str_replace('{YOUTUBE}', '\\1', $bbcode_tpl['youtubeV209']);
     $bbcode_tpl['youtubeV209'] = str_replace('{WATCH_YOUTUBE}', _WATCH_YOUTUBE, $bbcode_tpl['youtubeV209']);
 
-    $bbcode_tpl['youtubeV209'] = str_replace('{YT_VIDEO_WIDTH}', $phpbb2_board_config['youtube_width'], $bbcode_tpl['youtubeV209']);
-    $bbcode_tpl['youtubeV209'] = str_replace('{YT_VIDEO_HEIGHT}', $phpbb2_board_config['youtube_height'], $bbcode_tpl['youtubeV209']);
+    $bbcode_tpl['youtubeV209'] = str_replace('{YT_VIDEO_WIDTH}', $board_config['youtube_width'], $bbcode_tpl['youtubeV209']);
+    $bbcode_tpl['youtubeV209'] = str_replace('{YT_VIDEO_HEIGHT}', $board_config['youtube_height'], $bbcode_tpl['youtubeV209']);
 
     /* ----- This code is no longer used in V3 of Xtreme, was only left here for those videos already submitted into the forums -----*/
     define("BBCODE_TPL_READY", true);
@@ -202,40 +205,40 @@ function prepare_bbcode_template($bbcode_tpl)
  ******************************************************/
 function replacer($mode, $bb)
 {
-    global $userdata, $titanium_lang, $phpbb2_board_config, $phpEx;
+    global $userdata, $lang, $board_config, $phpEx;
     switch($mode) 
     {
       case 'img':
-          $message = $titanium_lang['Images_Allowed_For_Registered_Only'];
+          $message = $lang['Images_Allowed_For_Registered_Only'];
           break;
       case 'link':
-          $message = $titanium_lang['Links_Allowed_For_Registered_Only'];
+          $message = $lang['Links_Allowed_For_Registered_Only'];
           break;
       case 'email':
-          $message = $titanium_lang['Emails_Allowed_For_Registered_Only'];
+          $message = $lang['Emails_Allowed_For_Registered_Only'];
           break;
     }
 
     $replacer = '<table width="40%" cellspacing="1" cellpadding="3" border="0"><tr><td class="quote">';
     $replacer .= $message . '<br />';
-    $replacer .= sprintf($titanium_lang['Get_Registered'], "<a href=\"" . append_titanium_sid('profile.' . $phpEx . '?mode=register') . "\">", "</a>");
-    $replacer .= "<a href=\"modules.php?name=Forums&amp;file=login\">" . $titanium_lang['Login'] . "</a>";
+    $replacer .= sprintf($lang['Get_Registered'], "<a href=\"" . append_sid('profile.' . $phpEx . '?mode=register') . "\">", "</a>");
+    $replacer .= "<a href=\"modules.php?name=Forums&amp;file=login\">" . $lang['Login'] . "</a>";
     $replacer .= '</td></tr></table>';
 
     if ($userdata['session_logged_in'])
     {
         switch($mode) {
           case 'img':
-          $titanium_user_option = $userdata['user_hide_images'];
+          $user_option = $userdata['user_hide_images'];
           break;
           default:
-          $titanium_user_option = 0;
+          $user_option = 0;
           break;
         }
             $replacer = '<table width="40%" cellspacing="1" cellpadding="3" border="0"><tr><td class="quote">';
-            $replacer .= sprintf($titanium_lang['Image_Blocked'], "<a href=\"" . append_titanium_sid('profile.' . $phpEx) . "\">", "</a>");
+            $replacer .= sprintf($lang['Image_Blocked'], "<a href=\"" . append_sid('profile.' . $phpEx) . "\">", "</a>");
             $replacer .= '</td></tr></table>';
-        if ($titanium_user_option) {
+        if ($user_option) {
             return $replacer;
         } else {
             return $bb;
@@ -244,13 +247,13 @@ function replacer($mode, $bb)
     } else {
          switch($mode) {
           case 'img':
-          $config = $phpbb2_board_config['hide_images'];
+          $config = $board_config['hide_images'];
           break;
           case 'link':
-          $config = $phpbb2_board_config['hide_links'];
+          $config = $board_config['hide_links'];
           break;
           case 'email':
-           $config = $phpbb2_board_config['hide_emails'];
+           $config = $board_config['hide_emails'];
           break;
         }
 
@@ -323,7 +326,7 @@ function bbencode_third_pass($text, $uid, $deprotect)
  */
 function bbencode_second_pass($text, $uid)
 {
-    global $titanium_lang, $bbcode_tpl, $userdata, $phpbb2_board_config;
+    global $lang, $bbcode_tpl, $userdata, $board_config;
 
     $text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1&#058;", $text);
 
@@ -572,7 +575,8 @@ function bbencode_second_pass($text, $uid)
 } // bbencode_second_pass()
 
 // Need to initialize the random numbers only ONCE
-mt_srand( (double) microtime() * 1000000);
+//mt_srand( (double) microtime() * 1000000);
+mt_srand(0, MT_RAND_MT19937);
 
 function make_bbcode_uid()
 {
@@ -585,7 +589,7 @@ function make_bbcode_uid()
 function bbencode_first_pass($text, $uid)
 {
     global $bbcode_tpl;
-    define('_BBCODE_UNIQUE_ID',$uid);
+	defined('_BBCODE_UNIQUE_ID') or define('_BBCODE_UNIQUE_ID', $uid);
     // pad it with a space so we can distinguish between FALSE and matching the 1st char (index 0).
     // This is important; bbencode_quote(), bbencode_list(), and bbencode_code() all depend on it.
     $text = " " . $text;
@@ -673,7 +677,7 @@ function bbencode_first_pass($text, $uid)
     # [b] and [/b] for bolding text.
     $text = preg_replace_callback("(\[b\](.*?)\[/b\])is", function($m) { return '[b:'._BBCODE_UNIQUE_ID.']'.$m[1].'[/b:'._BBCODE_UNIQUE_ID.']'; }, $text);
 
-    #[u] and [/u] for underlining text.
+    # [u] and [/u] for underlining text.
     $text = preg_replace_callback("(\[u\](.*?)\[/u\])is", function($m) { return '[u:'._BBCODE_UNIQUE_ID.']'.$m[1].'[/u:'._BBCODE_UNIQUE_ID.']'; }, $text);
 
     # [i] and [/i] for italicizing text.
@@ -683,7 +687,8 @@ function bbencode_first_pass($text, $uid)
     $text = preg_replace_callback("(\[s\](.*?)\[/s\])is", function($m) { return '[s:'._BBCODE_UNIQUE_ID.']'.$m[1].'[/s:'._BBCODE_UNIQUE_ID.']'; }, $text);
 
     # [img]image_url_here[/img] code..
-    $text = preg_replace_callback("(\[img\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\])is", function($m) { return '[img:'._BBCODE_UNIQUE_ID.']'.$m[1].str_replace(' ','%20',$m[3]).'[/img:'._BBCODE_UNIQUE_ID.']'; }, $text);
+    $text = preg_replace_callback("(\[img\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\])is", function($m) { 
+	return '[img:'._BBCODE_UNIQUE_ID.']'.$m[1].str_replace(' ','%20',$m[3]).'[/img:'._BBCODE_UNIQUE_ID.']'; }, $text);
 
     # [align=left/center/right/justify]Formatted Code[/align] code..
     $text = preg_replace_callback("(\[align=(left|right|center|justify)\](.*?)\[/align\])is", function($m) { return '[align='.$m[1].':'._BBCODE_UNIQUE_ID.']'.$m[2].'[/align:'._BBCODE_UNIQUE_ID.']'; }, $text);
@@ -713,7 +718,7 @@ function bbencode_first_pass($text, $uid)
   	# [marquee=left/right/up/down]Marquee Code[/marquee] code..
   	// $text = preg_replace_callback("(\[marq=(left|right|up|down)\](.*?)\[/marq\])is", create_function('$matches','return "[marq=$matches[1]:'.$uid.']$matches[2][/marq:'.$uid.']";'), $text);
   	
-  	#[table=blah]Table[/table] code..
+  	# [table=blah]Table[/table] code..
   	// $text = preg_replace_callback("(\[table=(.*?)\](.*?)\[/table\])is", create_function('$matches','return "[table=$matches[1]:'.$uid.']$matches[2][/table:'.$uid.']";'), $text);
   	
   	# [cell=blah]Cell[/table] code..
@@ -727,14 +732,14 @@ function bbencode_first_pass($text, $uid)
 
 } // bbencode_first_pass()
 
-function evo_mention($titanium_user)
+function evo_mention($user)
 {
-	global $titanium_db, $bbcode_tpl, $titanium_lang;
+	global $db, $bbcode_tpl, $lang;
 	
 
-	$row = $titanium_db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".USERS_TABLE."` WHERE `username` = '".$titanium_user."'");
-	// return $titanium_user.' - '.$row['user_id'];
-  return '<a href="modules.php?name=Private_Messages&mode=post&u='.$row['user_id'].'" target="_blank" alt="'.$titanium_lang['Send_private_message'].'" title="'.$titanium_lang['Send_private_message'].'">'.$titanium_user.'</a>';
+	$row = $db->sql_ufetchrow("SELECT `user_id`, `username` FROM `".USERS_TABLE."` WHERE `username` = '".$user."'");
+	// return $user.' - '.$row['user_id'];
+  return '<a href="modules.php?name=Private_Messages&mode=post&u='.$row['user_id'].'" target="_blank" alt="'.$lang['Send_private_message'].'" title="'.$lang['Send_private_message'].'">'.$user.'</a>';
 }
 
 function evo_mention_callback($matches)
@@ -765,7 +770,7 @@ function evo_font_size_callback($matches)
 /* ----- parse videos ----- */
 function evo_parse_video($video, $url)
 {
-    global $bbcode_tpl, $phpbb2_board_config;
+    global $bbcode_tpl, $board_config;
 
     // if(empty($video) || empty($url))
     // {
@@ -782,22 +787,46 @@ function evo_parse_video($video, $url)
     }
 
     $fragments = array();
-    if($parsed_url['fragment'])
+
+    if(!isset($parsed_url['fragment']))
+    $parsed_url['fragment'] = '';
+    
+	if($parsed_url['fragment'])
     {
         $fragments = explode("&", $parsed_url['fragment']);
     }
 
-    $queries = explode("&", $parsed_url['query']);
+    if(!isset($parsed_url['query']))
+    $parsed_url['query'] = '';
+    
+	$queries = explode("&", $parsed_url['query']);
 
     $input = array();
+
     foreach($queries as $query)
     {
-        list($key, $value) = explode("=", $query);
-        $key = str_replace("amp;", "", $key);
+		if (strpos($query, '-') !== false) {
+         list($key, $value) = explode("=", $query, 2);
+		}
+		
+        if(!isset($key))
+        $key = '';		
+
+        if(!isset($value))
+        $value = '';		
+        
+		$key = str_replace("amp;", "", $key);
         $input[$key] = $value;
     }
 
     $path = explode('/', $parsed_url['path']);
+
+    if(!isset($fragments[0]))
+    $fragments[0] = '';		
+
+    if(!isset($input['v']))
+    $input['v'] = '';		
+
     switch($video):
 
 		/* ----- youtube video embed ----- */
@@ -814,8 +843,8 @@ function evo_parse_video($video, $url)
 
 			$video_replace = str_replace('{YOUTUBE}', $id, $bbcode_tpl['youtube']);
 			$video_replace = str_replace('{WATCH_YOUTUBE}', _WATCH_YOUTUBE, $video_replace);
-			$video_replace = str_replace('{YOUTUBE_WIDTH}', $phpbb2_board_config['youtube_width'], $video_replace);
-			$video_replace = str_replace('{YOUTUBE_HEIGHT}', $phpbb2_board_config['youtube_height'], $video_replace);
+			$video_replace = str_replace('{YOUTUBE_WIDTH}', $board_config['youtube_width'], $video_replace);
+			$video_replace = str_replace('{YOUTUBE_HEIGHT}', $board_config['youtube_height'], $video_replace);
 			break;
 
 		/* ----- twitch video embed ----- */
@@ -845,8 +874,8 @@ function evo_parse_video($video, $url)
 				$video_replace = str_replace('{TWITCH}', '?'.$id.(($time[1]) ? '&'.$time[1] : ''), $video_replace);
 			
 			endif;
-			$video_replace = str_replace('{TWITCH_WIDTH}', $phpbb2_board_config['twitch_width'], $video_replace);
-			$video_replace = str_replace('{TWITCH_HEIGHT}',  $phpbb2_board_config['twitch_height'], $video_replace);			        
+			$video_replace = str_replace('{TWITCH_WIDTH}', $board_config['twitch_width'], $video_replace);
+			$video_replace = str_replace('{TWITCH_HEIGHT}',  $board_config['twitch_height'], $video_replace);			        
 			break;
 
 		default:
@@ -900,6 +929,9 @@ function bbencode_first_pass_pda($text, $uid, $open_tag, $close_tag, $close_tag_
     {
         $close_tag_new = $close_tag;
     }
+
+    if(!isset($uid))
+    $uid = '';
 
     $close_tag_length = strlen($close_tag);
     $close_tag_new_length = strlen($close_tag_new);
@@ -959,7 +991,7 @@ function bbencode_first_pass_pda($text, $uid, $open_tag, $close_tag, $close_tag_
             // check if it's a starting or ending tag.
             $found_start = false;
             $which_start_tag = "";
-            $phpbb2_start_tag_index = -1;
+            $start_tag_index = -1;
 
             for ($i = 0; $i < $open_tag_count; $i++)
             {
@@ -989,7 +1021,7 @@ function bbencode_first_pass_pda($text, $uid, $open_tag, $close_tag, $close_tag_
                     {
                         $found_start = true;
                         $which_start_tag = $match_result[0];
-                        $phpbb2_start_tag_index = $i;
+                        $start_tag_index = $i;
                         break;
                     }
                 }
@@ -1000,7 +1032,7 @@ function bbencode_first_pass_pda($text, $uid, $open_tag, $close_tag, $close_tag_
                     {
                         $found_start = true;
                         $which_start_tag = $open_tag[$i];
-                        $phpbb2_start_tag_index = $i;
+                        $start_tag_index = $i;
                         break;
                     }
                 }
@@ -1010,7 +1042,7 @@ function bbencode_first_pass_pda($text, $uid, $open_tag, $close_tag, $close_tag_
             {
                 // We have an opening tag.
                 // Push its position, the text we matched, and its index in the open_tag array on to the stack, and then keep going to the right.
-                $match = array("pos" => $curr_pos, "tag" => $which_start_tag, "index" => $phpbb2_start_tag_index);
+                $match = array("pos" => $curr_pos, "tag" => $which_start_tag, "index" => $start_tag_index);
                 array_push($stack, $match);
                 //
                 // Rather than just increment $curr_pos
@@ -1034,21 +1066,21 @@ function bbencode_first_pass_pda($text, $uid, $open_tag, $close_tag, $close_tag_
                         $curr_nesting_depth = count($stack);
                         // We need to do 2 replacements now.
                         $match = array_pop($stack);
-                        $phpbb2_start_index = $match['pos'];
-                        $phpbb2_start_tag = $match['tag'];
-                        $phpbb2_start_length = strlen($phpbb2_start_tag);
-                        $phpbb2_start_tag_index = $match['index'];
+                        $start_index = $match['pos'];
+                        $start_tag = $match['tag'];
+                        $start_length = strlen($start_tag);
+                        $start_tag_index = $match['index'];
 
                         if ($open_is_regexp)
                         {
-                            $phpbb2_start_tag = preg_replace($open_tag[$phpbb2_start_tag_index], $open_regexp_replace[$phpbb2_start_tag_index], $phpbb2_start_tag);
+                            $start_tag = preg_replace($open_tag[$start_tag_index], $open_regexp_replace[$start_tag_index], $start_tag);
                         }
 
                         // everything before the opening tag.
-                        $before_start_tag = substr($text, 0, $phpbb2_start_index);
+                        $before_start_tag = substr($text, 0, $start_index);
 
                         // everything after the opening tag, but before the closing tag.
-                        $between_tags = substr($text, $phpbb2_start_index + $phpbb2_start_length, $curr_pos - $phpbb2_start_index - $phpbb2_start_length);
+                        $between_tags = substr($text, $start_index + $start_length, $curr_pos - $start_index - $start_length);
 
                         // Run the given function on the text between the tags..
                         if ($use_function_pointer)
@@ -1072,7 +1104,7 @@ function bbencode_first_pass_pda($text, $uid, $open_tag, $close_tag, $close_tag_
                             {
                                 $between_tags = preg_replace('/\:[0-9a-z\:]+\]/si', ']', $between_tags);
                             }
-                            $text = $before_start_tag . substr($phpbb2_start_tag, 0, $phpbb2_start_length - 1) . ":$curr_nesting_depth:$uid]";
+                            $text = $before_start_tag . substr($start_tag, 0, $start_length - 1) . ":$curr_nesting_depth:$uid]";
                             $text .= $between_tags . substr($close_tag_new, 0, $close_tag_new_length - 1) . ":$curr_nesting_depth:$uid]";
                         }
                         else
@@ -1097,11 +1129,11 @@ function bbencode_first_pass_pda($text, $uid, $open_tag, $close_tag, $close_tag_
                             {
                                 if ($open_is_regexp)
                                 {
-                                    $text = $before_start_tag . $phpbb2_start_tag;
+                                    $text = $before_start_tag . $start_tag;
                                 }
                                 else
                                 {
-                                    $text = $before_start_tag . substr($phpbb2_start_tag, 0, $phpbb2_start_length - 1) . ":$uid]";
+                                    $text = $before_start_tag . substr($start_tag, 0, $start_length - 1) . ":$uid]";
                                 }
                                 $text .= $between_tags . substr($close_tag_new, 0, $close_tag_new_length - 1) . ":$uid]";
                             }
@@ -1153,7 +1185,7 @@ function bbencode_first_pass_pda($text, $uid, $open_tag, $close_tag, $close_tag_
  */
 function bbencode_second_pass_code($text, $uid, $bbcode_tpl)
 {
-    global $titanium_lang;
+    global $lang;
 
     $code_start_html = $bbcode_tpl['code_open'];
     $code_end_html =  $bbcode_tpl['code_close'];
@@ -1337,7 +1369,7 @@ function bbencode_second_pass_php($text, $uid, $bbcode_tpl)
  */
 function make_clickable($text)
 {
-    global $userdata, $titanium_lang, $phpEx, $u_login_logout, $phpbb2_board_config;
+    global $userdata, $lang, $phpEx, $u_login_logout, $board_config;
 
     $text = preg_replace('#(script|about|applet|activex|chrome):#is', "\\1&#058;", $text);
 
@@ -1439,28 +1471,30 @@ function bbcode_array_push(&$stack, $value)
 }
 
 /**
- * This function does exactly what the PHP4 function array_pop() does
- * however, to keep phpBB compatable with PHP 3 we had to come up with our own
- * method of doing it.
- * This function was deprecated in phpBB 2.0.18
+ * This function does exactly what the PHP4 function array_pop() did!
+ * Last modified 12/07/2021 by Ernest Allen Buffington
  */
 function bbcode_array_pop(&$stack)
 {
-   $arrSize = count($stack);
+   $tmpArr = [];
+   
+   $return_val = null;
+   
+   $arrSize = is_countable($stack) ? count($stack) : 0;
+   
    $x = 1;
 
-   while(list($key, $val) = each($stack))
-   {
-      if($x < count($stack))
-      {
-             $tmpArr[] = $val;
-      }
-      else
-      {
-             $return_val = $val;
-      }
-      $x++;
-   }
+   foreach ($stack as $key => $val):
+
+     if($x < (is_countable($stack) ? count($stack) : 0)):
+       $tmpArr[] = $val;
+     else:
+       $return_val = $val;
+     endif;
+       $x++;
+
+   endforeach;
+   
    $stack = $tmpArr;
 
    return($return_val);
@@ -1476,7 +1510,7 @@ function smilies_pass($message)
 
     if (!isset($orig))
     {
-        global $titanium_db, $phpbb2_board_config, $cache;
+        global $db, $board_config, $cache;
         $orig = $repl = array();
 
 /*****[BEGIN]******************************************
@@ -1487,11 +1521,11 @@ function smilies_pass($message)
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
             $sql = 'SELECT * FROM ' . SMILIES_TABLE;
-            if( !$result = $titanium_db->sql_query($sql) )
+            if( !$result = $db->sql_query($sql) )
             {
                 message_die(GENERAL_ERROR, "Couldn't obtain smilies data", "", __LINE__, __FILE__, $sql);
             }
-            $smilies = $titanium_db->sql_fetchrowset($result);
+            $smilies = $db->sql_fetchrowset($result);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -1509,7 +1543,7 @@ function smilies_pass($message)
         for ($i = 0; $i < count($smilies); $i++)
         {
             $orig[] = "/(?<=.\W|\W.|^\W)" . preg_quote($smilies[$i]['code'], "/") . "(?=.\W|\W.|\W$)/";
-            $repl[] = '<img src="'. $phpbb2_board_config['smilies_path'] . '/' . $smilies[$i]['smile_url'] . '" alt="' . $smilies[$i]['emoticon'] . '" border="0" title="' . $smilies[$i]['emoticon'] . '" />';
+            $repl[] = '<img src="'. $board_config['smilies_path'] . '/' . $smilies[$i]['smile_url'] . '" alt="' . $smilies[$i]['emoticon'] . '" border="0" title="' . $smilies[$i]['emoticon'] . '" />';
         }
     }
 
@@ -1538,12 +1572,12 @@ function word_wrap_pass($message)
 /*****[BEGIN]******************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
-    global $userdata, $phpbb2_board_config;
+    global $userdata, $board_config;
 
-    if ( !$phpbb2_board_config['wrap_enable'] )
-    {
+    //if ( !$board_config['wrap_enable'] )
+    //{
         return $message;
-    }
+    //}
 /*****[END]********************************************
  [ Mod:    Force Word Wrapping - Configurator v1.0.16 ]
  ******************************************************/
@@ -1553,7 +1587,10 @@ function word_wrap_pass($message)
     $longestAmp = 9;
     $inTag = false;
     $ampText = '';
-    $len = strlen($message);
+    $len = strlen((string)$message);
+
+    if(!isset($userdata['user_wordwrap']))
+	$userdata['user_wordwrap'] = '';
 
     for ($num=0; $num < $len; $num++)
     {
@@ -1561,7 +1598,7 @@ function word_wrap_pass($message)
 
         if ($curChar == '<')
         {
-            for ($snum=0;$snum < strlen($ampText);$snum++)
+            for ($snum=0;$snum < strlen((string) $ampText);$snum++)
             {
                 addWrap($ampText[$snum],$ampText[$snum+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
             }
@@ -1580,34 +1617,35 @@ function word_wrap_pass($message)
         }
         elseif ($curChar == '&')
         {
-            for ($snum=0;$snum < strlen($ampText);$snum++)
+            for ($snum=0;$snum < strlen((string) $ampText);$snum++)
             {
                 addWrap($ampText[$snum],$ampText[$snum+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
             }
             $ampText = '&';
         }
-        elseif (strlen($ampText) < $longestAmp && $curChar == ';' && function_exists('html_entity_decode') &&
-               (strlen(html_entity_decode("$ampText;")) == 1 || preg_match('/^&#[0-9]+$/',$ampText)))
-        {
+        elseif (strlen((string) $ampText) < $longestAmp && $curChar == ';' && function_exists('html_entity_decode') &&
+               (strlen(html_entity_decode((string) "$ampText;")) == 1 || preg_match('#^&\#\d+$#',$ampText)))
+         {
             addWrap($ampText.';',$message[$num+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
             $ampText = '';
         }
-        elseif (strlen($ampText) >= $longestAmp || $curChar == ';')
+        elseif (strlen((string) $ampText) >= $longestAmp || $curChar == ';')
         {
-            for ($snum=0;$snum < strlen($ampText);$snum++)
+            for ($snum=0;$snum < strlen((string) $ampText);$snum++)
             {
                 addWrap($ampText[$snum],$ampText[$snum+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
             }
             addWrap($curChar,$message[$num+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
             $ampText = '';
         }
-        elseif (strlen($ampText) != 0 && strlen($ampText) < $longestAmp)
+        elseif (strlen((string) $ampText) != 0 && strlen((string) $ampText) < $longestAmp)
         {
             $ampText .= $curChar;
         }
         else
         {
-            addWrap($curChar,$message[$num+1],$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
+		   addWrap((string)$curChar,(string)$message[(int)$num+1],(int)$userdata['user_wordwrap'],$finalText,$tempText,$curCount,$tempCount);
+		   
         }
     }
 
@@ -1679,4 +1717,4 @@ if(!function_exists('get_code_lang'))
         return ($array[$var] != '') ? $array[$var] : $var;
     }
 }
-?>
+

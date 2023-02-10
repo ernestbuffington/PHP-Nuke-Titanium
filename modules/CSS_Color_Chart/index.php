@@ -1,20 +1,16 @@
 <?php
-if (!defined('MODULE_FILE')){die('You can\'t access this file directly...');}
+if (!defined('MODULE_FILE')) {
+   die('You can\'t access this file directly...');
+}
 
-$pagetitle = 'CSS Hex Color Chart v5.4';
+$pagetitle = 'CSS Hex Color Chart';
 
 require_once("mainfile.php");
-
-$titanium_module_name = basename(dirname(__FILE__));
-
-get_lang($titanium_module_name);
-
+$module_name = basename(dirname(__FILE__));
+get_lang($module_name);
 include("header.php");
-
 $index = 0;
-
-OpenTable();
-echo "<div align=\"center\"><h1>CSS Hex Color Chart</h1>";
+  OpenTable();
 echo "<br/><table align=\"center\"  width=\"90%\" border=\"1\" cellpadding=\"2\" cellspacing=\"0\" bordercolorlight=\"#787878\" bordercolordark=\"#787878\" style=\"border-collapse: collapse\" bordercolor=\"#787878\">"
   . "<tr align=\"center\">"
   . "<td bgcolor=\"#eeeeee\"><font color=\"#000000\">EEEEEE</font></td>"
@@ -2039,7 +2035,7 @@ echo "<br/><table align=\"center\"  width=\"90%\" border=\"1\" cellpadding=\"2\"
   . "<td bgcolor=\"#FFCC99\"><font color=\"#000000\">Blush</font></td>"
   . "<td>255 204 153</td>"
   . "<td>#FFCC99</td></tr></table><br><br>"
-  ."</br>CSS Hex Color Chart v5.4&nbsp;by&nbsp;<a href=\"http://theghost.86it.us\">Ernest Allen Buffington</a></div>";
+  ."<CENTER>CSS Hex Color Chart v1&nbsp;by&nbsp;<a href=\"http://cvs.86it.us\">Ernest Allen Buffington</a>";
 CloseTable();
 include("footer.php");
 ?>

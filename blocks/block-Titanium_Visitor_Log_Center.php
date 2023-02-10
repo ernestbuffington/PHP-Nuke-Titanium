@@ -19,29 +19,32 @@
 ************************************************************************/
 defined('NUKE_EVO') or die('Just go away, Shit Head!');
 
-global $titanium_db, $titanium_prefix, $userinfo;
-global $evouserinfo_avatar, $phpbb2_board_config, $userinfo, $bgcolor4; 
+global $db, $prefix, $userinfo;
+global $evouserinfo_avatar, $board_config, $userinfo, $bgcolor4; 
 
-$max_height = '59';
-$max_width = '59';
+$max_height = '80';
+$max_width = '100';
 
 $z = 3;
-$row1_result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT ".$z."");
+$row1_result = $db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT ".$z."");
 
 $row1   = '<div align="center">';
-$row1  .= '<table bgcolor="'.$bgcolor4.'" border="0" width="200">';
+$row1  .= '<table class="tableVisotrLog">';
 $row1  .= '<tr>';
 $row1  .= '<td align="center">';
 
-$row1  .= '<table bgcolor="'.$bgcolor4.'" border="0" cellpadding="0" cellspacing="0" class="visitorlog">';
+$row1  .= '<table width="260">';
 
-while($whosbeen = $titanium_db->sql_fetchrow($row1_result)):
+while($whosbeen = $db->sql_fetchrow($row1_result)):
     
+	if (strlen($whosbeen['username']) > 15)
+    $whosbeen['username'] = substr($whosbeen['username'], 0, 9) . '...';
+	
 	if(!is_admin())
 	if($whosbeen['user_allow_viewonline'] == 0):
 	$whosbeen['username'] = 'Ghost Mode';
-	$whosbeen['user_avatar'] = 'invisible.png';
-	$whosbeen['user_id'] = -1;
+	$whosbeen['user_avatar_type'] = 4;
+	$whosbeen['user_id'] = 1;
 	endif;
 	
 	if($whosbeen['user_from_flag'] ):
@@ -60,6 +63,7 @@ while($whosbeen = $titanium_db->sql_fetchrow($row1_result)):
 	$row1 .= '<tr>';
 	$row1 .= '</tr>';
 	$row1 .= '<tr>';
+
 	
     if($whosbeen['user_avatar'])
     {
@@ -67,60 +71,73 @@ while($whosbeen = $titanium_db->sql_fetchrow($row1_result)):
 	   {
 		# user_allowavatar = 1
 		case USER_AVATAR_UPLOAD:
-		$avatar = '<td width="45px">'.( $phpbb2_board_config['allow_avatar_upload'] ) 
-		? '<div align="center"><img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $phpbb2_board_config['avatar_path'] . '/' . $whosbeen['user_avatar'] . '" alt="" border="0" /></div></td>' : '</td>';
+		$avatar = ''.( $board_config['allow_avatar_upload'] ) 
+		? '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_path'] . '/' . $whosbeen['user_avatar'] . '" alt="" />' : '';
+	
 		break;
 		# user_allowavatar = 2
 		case USER_AVATAR_REMOTE:
-		$avatar = '<td width="45px"><div align="center">'.'<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;"  src="'.avatar_resize($whosbeen['user_avatar']).'" alt="" border="0" /></div></td>';
+		$avatar = ''.'<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;"  src="'.avatar_resize($whosbeen['user_avatar']).'" alt="" />';
 		break;
 		# user_allowavatar = 3
 		case USER_AVATAR_GALLERY:
-		$avatar = '<td width="45px">'. ( $phpbb2_board_config['allow_avatar_local'] ) 
-		? '<div align="center"><img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $phpbb2_board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.gif' || $whosbeen['user_avatar'] == 'gallery/blank.png') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" border="0" /></td>' : '</div></td>';
+		$avatar = ''. ( $board_config['allow_avatar_local'] ) 
+		? '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.png' || $whosbeen['user_avatar'] == 'gallery/blank.png') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" />' : '';
+		break;
+		# user_allowavatar = 4
+		case 4:
+		$avatar = '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_gallery_path'] . '/invisible.png" alt="" />';
 		break;
 
 	   }
 	}
 	
 	
-	$row1 .= '<td align="center" width="45px"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
-    $row1 .= '<td align="left"><a class="turdball" style="text-decoration: none;" href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">
-	<strong>&nbsp;&nbsp;'.UsernameColor($whosbeen['username']).'<br />&nbsp;&nbsp;<a style="text-decoration: none;" href="modules.php?name=Private_Messages&mode=post&u='.$whosbeen['user_id'].'"><font size="5" color="orange"><i class="bi bi-envelope"></i><font color="gold" size="5"><i class="bi bi-arrow-right-short"></i><i class="bi bi-mailbox"></i></font></font>
 	
-	&nbsp;<br />
-	&nbsp;&nbsp;<font size="5" color="gold"><i class="bi bi-arrow-up-short"></i></font><font class="gensmall">SEND PM </font></span>
-	</a></td>';
-	$row1 .= '<td align="center"><div align="top" style="padding-left:10px;">'.get_titanium_timeago($whosbeen['last_visit']).'</div>';
-    $row1 .= '</td>';
-    $row1 .= '</tr>'; 
 	
-   
+	
+	$row1 .= '<tr>';
+	$row1 .= '<td width="81" rowspan="3" align="center"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
+	$row1 .= '<td width="100%" align="left" valign="bottom">&nbsp;&nbsp;<a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'"><span style="font-weight: bold; text-shadow: 3px 0px 7px rgba(81,67,21,0.8), -3px 0px 7px rgba(81,67,21,0.8), 0px 4px 7px rgba(81,67,21,0.8);">'.UsernameColor($whosbeen['username']).'</span></a></td>';
+	$row1 .= '<td width="81" rowspan="3" align="center">'.get_titanium_timeago($whosbeen['last_visit']).'';
+	$row1 .= '</td>';
+	$row1 .= '</tr>';
+	$row1 .= '<tr>';
+	$row1 .= '<td width="356" align="left" valign="bottom" height="2">&nbsp;&nbsp;<a class="modules" href="modules.php?name=Private_Messages&mode=post&u='.$whosbeen['user_id'].'">
+	<i class="bi bi-envelope"></i><i class="bi bi-arrow-right-short"></i><i class="bi bi-mailbox"></i>';
+	$row1 .= '</td>';
+	$row1 .= '</tr>';
+	$row1 .= '<tr>';
+	$row1 .= '<td width="356" valign="top">&nbsp;&nbsp;<i class="fa-solid fa-desktop"></i>&nbsp;<span style="color:gold">'.$whosbeen['resolution'].'</span></td>';
+	$row1 .= '</tr>';
 
 endwhile;
-    $row1 .= '</table>';
 
+$row1 .= '</table>';
 $row1 .= '</td>';
-		$row1 .= '</tr>';
-	$row1 .= '</table>';
+$row1 .= '</tr>';
+$row1 .= '</table>';
 $row1 .= '</div>';
 
-$row2_result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 3, ".$z."");
+$row2_result = $db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 3, ".$z."");
 
 $row2   = '<div align="center">';
-$row2  .= '<table bgcolor="'.$bgcolor4.'" border="0" width="200">';
+$row2  .= '<table class="tableVisotrLog">';
 $row2  .= '<tr>';
 $row2  .= '<td align="center">';
 
-$row2  .= '<table border="1" cellpadding="0" cellspacing="0" class="visitorlog">';
+$row2  .= '<table width="260">';
 
-while($whosbeen = $titanium_db->sql_fetchrow($row2_result)):
+while($whosbeen = $db->sql_fetchrow($row2_result)):
+
+	if (strlen($whosbeen['username']) > 15)
+    $whosbeen['username'] = substr($whosbeen['username'], 0, 9) . '...';
 
 	if(!is_admin())
 	if($whosbeen['user_allow_viewonline'] == 0):
 	$whosbeen['username'] = 'Ghost Mode';
-	$whosbeen['user_avatar'] = 'invisible.png';
-	$whosbeen['user_id'] = -1;
+	$whosbeen['user_avatar_type'] = 4;
+	$whosbeen['user_id'] = 1;
 	endif;
 	
 	if($whosbeen['user_from_flag'] ):
@@ -139,67 +156,76 @@ while($whosbeen = $titanium_db->sql_fetchrow($row2_result)):
 	$row2 .= '<tr>';
 	$row2 .= '</tr>';
 	$row2 .= '<tr>';
-	
+
     if($whosbeen['user_avatar'])
     {
 	   switch($whosbeen['user_avatar_type'])
 	   {
 		# user_allowavatar = 1
 		case USER_AVATAR_UPLOAD:
-		$avatar = '<td width="45px">'.( $phpbb2_board_config['allow_avatar_upload'] ) 
-		? '<div align="center"><img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $phpbb2_board_config['avatar_path'] . '/' . $whosbeen['user_avatar'] . '" alt="" border="0" /></div></td>' : '</td>';
+		$avatar = ''.( $board_config['allow_avatar_upload'] ) 
+		? '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_path'] . '/' . $whosbeen['user_avatar'] . '" alt="" />' : '';
+	
 		break;
 		# user_allowavatar = 2
 		case USER_AVATAR_REMOTE:
-		$avatar = '<td width="45px"><div align="center">'.'<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;"  src="'.avatar_resize($whosbeen['user_avatar']).'" alt="" border="0" /></div></td>';
+		$avatar = ''.'<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;"  src="'.avatar_resize($whosbeen['user_avatar']).'" alt="" />';
 		break;
 		# user_allowavatar = 3
 		case USER_AVATAR_GALLERY:
-		$avatar = '<td width="45px">'. ( $phpbb2_board_config['allow_avatar_local'] ) 
-		? '<div align="center"><img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $phpbb2_board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.gif' || $whosbeen['user_avatar'] == 'gallery/blank.png') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" border="0" /></td>' : '</div></td>';
+		$avatar = ''. ( $board_config['allow_avatar_local'] ) 
+		? '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.png' || $whosbeen['user_avatar'] == 'gallery/blank.png') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" />' : '';
+		break;
+		# user_allowavatar = 4
+		case 4:
+		$avatar = '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_gallery_path'] . '/invisible.png" alt="" />';
 		break;
 
 	   }
 	}
 	
-	
-	$row2 .= '<td align="center" width="45px"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
-    // fixed row 2 it was not aligned 8/21/2022 TheGhost
-	$row2 .= '<td align="left"><a class="turdball" style="text-decoration: none;" href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">
-	<strong>&nbsp;&nbsp;'.UsernameColor($whosbeen['username']).'<br />&nbsp;&nbsp;<a style="text-decoration: none;" href="modules.php?name=Private_Messages&mode=post&u='.$whosbeen['user_id'].'"><font size="5" color="orange"><i class="bi bi-envelope"></i><font color="gold" size="5"><i class="bi bi-arrow-right-short"></i><i class="bi bi-mailbox"></i></font></font>
-    <br />
-	&nbsp;&nbsp;<font size="5" color="gold"><i class="bi bi-arrow-up-short"></i></font><font class="gensmall">SEND PM </font></span>
-	</a></td>';
-	$row2 .= '<td align="center"><div align="top" style="padding-left:10px;">'.get_titanium_timeago($whosbeen['last_visit']).'</div>';
-    $row2 .= '</td>';
-    $row2 .= '</tr>'; 
-	
-   
+	$row2 .= '<tr>';
+	$row2 .= '<td width="81" rowspan="3" align="center"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
+	$row2 .= '<td width="100%" align="left" valign="bottom">&nbsp;&nbsp;<a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'"><span style="font-weight: bold; text-shadow: 3px 0px 7px rgba(81,67,21,0.8), -3px 0px 7px rgba(81,67,21,0.8), 0px 4px 7px rgba(81,67,21,0.8);">'.UsernameColor($whosbeen['username']).'</span></a></td>';
+	$row2 .= '<td width="81" rowspan="3" align="center">'.get_titanium_timeago($whosbeen['last_visit']).'';
+	$row2 .= '</td>';
+	$row2 .= '</tr>';
+	$row2 .= '<tr>';
+	$row2 .= '<td width="356" align="left" valign="bottom" height="2">&nbsp;&nbsp;<a class="modules" href="modules.php?name=Private_Messages&mode=post&u='.$whosbeen['user_id'].'">
+	<i class="bi bi-envelope"></i><i class="bi bi-arrow-right-short"></i><i class="bi bi-mailbox"></i>';
+	$row2 .= '</td>';
+	$row2 .= '</tr>';
+	$row2 .= '<tr>';
+	$row2 .= '<td width="356" valign="top">&nbsp;&nbsp;<i class="fa-solid fa-desktop"></i>&nbsp;<span style="color:gold">'.$whosbeen['resolution'].'</span></td>';
+	$row2 .= '</tr>';
 
 endwhile;
-    $row2 .= '</table>';
 
+$row2 .= '</table>';
 $row2 .= '</td>';
-		$row2 .= '</tr>';
-	$row2 .= '</table>';
+$row2 .= '</tr>';
+$row2 .= '</table>';
 $row2 .= '</div>';
 
-$row3_result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 6, ".$z."");
+$row3_result = $db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 6, ".$z."");
 
 $row3   = '<div align="center">';
-$row3  .= '<table bgcolor="'.$bgcolor4.'" border="0" width="200">';
+$row3  .= '<table class="tableVisotrLog">';
 $row3  .= '<tr>';
 $row3  .= '<td align="center">';
 
-$row3  .= '<table border="1" cellpadding="0" cellspacing="1" class="visitorlog">';
+$row3  .= '<table width="260">';
 
-while($whosbeen = $titanium_db->sql_fetchrow($row3_result)):
+while($whosbeen = $db->sql_fetchrow($row3_result)):
+
+	if (strlen($whosbeen['username']) > 15)
+    $whosbeen['username'] = substr($whosbeen['username'], 0, 9) . '...';
 
 	if(!is_admin())
 	if($whosbeen['user_allow_viewonline'] == 0):
 	$whosbeen['username'] = 'Ghost Mode';
-	$whosbeen['user_avatar'] = 'invisible.png';
-	$whosbeen['user_id'] = -1;
+	$whosbeen['user_avatar_type'] = 4;
+	$whosbeen['user_id'] = 1;
 	endif;
 	
 	if($whosbeen['user_from_flag'] ):
@@ -225,60 +251,69 @@ while($whosbeen = $titanium_db->sql_fetchrow($row3_result)):
 	   {
 		# user_allowavatar = 1
 		case USER_AVATAR_UPLOAD:
-		$avatar = '<td width="45px">'.( $phpbb2_board_config['allow_avatar_upload'] ) 
-		? '<div align="center"><img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $phpbb2_board_config['avatar_path'] . '/' . $whosbeen['user_avatar'] . '" alt="" border="0" /></div></td>' : '</td>';
+		$avatar = ''.( $board_config['allow_avatar_upload'] ) 
+		? '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_path'] . '/' . $whosbeen['user_avatar'] . '" alt="" />' : '';
+	
 		break;
 		# user_allowavatar = 2
 		case USER_AVATAR_REMOTE:
-		$avatar = '<td width="45px"><div align="center">'.'<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;"  src="'.avatar_resize($whosbeen['user_avatar']).'" alt="" border="0" /></div></td>';
+		$avatar = ''.'<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;"  src="'.avatar_resize($whosbeen['user_avatar']).'" alt="" />';
 		break;
 		# user_allowavatar = 3
 		case USER_AVATAR_GALLERY:
-		$avatar = '<td width="45px">'. ( $phpbb2_board_config['allow_avatar_local'] ) 
-		? '<div align="center"><img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $phpbb2_board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.gif' || $whosbeen['user_avatar'] == 'gallery/blank.png') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" border="0" /></td>' : '</div></td>';
+		$avatar = ''. ( $board_config['allow_avatar_local'] ) 
+		? '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.png' || $whosbeen['user_avatar'] == 'gallery/blank.png') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" />' : '';
+		break;
+		# user_allowavatar = 4
+		case 4:
+		$avatar = '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_gallery_path'] . '/invisible.png" alt="" />';
 		break;
 
 	   }
 	}
 	
-	
-	$row3 .= '<td align="center" width="45px"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
-    $row3 .= '<td align="left"><a class="turdball" style="text-decoration: none;" href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">
-	<strong>&nbsp;&nbsp;'.UsernameColor($whosbeen['username']).'<br />&nbsp;&nbsp;<a style="text-decoration: none;" href="modules.php?name=Private_Messages&mode=post&u='.$whosbeen['user_id'].'"><font size="5" color="orange"><i class="bi bi-envelope"></i><font color="gold" size="5"><i class="bi bi-arrow-right-short"></i><i class="bi bi-mailbox"></i></font></font>
-	
-	<br />
-	&nbsp;&nbsp;<font size="5" color="gold"><i class="bi bi-arrow-up-short"></i></font><font class="gensmall">SEND PM </font></span>
-	</a></td>';
-	$row3 .= '<td align="center"><div align="top" style="padding-left:10px;">'.get_titanium_timeago($whosbeen['last_visit']).'</div>';
-    $row3 .= '</td>';
-    $row3 .= '</tr>'; 
-	
-   
+	$row3 .= '<tr>';
+	$row3 .= '<td width="81" rowspan="3" align="center"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
+	$row3 .= '<td width="100%" align="left" valign="bottom">&nbsp;&nbsp;<a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'"><span style="font-weight: bold; text-shadow: 3px 0px 7px rgba(81,67,21,0.8), -3px 0px 7px rgba(81,67,21,0.8), 0px 4px 7px rgba(81,67,21,0.8);">'.UsernameColor($whosbeen['username']).'</span></a></td>';
+	$row3 .= '<td width="81" rowspan="3" align="center">'.get_titanium_timeago($whosbeen['last_visit']).'';
+	$row3 .= '</td>';
+	$row3 .= '</tr>';
+	$row3 .= '<tr>';
+	$row3 .= '<td width="356" align="left" valign="bottom" height="2">&nbsp;&nbsp;<a class="modules" href="modules.php?name=Private_Messages&mode=post&u='.$whosbeen['user_id'].'">
+	<i class="bi bi-envelope"></i><i class="bi bi-arrow-right-short"></i><i class="bi bi-mailbox"></i>';
+	$row3 .= '</td>';
+	$row3 .= '</tr>';
+	$row3 .= '<tr>';
+	$row3 .= '<td width="356" valign="top">&nbsp;&nbsp;<i class="fa-solid fa-desktop"></i>&nbsp;<span style="color:gold">'.$whosbeen['resolution'].'</span></td>';
+	$row3 .= '</tr>';
 
 endwhile;
-    $row3 .= '</table>';
 
+$row3 .= '</table>';
 $row3 .= '</td>';
-		$row3 .= '</tr>';
-	$row3 .= '</table>';
+$row3 .= '</tr>';
+$row3 .= '</table>';
 $row3 .= '</div>';
 
-$row4_result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 9, ".$z."");
+$row4_result = $db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 9, ".$z."");
 
 $row4   = '<div align="center">';
-$row4  .= '<table bgcolor="'.$bgcolor4.'" border="0" width="200">';
+$row4  .= '<table class="tableVisotrLog">';
 $row4  .= '<tr>';
 $row4  .= '<td align="center">';
 
-$row4  .= '<table bgcolor="'.$bgcolor4.'" border="1" cellpadding="0" cellspacing="1" class="visitorlog">';
+$row4  .= '<table width="260">';
 
-while($whosbeen = $titanium_db->sql_fetchrow($row4_result)):
+while($whosbeen = $db->sql_fetchrow($row4_result)):
+
+	if (strlen($whosbeen['username']) > 15)
+    $whosbeen['username'] = substr($whosbeen['username'], 0, 9) . '...';
 
 	if(!is_admin())
 	if($whosbeen['user_allow_viewonline'] == 0):
 	$whosbeen['username'] = 'Ghost Mode';
-	$whosbeen['user_avatar'] = 'invisible.png';
-	$whosbeen['user_id'] = -1;
+	$whosbeen['user_avatar_type'] = 4;
+	$whosbeen['user_id'] = 1;
 	endif;
 	
 	if($whosbeen['user_from_flag']):
@@ -304,82 +339,74 @@ while($whosbeen = $titanium_db->sql_fetchrow($row4_result)):
 	   {
 		# user_allowavatar = 1
 		case USER_AVATAR_UPLOAD:
-		$avatar = '<td width="45px">'.( $phpbb2_board_config['allow_avatar_upload'] ) 
-		? '<div align="center"><img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $phpbb2_board_config['avatar_path'] . '/' . $whosbeen['user_avatar'] . '" alt="" border="0" /></div></td>' : '</td>';
+		$avatar = ''.( $board_config['allow_avatar_upload'] ) 
+		? '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_path'] . '/' . $whosbeen['user_avatar'] . '" alt="" />' : '';
+	
 		break;
 		# user_allowavatar = 2
 		case USER_AVATAR_REMOTE:
-		$avatar = '<td width="45px"><div align="center">'.'<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;"  src="'.avatar_resize($whosbeen['user_avatar']).'" alt="" border="0" /></div></td>';
+		$avatar = ''.'<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;"  src="'.avatar_resize($whosbeen['user_avatar']).'" alt="" />';
 		break;
 		# user_allowavatar = 3
 		case USER_AVATAR_GALLERY:
-		$avatar = '<td width="45px">'. ( $phpbb2_board_config['allow_avatar_local'] ) 
-		? '<div align="center"><img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $phpbb2_board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.gif' || $whosbeen['user_avatar'] == 'gallery/blank.png') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" border="0" /></td>' : '</div></td>';
+		$avatar = ''. ( $board_config['allow_avatar_local'] ) 
+		? '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.png' || $whosbeen['user_avatar'] == 'gallery/blank.png') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" />' : '';
+		break;
+		# user_allowavatar = 4
+		case 4:
+		$avatar = '<img class="visitors rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $board_config['avatar_gallery_path'] . '/invisible.png" alt="" />';
 		break;
 
 	   }
 	}
 	
-	
-	$row4 .= '<td align="center" width="45px"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
-    $row4 .= '<td align="left"><a class="turdball" style="text-decoration: none;" href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">
-	<strong>&nbsp;&nbsp;'.UsernameColor($whosbeen['username']).'<br />&nbsp;&nbsp;<a style="text-decoration: none;" href="modules.php?name=Private_Messages&mode=post&u='.$whosbeen['user_id'].'"><font size="5" color="orange"><i class="bi bi-envelope"></i><font color="gold" size="5"><i class="bi bi-arrow-right-short"></i><i class="bi bi-mailbox"></i></font></font>
-	
-	<br />
-	&nbsp;&nbsp;<font size="5" color="gold"><i class="bi bi-arrow-up-short"></i></font><font class="gensmall">SEND PM </font></span>
-	</a></td>';
-	$row4 .= '<td align="center"><div align="top" style="padding-left:10px;">'.get_titanium_timeago($whosbeen['last_visit']).'</div>';
-    $row4 .= '</td>';
-    $row4 .= '</tr>'; 
-	
-   
+	$row4 .= '<tr>';
+	$row4 .= '<td width="81" rowspan="3" align="center"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
+	$row4 .= '<td width="100%" align="left" valign="bottom">&nbsp;&nbsp;<a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'"><span style="font-weight: bold; text-shadow: 3px 0px 7px rgba(81,67,21,0.8), -3px 0px 7px rgba(81,67,21,0.8), 0px 4px 7px rgba(81,67,21,0.8);">'.UsernameColor($whosbeen['username']).'</span></a></td>';
+	$row4 .= '<td width="81" rowspan="3" align="center">'.get_titanium_timeago($whosbeen['last_visit']).'';
+	$row4 .= '</td>';
+	$row4 .= '</tr>';
+	$row4 .= '<tr>';
+	$row4 .= '<td width="356" align="left" valign="bottom" height="2">&nbsp;&nbsp;<a class="modules" href="modules.php?name=Private_Messages&mode=post&u='.$whosbeen['user_id'].'">
+	<i class="bi bi-envelope"></i><i class="bi bi-arrow-right-short"></i><i class="bi bi-mailbox"></i>';
+	$row4 .= '</td>';
+	$row4 .= '</tr>';
+	$row4 .= '<tr>';
+	$row4 .= '<td width="356" valign="top">&nbsp;&nbsp;<i class="fa-solid fa-desktop"></i>&nbsp;<span style="color:gold">'.$whosbeen['resolution'].'</span></td>';
+	$row4 .= '</tr>';
 
 endwhile;
-    $row4 .= '</table>';
 
+$row4 .= '</table>';
 $row4 .= '</td>';
-		$row4 .= '</tr>';
-	$row4 .= '</table>';
+$row4 .= '</tr>';
+$row4 .= '</table>';
 $row4 .= '</div>';
-
 
 global $screen_width;
 $content = '<div align="center">';
 
 if($screen_width < 1920):
-$content .= '<table bgcolor="'.$bgcolor4.'" border="1" width="100%">';
+$content .= '<table class="tableVisotrLog">';
 $content .= '	<tr>';
-$content .= '		<td width="251" valign="top">'.$row1.'</td>';
-$content .= '		<td width="251" valign="top">'.$row2.'</td>';
-$content .= '		<td width="251" valign="top">'.$row3.'</td>';
+$content .= '		<td style="padding-top: 6px; padding-bottom: 25px;" width="251" valign="top">'.$row1.'</td>';
+$content .= '		<td style="padding-top: 6px; padding-bottom: 25px;" width="251" valign="top">'.$row2.'</td>';
+$content .= '		<td style="padding-top: 6px; padding-bottom: 25px;" width="251" valign="top">'.$row3.'</td>';
 $content .= '	</tr>';
-
-$content .= '	<tr>';
-$content .= '		<td width="251" valign="top">&nbsp;</td>';
-$content .= '		<td width="251" valign="top">&nbsp;</td>';
-$content .= '		<td width="251" valign="top">&nbsp;</td>';
-$content .= '	</tr>';
-$content .= '</table>';
 endif;
 
 if($screen_width >= 1920):
-$content .= '<table bgcolor="'.$bgcolor4.'" border="1" width="100%">';
+$content .= '<table class="tableVisotrLog">';
 $content .= '	<tr>';
-$content .= '		<td width="25%" valign="top">'.$row1.'</td>';
-$content .= '		<td width="25%" valign="top">'.$row2.'</td>';
-$content .= '		<td width="25%" valign="top">'.$row3.'</td>';
-$content .= '		<td width="25%" valign="top">'.$row4.'</td>';
-$content .= '	</tr>';
-
-$content .= '	<tr>';
-$content .= '		<td width="251" valign="top">&nbsp;</td>';
-$content .= '		<td width="251" valign="top">&nbsp;</td>';
-$content .= '		<td width="251" valign="top">&nbsp;</td>';
-$content .= '		<td width="251" valign="top">&nbsp;</td>';
+$content .= '		<td style="padding-top: 6px; padding-bottom: 25px;" width="25%" valign="top">'.$row1.'</td>';
+$content .= '		<td style="padding-top: 6px; padding-bottom: 25px;" width="25%" valign="top">'.$row2.'</td>';
+$content .= '		<td style="padding-top: 6px; padding-bottom: 25px;" width="25%" valign="top">'.$row3.'</td>';
+$content .= '		<td style="padding-top: 6px; padding-bottom: 25px;" width="25%" valign="top">'.$row4.'</td>';
 $content .= '	</tr>';
 $content .= '</table>';
 endif;
 
 
 $content .= '</div>';
+
 ?>

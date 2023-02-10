@@ -13,9 +13,9 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB2'))
+if (!defined('IN_PHPBB'))
 {
-    die('ACCESS DENIED');
+    die('Hacking attempt');
 }
 
     function DateFixMonth($regdate)
@@ -96,15 +96,15 @@ GROUP BY SUBSTRING_INDEX(user_regdate,' ',-1), SUBSTRING_INDEX(user_regdate,' ',
 
 $result = $core->sql_query($sql, 'Couldn\'t retrieve users data');
 
-$titanium_user_count = $core->sql_numrows($result);
-$titanium_user_data = $core->sql_fetchrowset($result);
+$user_count = $core->sql_numrows($result);
+$user_data = $core->sql_fetchrowset($result);
 
 $month_array = array();
 
-for ($i = 0; $i < $titanium_user_count; $i++)
+for ($i = 0; $i < $user_count; $i++)
 {
-        $titanium_user_data[$i]['month_regdate'] = DateFixMonth($titanium_user_data[$i]['month_regdate']);
-    $month_array[$titanium_user_data[$i]['year_regdate']][($titanium_user_data[$i]['month_regdate']-1)]['num_user'] = $titanium_user_data[$i]['num_user'];
+        $user_data[$i]['month_regdate'] = DateFixMonth($user_data[$i]['month_regdate']);
+    $month_array[$user_data[$i]['year_regdate']][($user_data[$i]['month_regdate']-1)]['num_user'] = $user_data[$i]['num_user'];
 }
 
 @reset($month_array);
@@ -149,22 +149,22 @@ $core->set_view('num_blocks', 1);
 $core->set_view('value_order', 'left_right');
 
 $core->define_view('set_columns', array(
-    'year' => $titanium_lang['Year'],
-    '1' => $titanium_lang['Month_jan'],
-    '2' => $titanium_lang['Month_feb'],
-    '3' => $titanium_lang['Month_mar'],
-    '4' => $titanium_lang['Month_apr'],
-    '5' => $titanium_lang['Month_may'],
-    '6' => $titanium_lang['Month_jun'],
-    '7' => $titanium_lang['Month_jul'],
-    '8' => $titanium_lang['Month_aug'],
-    '9' => $titanium_lang['Month_sep'],
-    '10' => $titanium_lang['Month_oct'],
-    '11' => $titanium_lang['Month_nov'],
-    '12' => $titanium_lang['Month_dec'])
+    'year' => $lang['Year'],
+    '1' => $lang['Month_jan'],
+    '2' => $lang['Month_feb'],
+    '3' => $lang['Month_mar'],
+    '4' => $lang['Month_apr'],
+    '5' => $lang['Month_may'],
+    '6' => $lang['Month_jun'],
+    '7' => $lang['Month_jul'],
+    '8' => $lang['Month_aug'],
+    '9' => $lang['Month_sep'],
+    '10' => $lang['Month_oct'],
+    '11' => $lang['Month_nov'],
+    '12' => $lang['Month_dec'])
 );
 
-$core->set_header($titanium_lang['module_name']);
+$core->set_header($lang['module_name']);
 
 $data = $core->assign_defined_view('value_array', array(
     $year_ar, 

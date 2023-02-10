@@ -1,7 +1,8 @@
 <?php
-/*=======================================================================
- Nuke-Evolution Basic: Enhanced PHP-Nuke Web Portal System
+/*======================================================================= 
+  PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
+
 
 /************************************************************************/
 /* PHP-NUKE: Arcade Block                                               */
@@ -32,16 +33,16 @@ if(!defined('NUKE_EVO')) exit;
 define("_TOPGAMERS", "The Top Players");
 define("_VICTOIRES", "Number Of Wins :");
 
-global $titanium_prefix, $titanium_user_prefix, $titanium_db;
+global $prefix, $user_prefix, $db;
 
-$sql = "SELECT g.* , u.username FROM ".$titanium_prefix."_bbgames g, ".$titanium_user_prefix."_users u WHERE g.game_highuser = u.user_id ORDER BY game_highdate DESC LIMIT 0,1 " ;
+$sql = "SELECT g.* , u.username FROM ".$prefix."_bbgames g, ".$user_prefix."_users u WHERE g.game_highuser = u.user_id ORDER BY game_highdate DESC LIMIT 0,1 " ;
 
-if(!($result = $titanium_db->sql_query($sql)))
+if(!($result = $db->sql_query($sql)))
 {
         die("Could not query games user information");
 }
 
-$row = $titanium_db->sql_fetchrow($result);
+$row = $db->sql_fetchrow($result);
 
 $lastScore = number_format($row['game_highscore']);
 $lastGame = $row['game_name'];
@@ -58,7 +59,7 @@ $lastgamepic = $row['game_pic'];
 $lastuserid = $row['game_highuser'];
 
 $count = 1;
-$content = "<center><a href=\"modules.php?name=Forums&amp;file=arcade\"><img src=\"images/arcadelogo.gif\" border= \"0\"></a></center><br />";
+$content = "<center><a href=\"modules.php?name=Forums&amp;file=arcade\"><img width=\"169\" src=\"images/arcade_mod/arcade_logo.png\" border= \"0\"></a></center><br />";
 $content .="<marquee behavior= \"scroll\" align= \"center\" direction= \"up\" height=\"160\" scrollamount= \"2\" scrolldelay= \"20\" onmouseover='this.stop()' onmouseout='this.start()'>";
 
 $content .= "<center><a href=\"modules.php?name=Forums&amp;file=games&amp;gid=$lastgameid\">";
@@ -75,16 +76,16 @@ $content .= "<span color=\"#666666\"><strong>"._TOPGAMERS."</strong><br />";
 
 $content .= "<br />";
 
-$sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, u.user_level FROM ".$titanium_prefix."_bbgames g, ".$titanium_user_prefix."_users u WHERE g.game_highuser = u.user_id AND g.game_highuser <> 0 GROUP BY g.game_highuser ORDER BY nbvictoires DESC";
+$sql = "SELECT COUNT(*) AS nbvictoires, g.game_highuser, u.user_id, u.username, u.user_level FROM ".$prefix."_bbgames g, ".$user_prefix."_users u WHERE g.game_highuser = u.user_id AND g.game_highuser <> 0 GROUP BY g.game_highuser ORDER BY nbvictoires DESC";
 
-if(!($result = $titanium_db->sql_query($sql)))
+if(!($result = $db->sql_query($sql)))
 {
         die("Could not query games information");
 }
 
 $place=0;
 $nbvictprec=0;
-while ($row = $titanium_db->sql_fetchrow($result)) {
+while ($row = $db->sql_fetchrow($result)) {
         if ($nbvictprec <> $row['nbvictoires'])
         {
                 $nbvictprec = $row['nbvictoires'];

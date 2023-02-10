@@ -9,7 +9,7 @@
 /*                                                                               */
 /* Copyright (c) 2004 by Comunidade PHP Nuke Brasil                              */
 /* http://dev.phpnuke.org.br & http://www.phpnuke.org.br                         */
-/* v1.0                                                                          */
+/*                                                                               */
 /* Contact author: escudero@phpnuke.org.br                                       */
 /* International Support Forum: http://ravenphpscripts.com/forum76.html          */
 /*                                                                               */
@@ -34,120 +34,150 @@
 
 if (!defined('MODULE_FILE')) die('You can\'t access this file directly...');
 
-$titanium_module_name = basename(dirname(__FILE__));
+$module_name = basename(dirname(__FILE__));
 
 require_once("modules/Your_Account/includes/constants.php");
 
 if (!defined('CNBYA')) die('CNBYA protection');
 
-include_once(NUKE_MODULES_DIR.$titanium_module_name.'/includes/functions.php');
+include_once(NUKE_MODULES_DIR.$module_name.'/includes/functions.php');
 
 # menelaos: removed because it is already called in /modules/Your_Account/includes/mainfileend.php
 $ya_config = ya_get_configs();
 
-get_lang($titanium_module_name);
-$titanium_userpage = 1;
+get_lang($module_name);
+$userpage = 1;
 
 global $cookie;
 
-$titanium_username = Fix_Quotes($_REQUEST['username']);
-$redirect = $_REQUEST['redirect'];
-$titanium_module = $_REQUEST['module'];
-$user_password = $_REQUEST['user_password'];
-$mode = $_REQUEST['mode'];
-$t = $_REQUEST['t'];
-$p = $_REQUEST['p'];
+if(!isset($op))
+$op = '';
 
-include(NUKE_MODULES_DIR.$titanium_module_name.'/navbar.php');
-include(NUKE_MODULES_DIR.$titanium_module_name.'/includes/cookiecheck.php');
+if (isset($_REQUEST['username'])) 
+{
+  $username = Fix_Quotes($_REQUEST['username']);
+}
+
+if (isset($_REQUEST['redirect'])) 
+{
+  $redirect = $_REQUEST['redirect'];
+}
+
+if (isset($_REQUEST['module'])) 
+{
+  $module = $_REQUEST['module'];
+}
+
+if (isset($_REQUEST['user_password'])) 
+{
+  $user_password = $_REQUEST['user_password'];
+}
+
+if (isset($_REQUEST['mode'])) 
+{
+  $mode = $_REQUEST['mode'];
+}
+
+if (isset($_REQUEST['t'])) 
+{
+  $t = $_REQUEST['t'];
+}
+
+if (isset($_REQUEST['p'])) 
+{
+  $p = $_REQUEST['p'];
+}
+
+include(NUKE_MODULES_DIR.$module_name.'/navbar.php');
+include(NUKE_MODULES_DIR.$module_name.'/includes/cookiecheck.php');
 
 function ya_expire() 
 {
-    global $ya_config, $titanium_db, $titanium_user_prefix;
+    global $ya_config, $db, $user_prefix;
     
 	if ($ya_config['expiring']!=0):
         
 		$past = time()-$ya_config['expiring'];
-        $res = $titanium_db->sql_query("SELECT user_id FROM ".$titanium_user_prefix."_users_temp WHERE time < '$past'");
+        $res = $db->sql_query("SELECT user_id FROM ".$user_prefix."_users_temp WHERE time < '$past'");
         
-		while (list($uid) = $titanium_db->sql_fetchrow($res)):
+		while (list($uid) = $db->sql_fetchrow($res)):
           $uid = intval($uid);
-          $titanium_db->sql_query("DELETE FROM ".$titanium_user_prefix."_users_temp WHERE user_id = $uid");
-          $titanium_db->sql_query("DELETE FROM ".$titanium_user_prefix."_cnbya_value_temp WHERE uid = '$uid'");
+          $db->sql_query("DELETE FROM ".$user_prefix."_users_temp WHERE user_id = $uid");
+          $db->sql_query("DELETE FROM ".$user_prefix."_cnbya_value_temp WHERE uid = '$uid'");
         endwhile;
         
-        $titanium_db->sql_query("OPTIMIZE TABLE ".$titanium_user_prefix."_cnbya_value_temp");
-        $titanium_db->sql_query("OPTIMIZE TABLE ".$titanium_user_prefix."_users_temp");
+        $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_cnbya_value_temp");
+        $db->sql_query("OPTIMIZE TABLE ".$user_prefix."_users_temp");
     
 	endif;
 }
 
 switch($op): 
     case "username_check":
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/check.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/check.php');
         break;
     case "activate":
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/activate.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/activate.php');
     break;
     case "avatarlist":
         if (is_user())
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/avatarlist.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/avatarlist.php');
         else 
         notuser();
     break;
     case "avatarsave":
         if (is_user())
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/avatarsave.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/avatarsave.php');
         else 
         notuser();
     break;
     case "avatarlinksave":
         if (is_user())
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/avatarlinksave.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/avatarlinksave.php');
         else
         notuser();
     break;
     case "delete":
         if ($ya_config['allowuserdelete'] == 1) 
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/delete.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/delete.php');
         else 
         disabled();
     break;
     case "deleteconfirm":
         if ($ya_config['allowuserdelete'] == 1) 
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/deleteconfirm.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/deleteconfirm.php');
         else 
         disabled();
     break;
     case "editcomm":
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/editcomm.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/editcomm.php');
     break;
     case "edithome":
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/edithome.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/edithome.php');
     break;
     case "edittheme":
     break;
     case "changemail":
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/changemail.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/changemail.php');
         changemail();
     break;
     case "chgtheme":
         if ($ya_config['allowusertheme']==0) 
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/chngtheme.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/chngtheme.php');
         else 
         disabled();
     break;
     case "edituser":
-        //include(NUKE_MODULES_DIR.$titanium_module_name.'/public/edituser.php'); (WHY WAS THIS TAKEN OUT?????) Assholes not commenting their changes!
+        //include(NUKE_MODULES_DIR.$module_name.'/public/edituser.php'); (WHY WAS THIS TAKEN OUT?????) Assholes not commenting their changes!
         
 		# Mod: YA Merge v1.0.0 START
-        redirect_titanium("modules.php?name=Profile&mode=editprofile");
+        redirect("modules.php?name=Profile&mode=editprofile");
         exit;
         # Mod: YA Merge v1.0.0 END
     break;
     case "login":
         # Base: NukeSentinel v2.5.00 START
-        global $nsnst_const, $titanium_user_prefix;
+        global $nsnst_const, $user_prefix;
         # Base: NukeSentinel v2.5.00 END
 
        /**
@@ -162,27 +192,28 @@ switch($op):
         # endif;
 
         # Mod: User IP Lock v1.0.0 START
-        if(!compare_ips($titanium_username)):
+        if(!compare_ips($username)):
             DisplayError('Your IP is not valid for this user');
             exit;
         endif;
         # Mod: User IP Lock v1.0.0 END
 
-        $result  = $titanium_db->sql_query("SELECT * FROM ".$titanium_user_prefix."_users WHERE username='$titanium_username'");
-        $setinfo = $titanium_db->sql_fetchrow($result);
+        $result  = $db->sql_query("SELECT * FROM ".$user_prefix."_users WHERE username='$username'");
+        $setinfo = $db->sql_fetchrow($result);
         
 		# menelaos: check of the member agreed with the TOS and update the database field
         if (($ya_config['tos'] == intval(1)) AND ($_POST['tos_yes'] == intval(1))): 
-        $titanium_db->sql_query("UPDATE ".$titanium_user_prefix."_users SET agreedtos='1' WHERE username='$titanium_username'");
+        $db->sql_query("UPDATE ".$user_prefix."_users SET agreedtos='1' WHERE username='$username'");
         endif;
 		
+		if(isset($redirect))
 		$forward = str_replace("redirect=", "", "$redirect");
         
 		if (preg_match("#privmsg#", $forward)): 
 		$pm_login = "active";
 		endif; 
         
-   if ($titanium_db->sql_numrows($result) == 0): 
+   if ($db->sql_numrows($result) == 0): 
           
 		  include_once(NUKE_BASE_DIR.'header.php');
           
@@ -194,14 +225,14 @@ switch($op):
           
 		  include_once(NUKE_BASE_DIR.'footer.php');
          
-          elseif($titanium_db->sql_numrows($result) == 1 
+          elseif($db->sql_numrows($result) == 1 
 		  AND $setinfo['user_id'] != 1 
 		  AND !empty($setinfo['user_password']) 
 		  AND $setinfo['user_active'] >0 AND $setinfo['user_level'] >0): 
         
-          $titanium_dbpass     = $setinfo['user_password'];
+          $dbpass         = $setinfo['user_password'];
           $non_crypt_pass = $user_password;
-          $old_crypt_pass = crypt($user_password,substr($titanium_dbpass,0,2));
+          $old_crypt_pass = crypt($user_password,substr($dbpass,0,2));
           
 		  # Base: Evolution Functions v1.5.0 START
           $new_pass = EvoCrypt($user_password);
@@ -211,33 +242,33 @@ switch($op):
           $evo_crypt = EvoCrypt($user_password);
           
 		  //Reset to md5x1
-          if (($titanium_dbpass == $evo_crypt) 
-		  || (($titanium_dbpass == $non_crypt_pass) 
-		  || ($titanium_dbpass == $old_crypt_pass))): 
+          if (($dbpass == $evo_crypt) 
+		  || (($dbpass == $non_crypt_pass) 
+		  || ($dbpass == $old_crypt_pass))): 
 		  
-            $titanium_db->sql_query("UPDATE ".$titanium_user_prefix."_users SET user_password='$new_pass' WHERE username='$titanium_username'");
-            $result = $titanium_db->sql_query("SELECT user_password FROM ".$titanium_user_prefix."_users WHERE username='$titanium_username'");
-            list($titanium_dbpass) = $titanium_db->sql_fetchrow($result);
+            $db->sql_query("UPDATE ".$user_prefix."_users SET user_password='$new_pass' WHERE username='$username'");
+            $result = $db->sql_query("SELECT user_password FROM ".$user_prefix."_users WHERE username='$username'");
+            list($dbpass) = $db->sql_fetchrow($result);
           
 		  endif;
           
-		  if ($titanium_dbpass != $new_pass): 
+		  if ($dbpass != $new_pass): 
             
 			# Does it need another md5?
-        	if (md5($titanium_dbpass) == $new_pass): 
+        	if (md5($dbpass) == $new_pass): 
 			
-                $titanium_db->sql_query("UPDATE ".$titanium_user_prefix."_users SET user_password='$new_pass' WHERE username='$titanium_username'");
-                $result = $titanium_db->sql_query("SELECT user_password FROM ".$titanium_user_prefix."_users WHERE username='$titanium_username'");
+                $db->sql_query("UPDATE ".$user_prefix."_users SET user_password='$new_pass' WHERE username='$username'");
+                $result = $db->sql_query("SELECT user_password FROM ".$user_prefix."_users WHERE username='$username'");
                 
-				list($titanium_dbpass) = $titanium_db->sql_fetchrow($result);
+				list($dbpass) = $db->sql_fetchrow($result);
                 
-				if ($titanium_dbpass != $new_pass): 
-                    redirect_titanium("modules.php?name=$titanium_module_name&stop=1");
+				if ($dbpass != $new_pass): 
+                    redirect("modules.php?name=$module_name&stop=1");
                     return;
                 endif;
 			
 			else: 
-        	    redirect_titanium("modules.php?name=$titanium_module_name&stop=1");
+        	    redirect("modules.php?name=$module_name&stop=1");
                 return;
         	endif;
          
@@ -247,7 +278,7 @@ switch($op):
          $gfxchk = array(2,4,5,7);
 
          if (!security_code_check($_POST['g-recaptcha-response'], $gfxchk)):
-            redirect_titanium("modules.php?name=$titanium_module_name&stop=1");
+            redirect("modules.php?name=$module_name&stop=1");
             exit;
          # Mod: Advanced Security Code Control v1.0.0 END
 
@@ -255,7 +286,7 @@ switch($op):
             # menelaos: show a member the current TOS if he has not agreed yet
             if (($ya_config['tos'] == intval(1)) AND ($ya_config['tosall'] == intval(1)) AND ($setinfo['agreedtos'] != intval(1))): 
                 if($_POST['tos_yes'] != intval(1)): 
-                include(NUKE_MODULES_DIR.$titanium_module_name.'/public/ya_tos.php');
+                include(NUKE_MODULES_DIR.$module_name.'/public/ya_tos.php');
                 exit;
                 endif;
             endif;
@@ -276,8 +307,8 @@ switch($op):
        $uname = $nsnst_const['remote_ip'];
        # Base: NukeSentinel v2.5.00 START
       
-	   $titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_session WHERE uname='$uname' AND guest='1'");
-       $titanium_db->sql_query("UPDATE ".$titanium_user_prefix."_users SET last_ip='$uname' WHERE username='$titanium_username'");
+	   $db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$uname' AND guest='1'");
+       $db->sql_query("UPDATE ".$user_prefix."_users SET last_ip='$uname' WHERE username='$username'");
         
 	   endif;
 
@@ -287,32 +318,32 @@ switch($op):
       endif;
 	  
 	  if (!empty($pm_login)): 
-      redirect_titanium("modules.php?name=Private_Messages&file=index&folder=inbox");
+      redirect("modules.php?name=Private_Messages&file=index&folder=inbox");
 	  elseif(!empty($t)):  
-      redirect_titanium("modules.php?name=Forums&file=$forward&mode=$mode&t=$t");
+      redirect("modules.php?name=Forums&file=$forward&mode=$mode&t=$t");
 	  elseif (!empty($p)):  
-      redirect_titanium("modules.php?name=Forums&file=$forward&mode=$mode&p=$p");
+      redirect("modules.php?name=Forums&file=$forward&mode=$mode&p=$p");
 	  elseif(empty($redirect)): 
-	      if ($phpbb2_board_config['loginpage'] == 1): 
-          redirect_titanium("modules.php?name=Your_Account&op=userinfo&bypass=1&username=$titanium_username");
+	      if ($board_config['loginpage'] == 1): 
+          redirect("modules.php?name=Your_Account&op=userinfo&bypass=1&username=$username");
           else:
-          redirect_titanium("modules.php?name=Forums");
+          redirect("modules.php?name=Forums");
           endif;
- 	  elseif(!empty($titanium_module)): 
-            redirect_titanium("modules.php?name=$titanium_module");
+ 	  elseif(!empty($module)): 
+            redirect("modules.php?name=$module");
 	  elseif(empty($mode)): 
 
           if(!empty($f)) 
-          redirect_titanium("modules.php?name=Forums&file=$forward&f=$f");
+          redirect("modules.php?name=Forums&file=$forward&f=$f");
 		  else 
-          redirect_titanium("modules.php?name=Forums&file=$forward");
+          redirect("modules.php?name=Forums&file=$forward");
             
          
 	  else: 
-      redirect_titanium("modules.php?name=Forums&file=$forward&mode=$mode&f=$f");
+      redirect("modules.php?name=Forums&file=$forward&mode=$mode&f=$f");
       endif;
 		
-   elseif($titanium_db->sql_numrows($result) == 1 AND ($setinfo['user_level'] < 1 OR $setinfo['user_active'] < 1)):
+   elseif($db->sql_numrows($result) == 1 AND ($setinfo['user_level'] < 1 OR $setinfo['user_active'] < 1)):
             
 			include_once(NUKE_BASE_DIR.'header.php');
             Show_CNBYA_menu();
@@ -330,12 +361,12 @@ switch($op):
 		
         include_once(NUKE_BASE_DIR.'footer.php');
    else:
-   redirect_titanium("modules.php?name=$titanium_module_name&stop=1");
+   redirect("modules.php?name=$module_name&stop=1");
    endif;
 		
    break;
    case "logout":
-        global $cookie, $titanium_db, $titanium_prefix;
+        global $cookie, $db, $prefix;
         
 		$r_uid = $cookie[0];
         $r_username = $cookie[1];
@@ -347,57 +378,57 @@ switch($op):
 		setcookie("user","expired",time()-604800,"$ya_config[cookiepath]"); 
         endif;
 		
-		$titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_session WHERE uname='$r_username'");
-        $titanium_db->sql_query("OPTIMIZE TABLE ".$titanium_prefix."_session");
-        $sql = "SELECT session_id FROM ".$titanium_prefix."_bbsessions WHERE session_user_id='$r_uid'";
-        $row = $titanium_db->sql_fetchrow($titanium_db->sql_query($sql));
-        $titanium_db->sql_query("DELETE FROM ".$titanium_prefix."_bbsessions WHERE session_user_id='$r_uid'");
-        $titanium_db->sql_query("OPTIMIZE TABLE ".$titanium_prefix."_bbsessions");
+		$db->sql_query("DELETE FROM ".$prefix."_session WHERE uname='$r_username'");
+        $db->sql_query("OPTIMIZE TABLE ".$prefix."_session");
+        $sql = "SELECT session_id FROM ".$prefix."_bbsessions WHERE session_user_id='$r_uid'";
+        $row = $db->sql_fetchrow($db->sql_query($sql));
+        $db->sql_query("DELETE FROM ".$prefix."_bbsessions WHERE session_user_id='$r_uid'");
+        $db->sql_query("OPTIMIZE TABLE ".$prefix."_bbsessions");
 
         # Mod: Forum Logout v1.0.0 START
-        global $phpbb2_board_config;
+        global $board_config;
         
-		$cookiename = $phpbb2_board_config['cookie_name'];
-        $cookiepath = $phpbb2_board_config['cookie_path'];
-        $cookiedomain = $phpbb2_board_config['cookie_domain'];
-        $cookiesecure = $phpbb2_board_config['cookie_secure'];
+		$cookiename = $board_config['cookie_name'];
+        $cookiepath = $board_config['cookie_path'];
+        $cookiedomain = $board_config['cookie_domain'];
+        $cookiesecure = $board_config['cookie_secure'];
         $current_time = time();
         
 		setcookie($cookiename.'_data','', $current_time - 31536000, $cookiepath, $cookiedomain, $cookiesecure);
         setcookie($cookiename.'_sid','', $current_time - 31536000, $cookiepath, $cookiedomain, $cookiesecure);
         # Mod: Forum Logout v1.0.0 END
 
-        $titanium_user = "";
+        $user = "";
 
         if (!empty($redirect)): 
-            redirect_titanium("modules.php?name=$redirect");
+            redirect("modules.php?name=$redirect");
             exit;
 		else: 
-            redirect_titanium("modules.php?name=Your_Account");
+            redirect("modules.php?name=Your_Account");
             exit;
         endif;
 
     break;
     case "mailpasswd":
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/mailpass.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/mailpass.php');
     break;
     case "new_user":
     if (is_user()): 
-    mmain($titanium_user);
+    mmain($user);
     else:
 	  # if new user registration is allowed 
       if ($ya_config['allowuserreg']==0):
 	    # if coppa is required 
         if ($ya_config['coppa'] == intval(1)): 
            if($_POST['coppa_yes']!= intval(1)): 
-              include(NUKE_MODULES_DIR.$titanium_module_name.'/public/ya_coppa.php');
+              include(NUKE_MODULES_DIR.$module_name.'/public/ya_coppa.php');
                 exit;
            endif;
         endif;
 		# if terms of service is required 
 		if ($ya_config['tos'] == intval(1)): 
           if($_POST['tos_yes'] != intval(1)): 
-            include(NUKE_MODULES_DIR.$titanium_module_name.'/public/ya_tos.php');
+            include(NUKE_MODULES_DIR.$module_name.'/public/ya_tos.php');
             exit;
           endif;
         endif;
@@ -412,13 +443,14 @@ switch($op):
 		  AND $_POST['tos_yes'] = intval(1)):
 		     # if admin approval is required 
              if ($ya_config['requireadmin'] == 1) 
-             include(NUKE_MODULES_DIR.$titanium_module_name.'/public/new_user1.php');
+             include(NUKE_MODULES_DIR.$module_name.'/public/new_user1.php');
 			 # if admin approval is not required and user activate not enabled 
 			 elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 0) 
-             include(NUKE_MODULES_DIR.$titanium_module_name.'/public/new_user2.php');
+             include(NUKE_MODULES_DIR.$module_name.'/public/new_user2.php');
 			 # if admin approval is not required and user activate is required 
 			 elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 1) 
-             include(NUKE_MODULES_DIR.$titanium_module_name.'/public/new_user3.php');
+             //include(NUKE_MODULES_DIR.$module_name.'/public/new_user3.php');
+			 include(NUKE_MODULES_DIR.$module_name.'/public/new_user_registration_no_validation.php');
           endif;
         endif;
       else: 
@@ -428,15 +460,15 @@ switch($op):
     break;
     case "new_confirm":
         if (is_user()): 
-            mmain($titanium_user);
+            mmain($user);
         else:
             if ($ya_config['allowuserreg']==0):
                 if ($ya_config['requireadmin'] == 1):
-                    include(NUKE_MODULES_DIR.$titanium_module_name.'/public/new_confirm1.php');
+                    include(NUKE_MODULES_DIR.$module_name.'/public/new_confirm1.php');
                 elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 0):
-                    include(NUKE_MODULES_DIR.$titanium_module_name.'/public/new_confirm2.php');
+                    include(NUKE_MODULES_DIR.$module_name.'/public/new_confirm2.php');
                 elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 1):
-                    include(NUKE_MODULES_DIR.$titanium_module_name.'/public/new_confirm3.php');
+                    include(NUKE_MODULES_DIR.$module_name.'/public/new_confirm3.php');
                 endif;
             else:
                 disabled();
@@ -446,16 +478,16 @@ switch($op):
     case "new_finish":
         ya_expire();
 		if (is_user()): 
-        mmain($titanium_user);
+        mmain($user);
 		else: 
 		    if ($ya_config['allowuserreg']==0): 
                 
 				if($ya_config['requireadmin'] == 1): 
-                    include(NUKE_MODULES_DIR.$titanium_module_name.'/public/new_finish1.php');
+                    include(NUKE_MODULES_DIR.$module_name.'/public/new_finish1.php');
 				elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 0): 
-                    include(NUKE_MODULES_DIR.$titanium_module_name.'/public/new_finish2.php');
+                    include(NUKE_MODULES_DIR.$module_name.'/public/new_finish2.php');
 				elseif ($ya_config['requireadmin'] == 0 AND $ya_config['useactivate'] == 1): 
-                    include(NUKE_MODULES_DIR.$titanium_module_name.'/public/new_finish3.php');
+                    include(NUKE_MODULES_DIR.$module_name.'/public/new_finish3.php');
                 endif;
 			else: 
                 disabled();
@@ -463,27 +495,27 @@ switch($op):
 		endif;
     break;
     case "pass_lost":
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/passlost.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/passlost.php');
     break;
    case "saveactivate":
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/saveactivate.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/saveactivate.php');
     break;
     case "savecomm":
         if (is_user()) 
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/savecomm.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/savecomm.php');
         else 
         notuser();
     break;
     case "savehome":
         if (is_user())
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/savehome.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/savehome.php');
         else 
         notuser();
     break;
     case "savetheme":
         if (is_user()):
             if ($ya_config['allowusertheme']==0) 
-            include(NUKE_MODULES_DIR.$titanium_module_name.'/public/savetheme.php');
+            include(NUKE_MODULES_DIR.$module_name.'/public/savetheme.php');
             else 
             disabled();
         else:
@@ -492,14 +524,14 @@ switch($op):
     break;
     case "saveuser":
         if (is_user()) 
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/public/saveuser.php');
+        include(NUKE_MODULES_DIR.$module_name.'/public/saveuser.php');
         else 
         notuser();
     break;
     case "userinfo":
         # Mod: YA Merge v1.0.0 START
-        list($uid) = $titanium_db->sql_ufetchrow('SELECT user_id FROM '.$titanium_user_prefix.'_users WHERE username="'.$titanium_username.'"', SQL_NUM);
-        redirect_titanium("modules.php?name=Profile&mode=viewprofile&u=".$uid);
+        list($uid) = $db->sql_ufetchrow('SELECT user_id FROM '.$user_prefix.'_users WHERE username="'.$username.'"', SQL_NUM);
+        redirect("modules.php?name=Profile&mode=viewprofile&u=".$uid);
         exit;
         # Mod: YA Merge v1.0.0 END
     break;
@@ -513,7 +545,7 @@ switch($op):
         DeleteCookies();
     break;
     default:
-        mmain($titanium_user);
+        mmain($user);
     break;
 endswitch;
 ?>

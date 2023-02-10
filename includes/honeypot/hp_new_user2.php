@@ -13,20 +13,20 @@
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
     exit('Access Denied');
 }
-global $titanium_prefix, $titanium_db, $currentlang;
+global $prefix, $db, $currentlang;
 if (file_exists(NUKE_ADMIN_DIR.'language/Honeypot/lang-'.$currentlang.'.php')) {
 	include_once(NUKE_ADMIN_DIR.'language/Honeypot/lang-'.$currentlang.'.php');
 } else {
 	include_once(NUKE_ADMIN_DIR.'language/Honeypot/lang-english.php');
 }
-	$result1 = $titanium_db->sql_query("SELECT usehp, check3, check3time FROM ".$titanium_prefix."_honeypot_config");
-	list($usehp, $check3, $check3time) = $titanium_db->sql_fetchrow($result1);
+	$result1 = $db->sql_query("SELECT usehp, check3, check3time FROM ".$prefix."_honeypot_config");
+	list($usehp, $check3, $check3time) = $db->sql_fetchrow($result1);
 
 if ($usehp == 1){
  if ($check3 == 1){
 
 echo "<tr><td bgcolor='$bgcolor1' colspan='2' width='100%'><p align=\"center\" id=\"countdown-1\"><strong>"._HONEYPOT_ANTIBOTWAIT."</strong>, "._HONEYPOT_PLEASEDONTCLICK." $check3time "._HONEYPOT_SECONDS."</p>
-<script type=\"text/javascript\">
+<script>
     var countdown = document.getElementById('countdown-1'),
     passed    = 0,
     seconds   = $check3time;

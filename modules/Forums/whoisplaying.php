@@ -15,23 +15,24 @@
 -=[Mod]=-
       Advanced Username Color                  v1.0.5       09/20/2005
  ************************************************************************/
-if (!defined('IN_PHPBB2')) die('ACCESS DENIED');
+if (!defined('IN_PHPBB')) die('Hacking attempt');
 
 if (!function_exists('get_arcade_categories')) 
 include('includes/functions_arcade.'.$phpEx);
 
-$phpbb2_template->set_filenames(array(
+$template->set_filenames(array(
         'whoisplaying' => 'whoisplaying_body.tpl')
 );
 
-$phpbb2_template->assign_vars(array(
-        "L_WHOISPLAYING" => $titanium_lang['whoisplaying'])
+$template->assign_vars(array(
+        "L_WHOISPLAYING" => $lang['whoisplaying'])
 );
 
 if(!isset($liste_cat_auth)):
-$liste_cat_auth = get_arcade_categories($userdata['user_id'], $userdata['user_level'],'view');
-if (empty($liste_cat_auth)) 
-$liste_cat_auth = "''";
+  $liste_cat_auth = get_arcade_categories($userdata['user_id'], $userdata['user_level'],'view');
+    if(empty($liste_cat_auth)): 
+      $liste_cat_auth = "''";
+    endif;
 endif;
 
 $sql = "SELECT u.username, 
@@ -53,11 +54,11 @@ $sql = "SELECT u.username,
 				IN ($liste_cat_auth) 
 				ORDER BY gh.hash_date DESC";
 
-if(!($result = $titanium_db->sql_query($sql))) 
+if(!($result = $db->sql_query($sql))) 
 message_die(CRITICAL_ERROR, "Could not query games information", "", __LINE__, __FILE__, $sql);
 
-while($row = $titanium_db->sql_fetchrow($result)):
-$players[] = $row;
+while($row = $db->sql_fetchrow($result)):
+  $players[] = $row;
 endwhile;
 
 $last_game = '';
@@ -65,7 +66,10 @@ $list_player = '';
 $prev_user_id = '';
 $class = '';
 
-$nbplayers = count($players);
+if(!isset($players))
+$players = 0;
+
+$nbplayers = is_countable($players) ? count($players) : 0;
 $listeid = array();
 $games_players = array();
 $games_names = array();
@@ -74,26 +78,15 @@ for($i=0 ; $i<$nbplayers ; $i++):
   if(!isset($listeid[$players[$i]['user_id']])): 
      $listeid[ $players[$i]['user_id'] ] = true ;
      $style_color = '';
-                                /*
-     if ($players[$i]['user_level'] == ADMIN) 
-	 {
-       $players[$i]['username'] = '<strong>' . $players[$i]['username'] . '</strong>';
-       $style_color = 'style="color:#' . $theme['fontcolor3'] . '"';
-     } 
-	 elseif($players[$i]['user_level'] == MOD) 
-	 {
-        $players[$i]['username'] = '<strong>' . $players[$i]['username'] . '</strong>';
-        $style_color = 'style="color:#' . $theme['fontcolor2'] . '"';
-     }*/
 	 
      # Mod: Advanced Username Color v1.0.5 START
      $players[$i]['username'] = UsernameColor($players[$i]['username']);
      # Mod: Advanced Username Color v1.0.5 END
 
      if ($players[$i]['user_allow_viewonline']) 
-         $player_link = '<a href="'.append_titanium_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=".$players[$i]['user_id']).'"'.$style_color.'>'.$players[$i]['username'].'</a>';
+         $player_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=".$players[$i]['user_id']).'"'.$style_color.'>'.$players[$i]['username'].'</a>';
 	 else 
-         $player_link = '<a href="'.append_titanium_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=
+         $player_link = '<a href="'.append_sid("profile.$phpEx?mode=viewprofile&amp;".POST_USERS_URL."=
 		 ".$players[$i]['user_id']).'"'.$style_color.'><i>'.$players[$i]['username'].'</i></a>';
          if ($players[$i]['user_allow_viewonline'] || $userdata['user_level'] == ADMIN): 
             if (!isset($games_names[ $players[$i]['game_id'] ])): 
@@ -108,14 +101,14 @@ endfor;
 
 foreach($games_names AS $key => $val): 
  if ($games_players[$key]!=''): 
-   $class = ($class == 'row1') ? 'row2' : 'row1';
-   $phpbb2_template->assign_block_vars('whoisplaying_row', array(
+   $class = ($class == 'arcadeRow1') ? 'arcadeRow2' : 'arcadeRow1';
+   $template->assign_block_vars('whoisplaying_row', array(
    'CLASS' => $class,
-   'GAME' => '<a href="' . append_titanium_sid("games.$phpEx?gid=" . $key) . '">' . $val . '</a>',
+   'GAME' => '<a href="' . append_sid("games.$phpEx?gid=" . $key) . '">' . $val . '</a>',
    'PLAYER_LIST' => $games_players[$key])
    );
  endif;
 endforeach;
 
-$phpbb2_template->assign_var_from_handle('WHOISPLAYING', 'whoisplaying');
+$template->assign_var_from_handle('WHOISPLAYING', 'whoisplaying');
 ?>

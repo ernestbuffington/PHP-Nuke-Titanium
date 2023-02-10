@@ -30,28 +30,33 @@
 
 if(!defined('NUKE_EVO')) exit;
 
-global $titanium_db, $titanium_config, $startdate;
+global $db, $evoconfig, $startdate;
 
 function block_Hits_cache($block_cachetime) {
-    global $titanium_db, $cache;
+    global $db, $cache;
+	
+	$blockcache = [];
+	
+	if(!isset($blockcache[0]['stat_created']))
+	$blockcache[0]['stat_created'] = '';
+	
     if ((($blockcache = $cache->load('hits', 'blocks')) === false) || empty($blockcache) || intval($blockcache[0]['stat_created']) < (time() - intval($block_cachetime))) {
-        $result = $titanium_db->sql_ufetchrow('SELECT `count` FROM `'._COUNTER_TABLE.'` WHERE `type`="total" AND `var`="hits" LIMIT 1');
+        $result = $db->sql_ufetchrow('SELECT `count` FROM `'._COUNTER_TABLE.'` WHERE `type`="total" AND `var`="hits" LIMIT 1');
         $blockcache[1]['count'] = $result['count'];
-        $titanium_db->sql_freeresult($result);
+        $db->sql_freeresult($result);
         $blockcache[0]['stat_created'] = time();
         $cache->save('hits', 'blocks', $blockcache);
     }
     return $blockcache;
 }
 
-$blocksession = block_Hits_cache($titanium_config['block_cachetime']);
+$blocksession = block_Hits_cache($evoconfig['block_cachetime']);
 
 $content = "<div style='text-align: center; width: 100%;'>\n";
 if (empty($blocksession[1]['count'])) {
     $content .= "<p style='text-align:center;'>"._BLOCKPROBLEM2."</p>\n";
 } else {
     $content .= "<p style='text-align: center;'>"._WERECEIVED."</p>\n";
-    // $content .= "<p style='text-align: center; font-weight: bold; font-size: large;'><a href='modules.php?name=Statistics'>".$blocksession[1]['count']."</a></p>";
     $content .= "<p style='text-align: center; font-weight: bold; font-size: large;'><a href='modules.php?name=Statistics'>".number_format ( $blocksession[1]['count'] , 0 , "." , "," )."</a></p>";
     $content .= "<p style='text-align: center;'>"._PAGESVIEWS."&nbsp;".$startdate."</p>\n";
 }

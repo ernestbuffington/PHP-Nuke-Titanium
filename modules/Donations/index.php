@@ -3,42 +3,36 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-/*======================================================================= 
-  Donations v1.0
- =======================================================================*/
 
-if (!defined('MODULE_FILE')){die('You can\'t access this file directly...');}
+if (!defined('MODULE_FILE')) {
+   die('You can\'t access this file directly...');
+}
 
 global $_GETVAR;
-
 $_GETVAR->unsetVariables();
 
-$titanium_module_name = basename(dirname(__FILE__));
-
-get_lang($titanium_module_name);
+$module_name = basename(dirname(__FILE__));
+get_lang($module_name);
 
 define('NUKE_DONATIONS', dirname(__FILE__) . '/');
 define('NUKE_DONATIONS_INCLUDES', NUKE_DONATIONS . 'includes/');
 
 include_once(NUKE_DONATIONS_INCLUDES . 'base.php');
 
-function donation_index() 
-{
-    global $titanium_lang_donate;
-    
-	donation_title();
-    
-	OpenTable();
+function donation_index() {
+    global $lang_donate;
+    donation_title();
+    OpenTable();
     echo "<div class=\"acenter\">\n";
-    echo "<a href=\"modules.php?name=Donations&op=view\"><img src=\"images/donations/view.png\" border=\"0\" alt=\"".$titanium_lang_donate['VIEW_DONATIONS']."\"><br />".$titanium_lang_donate['VIEW_DONATIONS']."</a><br /><br />";
-    echo "<a href=\"modules.php?name=Donations&op=make\"><img src=\"images/donations/money.png\" border=\"0\" alt=\"".$titanium_lang_donate['MAKE_DONATIONS']."\"><br />".$titanium_lang_donate['MAKE_DONATIONS']."</a>";
+    echo "<a href=\"modules.php?name=Donations&op=view\"><img src=\"images/donations/view.png\" border=\"0\" alt=\"".$lang_donate['VIEW_DONATIONS']."\"><br />".$lang_donate['VIEW_DONATIONS']."</a><br /><br />";
+    echo "<a href=\"modules.php?name=Donations&op=make\"><img src=\"images/donations/money.png\" border=\"0\" alt=\"".$lang_donate['MAKE_DONATIONS']."\"><br />".$lang_donate['MAKE_DONATIONS']."</a>";
 
     echo "</div>\n";
     CloseTable();
 }
 
-# global $more_js;
-$donation_js = '<script type="text/javascript">
+// global $more_js;
+$donation_js = '<script>
 function createCookie(name, value, days)
 {
   if (days) {
@@ -79,4 +73,5 @@ switch ($op) {
     break;
 }
 include_once(NUKE_BASE_DIR.'footer.php');
+
 ?>

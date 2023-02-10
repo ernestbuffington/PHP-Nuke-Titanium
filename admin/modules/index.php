@@ -40,7 +40,7 @@
 /*********************************************************/
 
 function adminMain() {
-    global $titanium_language, $admin, $aid, $titanium_prefix, $file, $titanium_db, $sitename, $titanium_user_prefix, $admin_file, $bgcolor1, $titanium_config, $admdata, $titanium_dbtype, $cache, $json, $admincookie, $radminsuper;
+    global $language, $admin, $aid, $prefix, $file, $db, $sitename, $user_prefix, $admin_file, $bgcolor1, $evoconfig, $admdata, $dbtype, $cache, $json, $admincookie, $radminsuper;
 /*****[BEGIN]******************************************
  [ Mod:     Admin Icon/Link Pos                 v1.0.0 ]
  ******************************************************/
@@ -53,13 +53,13 @@ function adminMain() {
 /*****[BEGIN]******************************************
  [ Other:   Date Fix                           v1.0.0 ]
  ******************************************************/
-    $month = date('M');
-    $curDate2 = "%".$month[0].$month[1].$month[2]."%".date('d')."%".date('Y')."%";
-    $ty = time() - 86400;
-    $preday = strftime('%d', $ty);
-    $premonth = strftime('%B', $ty);
-    $preyear = strftime('%Y', $ty);
-    $curDateP = "%".$premonth[0].$premonth[1].$premonth[2]."%".$preday."%".$preyear."%";
+    //$month = date('M');
+    //$curDate2 = "%".$month[0].$month[1].$month[2]."%".date('d')."%".date('Y')."%";
+    //$ty = time() - 86400;
+    //$preday = strftime('%d', $ty);
+    //$premonth = strftime('%B', $ty);
+    //$preyear = strftime('%Y', $ty);
+    //$curDateP = "%".$premonth[0].$premonth[1].$premonth[2]."%".$preday."%".$preyear."%";
 /*****[END]********************************************
  [ Other:   Date Fix                           v1.0.0 ]
  ******************************************************/

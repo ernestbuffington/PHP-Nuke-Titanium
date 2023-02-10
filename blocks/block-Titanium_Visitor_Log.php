@@ -19,13 +19,13 @@
 ************************************************************************/
 defined('NUKE_EVO') or die('Just go away, Shit Head!');
 
-global $titanium_db, $titanium_prefix, $userinfo;
+global $db, $prefix, $userinfo;
 global $evouserinfo_avatar, $phpbb2_board_config, $userinfo; 
 
 $max_height = '60';
 $max_width = '60';
 
-$result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 10");
+$result = $db->sql_query("SELECT * FROM `".$prefix."_users_who_been` as whb, `".USERS_TABLE."` as u WHERE whb.username = u.username AND whb.username != '".$userinfo['username']."' ORDER BY `last_visit` DESC LIMIT 10");
 
 $content   = '<div align="center">';
 $content  .= '<table border="0" width="200">';
@@ -34,7 +34,7 @@ $content  .= '<td align="center">';
 
 $content  .= '<table border="1" cellpadding="0" cellspacing="1" class="visitorlog">';
 
-while($whosbeen = $titanium_db->sql_fetchrow($result)):
+while($whosbeen = $db->sql_fetchrow($result)):
 
 	if($whosbeen['user_from_flag'] ):
 	$whosbeen['user_from_flag'] = str_replace('.png','',$whosbeen['user_from_flag']);
@@ -69,7 +69,7 @@ while($whosbeen = $titanium_db->sql_fetchrow($result)):
 		# user_allowavatar = 3
 		case USER_AVATAR_GALLERY:
 		$avatar = '<td width="45px">'. ( $phpbb2_board_config['allow_avatar_local'] ) 
-		? '<div align="center"><img class="rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $phpbb2_board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.gif' || $whosbeen['user_avatar'] == 'gallery/blank.png') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" border="0" /></td>' : '</div></td>';
+		? '<div align="center"><img class="rounded-corners-last-vistors" style="max-height: '.$max_height.'px; max-width: '.$max_width.'px;" src="' . $phpbb2_board_config['avatar_gallery_path'] . '/' . (($whosbeen['user_avatar'] == 'blank.png' || $whosbeen['user_avatar'] == 'gallery/blank.png') ? 'blank.png' : $whosbeen['user_avatar']) . '" alt="" border="0" /></td>' : '</div></td>';
 		break;
 
 	   }
@@ -77,7 +77,7 @@ while($whosbeen = $titanium_db->sql_fetchrow($result)):
 	
 	
 	$content .= '<td align="center" width="45px"><a href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">'.$avatar.'</a></td>';
-    $content .= '<td align="left"><a class="turdball" style="text-decoration: none;" href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">
+    $content .= '<td align="left"><a class="visitorName" style="text-decoration: none;" href="modules.php?name=Profile&mode=viewprofile&u='.$whosbeen['user_id'].'">
 	<strong>&nbsp;&nbsp;'.UsernameColor($whosbeen['username']).'<br />&nbsp;&nbsp;<a style="text-decoration: none;" href="modules.php?name=Private_Messages&mode=post&u='.$whosbeen['user_id'].'"><font size="5" color="orange"><i class="bi bi-envelope"></i><font color="gold" size="5"><i class="bi bi-arrow-right-short"></i><i class="bi bi-mailbox"></i></font></font>
 	
 	&nbsp;<br />

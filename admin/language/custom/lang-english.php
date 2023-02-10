@@ -170,8 +170,8 @@ define("_4nwhocopy","4nWhoIsOnline by <a href=\"http://warpspeed.4thdimension.de
 /*****[BEGIN]******************************************
  [ Other:   URL Check                          v1.0.0 ]
  ******************************************************/
-define("_URL_SERVER_ERROR","PROCEED?");
-define("_URL_CONFIRM_ERROR","PROCEED?");
+define("_URL_SERVER_ERROR","The URL you entered (%s) does not match the URL that the server is reporting (%s)");
+define("_URL_CONFIRM_ERROR","Do you want to keep this setting?");
 /*****[END]********************************************
  [ Other:   URL Check                          v1.0.0 ]
  ******************************************************/
@@ -237,8 +237,8 @@ define("_ADMIN_IP_LOCK", "Admin IP Lock");
 /*****[BEGIN]******************************************
  [ Base:    Theme Management                   v1.0.2 ]
  ******************************************************/
-define("_THEMES_HEADER", "<bold><h1>Theme Management</h1></bold>");
-define("_THEMES_DEFAULT", "Default Theme");
+define("_THEMES_HEADER", "Nuke Evolution :: Theme Management");
+if (!defined('_THEMES_DEFAULT')) define('_THEMES_DEFAULT', 'Default Theme');
 define("_THEMES_DEFAULT_NOT_FOUND", " was NOT found!");
 define("_THEMES_DEFAULT_MISSING", "Your default theme is missing! ");
 define("_THEMES_ERROR", "Error");
@@ -290,7 +290,7 @@ define("_THEMES_UNINSTALL1", "Are you sure you wish to uninstall this theme?");
 define("_THEMES_UNINSTALL2", "You will lose ALL your settings for this theme!");
 define("_THEMES_UNINSTALL3", "This will set ALL users using this theme back to the default theme!");
 define("_THEMES_THEME_UNINSTALL", "Uninstall Theme");
-define("_THEMES_QUNINSTALLED", "Uninstalled");
+if (!defined('_THEMES_QUNINSTALLED')) define('_THEMES_QUNINSTALLED', 'Uninstalled');
 define("_THEMES_THEME_MISSING", "Theme Missing!");
 define("_THEMES_THEME_DEACTIVATED", "Theme deactivated successfully!");
 define("_THEMES_THEME_DEACTIVATED_FAILED", "Theme deactivation failed!");
@@ -317,8 +317,6 @@ define("_THEMES_NOT_COMPAT", "<font color='red'>Your theme is not compatible wit
 define("_THEMES_PERMISSIONS", "Permissions");
 define("_THEMES_LIST", "Return to Theme List");
 define('_THEMES_DOWNLOAD_FILES','Download & Back up Theme');
-
-
 define('_THEMES_USER_OPTIONS', 'User Options');
 define('_THEMES_USERID', 'User ID');
 define('_THEMES_USERNAME', 'Username');
@@ -328,7 +326,7 @@ define('_THEMES_USERTHEME', 'Theme');
 define('_THEMES_FUNCTIONS', 'Functions');
 define('_THEMES_USER_RESET', 'Reset to Default');
 define('_THEMES_USER_MODIFY', 'Modify Theme');
-define('_THEMES_SUBMIT', 'Submit');
+if (!defined('_THEMES_SUBMIT')) define('_THEMES_SUBMIT', 'Submit');
 define('_NOREALNAME', 'N/A');
 define('_THEMES_PAGE_FIRST', 'First');
 define('_THEMES_PAGE_PREVIOUS', 'Prev');
@@ -440,4 +438,9 @@ define('_BLOCK_EDIT','Block Edit');
 /*****[END]********************************************
  [ Base:    Blocks                             v.1.0.0]
  ******************************************************/
+
+
+ 
+
+
 ?>

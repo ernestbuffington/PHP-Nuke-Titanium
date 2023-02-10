@@ -24,53 +24,53 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB2'))
+if (!defined('IN_PHPBB'))
 {
-    die('ACCESS DENIED');
+    die('Hacking attempt');
 }
 
 // Build and install Module
-function build_module($info_array, $titanium_lang_array, $php_file, $titanium_module_id = -1)
+function build_module($info_array, $lang_array, $php_file, $module_id = -1)
 {
-    global $directory_mode, $file_mode, $phpbb2_root_path, $titanium_db, $titanium_lang;
+    global $directory_mode, $file_mode, $phpbb_root_path, $db, $lang;
     
-    if ($titanium_module_id == -1)
+    if ($module_id == -1)
     {
         $sql = "SELECT short_name FROM " . MODULES_TABLE . " WHERE short_name = '" . trim($info_array['short_name']) . "'";
 
-        if (!($result = $titanium_db->sql_query($sql)) )
+        if (!($result = $db->sql_query($sql)) )
         {
             message_die(GENERAL_ERROR, 'Unable to get short name', '', __LINE__, __FILE__, $sql);
         }
     
-        if ($titanium_db->sql_numrows($result) > 0)
+        if ($db->sql_numrows($result) > 0)
         {
-            message_die(GENERAL_ERROR, sprintf($titanium_lang['Inst_module_already_exist'], trim($info_array['short_name'])));
+            message_die(GENERAL_ERROR, sprintf($lang['Inst_module_already_exist'], trim($info_array['short_name'])));
         }
     }
     else
     {
-        $sql = "SELECT * FROM " . MODULES_TABLE . " WHERE module_id = " . $titanium_module_id;
+        $sql = "SELECT * FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
 
-        if (!($result = $titanium_db->sql_query($sql)) )
+        if (!($result = $db->sql_query($sql)) )
         {
             message_die(GENERAL_ERROR, 'Unable to get short name', "", __LINE__, __FILE__, $sql);
         }
     
-        if ($titanium_db->sql_numrows($result) == 0)
+        if ($db->sql_numrows($result) == 0)
         {
-            message_die(GENERAL_ERROR, 'Unable to get Module ' . $titanium_module_id);
+            message_die(GENERAL_ERROR, 'Unable to get Module ' . $module_id);
         }
         
-        $update_module_row = $titanium_db->sql_fetchrow($result);
+        $update_module_row = $db->sql_fetchrow($result);
 
         if (trim($update_module_row['short_name']) != trim($info_array['short_name']))
         {
-            message_die(GENERAL_ERROR, $titanium_lang['Incorrect_update_module']);
+            message_die(GENERAL_ERROR, $lang['Incorrect_update_module']);
         }
     }
 
-    $directory = $phpbb2_root_path . 'modules/' . trim($info_array['short_name']);
+    $directory = $phpbb_root_path . 'modules/' . trim($info_array['short_name']);
 
     if (!file_exists($directory))
     {
@@ -83,16 +83,16 @@ function build_module($info_array, $titanium_lang_array, $php_file, $titanium_mo
     }
 
     // Write module.php
-    $titanium_module = $directory . '/module.php';
+    $module = $directory . '/module.php';
 
-    if (file_exists($titanium_module))
+    if (file_exists($module))
     {
-        chmod($titanium_module, $directory_mode);
+        chmod($module, $directory_mode);
     }
 
-    if (!($fp = fopen($titanium_module, 'wt')))
+    if (!($fp = fopen($module, 'wt')))
     {
-        message_die(GENERAL_MESSAGE, 'Unable to write ' . $titanium_module);
+        message_die(GENERAL_MESSAGE, 'Unable to write ' . $module);
     }
 
     $php_file = trim($php_file);
@@ -100,40 +100,40 @@ function build_module($info_array, $titanium_lang_array, $php_file, $titanium_mo
     
     fclose($fp);
 
-    chmod($titanium_module, $file_mode);
+    chmod($module, $file_mode);
     chmod($directory, $directory_mode);
 
     $short_name = trim($info_array['short_name']);
 
     // Write Language File
-    @reset($titanium_lang_array);
-    while (list($key, $data) = @each($titanium_lang_array))
+    @reset($lang_array);
+    while (list($key, $data) = @each($lang_array))
     {
-        $titanium_language = trim($key);
-        $titanium_language_dir = $phpbb2_root_path . 'modules/language';
-        $titanium_language_file = $phpbb2_root_path . 'modules/language/' . $titanium_language . '/lang_modules.php';
+        $language = trim($key);
+        $language_dir = $phpbb_root_path . 'modules/language';
+        $language_file = $phpbb_root_path . 'modules/language/' . $language . '/lang_modules.php';
 
-        if (!file_exists($titanium_language_dir))
+        if (!file_exists($language_dir))
         {
             @umask(0);
-            mkdir($titanium_language_dir, $directory_mode);
+            mkdir($language_dir, $directory_mode);
         }
         else
         {
-            chmod($titanium_language_dir, $directory_mode);
+            chmod($language_dir, $directory_mode);
         }
         
-        if (!file_exists($titanium_language_dir . '/' . $titanium_language))
+        if (!file_exists($language_dir . '/' . $language))
         {
             @umask(0);
-            mkdir($titanium_language_dir . '/' . $titanium_language, $directory_mode);
+            mkdir($language_dir . '/' . $language, $directory_mode);
         }
         else
         {
-            chmod($titanium_language_dir . '/' . $titanium_language, $directory_mode);
+            chmod($language_dir . '/' . $language, $directory_mode);
         }
         
-        if (!file_exists($titanium_language_file))
+        if (!file_exists($language_file))
         {
             $contents = "<?php
 /*======================================================================= 
@@ -143,10 +143,10 @@ function build_module($info_array, $titanium_lang_array, $php_file, $titanium_mo
         }
         else
         {
-            chmod($titanium_language_file, $file_mode);
-            $contents = implode('', @file($titanium_language_file));
+            chmod($language_file, $file_mode);
+            $contents = implode('', @file($language_file));
             
-            if ($titanium_module_id != -1)
+            if ($module_id != -1)
             {
                 $contents = delete_language_block($contents, $short_name);
             }
@@ -159,22 +159,22 @@ function build_module($info_array, $titanium_lang_array, $php_file, $titanium_mo
         $contents .= "\n// [" . $short_name . "]\n";
         $contents .= "\$" . $short_name . " = array();\n\n";
         // add the language file
-        $contents = $contents . str_replace('$titanium_lang', '$' . $short_name, $data) . "\n";
+        $contents = $contents . str_replace('$lang', '$' . $short_name, $data) . "\n";
         // add the END and closing tag
         $contents .= "// [/" . $short_name . "]\n\n";
         $contents .= "?>";
 
-        if (!($fp = fopen($titanium_language_file, 'wt')))
+        if (!($fp = fopen($language_file, 'wt')))
         {
-            message_die(GENERAL_ERROR, 'Unable to write to: ' . $titanium_language_file);
+            message_die(GENERAL_ERROR, 'Unable to write to: ' . $language_file);
         }
 
         fwrite($fp, $contents, strlen($contents));
         fclose($fp);
 
-        chmod($titanium_language_file, $file_mode);
-        chmod($titanium_language_dir . '/' . $titanium_language, $directory_mode);
-        chmod($titanium_language_dir, $directory_mode);
+        chmod($language_file, $file_mode);
+        chmod($language_dir . '/' . $language, $directory_mode);
+        chmod($language_dir, $directory_mode);
     }
 
     // If we have not quit yet, let us add the info to the database too. ;)
@@ -204,14 +204,14 @@ function build_module($info_array, $titanium_lang_array, $php_file, $titanium_mo
         {
             $sql = "SELECT update_time FROM " . MODULES_TABLE . " WHERE short_name = '" . $update_time_module . "'";
 
-            if (!($result = $titanium_db->sql_query($sql)))
+            if (!($result = $db->sql_query($sql)))
             {
                 message_die(GENERAL_ERROR, 'Unable to get update time', "", __LINE__, __FILE__, $sql);
             }
         
-            if ($titanium_db->sql_numrows($result) > 0)
+            if ($db->sql_numrows($result) > 0)
             {
-                $row = $titanium_db->sql_fetchrow($result);
+                $row = $db->sql_fetchrow($result);
                 $update_time = intval($row['update_time']);
             }
             else
@@ -226,18 +226,18 @@ function build_module($info_array, $titanium_lang_array, $php_file, $titanium_mo
         $update_time = intval($info_array['update_time']);
     }
 
-    if ($titanium_module_id == -1)
+    if ($module_id == -1)
     {
         $sql = "SELECT max(module_order) as max_order FROM " . MODULES_TABLE;
 
-        if (!($result = $titanium_db->sql_query($sql)))
+        if (!($result = $db->sql_query($sql)))
         {
             message_die(GENERAL_ERROR, 'Unable to get maximum module order', '', __LINE__, __FILE__, $sql);
         }
 
-        if ($titanium_db->sql_numrows($result) > 0)
+        if ($db->sql_numrows($result) > 0)
         {
-            $row = $titanium_db->sql_fetchrow($result);
+            $row = $db->sql_fetchrow($result);
             $next_order = intval($row['max_order']) + 10;
         }
         else
@@ -249,19 +249,19 @@ function build_module($info_array, $titanium_lang_array, $php_file, $titanium_mo
         $sql = "INSERT INTO " . MODULES_TABLE . " (short_name, update_time, module_order, active)
         VALUES ('" . trim($info_array['short_name']) . "', " . $update_time . ", " . $next_order . ", 0)";
 
-        if (!($result = $titanium_db->sql_query($sql)))
+        if (!($result = $db->sql_query($sql)))
         {
             message_die(GENERAL_ERROR, 'Unable to insert module', '', __LINE__, __FILE__, $sql);
         }
 
-        $next_module_id = $titanium_db->sql_nextid($result);
+        $next_module_id = $db->sql_nextid($result);
     }
     else
     {
         // Fill Module Table
-        $sql = "UPDATE " . MODULES_TABLE . " SET update_time = " . $update_time . " WHERE module_id = " . $titanium_module_id;
+        $sql = "UPDATE " . MODULES_TABLE . " SET update_time = " . $update_time . " WHERE module_id = " . $module_id;
 
-        if (!($result = $titanium_db->sql_query($sql)))
+        if (!($result = $db->sql_query($sql)))
         {
             message_die(GENERAL_ERROR, 'Unable to update module', '', __LINE__, __FILE__, $sql);
         }
@@ -299,14 +299,14 @@ function build_module($info_array, $titanium_lang_array, $php_file, $titanium_mo
         message_die(GENERAL_ERROR, 'Unable to install Module, not enough informations');
     }
 
-    if ($titanium_module_id == -1)
+    if ($module_id == -1)
     {
         $keys = 'module_id' . $keys;
         $values = $next_module_id . $values;
 
         $sql = "INSERT INTO " . MODULE_INFO_TABLE . " (" . $keys . ") VALUES (" . $values . ")";
     
-        if (!($result = $titanium_db->sql_query($sql)))
+        if (!($result = $db->sql_query($sql)))
         {
             message_die(GENERAL_ERROR, 'Unable to insert module', '', __LINE__, __FILE__, $sql);
         }
@@ -325,47 +325,47 @@ function build_module($info_array, $titanium_lang_array, $php_file, $titanium_mo
             }
         }
 
-        $sql = "UPDATE " . MODULE_INFO_TABLE . " SET " . $update_query . " WHERE module_id = " . $titanium_module_id;
+        $sql = "UPDATE " . MODULE_INFO_TABLE . " SET " . $update_query . " WHERE module_id = " . $module_id;
     
-        if (!($result = $titanium_db->sql_query($sql)))
+        if (!($result = $db->sql_query($sql)))
         {
             message_die(GENERAL_ERROR, 'Unable to update module', '', __LINE__, __FILE__, $sql);
         }
     }
 
-    if ($titanium_module_id == -1)
+    if ($module_id == -1)
     {
         $sql = "INSERT INTO " . CACHE_TABLE . " (module_id, module_cache_time, db_cache, priority)
         VALUES (" . $next_module_id . ", 0, '', 0)";
 
-        if (!($result = $titanium_db->sql_query($sql)))
+        if (!($result = $db->sql_query($sql)))
         {
             message_die(GENERAL_ERROR, 'Unable to insert module cache', '', __LINE__, __FILE__, $sql);
         }
     }
     else
     {
-        $sql = "UPDATE " . CACHE_TABLE . " SET module_cache_time = 0, db_cache = '', priority = 0 WHERE module_id = " . $titanium_module_id;
+        $sql = "UPDATE " . CACHE_TABLE . " SET module_cache_time = 0, db_cache = '', priority = 0 WHERE module_id = " . $module_id;
 
-        if (!($result = $titanium_db->sql_query($sql)))
+        if (!($result = $db->sql_query($sql)))
         {
             message_die(GENERAL_ERROR, 'Unable to update module cache', '', __LINE__, __FILE__, $sql);
         }
     }
 
     // Admin Panel Integration
-    if ($titanium_module_id != -1)
+    if ($module_id != -1)
     {
-        $sql = "DELETE FROM " . MODULE_ADMIN_TABLE . " WHERE module_id = " . $titanium_module_id;
+        $sql = "DELETE FROM " . MODULE_ADMIN_TABLE . " WHERE module_id = " . $module_id;
 
-        if (!($result = $titanium_db->sql_query($sql)))
+        if (!($result = $db->sql_query($sql)))
         {
             message_die(GENERAL_ERROR, 'Unable to delete admin panel entries', '', __LINE__, __FILE__, $sql);
         }
     }
     else
     {
-        $titanium_module_id = $next_module_id;
+        $module_id = $next_module_id;
     }
 
     if ( (isset($info_array['admin_panel'])) && (trim($info_array['admin_panel']) != '') )
@@ -385,9 +385,9 @@ function build_module($info_array, $titanium_lang_array, $php_file, $titanium_mo
             }
 
             $sql = "INSERT INTO " . MODULE_ADMIN_TABLE . " (module_id, config_name, config_value, config_type, config_title, config_explain, config_trigger) 
-            VALUES (" . $titanium_module_id . ", '" . $config_array['option'] . "', '" . $config_array['default'] . "', '" . $config_array['type'] . "', '" . $config_array['title'] . "', '" . $config_array['explain'] . "', '" . $config_array['trigger'] . "')";
+            VALUES (" . $module_id . ", '" . $config_array['option'] . "', '" . $config_array['default'] . "', '" . $config_array['type'] . "', '" . $config_array['title'] . "', '" . $config_array['explain'] . "', '" . $config_array['trigger'] . "')";
 
-            if (!($result = $titanium_db->sql_query($sql)))
+            if (!($result = $db->sql_query($sql)))
             {
                 message_die(GENERAL_ERROR, 'Unable to insert admin panel entry', '', __LINE__, __FILE__, $sql);
             }
@@ -427,11 +427,11 @@ function read_pak_file($stream, $file_ident)
 {
 
     $ident = 'ÿüÌ' . $file_ident . 'Ìüÿ';
-    $phpbb2_end_ident = 'ÌÌÿ' . $file_ident . 'ÿÌÌ'; 
+    $end_ident = 'ÌÌÿ' . $file_ident . 'ÿÌÌ'; 
 
     $begin = strpos($stream, $ident);
     $begin += strlen($ident);
-    $length = strpos($stream, $phpbb2_end_ident);
+    $length = strpos($stream, $end_ident);
     $length = $length - $begin;
 
     $content = substr($stream, $begin, $length);
@@ -439,50 +439,50 @@ function read_pak_file($stream, $file_ident)
 }
 
 // Move Module one up
-function move_up($titanium_module_id)
+function move_up($module_id)
 {
-    global $titanium_db;
+    global $db;
 
     // Select current module order
-    $sql = "SELECT module_order FROM " . MODULES_TABLE . " WHERE module_id = " . $titanium_module_id;
+    $sql = "SELECT module_order FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
 
-    if (!($result = $titanium_db->sql_query($sql)))
+    if (!($result = $db->sql_query($sql)))
     {
         message_die(GENERAL_ERROR, 'Unable to select module order', '', __LINE__, __FILE__, $sql);
     }
 
-    $row = $titanium_db->sql_fetchrow($result);
+    $row = $db->sql_fetchrow($result);
     $old_module_order = intval($row['module_order']);
     
     // Select Module in order before the current one
     $sql = "SELECT module_id, module_order FROM " . MODULES_TABLE . " WHERE module_order < " . $old_module_order . " ORDER BY module_order DESC LIMIT 1";
 
-    if (!($result = $titanium_db->sql_query($sql)))
+    if (!($result = $db->sql_query($sql)))
     {
         message_die(GENERAL_ERROR, 'Unable to select module order', '', __LINE__, __FILE__, $sql);
     }
 
-    if ($titanium_db->sql_numrows($result) == 0)
+    if ($db->sql_numrows($result) == 0)
     {
         return;
     }
     
-    $row = $titanium_db->sql_fetchrow($result);
+    $row = $db->sql_fetchrow($result);
     $new_module_order = intval($row['module_order']);
     $replaced_module_id = intval($row['module_id']);
 
     // Assign current module order to the one before
     $sql = "UPDATE " . MODULES_TABLE . " SET module_order = " . $old_module_order . " WHERE module_id = " . $replaced_module_id;
 
-    if (!($result = $titanium_db->sql_query($sql)))
+    if (!($result = $db->sql_query($sql)))
     {
         message_die(GENERAL_ERROR, 'Unable to update module order', '', __LINE__, __FILE__, $sql);
     }
 
     // Assign the new module order to the current module
-    $sql = "UPDATE " . MODULES_TABLE . " SET module_order = " . $new_module_order . " WHERE module_id = " . $titanium_module_id;
+    $sql = "UPDATE " . MODULES_TABLE . " SET module_order = " . $new_module_order . " WHERE module_id = " . $module_id;
 
-    if (!($result = $titanium_db->sql_query($sql)))
+    if (!($result = $db->sql_query($sql)))
     {
         message_die(GENERAL_ERROR, 'Unable to update module order', '', __LINE__, __FILE__, $sql);
     }
@@ -491,50 +491,50 @@ function move_up($titanium_module_id)
 }
 
 // Move Module one down
-function move_down($titanium_module_id)
+function move_down($module_id)
 {
-    global $titanium_db;
+    global $db;
 
     // Select current module order
-    $sql = "SELECT module_order FROM " . MODULES_TABLE . " WHERE module_id = " . $titanium_module_id;
+    $sql = "SELECT module_order FROM " . MODULES_TABLE . " WHERE module_id = " . $module_id;
 
-    if (!($result = $titanium_db->sql_query($sql)))
+    if (!($result = $db->sql_query($sql)))
     {
         message_die(GENERAL_ERROR, 'Unable to select module order', '', __LINE__, __FILE__, $sql);
     }
 
-    $row = $titanium_db->sql_fetchrow($result);
+    $row = $db->sql_fetchrow($result);
     $old_module_order = intval($row['module_order']);
     
     // Select Module in order after the current one
     $sql = "SELECT module_id, module_order FROM " . MODULES_TABLE . " WHERE module_order > " . $old_module_order . " ORDER BY module_order ASC LIMIT 1";
 
-    if (!($result = $titanium_db->sql_query($sql)))
+    if (!($result = $db->sql_query($sql)))
     {
         message_die(GENERAL_ERROR, 'Unable to select module order', '', __LINE__, __FILE__, $sql);
     }
 
-    if ($titanium_db->sql_numrows($result) == 0)
+    if ($db->sql_numrows($result) == 0)
     {
         return;
     }
     
-    $row = $titanium_db->sql_fetchrow($result);
+    $row = $db->sql_fetchrow($result);
     $new_module_order = intval($row['module_order']);
     $replaced_module_id = intval($row['module_id']);
 
     // Assign current module order to the one before
     $sql = "UPDATE " . MODULES_TABLE . " SET module_order = " . $old_module_order . " WHERE module_id = " . $replaced_module_id;
 
-    if (!($result = $titanium_db->sql_query($sql)))
+    if (!($result = $db->sql_query($sql)))
     {
         message_die(GENERAL_ERROR, 'Unable to update module order', '', __LINE__, __FILE__, $sql);
     }
 
     // Assign the new module order to the current module
-    $sql = "UPDATE " . MODULES_TABLE . " SET module_order = " . $new_module_order . " WHERE module_id = " . $titanium_module_id;
+    $sql = "UPDATE " . MODULES_TABLE . " SET module_order = " . $new_module_order . " WHERE module_id = " . $module_id;
 
-    if (!($result = $titanium_db->sql_query($sql)))
+    if (!($result = $db->sql_query($sql)))
     {
         message_die(GENERAL_ERROR, 'Unable to update module order', '', __LINE__, __FILE__, $sql);
     }
@@ -543,13 +543,13 @@ function move_down($titanium_module_id)
 }
 
 // activate module
-function activate($titanium_module_id)
+function activate($module_id)
 {
-    global $titanium_db;
+    global $db;
 
-    $sql = "UPDATE " . MODULES_TABLE . " SET active = 1 WHERE module_id = " . $titanium_module_id;
+    $sql = "UPDATE " . MODULES_TABLE . " SET active = 1 WHERE module_id = " . $module_id;
 
-    if (!($result = $titanium_db->sql_query($sql)))
+    if (!($result = $db->sql_query($sql)))
     {
         message_die(GENERAL_ERROR, 'Unable to activate module', '', __LINE__, __FILE__, $sql);
     }
@@ -558,13 +558,13 @@ function activate($titanium_module_id)
 }
 
 // deactivate module
-function deactivate($titanium_module_id)
+function deactivate($module_id)
 {
-    global $titanium_db;
+    global $db;
 
-    $sql = "UPDATE " . MODULES_TABLE . " SET active = 0 WHERE module_id = " . $titanium_module_id;
+    $sql = "UPDATE " . MODULES_TABLE . " SET active = 0 WHERE module_id = " . $module_id;
 
-    if (!($result = $titanium_db->sql_query($sql)))
+    if (!($result = $db->sql_query($sql)))
     {
         message_die(GENERAL_ERROR, 'Unable to deactivate module', '', __LINE__, __FILE__, $sql);
     }
@@ -575,11 +575,11 @@ function deactivate($titanium_module_id)
 // Resync Module Order
 function resync_module_order()
 {
-    global $titanium_db;
+    global $db;
 
     $sql = "SELECT * FROM " . MODULES_TABLE . " ORDER BY module_order ASC";
 
-    if( !$result = $titanium_db->sql_query($sql) )
+    if( !$result = $db->sql_query($sql) )
     {
         message_die(GENERAL_ERROR, "Couldn't get list of Modules", "", __LINE__, __FILE__, $sql);
     }
@@ -587,12 +587,12 @@ function resync_module_order()
     $i = 10;
     $inc = 10;
 
-    while( $row = $titanium_db->sql_fetchrow($result) )
+    while( $row = $db->sql_fetchrow($result) )
     {
         $sql = "UPDATE " . MODULES_TABLE . "
             SET module_order = $i
             WHERE module_id = " . intval($row['module_id']);
-        if( !$titanium_db->sql_query($sql) )
+        if( !$db->sql_query($sql) )
         {
             message_die(GENERAL_ERROR, "Couldn't update order fields", "", __LINE__, __FILE__, $sql);
         }

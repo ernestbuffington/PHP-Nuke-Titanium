@@ -30,7 +30,7 @@ if (!defined('ADMIN_FILE')) {
    die ("Illegal File Access");
 }
 
-global $titanium_prefix, $titanium_db;
+global $prefix, $db;
 if (is_mod_admin()) {
 
     include_once(NUKE_ADMIN_MODULE_DIR.'settings/functions.php');
@@ -38,7 +38,7 @@ if (is_mod_admin()) {
     switch($op) {
     
         case "Configure":
-        $sub = intval($_REQUEST['sub']);
+        $sub = intval($_REQUEST['sub'] = $_REQUEST['sub'] ?? '');
         show_settings($sub);
         break;
     

@@ -30,16 +30,16 @@ if(!defined('NUKE_EVO')) {
 define("NSNCBLOCKS_IS_LOADED", TRUE);
 
 // Load required lang file
-global $titanium_language;
-if(!isset($titanium_lang)) { $titanium_lang = $titanium_language; }
-if(!preg_match("/\./","$titanium_lang") AND file_exists(NUKE_LANGUAGE_DIR.'cblocks/lang-'.$titanium_lang.'.php')) {
-  require_once(NUKE_LANGUAGE_DIR.'cblocks/lang-'.$titanium_lang.'.php');
+global $language;
+if(!isset($lang)) { $lang = $language; }
+if(!preg_match("/\./","$lang") AND file_exists(NUKE_LANGUAGE_DIR.'cblocks/lang-'.$lang.'.php')) {
+  require_once(NUKE_LANGUAGE_DIR.'cblocks/lang-'.$lang.'.php');
 } else {
   require_once(NUKE_LANGUAGE_DIR.'cblocks/lang-english.php');
 }
 
 function cb_blocks($rid) {
-    global $titanium_prefix, $titanium_db, $cache;
+    global $prefix, $db, $cache;
     static $cb_blocks;
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v1.0.0 ]
@@ -49,11 +49,11 @@ function cb_blocks($rid) {
 /*****[END]********************************************
  [ Base:    Caching System                     v1.0.0 ]
  ******************************************************/
-            $result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsncb_blocks`");
-            while($row = $titanium_db->sql_fetchrow($result)) {
+            $result = $db->sql_query("SELECT * FROM `".$prefix."_nsncb_blocks`");
+            while($row = $db->sql_fetchrow($result)) {
                 $cb_blocks[$row['rid']][] = $row;
             }
-            $titanium_db->sql_freeresult($result);
+            $db->sql_freeresult($result);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v1.0.0 ]
  ******************************************************/
@@ -86,14 +86,14 @@ function cb_blocks($rid) {
 }
 
 function CBSample($set) {
-    global $titanium_db, $titanium_prefix;
-    $cbinfo = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsncb_config` WHERE `cgid`='$set'"));
+    global $db, $prefix;
+    $cbinfo = $db->sql_fetchrow($db->sql_query("SELECT * FROM `".$prefix."_nsncb_config` WHERE `cgid`='$set'"));
     if($cbinfo['height'] <> "0") { $cheight = "height='".$cbinfo['height']."' "; } else { $cheight = ""; }
     OpenTable();
     echo "<table width='100%' ".$cheight."border='0' cellspacing='1' cellpadding='0' bgcolor='$bgcolor2'><tr><td valign='top'>\n";
     echo "<table width='100%' ".$cheight."border='0' cellspacing='1' cellpadding='4' bgcolor='$bgcolor1'><tr>";
-    $result3 = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsncb_blocks` WHERE `cgid`='$set' ORDER BY `cbid`");
-    while($cbidinfo = $titanium_db->sql_fetchrow($result3)) {
+    $result3 = $db->sql_query("SELECT * FROM `".$prefix."_nsncb_blocks` WHERE `cgid`='$set' ORDER BY `cbid`");
+    while($cbidinfo = $db->sql_fetchrow($result3)) {
         if($cbidinfo['cbid'] <= $cbinfo['count']) {
             if($cbidinfo['wtype'] == '0') {
                 echo "<td width='".$cbidinfo['width']."' valign='top' align='center'>\n";

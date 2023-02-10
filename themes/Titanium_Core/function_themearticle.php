@@ -1,37 +1,21 @@
 <?php
-#---------------------------------------------------------------------------------------#
-# function themearticlae                                                                #
-#---------------------------------------------------------------------------------------#
-# THEME SYSTEM FILE                                                                     #
-#---------------------------------------------------------------------------------------#
 # THEME INFO                                                                            #
-# Titanium_Core Theme v2.0 (Fixed & Full Width)                                         #
+# Titanium Core Theme v2.0 (Fixed & Full Width)                                         #
 #                                                                                       #
-# Final Build Date 03/16/2021 Tuesday 12:54am                                           #
+# Final Build Date 10/09/2022 Tuesday 12:54am                                           #
 #                                                                                       #
-# A Very Nice Gold Theme Design.                                                        #
-# Copyright © 2021 By: TheGhost AKA EA Buffington                                       #
-# e-Mail : ernest.buffington@gmail.com                                                  #
+# A Very Nice Gold Template Theme                                                       #
+# Copyright © 2021 : Brandon Maintenance Management                                     #
+# e-Mail : brandon.maintenance.management@gmail.com                                     #
 #---------------------------------------------------------------------------------------#
-# CREATION INFO                                                                         #
-# Created On: 03/16/2021 Tuesday 12:54am (v1.0)                                         #
-#                                                                                       #
-# Credit goes to Lonestar On: 1st August, 2019 (v3.0)                                   #
-# HTML5 Theme Code By: Lonestar (Lonestar-Modules.com)                                  #
-#                                                                                       #
-# Credit goes to TheMortal                                                              #
-# For his CSS MENU                                                                      #
-#                                                                                       #
-# Read CHANGELOG File for Updates & Upgrades Info                                       #
-#                                                                                       #
-# Designed By: TheGhost & Sebastian                                                     #
-# Web Site: https://www.86it.us                                                         #
-# Purpose: PHP-Nuke Titanium                                                            #
+# Designed By: Ernest Buffington                                                        #
+# Web Site: https://www.theghost.86it.us                                                #
+# Purpose: PHP-Nuke Titanium v4.0.2                                                     #
 #---------------------------------------------------------------------------------------#
 # CMS INFO                                                                              #
-# PHP-Nuke Copyright (c) 2006 by Francisco Burzi phpnuke.org                            #
+# PHP-Nuke Copyright (c) 2002    : Francisco Burzi phpnuke.org                          #
 # Nuke Evolution Xtreme (c) 2010 : Enhanced PHP-Nuke Web Portal System                  #
-# PHP-Nuke Titanium (c) 2021     : Enhanced PHP-Nuke Web Portal System                  #
+# PHP-Nuke Titanium (c) 2022     : Enhanced and Advanced PHP-Nuke Web Portal System     #
 #---------------------------------------------------------------------------------------#
 #                                                                                       #
 # Special Honorable Mentions                                                            #
@@ -74,7 +58,7 @@ echo "\n\n<!-- function themearticle START -->\n";
 if (!empty($topicimage)) 
 {
  $t_image = (file_exists(theme_images_dir.'topics/'.$topicimage)) ? theme_images_dir.'topics/'.$topicimage : $tipath.$topicimage;
- $topic_img = '<td width="25%" align="center" class="extra"><a href="modules.php?name=Blog&new_topic='.$topic.'"><img src="'.$t_image.'" border="0" alt="'.$topictext.'" title="'.$topictext.'"></a></td>';
+ $topic_img = '<td width="25%" align="center" class="extra"><a href="modules.php?name=Blogs&new_topic='.$topic.'"><img src="'.$t_image.'" border="0" alt="'.$topictext.'" title="'.$topictext.'"></a></td>';
 	} 
 	else 
 	$topic_img = '';
@@ -101,7 +85,7 @@ if (!empty($topicimage))
 			$content .= $thetext.$notes;
 	}
 
-$posted .= '<strong>Posted by '.get_author($aid).' '.$datetime.'</strong>';
+$posted = '<strong>Posted by '.get_author($aid).' '.$datetime.'</strong>';
 $reads = '(<span style="color: '.$digits_txt_color.';"> Reads :</span> <span style="color: '.$digits_color.';"><strong>'.$counter.'</strong></span> )';
 
 print '<table class=blockz cellSpacing="0" cellPadding="0" border="0" width="100%">'."\n";

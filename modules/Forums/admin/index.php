@@ -13,6 +13,7 @@
  *   Id: index.php,v 1.40.2.7 2005/02/21 18:37:02 acydburn Exp
  *
  ***************************************************************************/
+
 /***************************************************************************
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -21,6 +22,7 @@
  *   (at your option) any later version.
  *
  ***************************************************************************/
+
 /*****[CHANGES]**********************************************************
 -=[Base]=-
       Caching System                           v1.0.0       10/24/2005
@@ -39,14 +41,14 @@
 	  Arcade                                   v3.0.2       05/29/2009
  ************************************************************************/
 
-define('IN_PHPBB2', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', true);
 
 //
 // Load default header
 //
 $no_page_header = TRUE;
-$phpbb2_root_path = "./../";
-require($phpbb2_root_path . 'extension.inc');
+$phpbb_root_path = "./../";
+require($phpbb_root_path . 'extension.inc');
 require('./pagestart.' . $phpEx);
 /*****[BEGIN]******************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]
@@ -72,19 +74,19 @@ function inarray($needle, $haystack)
  ******************************************************/
     $q = "SELECT forum_id, forum_name
           FROM ". FORUMS_TABLE ."";
-    $forums_data = $titanium_db->sql_ufetchrowset($q);
+    $forums_data = $db->sql_ufetchrowset($q);
 
     $q = "SELECT username, user_id
           FROM ". USERS_TABLE ."";
-    $titanium_users_data = $titanium_db->sql_ufetchrowset($q);
+    $users_data = $db->sql_ufetchrowset($q);
 
     $q = "SELECT topic_id, topic_title
           FROM ". TOPICS_TABLE ."";
-    $phpbb2_topics_data = $titanium_db->sql_ufetchrowset($q);
+    $topics_data = $db->sql_ufetchrowset($q);
 
     $q = "SELECT cat_id, cat_title
           FROM ". CATEGORIES_TABLE ."";
-    $cats_data = $titanium_db->sql_ufetchrowset($q);
+    $cats_data = $db->sql_ufetchrowset($q);
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
@@ -98,10 +100,10 @@ function inarray($needle, $haystack)
 if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 {
 
-    $dir = @opendir(".");
+    $dir = opendir(".");
 
     $setmodules = 1;
-    while( $file = @readdir($dir) )
+    while( $file = readdir($dir) )
     {
         if( preg_match("/^admin_.*?\." . $phpEx . "$/", $file) )
         {
@@ -109,28 +111,28 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
         }
     }
 
-    @closedir($dir);
+    closedir($dir);
 
     unset($setmodules);
 
         include('./page_header_admin.'.$phpEx);
 
-        $phpbb2_template->set_filenames(array(
+        $template->set_filenames(array(
                 "body" => "admin/index_navigate.tpl")
         );
 
-        $phpbb2_template->assign_vars(array(
-                "U_FORUM_INDEX" => append_titanium_sid("index.$phpEx"),
-                "U_FORUM_PREINDEX" => append_titanium_sid("index.$phpEx"),
-                "U_ADMIN_INDEX" => append_titanium_sid("index.$phpEx?pane=right"),
+        $template->assign_vars(array(
+                "U_FORUM_INDEX" => append_sid("index.$phpEx"),
+                "U_FORUM_PREINDEX" => append_sid("index.$phpEx"),
+                "U_ADMIN_INDEX" => append_sid("index.$phpEx?pane=right"),
 
 /*****[BEGIN]******************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
  ******************************************************/
-                "COOKIE_NAME"    => $phpbb2_board_config['cookie_name'],
-                "COOKIE_PATH"    => $phpbb2_board_config['cookie_path'],
-                "COOKIE_DOMAIN"    => $phpbb2_board_config['cookie_domain'],
-                "COOKIE_SECURE"    => $phpbb2_board_config['cookie_secure'],
+                "COOKIE_NAME"    => $board_config['cookie_name'],
+                "COOKIE_PATH"    => $board_config['cookie_path'],
+                "COOKIE_DOMAIN"    => $board_config['cookie_domain'],
+                "COOKIE_SECURE"    => $board_config['cookie_secure'],
 /*****[END]********************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
  ******************************************************/
@@ -144,21 +146,21 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
  [ Mod:     Forum ACP Administration Links     v1.0.0 ]
  ******************************************************/
 
-                "L_FORUM_INDEX" => $titanium_lang['Main_index'],
-                "L_ADMIN_INDEX" => $titanium_lang['Admin_Index'],
-                "L_PREVIEW_FORUM" => $titanium_lang['Preview_forum'],
+                "L_FORUM_INDEX" => $lang['Main_index'],
+                "L_ADMIN_INDEX" => $lang['Admin_Index'],
+                "L_PREVIEW_FORUM" => $lang['Preview_forum'],
 /*****[BEGIN]******************************************
  [ Mod:     Forum ACP Administration Links     v1.0.0 ]
  ******************************************************/
-                "L_ADMIN_NUKE" => $titanium_lang['Admin_Nuke'],
-                "L_HOME_NUKE" => $titanium_lang['Home_Nuke'],)
+                "L_ADMIN_NUKE" => $lang['Admin_Nuke'],
+                "L_HOME_NUKE" => $lang['Home_Nuke'],)
 /*****[END]********************************************
  [ Mod:     Forum ACP Administration Links     v1.0.0 ]
  ******************************************************/
 
         );
 
-        ksort($titanium_module);
+        ksort($module);
 
 /*****[BEGIN]******************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
@@ -167,11 +169,12 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
 /*****[END]********************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
  ******************************************************/
- while( list($cat, $action_array) = each($titanium_module) )
+//while( list($cat, $action_array) = each($module) )
+foreach ($module as $cat => $action_array)
 {
-    $cat = ( !empty($titanium_lang[$cat]) ) ? $titanium_lang[$cat] : preg_replace("/_/", " ", $cat);
+    $cat = ( !empty($lang[$cat]) ) ? $lang[$cat] : preg_replace("/_/", " ", $cat);
 
-    $phpbb2_template->assign_block_vars("catrow", array(
+    $template->assign_block_vars("catrow", array(
 
 /*****[BEGIN]******************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
@@ -188,14 +191,15 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
     ksort($action_array);
 
     $row_count = 0;
-    while( list($action, $file)   = each($action_array) )
+    //while( list($action, $file)   = each($action_array) )
+	foreach ($action_array as $action => $file)
     {
         $row_color = ( !($row_count%2) ) ? $theme['td_color1'] : $theme['td_color2'];
         $row_class = ( !($row_count%2) ) ? $theme['td_class1'] : $theme['td_class2'];
 
-        $action = ( !empty($titanium_lang[$action]) ) ? $titanium_lang[$action] : preg_replace("/_/", " ", $action);
+        $action = ( !empty($lang[$action]) ) ? $lang[$action] : preg_replace("/_/", " ", $action);
 
-        $phpbb2_template->assign_block_vars("catrow.modulerow", array(
+        $template->assign_block_vars("catrow.modulerow", array(
 
 /*****[BEGIN]******************************************
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
@@ -209,7 +213,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
             "ROW_CLASS" => $row_class,
 
             "ADMIN_MODULE" => $action,
-            "U_ADMIN_MODULE" => append_titanium_sid($file))
+            "U_ADMIN_MODULE" => append_sid($file))
         );
         $row_count++;
     }
@@ -221,7 +225,7 @@ if( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'left' )
  [ Mod:     DHTML Slide Menu for ACP           v1.0.0 ]
  ******************************************************/
 }
-        $phpbb2_template->pparse("body");
+        $template->pparse("body");
 
         include('./page_footer_admin.'.$phpEx);
 }
@@ -229,7 +233,7 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
 {
         include('./page_header_admin.'.$phpEx);
 
-        $phpbb2_template->set_filenames(array(
+        $template->set_filenames(array(
                 "body" => "admin/index_body.tpl")
         );
 /*****[BEGIN]******************************************
@@ -237,72 +241,72 @@ elseif( isset($HTTP_GET_VARS['pane']) && $HTTP_GET_VARS['pane'] == 'right' )
  ******************************************************/
         $admin_ip_lock_img = '';
         if(defined('ADMIN_IP_LOCK')) {
-            $admin_ip_lock = $titanium_lang['ADMIN_IP_LOCK_ON'];
+            $admin_ip_lock = $lang['ADMIN_IP_LOCK_ON'];
             // $admin_ip_lock_img = '../../../images/thumb_up.png';
         } else {
-            $admin_ip_lock = $titanium_lang['ADMIN_IP_LOCK_OFF'];
+            $admin_ip_lock = $lang['ADMIN_IP_LOCK_OFF'];
             // $admin_ip_lock_img = '../../../images/thumb_down.png';
         }
 /*****[END]********************************************
  [ Mod:    Admin IP Lock                       v2.0.1 ]
  ******************************************************/
-        $phpbb2_template->assign_vars(array(
-                "L_WELCOME" => $titanium_lang['Welcome_phpBB'],
-                "L_ADMIN_INTRO" => $titanium_lang['Admin_intro'],
-                "L_FORUM_STATS" => $titanium_lang['Forum_stats'],
-                "L_WHO_IS_ONLINE" => $titanium_lang['Who_is_Online'],
-                "L_USERNAME" => $titanium_lang['Username'],
-                "L_LOCATION" => $titanium_lang['Location'],
-                "L_LAST_UPDATE" => $titanium_lang['Last_updated'],
-                "L_IP_ADDRESS" => $titanium_lang['IP_Address'],
-                "L_STATISTIC" => $titanium_lang['Statistic'],
-                "L_VALUE" => $titanium_lang['Value'],
-                "L_NUMBER_POSTS" => $titanium_lang['Number_posts'],
-                "L_POSTS_PER_DAY" => $titanium_lang['Posts_per_day'],
-                "L_NUMBER_TOPICS" => $titanium_lang['Number_topics'],
-                "L_TOPICS_PER_DAY" => $titanium_lang['Topics_per_day'],
-                "L_NUMBER_USERS" => $titanium_lang['Number_users'],
-                "L_USERS_PER_DAY" => $titanium_lang['Users_per_day'],
-                "L_BOARD_STARTED" => $titanium_lang['Board_started'],
-                "L_AVATAR_DIR_SIZE" => $titanium_lang['Avatar_dir_size'],
-                "L_DB_SIZE" => $titanium_lang['Database_size'],
-                "L_FORUM_LOCATION" => $titanium_lang['Forum_Location'],
-                "L_STARTED" => $titanium_lang['Login'],
+        $template->assign_vars(array(
+                "L_WELCOME" => $lang['Welcome_phpBB'],
+                "L_ADMIN_INTRO" => $lang['Admin_intro'],
+                "L_FORUM_STATS" => $lang['Forum_stats'],
+                "L_WHO_IS_ONLINE" => $lang['Who_is_Online'],
+                "L_USERNAME" => $lang['Username'],
+                "L_LOCATION" => $lang['Location'],
+                "L_LAST_UPDATE" => $lang['Last_updated'],
+                "L_IP_ADDRESS" => $lang['IP_Address'],
+                "L_STATISTIC" => $lang['Statistic'],
+                "L_VALUE" => $lang['Value'],
+                "L_NUMBER_POSTS" => $lang['Number_posts'],
+                "L_POSTS_PER_DAY" => $lang['Posts_per_day'],
+                "L_NUMBER_TOPICS" => $lang['Number_topics'],
+                "L_TOPICS_PER_DAY" => $lang['Topics_per_day'],
+                "L_NUMBER_USERS" => $lang['Number_users'],
+                "L_USERS_PER_DAY" => $lang['Users_per_day'],
+                "L_BOARD_STARTED" => $lang['Board_started'],
+                "L_AVATAR_DIR_SIZE" => $lang['Avatar_dir_size'],
+                "L_DB_SIZE" => $lang['Database_size'],
+                "L_FORUM_LOCATION" => $lang['Forum_Location'],
+                "L_STARTED" => $lang['Login'],
 /*****[BEGIN]******************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
-                "L_NUMBER_DEACTIVATED_USERS" => $titanium_lang['Thereof_deactivated_users'],
-                "L_NAME_DEACTIVATED_USERS" => $titanium_lang['Deactivated_Users'],
-                "L_NUMBER_MODERATORS" => $titanium_lang['Thereof_Moderators'],
-                "L_NAME_MODERATORS" => $titanium_lang['Users_with_Mod_Privileges'],
-                "L_NUMBER_ADMINISTRATORS" => $titanium_lang['Thereof_Administrators'],
-                "L_NAME_ADMINISTRATORS" => $titanium_lang['Users_with_Admin_Privileges'],
-                "L_DB_SIZE" => $titanium_lang['DB_size'],
-                "L_PHPBB_VERSION" => $titanium_lang['Version_of_board'],
-                "L_PHP_VERSION" => $titanium_lang['Version_of_PHP'],
-                "L_MYSQL_VERSION" => $titanium_lang['Version_of_MySQL'],
+                "L_NUMBER_DEACTIVATED_USERS" => $lang['Thereof_deactivated_users'],
+                "L_NAME_DEACTIVATED_USERS" => $lang['Deactivated_Users'],
+                "L_NUMBER_MODERATORS" => $lang['Thereof_Moderators'],
+                "L_NAME_MODERATORS" => $lang['Users_with_Mod_Privileges'],
+                "L_NUMBER_ADMINISTRATORS" => $lang['Thereof_Administrators'],
+                "L_NAME_ADMINISTRATORS" => $lang['Users_with_Admin_Privileges'],
+                "L_DB_SIZE" => $lang['DB_size'],
+                "L_PHPBB_VERSION" => $lang['Version_of_board'],
+                "L_PHP_VERSION" => $lang['Version_of_PHP'],
+                "L_MYSQL_VERSION" => $lang['Version_of_MySQL'],
 /*****[END]********************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
 /*****[BEGIN]******************************************
  [ Mod:    Admin IP Lock                       v2.0.1 ]
  ******************************************************/
-                "L_ADMIN_IP_LOCK" => $titanium_lang['ADMIN_IP_LOCK'],
+                "L_ADMIN_IP_LOCK" => $lang['ADMIN_IP_LOCK'],
                 "ADMIN_IP_LOCK_IMAGE" => $admin_ip_lock_img,
                 "ADMIN_IP_LOCK_ED" => $admin_ip_lock,
 /*****[END]********************************************
  [ Mod:    Admin IP Lock                       v2.0.1 ]
  ******************************************************/
-                 "L_GZIP_COMPRESSION" => $titanium_lang['Gzip_compression'])
+                 "L_GZIP_COMPRESSION" => $lang['Gzip_compression'])
 
         );
 
         //
         // Get forum statistics
         //
-        $phpbb2_total_posts = get_db_stat('postcount');
-        $phpbb2_total_users = get_db_stat('usercount');
-        $total_phpbb2_topics = get_db_stat('topiccount');
+        $total_posts = get_db_stat('postcount');
+        $total_users = get_db_stat('usercount');
+        $total_topics = get_db_stat('topiccount');
 /*****[BEGIN]******************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
@@ -310,186 +314,191 @@ $sql = "SELECT COUNT(user_id) AS total
                     FROM " . USERS_TABLE . "
                     WHERE user_active = 0
                         AND user_id <> " . ANONYMOUS;
-                if ( !($result = $titanium_db->sql_query($sql)) )
+            if ( !($result = $db->sql_query($sql)) )
             {
                     message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                if ( $row = $titanium_db->sql_fetchrow($result) )
+            if ( $row = $db->sql_fetchrow($result) )
             {
-                    $total_phpbb2_deactivated_users = $row['total'];
+                    $total_deactivated_users = $row['total'];
             }
-                else
+            else
             {
                     message_die(GENERAL_ERROR,"Couldn't update pending information!", __LINE__, __FILE__, $sql);
             }
-                $titanium_db->sql_freeresult($result);
+                $db->sql_freeresult($result);
                 $deactivated_names = '';
             $sql = "SELECT username
                     FROM " . USERS_TABLE . "
                     WHERE user_active = 0
                         AND user_id <> " . ANONYMOUS . "
                     ORDER BY username";
-                if ( !($result = $titanium_db->sql_query($sql)) )
+            if ( !($result = $db->sql_query($sql)) )
             {
                     message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                while ( $row = $titanium_db->sql_fetchrow($result) )
+            
+			while ( $row = $db->sql_fetchrow($result) )
             {
                     $deactivated_names .= (($deactivated_names == '') ? '' : ', ') . UsernameColor($row['username']);
             }
-                $titanium_db->sql_freeresult($result);
-$sql = "SELECT COUNT(user_id) AS total
+                $db->sql_freeresult($result);
+                $sql = "SELECT COUNT(user_id) AS total
                     FROM " . USERS_TABLE . "
                     WHERE user_level = " . MOD . "
                         AND user_id <> " . ANONYMOUS;
-                if ( !($result = $titanium_db->sql_query($sql)) )
+            if ( !($result = $db->sql_query($sql)) )
             {
                     message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                if ( $row = $titanium_db->sql_fetchrow($result) )
+            if ( $row = $db->sql_fetchrow($result) )
             {
-                    $total_phpbb2_moderators = $row['total'];
+                    $total_moderators = $row['total'];
             }
-                else
+            else
             {
                     message_die(GENERAL_ERROR,"Couldn't update pending information!", __LINE__, __FILE__, $sql);
             }
-                $titanium_db->sql_freeresult($result);
+                $db->sql_freeresult($result);
                 $moderator_names = '';
-            $sql = "SELECT username
+                $sql = "SELECT username
                     FROM " . USERS_TABLE . "
                     WHERE user_level = " . MOD . "
                         AND user_id <> " . ANONYMOUS . "
                     ORDER BY username";
-                if ( !($result = $titanium_db->sql_query($sql)) )
+                if ( !($result = $db->sql_query($sql)) )
             {
                     message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                while ( $row = $titanium_db->sql_fetchrow($result) )
+                while ( $row = $db->sql_fetchrow($result) )
             {
                     $moderator_names .= (($moderator_names == '') ? '' : ', ') . UsernameColor($row['username']);
             }
-                $titanium_db->sql_freeresult($result);
+                $db->sql_freeresult($result);
 $sql = "SELECT COUNT(user_id) AS total
                     FROM " . USERS_TABLE . "
                     WHERE user_level = " . ADMIN . "
                         AND user_id <> " . ANONYMOUS;
-                if ( !($result = $titanium_db->sql_query($sql)) )
+                if ( !($result = $db->sql_query($sql)) )
             {
                     message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                if ( $row = $titanium_db->sql_fetchrow($result) )
+                if ( $row = $db->sql_fetchrow($result) )
             {
-                    $total_phpbb2_administrators = $row['total'];
+                    $total_administrators = $row['total'];
             }
                 else
             {
                     message_die(GENERAL_ERROR,"Couldn't update pending information!", __LINE__, __FILE__, $sql);
             }
-                $titanium_db->sql_freeresult($result);
+                $db->sql_freeresult($result);
                 $administrator_names = '';
             $sql = "SELECT username
                     FROM " . USERS_TABLE . "
                     WHERE user_level = " . ADMIN . "
                         AND user_id <> " . ANONYMOUS . "
                     ORDER BY username";
-                if ( !($result = $titanium_db->sql_query($sql)) )
+                if ( !($result = $db->sql_query($sql)) )
             {
                     message_die(GENERAL_ERROR,"Couldn't get statistic data!", __LINE__, __FILE__, $sql);
             }
-                while ( $row = $titanium_db->sql_fetchrow($result) )
+                while ( $row = $db->sql_fetchrow($result) )
             {
                     $administrator_names .= (($administrator_names == '') ? '' : ', ') . UsernameColor($row['username']);
             }
 /*****[END]********************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
-        $phpbb2_start_date = create_date($phpbb2_board_config['default_dateformat'], $phpbb2_board_config['board_startdate'], $phpbb2_board_config['board_timezone']);
+        global $board_config;
+		
+		if(empty($board_config['board_startdate']))
+        $board_config['board_startdate'] = '1672571760';
 
-        $boarddays = ( time() - $phpbb2_board_config['board_startdate'] ) / 86400;
+        $start_date = create_date($board_config['default_dateformat'], $board_config['board_startdate'], $board_config['board_timezone']);
+		$boarddays = ( time() - $board_config['board_startdate'] ) / 86400;
 
-        $phpbb2_posts_per_day = sprintf("%.2f", $phpbb2_total_posts / $boarddays);
-        $phpbb2_topics_per_day = sprintf("%.2f", $total_phpbb2_topics / $boarddays);
-        $titanium_users_per_day = sprintf("%.2f", $phpbb2_total_users / $boarddays);
+        $posts_per_day = sprintf("%.2f", $total_posts / $boarddays);
+        $topics_per_day = sprintf("%.2f", $total_topics / $boarddays);
+        $users_per_day = sprintf("%.2f", $total_users / $boarddays);
 
         $avatar_dir_size = 0;
 
-        if ($avatar_dir = @opendir(NUKE_BASE_DIR . $phpbb2_board_config['avatar_path']))
+        if ($avatar_dir = opendir(NUKE_BASE_DIR . $board_config['avatar_path']))
         {
-                while( $file = @readdir($avatar_dir) )
+                while( $file = readdir($avatar_dir) )
                 {
                         if( $file != "." && $file != ".." )
                         {
-                                $avatar_dir_size += @filesize(NUKE_BASE_DIR . $phpbb2_board_config['avatar_path'] . "/" . $file);
+                                $avatar_dir_size += filesize(NUKE_BASE_DIR . $board_config['avatar_path'] . "/" . $file);
                         }
                 }
-                @closedir($avatar_dir);
+                closedir($avatar_dir);
 
-                //
-                // This bit of code translates the avatar directory size into human readable format
-                // Borrowed the code from the PHP.net annoted manual, origanally written by:
-                // Jesse (jesse@jess.on.ca)
-                //
+                /*
+                 * This bit of code translates the avatar directory size into human readable format
+                 * Borrowed the code from the PHP.net annoted manual, origanally written by:
+                 * Jesse (jesse@jess.on.ca)
+                 */
                 if($avatar_dir_size >= 1048576)
                 {
-                        $avatar_dir_size = round($avatar_dir_size / 1048576 * 100) / 100 . " MB";
+                  $avatar_dir_size = round($avatar_dir_size / 1048576 * 100) / 100 . " MB";
                 }
                 else if($avatar_dir_size >= 1024)
                 {
-                        $avatar_dir_size = round($avatar_dir_size / 1024 * 100) / 100 . " KB";
+                  $avatar_dir_size = round($avatar_dir_size / 1024 * 100) / 100 . " KB";
                 }
                 else
                 {
-                        $avatar_dir_size = $avatar_dir_size . " Bytes";
+                  $avatar_dir_size = $avatar_dir_size . " Bytes";
                 }
 
         }
         else
         {
                 // Couldn't open Avatar dir.
-                $avatar_dir_size = $titanium_lang['Not_available'];
+                $avatar_dir_size = $lang['Not_available'];
         }
 
-        if($phpbb2_posts_per_day > $phpbb2_total_posts)
+        if($posts_per_day > $total_posts)
         {
-                $phpbb2_posts_per_day = $phpbb2_total_posts;
+                $posts_per_day = $total_posts;
         }
 
-        if($phpbb2_topics_per_day > $total_phpbb2_topics)
+        if($topics_per_day > $total_topics)
         {
-                $phpbb2_topics_per_day = $total_phpbb2_topics;
+                $topics_per_day = $total_topics;
         }
 
-        if($titanium_users_per_day > $phpbb2_total_users)
+        if($users_per_day > $total_users)
         {
-                $titanium_users_per_day = $phpbb2_total_users;
+                $users_per_day = $total_users;
         }
 
-        //
-        // DB size ... MySQL only
-        //
-        // This code is heavily influenced by a similar routine
-        // in phpMyAdmin 2.2.0
-        //
+        /*
+         * DB size ... MySQL only
+         *
+         * This code is heavily influenced by a similar routine
+         * in phpMyAdmin 2.2.0
+         */
         if( preg_match("/^mysql/", SQL_LAYER) )
         {
                 $sql = "SELECT VERSION() AS mysql_version";
-                if($result = $titanium_db->sql_query($sql))
+                if($result = $db->sql_query($sql))
                 {
-                        $row = $titanium_db->sql_fetchrow($result);
+                        $row = $db->sql_fetchrow($result);
                         $version = $row['mysql_version'];
 
                         if( preg_match("/^(3\.23|4\.|5\.)/", $version) )
                         {
-                                $titanium_db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)|(5\.)/", $version) ) ? "`$titanium_dbname`" : $titanium_dbname;
+                                $db_name = ( preg_match("/^(3\.23\.[6-9])|(3\.23\.[1-9][1-9])|(4\.)|(5\.)/", $version) ) ? "`$dbname`" : $dbname;
 
                                 $sql = "SHOW TABLE STATUS
-                                        FROM " . $titanium_db_name;
-                                if($result = $titanium_db->sql_query($sql))
+                                        FROM " . $db_name;
+                                if($result = $db->sql_query($sql))
                                 {
-                                        $tabledata_ary = $titanium_db->sql_fetchrowset($result);
+                                        $tabledata_ary = $db->sql_fetchrowset($result);
 
-                                        $titanium_dbsize = 0;
+                                        $dbsize = 0;
                                         for($i = 0; $i < count($tabledata_ary); $i++)
                                         {
                                                 if( $tabledata_ary[$i]['Type'] != "MRG_MyISAM" )
@@ -498,12 +507,12 @@ $sql = "SELECT COUNT(user_id) AS total
                                                         {
                                                                 if( strstr($tabledata_ary[$i]['Name'], $table_prefix) )
                                                                 {
-                                                                        $titanium_dbsize += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
+                                                                        $dbsize += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
                                                                 }
                                                         }
                                                         else
                                                         {
-                                                                $titanium_dbsize += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
+                                                                $dbsize += $tabledata_ary[$i]['Data_length'] + $tabledata_ary[$i]['Index_length'];
                                                         }
                                                 }
                                         }
@@ -511,88 +520,88 @@ $sql = "SELECT COUNT(user_id) AS total
                         }
                         else
                         {
-                                $titanium_dbsize = $titanium_lang['Not_available'];
+                                $dbsize = $lang['Not_available'];
                         }
                 }
                 else
                 {
-                        $titanium_dbsize = $titanium_lang['Not_available'];
+                        $dbsize = $lang['Not_available'];
                 }
         }
         else if( preg_match("/^mssql/", SQL_LAYER) )
         {
                 $sql = "SELECT ((SUM(size) * 8.0) * 1024.0) as dbsize
                         FROM sysfiles";
-                if( $result = $titanium_db->sql_query($sql) )
+                if( $result = $db->sql_query($sql) )
                 {
-                        $titanium_dbsize = ( $row = $titanium_db->sql_fetchrow($result) ) ? intval($row['dbsize']) : $titanium_lang['Not_available'];
+                        $dbsize = ( $row = $db->sql_fetchrow($result) ) ? intval($row['dbsize']) : $lang['Not_available'];
                 }
                 else
                 {
-                        $titanium_dbsize = $titanium_lang['Not_available'];
+                        $dbsize = $lang['Not_available'];
                 }
         }
         else
         {
-                $titanium_dbsize = $titanium_lang['Not_available'];
+                $dbsize = $lang['Not_available'];
         }
 
-        if ( is_integer($titanium_dbsize) )
+        if ( is_integer($dbsize) )
         {
-                if( $titanium_dbsize >= 1048576 )
+                if( $dbsize >= 1048576 )
                 {
-                        $titanium_dbsize = sprintf("%.2f MB", ( $titanium_dbsize / 1048576 ));
+                        $dbsize = sprintf("%.2f MB", ( $dbsize / 1048576 ));
                 }
-                else if( $titanium_dbsize >= 1024 )
+                else if( $dbsize >= 1024 )
                 {
-                        $titanium_dbsize = sprintf("%.2f KB", ( $titanium_dbsize / 1024 ));
+                        $dbsize = sprintf("%.2f KB", ( $dbsize / 1024 ));
                 }
                 else
                 {
-                        $titanium_dbsize = sprintf("%.2f Bytes", $titanium_dbsize);
+                        $dbsize = sprintf("%.2f Bytes", $dbsize);
                 }
         }
 /*****[BEGIN]******************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
 $sql = "SELECT VERSION() AS mysql_version";
-                $result = $titanium_db->sql_query($sql);
+                $result = $db->sql_query($sql);
                 if ( !$result )
             {
                     message_die(GENERAL_ERROR,"Couldn't obtain MySQL Version", __LINE__, __FILE__, $sql);
             }
-                $row = $titanium_db->sql_fetchrow($result);
+                $row = $db->sql_fetchrow($result);
                 $mysql_version = $row['mysql_version'];
-                $titanium_db->sql_freeresult($result);
+                $db->sql_freeresult($result);
 /*****[END]********************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
-           $phpbb2_template->assign_vars(array(
-                "NUMBER_OF_POSTS" => $phpbb2_total_posts,
-                "NUMBER_OF_TOPICS" => $total_phpbb2_topics,
-                "NUMBER_OF_USERS" => $phpbb2_total_users,
-                "START_DATE" => $phpbb2_start_date,
-                "POSTS_PER_DAY" => $phpbb2_posts_per_day,
-                "TOPICS_PER_DAY" => $phpbb2_topics_per_day,
-                "USERS_PER_DAY" => $titanium_users_per_day,
+           $template->assign_vars(array(
+                "NUMBER_OF_POSTS" => $total_posts,
+                "NUMBER_OF_TOPICS" => $total_topics,
+                "NUMBER_OF_USERS" => $total_users,
+                "START_DATE" => $start_date,
+                "POSTS_PER_DAY" => $posts_per_day,
+                "TOPICS_PER_DAY" => $topics_per_day,
+                "USERS_PER_DAY" => $users_per_day,
                 "AVATAR_DIR_SIZE" => $avatar_dir_size,
-                "DB_SIZE" => $titanium_dbsize,
+                "DB_SIZE" => $dbsize,
 /*****[BEGIN]******************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
-                //"PHPBB_VERSION" => '2' . $phpbb2_board_config['version'],
+                //"PHPBB_VERSION" => '2' . $board_config['version'],
                 "PHP_VERSION" => phpversion(),
                 "MYSQL_VERSION" => $mysql_version,
-                "NUMBER_OF_DEACTIVATED_USERS" => $total_phpbb2_deactivated_users,
-                "NUMBER_OF_MODERATORS" => $total_phpbb2_moderators,
-                "NUMBER_OF_ADMINISTRATORS" => $total_phpbb2_administrators,
+                "NUMBER_OF_DEACTIVATED_USERS" => $total_deactivated_users,
+                "NUMBER_OF_MODERATORS" => $total_moderators,
+                "NUMBER_OF_ADMINISTRATORS" => $total_administrators,
                 "NAMES_OF_ADMINISTRATORS" => $administrator_names,
                 "NAMES_OF_MODERATORS" => $moderator_names,
                 "NAMES_OF_DEACTIVATED" => $deactivated_names,
 /*****[END]********************************************
  [ Mod:    Advance Admin Index Stats           v1.0.0 ]
  ******************************************************/
-                "GZIP_COMPRESSION" => ( $phpbb2_board_config['gzip_compress'] ) ? $titanium_lang['ON'] : $titanium_lang['OFF'])
+                "GZIP_COMPRESSION" => ( $board_config['gzip_compress'] ) ? $lang['ON'] : $lang['OFF'])
         );
         //
         // End forum statistics
@@ -610,13 +619,13 @@ $sql = "SELECT VERSION() AS mysql_version";
                 WHERE s.session_logged_in = " . TRUE . "
                         AND u.user_id = s.session_user_id
                         AND u.user_id <> " . ANONYMOUS . "
-                        AND s.session_time >= " . ( time() - $phpbb2_board_config['online_time'] ) . "
+                        AND s.session_time >= " . ( time() - $board_config['online_time'] ) . "
                 ORDER BY u.user_session_time DESC";
 /*****[END]********************************************
  [ Mod:    Online Time                         v1.0.0 ]
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-        $onlinerow_reg = $titanium_db->sql_ufetchrowset($sql);
+        $onlinerow_reg = $db->sql_ufetchrowset($sql);
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
@@ -628,15 +637,15 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-        $onlinerow_guest = $titanium_db->sql_ufetchrowset($sql);
+        $onlinerow_guest = $db->sql_ufetchrowset($sql);
 
         $sql = "SELECT forum_name, forum_id
                 FROM " . FORUMS_TABLE;
-        if($forums_result = $titanium_db->sql_query($sql))
+        if($forums_result = $db->sql_query($sql))
         {
-                while($forumsrow = $titanium_db->sql_fetchrow($forums_result))
+                while($forumsrow = $db->sql_fetchrow($forums_result))
                 {
-                        $phpbb2_forum_data[$forumsrow['forum_id']] = $forumsrow['forum_name'];
+                        $forum_data[$forumsrow['forum_id']] = $forumsrow['forum_name'];
                 }
         }
         else
@@ -659,12 +668,17 @@ $sql = "SELECT VERSION() AS mysql_version";
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-                                $titanium_username = UsernameColor($onlinerow_reg[$i]['username']);
+                                $username = UsernameColor($onlinerow_reg[$i]['username']);
 /*****[END]********************************************
  [ Mod:    Advanced Username Color             v1.0.5 ]
  ******************************************************/
-
-                                if( $onlinerow_reg[$i]['user_allow_viewonline'] || $userdata['user_level'] == ADMIN )
+                                if(!isset($onlinerow_reg[$i]['user_allow_viewonline']))
+								$onlinerow_reg[$i]['user_allow_viewonline'] = '';
+								
+								if(!isset($hidden_users))
+								$hidden_users = 0;
+                                
+								if( $onlinerow_reg[$i]['user_allow_viewonline'] || $userdata['user_level'] == ADMIN )
                                 {
                                         $registered_users++;
                                         $hidden = FALSE;
@@ -680,46 +694,46 @@ $sql = "SELECT VERSION() AS mysql_version";
                                         switch($onlinerow_reg[$i]['user_session_page'])
                                         {
                                                 case PAGE_INDEX:
-                                                        $location = $titanium_lang['Forum_index'];
+                                                        $location = $lang['Forum_index'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_POSTING:
-                                                        $location = $titanium_lang['Posting_message'];
+                                                        $location = $lang['Posting_message'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_LOGIN:
-                                                        $location = $titanium_lang['Logging_on'];
+                                                        $location = $lang['Logging_on'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
-                                                case TITANIUM_PAGE_SEARCH:
-                                                        $location = $titanium_lang['Searching_forums'];
+                                                case PAGE_SEARCH:
+                                                        $location = $lang['Searching_forums'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_PROFILE:
-                                                        $location = $titanium_lang['Viewing_profile'];
+                                                        $location = $lang['Viewing_profile'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_VIEWONLINE:
-                                                        $location = $titanium_lang['Viewing_online'];
+                                                        $location = $lang['Viewing_online'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_VIEWMEMBERS:
-                                                        $location = $titanium_lang['Viewing_member_list'];
+                                                        $location = $lang['Viewing_member_list'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_PRIVMSGS:
-                                                        $location = $titanium_lang['Viewing_priv_msgs'];
+                                                        $location = $lang['Viewing_priv_msgs'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_FAQ:
-                                                        $location = $titanium_lang['Viewing_FAQ'];
+                                                        $location = $lang['Viewing_FAQ'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
                                                 case PAGE_REPUTATION:
-                                                        $location = $titanium_lang['Reputation'];
+                                                        $location = $lang['Reputation'];
                                                         $location_url = "reputation.$phpEx";
                                                         break;
 /*****[END]********************************************
@@ -729,23 +743,23 @@ $sql = "SELECT VERSION() AS mysql_version";
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
                                                 case PAGE_GAME:
-                                                        $location = $titanium_lang['Playing_game'];
+                                                        $location = $lang['Playing_game'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_ARCADES:
-                                                        $location = $titanium_lang['Viewing_arcades'];
+                                                        $location = $lang['Viewing_arcades'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_TOPARCADES:
-                                                        $location = $titanium_lang['Viewing_toparcades'];
+                                                        $location = $lang['Viewing_toparcades'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_STATARCADES:
-                                                        $location = $titanium_lang['watchingstats'];
+                                                        $location = $lang['watchingstats'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
                                                 case PAGE_SCOREBOARD:
-                                                        $location = $titanium_lang['watchingboard'];
+                                                        $location = $lang['watchingboard'];
                                                         $location_url = "index.$phpEx?pane=right";
                                                         break;
 /*****[END]********************************************
@@ -756,7 +770,7 @@ $sql = "SELECT VERSION() AS mysql_version";
  [ Mod:     Staff Site                         v2.0.3 ]
  ******************************************************/
                                                 case PAGE_STAFF:
-                                                        $location = $titanium_lang['Staff'];
+                                                        $location = $lang['Staff'];
                                                         $location_url = "../staff.$phpEx";
                                                         break;
 /*****[END]********************************************
@@ -767,27 +781,30 @@ $sql = "SELECT VERSION() AS mysql_version";
  [ Base:    Recent Topics                      v1.2.4 ]
  ******************************************************/
                                                 case PAGE_RECENT:
-                                                        $location = $titanium_lang['Recent_topics'];
+                                                        $location = $lang['Recent_topics'];
                                                         $location_url = "../recent.$phpEx";
                                                         break;
 /*****[END]********************************************
  [ Base:    Recent Topics                      v1.2.4 ]
  ******************************************************/
                                                 default:
-                                                        $location = $titanium_lang['Forum_index'];
+                                                        $location = $lang['Forum_index'];
                                                         $location_url = "index.$phpEx?pane=right";
                                         }
                                 }
                                 else
                                 {
-                                        $location_url = append_titanium_sid("admin_forums.$phpEx?mode=editforum&amp;" . POST_FORUM_URL . "=" . $onlinerow_reg[$i]['user_session_page']);
-                                        $location = $phpbb2_forum_data[$onlinerow_reg[$i]['user_session_page']];
+                                        $location_url = append_sid("admin_forums.$phpEx?mode=editforum&amp;" . POST_FORUM_URL . "=" . $onlinerow_reg[$i]['user_session_page']);
+                                        $location = $forum_data[$onlinerow_reg[$i]['user_session_page']];
                                 }
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-                                $TITANIUM_SESSION_HANDLING = select_titanium_session_url($onlinerow_reg[$i]['session_page'], $onlinerow_reg[$i]['session_url_qs'], $onlinerow_reg[$i]['session_url_ps'], $onlinerow_reg[$i]['session_url_specific'], $userdata['user_level'], $onlinerow_reg[$i]['user_id'], $forums_data, $phpbb2_topics_data, $titanium_users_data, $cats_data);
-                                $location = $TITANIUM_SESSION_HANDLING;
+                                if(!isset($onlinerow_reg[$i]['session_page']))
+								$onlinerow_reg[$i]['session_page'] = '';
+
+								$BSH = select_session_url($onlinerow_reg[$i]['session_page'], $onlinerow_reg[$i]['session_url_qs'], $onlinerow_reg[$i]['session_url_ps'], $onlinerow_reg[$i]['session_url_specific'], $userdata['user_level'], $onlinerow_reg[$i]['user_id'], $forums_data, $topics_data, $users_data, $cats_data);
+                                $location = $BSH;
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
@@ -797,18 +814,18 @@ $sql = "SELECT VERSION() AS mysql_version";
 
                                 $reg_ip = decode_ip($onlinerow_reg[$i]['session_ip']);
 
-                                $phpbb2_template->assign_block_vars("reg_user_row", array(
+                                $template->assign_block_vars("reg_user_row", array(
                                         "ROW_COLOR" => "#" . $row_color,
                                         "ROW_CLASS" => $row_class,
-                                        "USERNAME" => $titanium_username,
-                                        "STARTED" => create_date($phpbb2_board_config['default_dateformat'], $onlinerow_reg[$i]['session_start'], $phpbb2_board_config['board_timezone']),
-                                        "LASTUPDATE" => create_date($phpbb2_board_config['default_dateformat'], $onlinerow_reg[$i]['user_session_time'], $phpbb2_board_config['board_timezone']),
+                                        "USERNAME" => $username,
+                                        "STARTED" => create_date($board_config['default_dateformat'], $onlinerow_reg[$i]['session_start'], $board_config['board_timezone']),
+                                        "LASTUPDATE" => create_date($board_config['default_dateformat'], $onlinerow_reg[$i]['user_session_time'], $board_config['board_timezone']),
                                         "FORUM_LOCATION" => $location,
                                         "IP_ADDRESS" => $reg_ip,
 
                                         "U_WHOIS_IP" => "http://dnsstuff.com/tools/whois.ch?cache=off&ip=$reg_ip",
-                                        "U_USER_PROFILE" => append_titanium_sid("admin_users.$phpEx?mode=edit&amp;" . POST_USERS_URL . "=" . $onlinerow_reg[$i]['user_id']),
-                                        "U_FORUM_LOCATION" => append_titanium_sid($location_url))
+                                        "U_USER_PROFILE" => append_sid("admin_users.$phpEx?mode=edit&amp;" . POST_USERS_URL . "=" . $onlinerow_reg[$i]['user_id']),
+                                        "U_FORUM_LOCATION" => append_sid($location_url))
                                 );
                         }
                 }
@@ -816,8 +833,8 @@ $sql = "SELECT VERSION() AS mysql_version";
         }
         else
         {
-                $phpbb2_template->assign_vars(array(
-                        "L_NO_REGISTERED_USERS_BROWSING" => $titanium_lang['No_users_browsing'])
+                $template->assign_vars(array(
+                        "L_NO_REGISTERED_USERS_BROWSING" => $lang['No_users_browsing'])
                 );
         }
 
@@ -839,46 +856,46 @@ $sql = "SELECT VERSION() AS mysql_version";
                                 switch( $onlinerow_guest[$i]['session_page'] )
                                 {
                                         case PAGE_INDEX:
-                                                $location = $titanium_lang['Forum_index'];
+                                                $location = $lang['Forum_index'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_POSTING:
-                                                $location = $titanium_lang['Posting_message'];
+                                                $location = $lang['Posting_message'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_LOGIN:
-                                                $location = $titanium_lang['Logging_on'];
+                                                $location = $lang['Logging_on'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
-                                        case TITANIUM_PAGE_SEARCH:
-                                                $location = $titanium_lang['Searching_forums'];
+                                        case PAGE_SEARCH:
+                                                $location = $lang['Searching_forums'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_PROFILE:
-                                                $location = $titanium_lang['Viewing_profile'];
+                                                $location = $lang['Viewing_profile'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_VIEWONLINE:
-                                                $location = $titanium_lang['Viewing_online'];
+                                                $location = $lang['Viewing_online'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_VIEWMEMBERS:
-                                                $location = $titanium_lang['Viewing_member_list'];
+                                                $location = $lang['Viewing_member_list'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_PRIVMSGS:
-                                                $location = $titanium_lang['Viewing_priv_msgs'];
+                                                $location = $lang['Viewing_priv_msgs'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_FAQ:
-                                                $location = $titanium_lang['Viewing_FAQ'];
+                                                $location = $lang['Viewing_FAQ'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
 /*****[BEGIN]******************************************
  [ Mod:     Users Reputations Systems          v1.0.0 ]
  ******************************************************/
                                         case PAGE_REPUTATION:
-                                                $location = $titanium_lang['Reputation'];
+                                                $location = $lang['Reputation'];
                                                 $location_url = "reputation.$phpEx";
                                                 break;
 /*****[END]********************************************
@@ -888,23 +905,23 @@ $sql = "SELECT VERSION() AS mysql_version";
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
                                         case PAGE_GAME:
-                                                $location = $titanium_lang['Playing_game'];
+                                                $location = $lang['Playing_game'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_ARCADES:
-                                                $location = $titanium_lang['Viewing_arcades'];
+                                                $location = $lang['Viewing_arcades'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_TOPARCADES:
-                                                $location = $titanium_lang['Viewing_toparcades'];
+                                                $location = $lang['Viewing_toparcades'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_STATARCADES:
-                                                $location = $titanium_lang['watchingstats'];
+                                                $location = $lang['watchingstats'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
                                         case PAGE_SCOREBOARD:
-                                                $location = $titanium_lang['watchingboard'];
+                                                $location = $lang['watchingboard'];
                                                 $location_url = "index.$phpEx?pane=right";
                                                 break;
 /*****[END]********************************************
@@ -915,7 +932,7 @@ $sql = "SELECT VERSION() AS mysql_version";
  [ Mod:     Staff Site                         v2.0.3 ]
  ******************************************************/
                                         case PAGE_STAFF:
-                                                $location = $titanium_lang['Staff'];
+                                                $location = $lang['Staff'];
                                                 $location_url = "../staff.$phpEx";
                                                 break;
 /*****[END]********************************************
@@ -926,28 +943,28 @@ $sql = "SELECT VERSION() AS mysql_version";
  [ Base:    Recent Topics                      v1.2.4 ]
  ******************************************************/
                                         case PAGE_RECENT:
-                                                $location = $titanium_lang['Recent_topics'];
+                                                $location = $lang['Recent_topics'];
                                                 $location_url = "../recent.$phpEx";
                                                 break;
 /*****[END]********************************************
  [ Base:    Recent Topics                      v1.2.4 ]
  ******************************************************/
                                         default:
-                                                $location = $titanium_lang['Forum_index'];
+                                                $location = $lang['Forum_index'];
                                                 $location_url = "index.$phpEx?pane=right";
                                 }
                         }
                         else
                         {
-                                $location_url = append_titanium_sid("admin_forums.$phpEx?mode=editforum&amp;" . POST_FORUM_URL . "=" . $onlinerow_guest[$i]['session_page']);
-                                $location = $phpbb2_forum_data[$onlinerow_guest[$i]['session_page']];
+                                $location_url = append_sid("admin_forums.$phpEx?mode=editforum&amp;" . POST_FORUM_URL . "=" . $onlinerow_guest[$i]['session_page']);
+                                $location = $forum_data[$onlinerow_guest[$i]['session_page']];
                         }
 
 /*****[BEGIN]******************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
-                        $TITANIUM_SESSION_HANDLING = select_titanium_session_url($onlinerow_guest[$i]['session_page'], $onlinerow_guest[$i]['session_url_qs'], $onlinerow_guest[$i]['session_url_ps'], $onlinerow_guest[$i]['session_url_specific'], $userdata['user_level'], $onlinerow_guest[$i]['user_id'], $forums_data, $phpbb2_topics_data, $titanium_users_data, $cats_data);
-                        $location = $TITANIUM_SESSION_HANDLING;
+                        $BSH = select_session_url($onlinerow_guest[$i]['session_page'], $onlinerow_guest[$i]['session_url_qs'], $onlinerow_guest[$i]['session_url_ps'], $onlinerow_guest[$i]['session_url_specific'], $userdata['user_level'], $onlinerow_guest[$i]['user_id'], $forums_data, $topics_data, $users_data, $cats_data);
+                        $location = $BSH;
 /*****[END]********************************************
  [ Mod:    Better Session Handling             v1.0.0 ]
  ******************************************************/
@@ -957,29 +974,29 @@ $sql = "SELECT VERSION() AS mysql_version";
 
                         $guest_ip = decode_ip($onlinerow_guest[$i]['session_ip']);
 
-                        $phpbb2_template->assign_block_vars("guest_user_row", array(
+                        $template->assign_block_vars("guest_user_row", array(
                                 "ROW_COLOR" => "#" . $row_color,
                                 "ROW_CLASS" => $row_class,
-                                "USERNAME" => $titanium_lang['Guest'],
-                                "STARTED" => create_date($phpbb2_board_config['default_dateformat'], $onlinerow_guest[$i]['session_start'], $phpbb2_board_config['board_timezone']),
-                                "LASTUPDATE" => create_date($phpbb2_board_config['default_dateformat'], $onlinerow_guest[$i]['session_time'], $phpbb2_board_config['board_timezone']),
+                                "USERNAME" => $lang['Guest'],
+                                "STARTED" => create_date($board_config['default_dateformat'], $onlinerow_guest[$i]['session_start'], $board_config['board_timezone']),
+                                "LASTUPDATE" => create_date($board_config['default_dateformat'], $onlinerow_guest[$i]['session_time'], $board_config['board_timezone']),
                                 "FORUM_LOCATION" => $location,
                                 "IP_ADDRESS" => $guest_ip,
 
                                 "U_WHOIS_IP" => "http://dnsstuff.com/tools/whois.ch?cache=off&ip=$guest_ip",
-                                "U_FORUM_LOCATION" => append_titanium_sid($location_url))
+                                "U_FORUM_LOCATION" => append_sid($location_url))
                         );
                 }
 
         }
         else
         {
-                $phpbb2_template->assign_vars(array(
-                        "L_NO_GUESTS_BROWSING" => $titanium_lang['No_users_browsing'])
+                $template->assign_vars(array(
+                        "L_NO_GUESTS_BROWSING" => $lang['No_users_browsing'])
                 );
         }
     // Check for new version
-    $current_version = explode('.', '2' . $phpbb2_board_config['version']);
+    $current_version = explode('.', '2' . $board_config['version']);
     $minor_revision = (int) $current_version[2];
 
 /*****[BEGIN]******************************************
@@ -988,10 +1005,14 @@ $sql = "SELECT VERSION() AS mysql_version";
     // we don't want to check at every time : do it only once a day
     define('VERSION_CHECK_DELAY', 86400);
     $now = time();
-    $version_check_delay = intval($phpbb2_board_config['version_check_delay']);
-    if ( intval($HTTP_GET_VARS['vchk']) || empty($version_check_delay) || (($version_check_delay - $now) > VERSION_CHECK_DELAY) )
+    $version_check_delay = intval($board_config['version_check_delay']);
+    
+	if(!isset($HTTP_GET_VARS['vchk']))
+	$HTTP_GET_VARS['vchk'] = '';
+	
+	if ( intval($HTTP_GET_VARS['vchk']) || empty($version_check_delay) || (($version_check_delay - $now) > VERSION_CHECK_DELAY) )
     {
-        if ( isset($phpbb2_board_config['version_check_delay']) )
+        if ( isset($board_config['version_check_delay']) )
         {
             $sql = 'UPDATE ' . CONFIG_TABLE . '
                         SET config_value = ' . $now . '
@@ -1002,7 +1023,7 @@ $sql = "SELECT VERSION() AS mysql_version";
             $sql = 'INSERT INTO ' . CONFIG_TABLE . '(config_name, config_value)
                         VALUES(\'version_check_delay\', ' . $now . ')';
         }
-        $titanium_db->sql_query($sql);
+        $db->sql_query($sql);
 /*****[BEGIN]******************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
@@ -1017,28 +1038,28 @@ $sql = "SELECT VERSION() AS mysql_version";
     $errno = 0;
     $errstr = $version_info = '';
 
-    if ($fsock = @fsockopen('www.phpbb.com', 80, $errno, $errstr, 10))
+    if ($fsock = fsockopen('www.php-nuke-titanium.86it.us', 80, $errno, $errstr, 10))  
     {
-        @fputs($fsock, "GET /updatecheck/20x.txt HTTP/1.1\r\n");
-        @fputs($fsock, "HOST: www.phpbb.com\r\n");
-        @fputs($fsock, "Connection: close\r\n\r\n");
+        fputs($fsock, "GET /versions/20x.txt HTTP/1.1\r\n");
+        fputs($fsock, "HOST: www.php-nuke-titanium.86it.us\r\n");
+        fputs($fsock, "Connection: close\r\n\r\n"); 
 
         $get_info = false;
-        while (!@feof($fsock))
+        while (!feof($fsock))
         {
             if ($get_info)
             {
-                $version_info .= @fread($fsock, 1024);
+                $version_info .= fread($fsock, 1024);
             }
             else
             {
-                if (@fgets($fsock, 1024) == "\r\n")
+                if (fgets($fsock, 1024) == "\r\n")
                 {
                     $get_info = true;
                 }
             }
         }
-        @fclose($fsock);
+        fclose($fsock);
 
         $version_info = explode("\n", $version_info);
         $latest_head_revision = (int) $version_info[0];
@@ -1047,23 +1068,23 @@ $sql = "SELECT VERSION() AS mysql_version";
 
         if ($latest_head_revision == 2 && $minor_revision == $latest_minor_revision)
         {
-            $version_info = '<p style="color:green">' . $titanium_lang['Version_up_to_date'] . '</p>';
+            $version_info = '<p style="color:green">' . $lang['Version_up_to_date'] . '</p>';
         }
         else
         {
-            $version_info = '<p style="color:red">' . $titanium_lang['Version_not_up_to_date'];
-            $version_info .= '<br />' . sprintf($titanium_lang['Latest_version_info'], $latest_version) . ' ' . sprintf($titanium_lang['Current_version_info'], '2' . $phpbb2_board_config['version']) . '</p>';
+            $version_info = '<p style="color:red">' . $lang['Version_not_up_to_date'];
+            $version_info .= '<br />' . sprintf($lang['Latest_version_info'], $latest_version) . ' ' . sprintf($lang['Current_version_info'], '2' . $board_config['version']) . '</p>';
         }
     }
     else
     {
         if ($errstr)
         {
-            $version_info = '<p style="color:red">' . sprintf($titanium_lang['Connect_socket_error'], $errstr) . '</p>';
+            $version_info = '<p style="color:red">' . sprintf($lang['Connect_socket_error'], $errstr) . '</p>';
         }
         else
         {
-            $version_info = '<p>' . $titanium_lang['Socket_functions_disabled'] . '</p>';
+            $version_info = '<p>' . $lang['Socket_functions_disabled'] . '</p>';
         }
     }
 
@@ -1073,19 +1094,19 @@ $sql = "SELECT VERSION() AS mysql_version";
     }
     else
     {
-        $version_info = '<p style="color:blue">' . sprintf($titanium_lang['Current_version_info'], '2' . $phpbb2_board_config['version']) . '</a></p>';
+        $version_info = '<p style="color:blue">' . sprintf($lang['Current_version_info'], '2' . $board_config['version']) . '</a></p>';
     }
 /*****[END]********************************************
  [ Base:    Cache phpBB version in ACP         v1.0.0 ]
  ******************************************************/
 
-    $version_info .= '<p>' . $titanium_lang['Mailing_list_subscribe_reminder'] . '</p>';
-    $phpbb2_template->assign_vars(array(
+    $version_info .= '<p>' . $lang['Mailing_list_subscribe_reminder'] . '</p>';
+    $template->assign_vars(array(
         'VERSION_INFO'    => $version_info,
-        'L_VERSION_INFORMATION'    => $titanium_lang['Version_information'])
+        'L_VERSION_INFORMATION'    => $lang['Version_information'])
     );
 
-        $phpbb2_template->pparse("body");
+        $template->pparse("body");
 
         include('./page_footer_admin.'.$phpEx);
 
@@ -1095,25 +1116,25 @@ else
         //
         // Generate frameset
         //
-        $phpbb2_template->set_filenames(array(
+        $template->set_filenames(array(
                 "body" => "admin/index_frameset.tpl")
         );
 
         if(isset($_GET['op']) && $_GET['op'] == "Groups") {
-            $mainframe = append_titanium_sid("admin_groups.".$phpEx);
+            $mainframe = append_sid("admin_groups.".$phpEx);
         } else {
-            $mainframe = append_titanium_sid("index.$phpEx?pane=right");
+            $mainframe = append_sid("index.$phpEx?pane=right");
         }
 
-        $phpbb2_template->assign_vars(array(
-                "S_FRAME_NAV" => append_titanium_sid("index.$phpEx?pane=left"),
+        $template->assign_vars(array(
+                "S_FRAME_NAV" => append_sid("index.$phpEx?pane=left"),
                 "S_FRAME_MAIN" => $mainframe)
         );
 
         header ("Expires: " . gmdate("D, d M Y H:i:s", time()) . " GMT");
         header ("Last-Modified: " . gmdate("D, d M Y H:i:s") . " GMT");
 
-        $phpbb2_template->pparse("body");
+        $template->pparse("body");
 /*****[BEGIN]******************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]
  ******************************************************/
@@ -1121,7 +1142,7 @@ else
 /*****[END]********************************************
  [ Mod:     Log Moderator Actions              v1.1.6 ]
  ******************************************************/
-        $titanium_db->sql_close();
+        $db->sql_close();
         exit;
 
 }

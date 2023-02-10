@@ -88,9 +88,9 @@ if (isset($ips) && is_array($ips))
  [ Mod:    Admin IP Lock                       v2.1.0 ]
  ******************************************************/
 
-//need_delete('install.php');
-//need_delete('upgrade.php');
-//need_delete('install', true);
+need_delete('install.php');
+need_delete('upgrade.php');
+need_delete('install', true);
 
 if (isset($aid) && (preg_match("/[^a-zA-Z0-9_-]/", trim($aid)))){
     die('Begone');
@@ -102,12 +102,15 @@ if ((isset($aid)) && (isset($pwd)) && (isset($op)) && ($op == "login")){
 /*****[BEGIN]******************************************
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
  ******************************************************/
+    if(!isset($_POST['g-recaptcha-response']))
+    $_POST['g-recaptcha-response'] = '';
+ 
     $gfxchk = array(1,5,6,7);
     if (!security_code_check($_POST['g-recaptcha-response'], $gfxchk)){
 /*****[END]********************************************
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
  ******************************************************/
-        redirect_titanium($admin_file.".php");
+        redirect($admin_file.".php");
     }
 	
     if (!empty($aid) AND !empty($pwd)){
@@ -125,7 +128,7 @@ if ((isset($aid)) && (isset($pwd)) && (isset($op)) && ($op == "login")){
 		
         // Un-evocrypt
         if ($evo_crypt == $rpwd){
-            $titanium_db->sql_query("UPDATE `".$titanium_prefix."_authors` SET `pwd`='".$pwd."' WHERE `aid`='".$aid."'");
+            $db->sql_query("UPDATE `".$prefix."_authors` SET `pwd`='".$pwd."' WHERE `aid`='".$aid."'");
             $rpwd = get_admin_field('pwd', $aid);
         }
 		
@@ -150,26 +153,26 @@ if ((isset($aid)) && (isset($pwd)) && (isset($op)) && ($op == "login")){
  [ Mod:    Admin Tracker                       v1.0.1 ]
  ******************************************************/
             unset($txt_pwd);
-            redirect_titanium($_SERVER['REQUEST_URI']);
+            redirect($_SERVER['REQUEST_URI']);
         } 
         else 
         {
             log_write('admin', 'Attempted to login with "' . $aid . '"/"' . $txt_pwd . '" but failed', 'Security Breach');
             unset($txt_pwd);
 
-            global $admin_fc_status, $admin_fc_attempts, $admin_fc_timeout, $titanium_prefix;
+            global $admin_fc_status, $admin_fc_attempts, $admin_fc_timeout, $prefix;
 			if($admin_fc_status == 1):
 
 				$ip = $_SERVER['REMOTE_ADDR'];
 				$fcdate = date("mdYHi");
-				$fc = $titanium_db->sql_ufetchrow("SELECT * FROM `". $titanium_prefix ."_admin_fc` WHERE fc_ip = '$ip'");
+				$fc = $db->sql_ufetchrow("SELECT * FROM `". $prefix ."_admin_fc` WHERE fc_ip = '$ip'");
 			
 				if (empty($fc)):
-					$titanium_db->sql_query("INSERT INTO `" . $titanium_prefix . "_admin_fc` VALUES ('$fcdate', '$ip', '1')");
+					$db->sql_query("INSERT INTO `" . $prefix . "_admin_fc` VALUES ('$fcdate', '$ip', '1')");
 				else:
 
 					$fc_tries = $fc['fc_attempts'] + 1;
-					$titanium_db->sql_query("UPDATE `" . $titanium_prefix . "_admin_fc` SET `fc_datetime`='$fcdate', `fc_ip`='$ip', `fc_attempts`='$fc_tries' WHERE fc_ip = '$ip'");
+					$db->sql_query("UPDATE `" . $prefix . "_admin_fc` SET `fc_datetime`='$fcdate', `fc_ip`='$ip', `fc_attempts`='$fc_tries' WHERE fc_ip = '$ip'");
 
 				endif;
 
@@ -259,29 +262,45 @@ if (!isset($admincookie[4]) && $admintest){
 		setcookie('admin', $cookieData, time()+2592000);
 	}
 	
-	redirect_titanium($admin_file.'.php');
+	redirect($admin_file.'.php');
 	exit;
 }
 
-if(!isset($op)):
+if (!isset($op))
+{
     $op = 'adminMain';
-elseif 
-    (($op == 'mod_authors' || 
-      $op == 'modifyadmin' || 
-	  $op == 'UpdateAuthor' || 
-	  $op == 'AddAuthor' || 
-	  $op == 'deladmin2' || 
-	  $op == 'deladmin' || 
-	  $op == 'assignstories' || 
-	  $op == 'deladminconf') 
-	  && $admdata['name'] != 'God'):
-    
-	die('Illegal Operation');
-endif;
+} 
+elseif (($op == 'mod_authors' 
+      || $op == 'modifyadmin' 
+	  || $op == 'UpdateAuthor' 
+	  || $op == 'AddAuthor' 
+  	  || $op == 'ABMain' 
+  	  || $op == 'honeypot' 
+  	  || $op == 'database' 
+  	  || $op == 'messages' 
+  	  || $op == 'newsletter' 
+	  || $op == 'deladmin2' 
+	  || $op == 'deladmin' 
+	  || $op == 'assignstories' 
+	  || $op == 'deladminconf') 
+	  && $admdata['name'] != 'God')
+{
+    include(NUKE_BASE_DIR.'header.php');
+	OpenTable();
+	echo '<div align="center"><img class="icons" align="absmiddle" width="200" src="'.img('unknown-error.png','error').'"></div><br />';
+	echo '<div align="center"><strong>You Do Not Have The Necessary Security Clearance To Access This Area!</strong></div><br />';
+	echo '<div align="center"><strong><span class="blink-one" style="color: red;">You Must Have A God Security Level</span></strong></div><br />';
+//	die('Illegal Operation');
+    CloseTable();
+    include(NUKE_BASE_DIR.'footer.php');
+
+}
 
 if ($admintest){
-    if (!$admin) exit('Illegal Operation');
-    switch($op){
+    if (!isset($admin)) 
+	exit('Illegal Operation');
+    
+	switch($op){
         case "do_gfx":
             do_gfx();
         break;
@@ -331,13 +350,13 @@ if ($admintest){
             }
             closedir($casedir);
 
-            $result = $titanium_db->sql_query("SELECT title FROM ".$titanium_prefix."_modules ORDER BY title ASC");
-            while(list($mod_title) = $titanium_db->sql_fetchrow($result,SQL_BOTH)){
+            $result = $db->sql_query("SELECT title FROM ".$prefix."_modules ORDER BY title ASC");
+            while(list($mod_title) = $db->sql_fetchrow($result,SQL_BOTH)){
                 if (is_mod_admin($mod_title) && (file_exists(NUKE_MODULES_DIR.$mod_title.'/admin/index.php') AND file_exists(NUKE_MODULES_DIR.$mod_title.'/admin/links.php') AND file_exists(NUKE_MODULES_DIR.$mod_title.'/admin/case.php'))){
                      include(NUKE_MODULES_DIR.$mod_title.'/admin/case.php');
                 }
             }
-            $titanium_db->sql_freeresult($result);
+            $db->sql_freeresult($result);
         break;
     }
 } else {

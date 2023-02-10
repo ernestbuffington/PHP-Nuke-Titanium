@@ -1,6 +1,7 @@
 <?php
+
 /*=======================================================================
- PHP-Nuke Titanium: Enhanced PHP-Nuke Web Portal System
+ PHP-Nuke Titanium : Enhanced and Advanced PHP-Nuke Web Portal System
  =======================================================================*/
 
 /************************************************************************/
@@ -16,37 +17,48 @@
 /************************************************************************/
 
 if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
-    exit('Access Denied');
+  exit('Access Denied');
 }
 
 /*----[ Welcome! ] ---------------------------------------
+|                                                         |
 | Welcome to PHP-Nuke Titanium, an advanced content       |
 | management system based on PHP-Nuke                     |
----------------------------------------------------------*/
-
-/*----[ $titanium_dbhost ] -------------------------------
-| Your database host, normally 'localhost'                |
 |                                                         |
-| Default: localhost                                      |
 ---------------------------------------------------------*/
-$titanium_dbhost = 'localhost';
-/*----[ $titanium_dbname ] -------------------------------
-| The name of your database that will hold tables         |
----------------------------------------------------------*/
-$titanium_dbname = 'dev4_engine';
 
-/*----[ $titanium_dbuname ] ------------------------------
+/*----[ $dbhost ] ----------------------------------------
+|                                                         |
+| Your database host, normally 'localhost'                |
+| Default: localhost                                      |
+|                                                         |
+---------------------------------------------------------*/
+$dbhost = 'localhost';
+
+/*----[ $dbname ] ----------------------------------------
+|                                                         |
+| The name of your database that holds your tables        |
+|                                                         |
+---------------------------------------------------------*/
+$dbname = 'database_name_goes_here';
+
+/*----[ $dbuname ] ---------------------------------------
+|                                                         |
 | The username linked to your database, must have correct |
 | permissions                                             |
+|                                                         |
 ---------------------------------------------------------*/
-$titanium_dbuname = 'dev4_user';
+$dbuname = 'database_user_name_goes_here';
 
-/*----[ $titanium_dbpass ] -------------------------------
+/*----[ $dbpass ] ----------------------------------------
+|                                                         |
 | The password associated with your db usersname          |
+|                                                         |
 ---------------------------------------------------------*/
-$titanium_dbpass = 'xxxxxxxxxxxxxxxxxxxx';
+$dbpass = 'data_base_user_password_goes_here';
 
-/*----[ $titanium_dbtype ] -------------------------------
+/*----[ $dbtype ] ----------------------------------------
+|                                                         |
 | The type of SQL server you prefer to use                |
 |                                                         |
 | Choose from the following (case-sensitive):             |
@@ -54,56 +66,64 @@ $titanium_dbpass = 'xxxxxxxxxxxxxxxxxxxx';
 |    - mysqli (PHP must be compiled with "System Mysql")  |
 |                                                         |
 | Default: mysqli                                         |
----------------------------------------------------------*/
-$titanium_dbtype = 'mysqli';
-
-/*----[ $titanium_prefix ] -------------------------------
-| The prefix for your tables                              |
 |                                                         |
-| Default: titanium                                       |
 ---------------------------------------------------------*/
-$titanium_prefix = 'titanium';
+$dbtype = 'mysqli';
 
-/*----[ $titanium_user_prefix ] --------------------------
-| The prefix for your PHP-Nuke Titanium user-related      |
-| tables Do not change this unless it is really needed    |
+/*----[ $prefix ] ----------------------------------------
 |                                                         |
-| Default: titanium                                       |
+| The prefix for your PHP-Nuke Titanium tables            |
+|                                                         |
 ---------------------------------------------------------*/
-$titanium_user_prefix = 'titanium';
+$prefix = 'nuke';
+
+/*----[ $user_prefix ] -----------------------------------
+|                                                         |
+| The prefix for your PHP-Nuke Titanium tables            |
+| Do not change this unless it is really needed           |
+|                                                         |
+---------------------------------------------------------*/
+$user_prefix = 'nuke';
 
 /*----[ $admin_file ] ------------------------------------
+|                                                         |
 | The filename of your Admin File                         |
 |                                                         |
 | If you change this to something other than it's default |
 | value, you must also rename the file called 'admin.php' |
 | to the new value you assigned to this variable          |
 |                                                         |
-| Default: admin                                          |
+| Default: admin.php                                      |
+|                                                         |
 ---------------------------------------------------------*/
 $admin_file = 'admin';
 
 /*----[ $directory_mode ] ------------------------------------------
-| permissions - by default, we will create new folders with the     |
+|                                                                   |
+| permissions - by default, PNT will create new folders with the    |
 | permissions set with the following settings.  NOTE: do NOT use    |
 | quotes around this value or it will not work.                     |
 | Examples:                                                         |
 | Server API = Apache = 0777                                        |
 | Server API = CGI = 0755                                           |
+|                                                                   |
 -------------------------------------------------------------------*/
 $directory_mode = 0777;
 
 /*----[ $file_mode ] -------------------------------------------------- 
-| file permissions mode - by default, we will create all new files     |
+|                                                                      |
+| file permissions mode - by default, PNT will create all new files    |
 | with the permissions that are provided here.  NOTE: do NOT use any   |
 | quotes (single or double) around this value or it will not work.     |
 | Examples:                                                            |
 | Server API = Apache = 0666                                           |
 | Server API = CGI = 0644                                              |
+|                                                                      |
 ----------------------------------------------------------------------*/
 $file_mode = 0666;
 
 /*----[ $debug ] -----------------------------------------
+|                                                         |
 | Debugging Status of your website                        |
 |                                                         |
 | If you want errors being shown, set this to true.       |
@@ -113,10 +133,12 @@ $file_mode = 0666;
 | set this to false.                                      |
 |                                                         |
 | Default: true                                           |
+|                                                         |
 ---------------------------------------------------------*/
 $debug = true;
 
 /*----[ $use_cache ] -----=-------------------------------
+|                                                         |
 | Use caching of database fetched data                    |
 |                                                         |
 | You can choose between these options:                   |
@@ -129,45 +151,31 @@ $debug = true;
 |       - One more query per page, less server usage      |
 |                                                         |
 | Default: 1 (File Cache)                                 |
+|                                                         |
 ---------------------------------------------------------*/
 $use_cache = 1;
 
 /*----[ $persistency ] -----------------------------------
+|                                                         |
 | Allow persistent database connections                   |
 | true = On                                               |
 | false = Off                                             |
+|                                                         |
 ---------------------------------------------------------*/
 $persistency = false;
 
-#################################################
-# You must un-comment this to enable vimeo SDK  #
-#################################################
-# define('vimeo', 'enabled');                  #
-################################################
-
-####################################################
-# You must un-comment this to enable facebook  SDK #
-####################################################
-# define('facebook', 'enabled');               #
-################################################
-
-######################################################################
-# You must un-comment this to enable The 86it Developers Network SDK #
-######################################################################
-# define('network', 'enabled');                  #
-##################################################
-
-/*********************************************************************/
-/* You have finished configuration of your site. Now you can change  */
-/* all you want in the Administration Section. To enter just launch  */
-/* your web browser pointing to http://yourdomain.com/admin.php      */
-/* (or whatever you have setup in $admin_file)                       */
-/*                                                                   */
-/* Remember to go to the Settings section where you can configure    */
-/* your new site.                                                    */
-/*                                                                   */
-/* Congratulations! Now you have the webs best portal installed!     */
-/* Thanks for choosing PHP-Nuke Titanium: The Future of the Web!     */
-/*********************************************************************/
-
+/**********************************************************************/
+/*                                                                    */
+/* You have finished configuration of your site. Now you can change   */
+/* all you want in the Administration Section. To enter just launch   */
+/* your web browser pointing to http://yourdomain.com/admin.php       */
+/* (or whatever you have setup in $admin_file)                        */
+/*                                                                    */
+/* Remember to go to the Settings section where you can configure     */
+/* your new site.                                                     */
+/*                                                                    */
+/* Congratulations! Now you have the webs best portal installed!      */
+/* Thanks for choosing PHP-Nuke Titanium, we hope you enjoy using it! */
+/*                                                                    */
+/**********************************************************************/
 ?>

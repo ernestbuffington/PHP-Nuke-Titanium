@@ -27,7 +27,7 @@
 if(!defined('ADMIN_FILE'))
 die ("Illegal File Access");
 
-global $titanium_prefix, $titanium_db, $admin_file, $cache, $userinfo;
+global $prefix, $db, $admin_file, $cache, $userinfo;
 
 if (!is_admin()) 
 {
@@ -39,7 +39,8 @@ include(NUKE_INCLUDE_DIR . 'ajax/Sajax.php');
 
 function parse_data($data)
 {
-    $containers = explode(":", $data);
+    $final = [];
+    $containers = explode(":", (string) $data);
     foreach($containers AS $container)
     {
         $container = str_replace(")", "", $container);
@@ -61,15 +62,15 @@ function parse_data($data)
 
 function update_db($data_array, $col_check)
 {
-    global $cache, $titanium_prefix, $titanium_db;
+    global $cache, $prefix, $db;
     if (is_array($data_array)) {
         foreach($data_array AS $set => $items)
         {
             $i = 0;
             foreach($items AS $item)
             {
-                $sql = "UPDATE " . $titanium_prefix . "_blocks SET bposition = '$set', weight = '$i'  WHERE bid = '$item' $col_check";
-                $titanium_db->sql_query($sql);
+                $sql = "UPDATE " . $prefix . "_blocks SET bposition = '$set', weight = '$i'  WHERE bid = '$item' $col_check";
+                $db->sql_query($sql);
                 $i++;
             }
         }
@@ -86,13 +87,13 @@ function blocks_update($data)
 
 function status_update($data) 
 {
-    global $titanium_prefix, $titanium_db, $cache;
-    $data = explode(':', $data);
+    global $prefix, $db, $cache;
+    $data = explode(':', (string) $data);
     $bid = $data[0];
     $status = $data[1];
     $status = ($status == 1) ? 0 : 1;
-    $sql = "UPDATE " . $titanium_prefix . "_blocks SET `active` = '$status' WHERE `bid` = '$bid'";
-    $titanium_db->sql_query($sql);
+    $sql = "UPDATE " . $prefix . "_blocks SET `active` = '$status' WHERE `bid` = '$bid'";
+    $db->sql_query($sql);
     $cache->delete('blocks', 'config');
     $cache->resync();
     return 1;
@@ -100,39 +101,39 @@ function status_update($data)
 
 function AddBlock($data) 
 {
-    global $cache, $titanium_db, $titanium_prefix, $admin_file;
+    global $cache, $db, $prefix, $admin_file;
 
     $data['title'] = Fix_Quotes($data['title']);
     $data['headline'] = intval($data['headline']);
     $data['view'] = intval($data['view']);
     if($data['headline'] != 0) {
-        $result = $titanium_db->sql_query("SELECT sitename, headlinesurl FROM ".$titanium_prefix."_headlines WHERE hid='" . $data['headline'] . "'");
-        list($title, $data['url']) = $titanium_db->sql_fetchrow($result);
+        $result = $db->sql_query("SELECT sitename, headlinesurl FROM ".$prefix."_headlines WHERE hid='" . $data['headline'] . "'");
+        [$title, $data['url']] = $db->sql_fetchrow($result);
         if (empty($data['title'])) {
             $data['title'] = $title;
         }
     }
     if (!isset($data['oldposition']) || empty($data['oldposition'])) {
-        $result = $titanium_db->sql_query("SELECT weight FROM ".$titanium_prefix."_blocks WHERE bposition='" . $data['bposition'] . "' ORDER BY weight DESC");
-        list($weight) = $titanium_db->sql_fetchrow($result);
+        $result = $db->sql_query("SELECT weight FROM ".$prefix."_blocks WHERE bposition='" . $data['bposition'] . "' ORDER BY weight DESC");
+        [$weight] = $db->sql_fetchrow($result);
         $weight++;
     } else {
-        $result = $titanium_db->sql_query("SELECT weight FROM ".$titanium_prefix."_blocks WHERE bid='" . $data['bid'] . "'");
-        $row = $titanium_db->sql_fetchrow($result);
+        $result = $db->sql_query("SELECT weight FROM ".$prefix."_blocks WHERE bid='" . $data['bid'] . "'");
+        $row = $db->sql_fetchrow($result);
         $weight = $row[0];
     }
-    $titanium_db->sql_freeresult($result);
+    $db->sql_freeresult($result);
     $data['btime'] = 0;
     if($data['blockfile'] != '') {
         $data['url'] = '';
         if($data['title'] == '') {
-            $data['title'] = str_replace(array('block-','.php'),'',$data['blockfile']);
+            $data['title'] = str_replace(['block-', '.php'],'',(string) $data['blockfile']);
             $data['title'] = str_replace('_',' ',$data['title']);
         }
     }
     if($data['url'] != '') {
         $data['btime'] = time();
-        if(!preg_match('#://#',$data['url'])) { $data['url'] = 'http://'.$data['url']; }
+        if(!preg_match('#://#',(string) $data['url'])) { $data['url'] = 'http://'.$data['url']; }
         if(!($content = rss_content($data['url']))) { return false; }
         $data['content'] = $content;
     }
@@ -145,27 +146,27 @@ function AddBlock($data)
         }
     }
     if (!isset($data['oldposition']) || empty($data['oldposition'])) {
-       $sql = "INSERT INTO ".$titanium_prefix."_blocks (bid, bkey, title, content, url, bposition, weight, active, refresh, time, blanguage, blockfile, view) VALUES (NULL, '', '" . $data['title'] . "', '".Fix_Quotes($data['content'])."', '" . $data['url'] . "', '" . $data['bposition'] . "', '" . $weight . "', '" . $data['active'] . "', '" . $data['refresh'] . "', '" . $data['btime'] . "', '" . $data['blanguage'] . "', '" . $data['blockfile'] . "', '" . $data['view'] . "')";
+       $sql = "INSERT INTO ".$prefix."_blocks (bid, bkey, title, content, url, bposition, weight, active, refresh, time, blanguage, blockfile, view) VALUES (NULL, '', '" . $data['title'] . "', '".Fix_Quotes($data['content'])."', '" . $data['url'] . "', '" . $data['bposition'] . "', '" . $weight . "', '" . $data['active'] . "', '" . $data['refresh'] . "', '" . $data['btime'] . "', '" . $data['blanguage'] . "', '" . $data['blockfile'] . "', '" . $data['view'] . "')";
     } else {
         $data['bposition'] = (!empty($data['bposition'])) ? $data['bposition'] : $data['oldposition'];
-        $sql = "UPDATE ".$titanium_prefix."_blocks SET bkey='', title='" . $data['title'] . "', content='".Fix_Quotes($data['content'])."', url='" . $data['url'] . "', bposition='" . $data['bposition'] . "', weight='" . $weight . "', active='" . $data['active'] . "', refresh='" . $data['refresh'] . "', time='" . $data['btime'] . "', blanguage='" . $data['blanguage'] . "', blockfile='" . $data['blockfile'] . "', view='" . $data['view'] . "' WHERE bid=".$data['bid'];
+        $sql = "UPDATE ".$prefix."_blocks SET bkey='', title='" . $data['title'] . "', content='".Fix_Quotes($data['content'])."', url='" . $data['url'] . "', bposition='" . $data['bposition'] . "', weight='" . $weight . "', active='" . $data['active'] . "', refresh='" . $data['refresh'] . "', time='" . $data['btime'] . "', blanguage='" . $data['blanguage'] . "', blockfile='" . $data['blockfile'] . "', view='" . $data['view'] . "' WHERE bid=".$data['bid'];
     }
-    $titanium_db->sql_query($sql);
+    $db->sql_query($sql);
     $cache->delete('blocks', 'config');
     $cache->resync();
-    redirect_titanium("$admin_file.php?op=blocks");
+    redirect("$admin_file.php?op=blocks");
 }
 
 function deleteBlock($bid) 
 {
-    global $titanium_db, $titanium_prefix;
-    $titanium_db->sql_query("DELETE FROM " . $titanium_prefix . "_blocks WHERE bid = '" . $bid . "'");
+    global $db, $prefix;
+    $db->sql_query("DELETE FROM " . $prefix . "_blocks WHERE bid = '" . $bid . "'");
     return true;
 }
 
 function BlocksAdmin() 
 {
-    global $titanium_prefix, $titanium_db, $Sajax, $admin_file, $admlang;
+    global $prefix, $db, $Sajax, $admin_file, $admlang;
 
     define('USE_DRAG_DROP',true);
     global $g2, $element_ids;
@@ -183,9 +184,9 @@ function BlocksAdmin()
 
     OpenTable();
 
-    $result = $titanium_db->sql_query('SELECT bid, bkey, title, url, bposition, weight, active, blanguage, blockfile, view FROM '.$titanium_prefix.'_blocks ORDER BY weight');
-    $blocks = array();
-    while($row = $titanium_db->sql_fetchrow($result)) {
+    $result = $db->sql_query('SELECT bid, bkey, title, url, bposition, weight, active, blanguage, blockfile, view FROM '.$prefix.'_blocks ORDER BY weight');
+    $blocks = [];
+    while($row = $db->sql_fetchrow($result)) {
         $blocks[$row['bposition']][] = $row;
     }
     echo "<table border='0' width='100%'>\n";
@@ -286,9 +287,9 @@ function BlocksAdmin()
 }
 
 function block_show($bid) {
-    global $titanium_prefix, $titanium_db, $admin_file;
-    $result = $titanium_db->sql_query("SELECT bid, bkey, title, content, url, bposition, blockfile, view, refresh, time FROM ".$titanium_prefix."_blocks WHERE bid='".$bid."'");
-    $row = $titanium_db->sql_fetchrow($result);
+    global $prefix, $db, $admin_file;
+    $result = $db->sql_query("SELECT bid, bkey, title, content, url, bposition, blockfile, view, refresh, time FROM ".$prefix."_blocks WHERE bid='".$bid."'");
+    $row = $db->sql_fetchrow($result);
     define('USE_DRAG_DROP',true);
     global $g2, $element_ids;
     $g2 = 1;
@@ -315,12 +316,25 @@ function rssfail() {
     DisplayError('<center><strong>'._RSSFAIL.'</strong><br /><br />'._RSSTRYAGAIN.'<br /><br />'._GOBACK.'</center>');
 }
 function NewBlock($bid='') {
-    global $titanium_db, $titanium_prefix, $admin_file, $admlang;
+    $headlines = [];
+    $allblocks = [];
+    $blockslist = [];
+    $visblocks = [];
+    $checked = null;
+    $multilingual = null;
+    $currentlang = null;
+    $o1 = null;
+    $o2 = null;
+    $o3 = null;
+    $o4 = null;
+    $o6 = null;
+    $ingroups = null;
+    global $db, $prefix, $admin_file, $admlang;
 
     if (!empty($bid)) {
-       $edit = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT * FROM " . $titanium_prefix . "_blocks WHERE `bid`=".$bid));
+       $edit = $db->sql_fetchrow($db->sql_query("SELECT * FROM " . $prefix . "_blocks WHERE `bid`=".$bid));
     } else {
-       list($bid) = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT bid FROM " . $titanium_prefix . "_blocks ORDER BY bid DESC LIMIT 1"));
+       [$bid] = $db->sql_fetchrow($db->sql_query("SELECT bid FROM " . $prefix . "_blocks ORDER BY bid DESC LIMIT 1"));
        $bid++;
     }
     include_once(NUKE_BASE_DIR.'header.php');
@@ -355,8 +369,8 @@ function NewBlock($bid='') {
     $value = (isset($edit)) ? "value=\"".$edit['url']."\"" : '';
     echo "<input type=\"text\" name=\"url\" size=\"30\" maxlength=\"200\" $value />&nbsp;&nbsp;\n";
     $headlines[0] = $admlang['global']['custom'];
-    $res = $titanium_db->sql_query("select hid, sitename from ".$titanium_prefix."_headlines");
-    while (list($hid, $htitle) = $titanium_db->sql_fetchrow($res)) {
+    $res = $db->sql_query("select hid, sitename from ".$prefix."_headlines");
+    while ([$hid, $htitle] = $db->sql_fetchrow($res)) {
         $headlines[$hid] = $htitle;
     }
     echo select_box('headline', $value, $headlines)."&nbsp;[ <a href=\"".$admin_file.".php?op=headlines\" target=\"_blank\">Setup</a> ]<br /><span class=\"tiny\">".$admlang['blocks']['headlines_setup']."</span></td></tr>\n";
@@ -365,8 +379,8 @@ function NewBlock($bid='') {
         <select name=\"blockfile\">\n
         <option value=\"\" selected=\"selected\">"._NONE."</option>\n";
 
-    $result = $titanium_db->sql_query('SELECT blockfile FROM '.$titanium_prefix.'_blocks');
-    while($row = $titanium_db->sql_fetchrow($result)) {
+    $result = $db->sql_query('SELECT blockfile FROM '.$prefix.'_blocks');
+    while($row = $db->sql_fetchrow($result)) {
         $allblocks[$row[0]] = 1;
     }
     $value = (isset($edit)) ? $edit['blockfile'] : '';
@@ -382,7 +396,7 @@ function NewBlock($bid='') {
     sort($blockslist);
     for ($i=0, $maxi=count($blockslist); $i < $maxi; $i++) {
         if(!empty($blockslist[$i]) && !isset($visblocks[$blockslist[$i]])) {
-            $bl = str_replace(array('block-','.php'),'',$blockslist[$i]);
+            $bl = str_replace(['block-', '.php'],'',$blockslist[$i]);
             $bl = str_replace('_',' ',$bl);
             if (!empty($value)) {
                  $checked = ($value == $blockslist[$i]) ? 'SELECTED' : '';
@@ -401,16 +415,16 @@ function NewBlock($bid='') {
     echo Make_TextArea('content',$value,'addblock');
     echo "</td></tr>\n";
     $value = (isset($edit)) ? $edit['bposition'] : 'l';
-    echo '<tr><td>'.$admlang['global']['position'].':</td><td>'.select_box('bposition', $value, array('l'=>$admlang['global']['left'],'c'=>$admlang['blocks']['centerup'],'d'=>$admlang['blocks']['centerdown'],'r'=>$admlang['global']['right'])).'</td></tr>';
+    echo '<tr><td>'.$admlang['global']['position'].':</td><td>'.select_box('bposition', $value, ['l'=>$admlang['global']['left'], 'c'=>$admlang['blocks']['centerup'], 'd'=>$admlang['blocks']['centerdown'], 'r'=>$admlang['global']['right']]).'</td></tr>';
 
     if($multilingual) {
         echo '<tr><td>'._LANGUAGE.':</td><td colspan="3">';
-        $titanium_languages = lang_list();
+        $languages = lang_list();
         echo '<select name="blanguage">';
         echo '<option value=""'.(($currentlang == '') ? ' selected="selected"' : '').'>'._ALL."</option>\n";
-        for ($i=0, $j = count($titanium_languages); $i < $j; $i++) {
-            if($titanium_languages[$i] != '') {
-                echo '<option value="'.$titanium_languages[$i].'"'.(($currentlang == $titanium_languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst($titanium_languages[$i])."</option>\n";
+        for ($i=0, $j = is_countable($languages) ? count($languages) : 0; $i < $j; $i++) {
+            if($languages[$i] != '') {
+                echo '<option value="'.$languages[$i].'"'.(($currentlang == $languages[$i]) ? ' selected="selected"' : '').'>'.ucfirst((string) $languages[$i])."</option>\n";
             }
         }
         echo '</select></td></tr>';
@@ -420,7 +434,7 @@ function NewBlock($bid='') {
     $value = (isset($edit)) ? $edit['active'] : 1;
     echo '<tr><td>'.$admlang['global']['activate'].'</td><td>'.yesno_option('active', $value)."</td></tr>\n";
     $value = (isset($edit)) ? $edit['refresh'] : 3600;
-    echo '<tr><td>'.$admlang['blocks']['refresh'].':</td><td>'.select_box('refresh', $value, array('1800'=>'1/2 '.$admlang['global']['hour'],'3600'=>'1 '.$admlang['global']['hour'],'18000'=>'5 '.$admlang['global']['hours'],'36000'=>'10 '.$admlang['global']['hours'],'86400'=>'24 '.$admlang['global']['hours'])).'&nbsp;<span class="tiny">'.$admlang['blocks']['headlines']."</span></td></tr>\n";
+    echo '<tr><td>'.$admlang['blocks']['refresh'].':</td><td>'.select_box('refresh', $value, ['1800'=>'1/2 '.$admlang['global']['hour'], '3600'=>'1 '.$admlang['global']['hour'], '18000'=>'5 '.$admlang['global']['hours'], '36000'=>'10 '.$admlang['global']['hours'], '86400'=>'24 '.$admlang['global']['hours']]).'&nbsp;<span class="tiny">'.$admlang['blocks']['headlines']."</span></td></tr>\n";
     $value = (isset($edit)) ? $edit['view'] : 0;
     echo '<tr><td>'.$admlang['global']['who_view'].'</td><td>';
     switch ($value) {
@@ -439,20 +453,38 @@ function NewBlock($bid='') {
         break;
         default:
             $o6 = 'SELECTED';  //Groups
-            $ingroups = explode('-', $value);
+            $ingroups = explode('-', (string) $value);
         break;
     }
     echo "<select name=\"view\">"
      ."<option value=\"1\" $o1>" . $admlang['global']['all_visitors'] . "</option>"
-     ."<option value=\"2\" $o2>" . $admlang['global']['guests_only'] . "</option>"
-     ."<option value=\"3\" $o3>" . $admlang['global']['users_only'] . "</option>"
-     ."<option value=\"4\" $o4>" . $admlang['global']['admins_only'] . "</option>"
-    ."<option value=\"6\" $o6>".$admlang['global']['groups_only']."</option>"
+     ."<option value=\"2\" $o2>" . $admlang['global']['guests_only']  . "</option>"
+     ."<option value=\"3\" $o3>" . $admlang['global']['users_only']   . "</option>"
+     ."<option value=\"4\" $o4>" . $admlang['global']['admins_only']  . "</option>"
+    ."<option value=\"6\" $o6>"  . $admlang['global']['groups_only']  . "</option>"
      ."</select><br />";
     echo "<span class='tiny'>"._WHATGRDESC."</span><br /><strong>"._WHATGROUPS."</strong> <select name='add_groups[]' multiple size='5'>\n";
-    $groupsResult = $titanium_db->sql_query("select group_id, group_name from ".$titanium_prefix."_bbgroups where group_description <> 'Personal User'");
-    while(list($gid, $gname) = $titanium_db->sql_fetchrow($groupsResult)) {
-        if(@in_array($gid,$ingroups) AND $o6 == 'SELECTED') { $sel = "selected"; } else { $sel = ""; }
+    
+	$groupsResult = $db->sql_query("select group_id, group_name from ".$prefix."_bbgroups where group_description <> 'Personal User'");
+    
+	/**
+	* @edit blocks in admin panel
+	* @upadated for php 8.1
+	* @date 1/1/2023 12:41 pm Ernest Allen Buffington
+	*/
+	while([$gid, $gname ] = $db->sql_fetchrow($groupsResult))  
+	{
+        if(isset($gid) && isset($ingroups))
+		{
+		   if(in_array($gid,$ingroups)) 
+		   { 
+		     $sel = ""; 
+
+		     if($o6 == 'SELECTED')
+		     $sel = "selected"; 
+
+		  }
+		}
         echo "<OPTION VALUE='$gid'$sel>$gname</option>\n";
     }
     echo "</select>\n";

@@ -15,12 +15,15 @@
 /* the Free Software Foundation; either version 2 of the License.       */
 /************************************************************************/
 if(realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) exit('Access Denied');
-global $portaladmin, $titanium_dbhost2, $titanium_dbname2, $titanium_dbuname2, $titanium_db2, $network_prefix;
-# Your ADMIN user id number goes here!
-$portaladmin = '3'; # used to set the Google Page Author Name - for the crawlers!!!
-$titanium_dbhost2 = 'localhost';
-$titanium_dbname2 = 'hub_db';
-$titanium_dbuname2 = 'hub_user';
-$titanium_dbpass2 = 'askforapassword'; # You will be added when you finish setting your website up! Talk to TheGhost
+
+global $portaladmin, $dbhost2, $dbname2, $dbuname2, $db2, $network_prefix; 
+$portaladmin = 2;
+define('network', 'enabled');
+if ( defined('network') ):
+$dbhost2 = 'localhost';
+$dbname2 = 'hub_db';
+$dbuname2 = 'hub_user';
+$dbpass2 = '';
 $network_prefix = 'network';
+endif;
 ?>

@@ -2,7 +2,7 @@
 /*======================================================================= 
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
-
+use function PHP81_BC\strftime;
 /************************************************************************/
 /* PHP-NUKE: Web Portal System                                          */
 /* ===========================                                          */
@@ -47,18 +47,18 @@ $show = intval($show);
 
 define('INDEX_FILE', true);
 
-$titanium_module_name = basename(dirname(__FILE__));
-get_lang($titanium_module_name);
+$module_name = basename(dirname(__FILE__));
+get_lang($module_name);
 
 $pagetitle = '- '._WEBLINKS;
 
-require_once(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+require_once(NUKE_MODULES_DIR.$module_name.'/l_config.php');
 
 function weblinks_parent($parentid,$title) 
 {
-    global $titanium_prefix, $titanium_db;
+    global $prefix, $db;
     $parentid = intval($parentid);
-    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `cid`, `title`, `parentid` FROM ".$titanium_prefix."_links_categories WHERE cid='$parentid'"));
+    $row = $db->sql_fetchrow($db->sql_query("SELECT `cid`, `title`, `parentid` FROM ".$prefix."_links_categories WHERE cid='$parentid'"));
     $cid = intval($row['cid']);
     $ptitle = stripslashes(check_html($row['title'], "nohtml"));
     $pparentid = intval($row['parentid']);
@@ -73,15 +73,24 @@ function weblinks_parent($parentid,$title)
 
 function weblinks_parentlink($parentid,$title) 
 {
-    global $titanium_prefix, $titanium_db, $titanium_module_name;
+    global $prefix, $db, $module_name;
     
 	$parentid = intval($parentid);
-    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `cid`, `title`, `parentid` FROM ".$titanium_prefix."_links_categories WHERE cid='$parentid'"));
-    $cid = intval($row['cid']);
-    $ptitle = stripslashes(check_html($row['title'], "nohtml"));
-    $pparentid = intval($row['parentid']);
+    $row = $db->sql_fetchrow($db->sql_query("SELECT `cid`, `title`, `parentid` FROM ".$prefix."_links_categories WHERE cid='$parentid'"));
+    
+	if(isset($row['cid']))
+	$cid = intval($row['cid']);
+    
+	if(isset($row['title']))
+	$ptitle = stripslashes((string) check_html($row['title'], "nohtml"));
+
+	if(isset($row['parentid']))
+	$pparentid = intval($row['parentid']);
+    else
+	$pparentid = 0;
+	
 	if (!empty($ptitle)) 
-	$title="<a href=modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid>$ptitle</a>/".$title;
+	$title="<a href=modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid>$ptitle</a>/".$title;
 	if ($pparentid!=0) 
     $title=weblinks_parentlink($pparentid,$ptitle);
     return $title;
@@ -89,7 +98,7 @@ function weblinks_parentlink($parentid,$title)
 
 function menu($mainlink) 
 {
-    global $titanium_module_name, $query;
+    global $module_name, $query;
     
 	OpenTable();
     
@@ -100,28 +109,28 @@ function menu($mainlink)
 	$ThemeSel = get_theme();
     
 	if (file_exists("themes/".$ThemeSel."/images/Web_links/Web_Links.png")):
-    echo "<div align=\"center\"><a href=\"modules.php?name=".$titanium_module_name."\"><img style=\"max-height: 50px;\" src=\"themes/".$ThemeSel."/images/Web_links/Web_Links.png\" border=\"0\" alt=\"\"></a><br /><br />";
+    echo "<div align=\"center\"><a href=\"modules.php?name=".$module_name."\"><img style=\"max-height: 50px;\" src=\"themes/".$ThemeSel."/images/Web_links/Web_Links.png\" border=\"0\" alt=\"\"></a><br /><br />";
      
 	else: 
 	
-    echo "<div align=\"center\"><a href=\"modules.php?name=".$titanium_module_name."\"><img style=\"max-height: 50px;\" src=\"modules/".$titanium_module_name."/images/Web_Links.png\" border=\"0\" alt=\"\"></a><br /><br />";
+    echo "<div align=\"center\"><a href=\"modules.php?name=".$module_name."\"><img style=\"max-height: 50px;\" src=\"modules/".$module_name."/images/Web_Links.png\" border=\"0\" alt=\"\"></a><br /><br />";
     endif;
     
-	echo "<form action=\"modules.php?name=".$titanium_module_name."&amp;l_op=search&amp;query=".$query."\" method=\"post\">"
+	echo "<form action=\"modules.php?name=".$module_name."&amp;l_op=search&amp;query=".$query."\" method=\"post\">"
     ."<span class=\"content\"><input type=\"text\" size=\"25\" name=\"query\"> <input type=\"submit\" value=\""._SEARCH."\"></span>"
     ."</form>";
     
 	echo "<br /><strong><span class=\"content\"> ";
     
 	if ($mainlink>0): 
-    echo "<a href=\"modules.php?name=".$titanium_module_name."\"><i class=\"bi bi-link\"></i> "._LINKSMAIN."</a>  ";
+    echo "<a href=\"modules.php?name=".$module_name."\"><i class=\"bi bi-link\"></i> "._LINKSMAIN."</a>  ";
     endif;
     
-	echo " <a href=\"modules.php?name=".$titanium_module_name."&amp;l_op=AddLink\"><i class=\"bi bi-link\"></i> "._ADDLINK."</a>"
-        ." <a href=\"modules.php?name=".$titanium_module_name."&amp;l_op=NewLinks\"><i class=\"bi bi-link\"></i> "._NEW."</a>"
-        ." <a href=\"modules.php?name=".$titanium_module_name."&amp;l_op=MostPopular\"><i class=\"bi bi-link\"></i> "._POPULAR."</a>"
-        ." <a href=\"modules.php?name=".$titanium_module_name,"&amp;l_op=TopRated\"><i class=\"bi bi-link\"></i> "._TOPRATED."</a>"
-       #."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=RandomLink\"><i class=\"bi bi-link\"></i> "._RANDOM."</a> " <- This is garbage
+	echo " <a href=\"modules.php?name=".$module_name."&amp;l_op=AddLink\"><i class=\"bi bi-link\"></i> "._ADDLINK."</a>"
+        ." <a href=\"modules.php?name=".$module_name."&amp;l_op=NewLinks\"><i class=\"bi bi-link\"></i> "._NEW."</a>"
+        ." <a href=\"modules.php?name=".$module_name."&amp;l_op=MostPopular\"><i class=\"bi bi-link\"></i> "._POPULAR."</a>"
+        ." <a href=\"modules.php?name=".$module_name,"&amp;l_op=TopRated\"><i class=\"bi bi-link\"></i> "._TOPRATED."</a>"
+       #."<a href=\"modules.php?name=$module_name&amp;l_op=RandomLink\"><i class=\"bi bi-link\"></i> "._RANDOM."</a> " <- This is garbage
         ."</strong>"
 	    ."</span></div>";
 
@@ -133,9 +142,9 @@ function menu($mainlink)
 
 function SearchForm() 
 {
-	global $titanium_module_name, $query;
+	global $module_name, $query;
 	
-    echo "<form action=\"modules.php?name=".$titanium_module_name,"&amp;l_op=search&amp;query=".$query."\" method=\"post\">"
+    echo "<form action=\"modules.php?name=".$module_name,"&amp;l_op=search&amp;query=".$query."\" method=\"post\">"
     ."<table border=\"0\" cellspacing=\"0\" cellpadding=\"0\" align=\"center\">"
     ."<tr><td><span class=\"content\"><input type=\"text\" size=\"25\" name=\"query\"> <input type=\"submit\" value=\""._SEARCH."\"></td></tr>"
     ."</table>"
@@ -144,23 +153,23 @@ function SearchForm()
 
 function linkinfomenu($lid, $ttitle) 
 {
-    global $titanium_module_name, $titanium_user;
+    global $module_name, $user;
     
 	echo "<span class=\"content\"><strong>"
-    ."<i class=\"bi bi-person-square\"></i>&nbsp;<a href=\"modules.php?name=".$titanium_module_name."&amp;l_op=viewlinkcomments&amp;lid=".$lid."&amp;ttitle=".$ttitle."\">"._LINKCOMMENTS."</a>&nbsp;&nbsp;"
-    ."<i class=\"bi bi-info-square\"></i>&nbsp;<a href=\"modules.php?name=".$titanium_module_name."&amp;l_op=viewlinkdetails&amp;lid=".$lid."&amp;ttitle=".$ttitle."\">"._ADDITIONALDET."</a>&nbsp;&nbsp;"
-    ."<i class=\"bi bi-clipboard-data\"></i>&nbsp;<a href=\"modules.php?name=".$titanium_module_name."&amp;l_op=viewlinkeditorial&amp;lid=".$lid."&amp;ttitle=".$ttitle."\">"._EDITORREVIEW."</a>&nbsp;&nbsp;"
-    ."<i class=\"bi bi-pencil-square\"></i>&nbsp;<a href=\"modules.php?name=".$titanium_module_name."&amp;l_op=modifylinkrequest&amp;lid=".$lid."\">"._MODIFY."</a>&nbsp;&nbsp;";
+    ."<i class=\"bi bi-person-square\"></i>&nbsp;<a href=\"modules.php?name=".$module_name."&amp;l_op=viewlinkcomments&amp;lid=".$lid."&amp;ttitle=".$ttitle."\">"._LINKCOMMENTS."</a>&nbsp;&nbsp;"
+    ."<i class=\"bi bi-info-square\"></i>&nbsp;<a href=\"modules.php?name=".$module_name."&amp;l_op=viewlinkdetails&amp;lid=".$lid."&amp;ttitle=".$ttitle."\">"._ADDITIONALDET."</a>&nbsp;&nbsp;"
+    ."<i class=\"bi bi-clipboard-data\"></i>&nbsp;<a href=\"modules.php?name=".$module_name."&amp;l_op=viewlinkeditorial&amp;lid=".$lid."&amp;ttitle=".$ttitle."\">"._EDITORREVIEW."</a>&nbsp;&nbsp;"
+    ."<i class=\"bi bi-pencil-square\"></i>&nbsp;<a href=\"modules.php?name=".$module_name."&amp;l_op=modifylinkrequest&amp;lid=".$lid."\">"._MODIFY."</a>&nbsp;&nbsp;";
     
 	if (is_user()):
-    echo "<i class=\"bi bi-backspace-reverse\"></i>&nbsp;<a href=\"modules.php?name=".$titanium_module_name."&amp;l_op=brokenlink&amp;lid=".$lid."\">"._REPORTBROKEN."</a>&nbsp;&nbsp;";
+    echo "<i class=\"bi bi-backspace-reverse\"></i>&nbsp;<a href=\"modules.php?name=".$module_name."&amp;l_op=brokenlink&amp;lid=".$lid."\">"._REPORTBROKEN."</a>&nbsp;&nbsp;";
     endif;
     echo " </span></strong>";
 }
 
 function index() 
 {
-    global $titanium_prefix, $titanium_db;
+    global $prefix, $db;
     include_once(NUKE_BASE_DIR.'header.php');
     
 	$mainlink = 0;
@@ -177,11 +186,11 @@ function index()
 	echo "<div align=\"center\"><span class=\"title\"><strong><h1>"._LINKSMAINCAT."</h1></strong></span></div><br />";
     echo "<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\" align=\"center\"><tr>";
     
-	$result = $titanium_db->sql_query("SELECT cid, title, cdescription from ".$titanium_prefix."_links_categories where parentid=0 order by title"); 
+	$result = $db->sql_query("SELECT cid, title, cdescription from ".$prefix."_links_categories where parentid=0 order by title"); 
     $dum = 0;
     $count = 0;
     
-	while($row = $titanium_db->sql_fetchrow($result)): 
+	while($row = $db->sql_fetchrow($result)): 
 	
       $cid = intval($row['cid']);
       $title = stripslashes(check_html($row['title'], "nohtml"));
@@ -199,10 +208,10 @@ function index()
       echo "<br />"; 
       endif;
     
-	  $result2 = $titanium_db->sql_query("SELECT `cid`, `title` FROM ".$titanium_prefix."_links_categories where parentid='$cid' ORDER BY title limit 0,3");
+	  $result2 = $db->sql_query("SELECT `cid`, `title` FROM ".$prefix."_links_categories where parentid='$cid' ORDER BY title limit 0,3");
       $space = 0;
     
-	  while($row2 = $titanium_db->sql_fetchrow($result2)):
+	  while($row2 = $db->sql_fetchrow($result2)):
           $cid = intval($row2['cid']);
           $stitle = stripslashes(check_html($row2['title'], "nohtml"));
         
@@ -243,10 +252,10 @@ function index()
     echo '</div>';
     endif;
 	
-	$result3 = $titanium_db->sql_query("SELECT * from ".$titanium_prefix."_links_links");
-    $numrows = $titanium_db->sql_numrows($result3);
-    $result4 = $titanium_db->sql_query("SELECT * from ".$titanium_prefix."_links_categories");
-    $catnum = $titanium_db->sql_numrows($result4);
+	$result3 = $db->sql_query("SELECT * from ".$prefix."_links_links");
+    $numrows = $db->sql_numrows($result3);
+    $result4 = $db->sql_query("SELECT * from ".$prefix."_links_categories");
+    $catnum = $db->sql_numrows($result4);
     $numrows = intval($numrows);
     $catnum = intval($catnum);
     
@@ -262,7 +271,7 @@ function index()
 
 function AddLink() 
 {
-    global $titanium_prefix, $titanium_db, $titanium_user, $links_anonaddlinklock, $titanium_module_name;
+    global $prefix, $db, $user, $links_anonaddlinklock, $module_name;
     include_once(NUKE_BASE_DIR.'header.php');
     $mainlink = 1;
     menu(1);
@@ -281,7 +290,7 @@ function AddLink()
         ."<strong><big><i class=\"bi bi-check2-square\"></i></big></strong> "._POSTPENDING."<br />"
         ."<strong><big><i class=\"bi bi-person-bounding-box\"></i></big></strong> "._USERANDIP."<br /><br />"
 		
-            ."<form method=\"post\" action=\"modules.php?name=$titanium_module_name&amp;l_op=Add\">"
+            ."<form method=\"post\" action=\"modules.php?name=$module_name&amp;l_op=Add\">"
             ."<i class=\"bi bi-info-square\"></i> "._PAGETITLE.": <input type=\"text\" name=\"title\" size=\"50\" maxlength=\"100\"><br />"
 			."&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -296,11 +305,11 @@ function AddLink()
 			
         echo "<i class=\"bi bi-info-square\"></i> "._CATEGORY.": <select name=\"cat\">";
         
-		$result = $titanium_db->sql_query("SELECT `cid`, 
+		$result = $db->sql_query("SELECT `cid`, 
 		                               `title`, 
-									`parentid` FROM ".$titanium_prefix."_links_categories order by parentid,title");
+									`parentid` FROM ".$prefix."_links_categories order by parentid,title");
 									
-        while ($row = $titanium_db->sql_fetchrow($result)): 
+        while ($row = $db->sql_fetchrow($result)): 
 		
         $cid2 = intval($row['cid']);
         $ctitle2 = stripslashes(check_html($row['title'], "nohtml"));
@@ -344,9 +353,9 @@ function AddLink()
 }
 
 function Add($title, $url, $auth_name, $cat, $description, $email) {
-    global $titanium_prefix, $titanium_db, $titanium_user, $cookie, $cache;
-    $result = $titanium_db->sql_query("SELECT `url` FROM ".$titanium_prefix."_links_links WHERE url='$url'");
-    $numrows = $titanium_db->sql_numrows($result);
+    global $prefix, $db, $user, $cookie, $cache;
+    $result = $db->sql_query("SELECT `url` FROM ".$prefix."_links_links WHERE url='$url'");
+    $numrows = $db->sql_numrows($result);
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Security Code Control      v2.0.0 ] added 5/6/2021 (Someone fucked this up so I fixed it)
  ******************************************************/
@@ -354,7 +363,7 @@ function Add($title, $url, $auth_name, $cat, $description, $email) {
 	if (!security_code_check($_POST['g-recaptcha-response'], array(0,1,2,3,4,5,6,7))):
     include_once(NUKE_BASE_DIR.'header.php');
 	OpenTable();
-	$error_message[] = $titanium_lang_new[$titanium_module_name]['reCaptcha'];
+	$error_message[] = $lang_new[$module_name]['reCaptcha'];
 	CloseTable();
     include_once(NUKE_BASE_DIR.'footer.php');
 	endif;
@@ -414,11 +423,11 @@ function Add($title, $url, $auth_name, $cat, $description, $email) {
         Validate($url,'url',_WEBLINKS);
         $cat[0] = intval($cat[0]);
         $cat[1] = intval($cat[1]);
-        $num_new = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_links_newlink 
+        $num_new = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_links_newlink 
 		                                             WHERE title='$title' 
 													    OR url='$url' OR description='$description'"));
         if ($num_new == 0):
-        $titanium_db->sql_query("insert into ".$titanium_prefix."_links_newlink values (NULL, 
+        $db->sql_query("insert into ".$prefix."_links_newlink values (NULL, 
 		                                                         '$cat[0]', 
 																 '$cat[1]', 
 												  '".addslashes($title)."', 
@@ -452,7 +461,7 @@ function Add($title, $url, $auth_name, $cat, $description, $email) {
 
 function NewLinks($newlinkshowdays) 
 {
-    global $titanium_prefix, $titanium_db, $titanium_module_name;
+    global $prefix, $db, $module_name;
     include_once(NUKE_BASE_DIR.'header.php');
     $newlinkshowdays = intval(trim($newlinkshowdays));
     menu(1);
@@ -471,7 +480,7 @@ function NewLinks($newlinkshowdays)
     $newlinkday = date("d-M-Y", $newlinkdayRaw);
     $newlinkView = date("F d, Y", $newlinkdayRaw);
     $newlinkDB = Date("Y-m-d", $newlinkdayRaw);
-    $totallinks = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_links_links WHERE date LIKE '%$newlinkDB%'"));
+    $totallinks = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_links_links WHERE date LIKE '%$newlinkDB%'"));
     $counter++;
     $allweeklinks = $allweeklinks + $totallinks;
     endwhile;
@@ -482,13 +491,13 @@ function NewLinks($newlinkshowdays)
 	while ($counter <=30-1):
         $newlinkdayRaw = (time()-(86400 * $counter));
         $newlinkDB = Date("Y-m-d", $newlinkdayRaw);
-        $totallinks = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_links_links WHERE date LIKE '%$newlinkDB%'"));
+        $totallinks = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_links_links WHERE date LIKE '%$newlinkDB%'"));
         $allmonthlinks = $allmonthlinks + $totallinks;
         $counter++;
     endwhile;
 	
     echo "<div align=\"center\"><strong>"._TOTALNEWLINKS.":</strong> "._LASTWEEK." - $allweeklinks \ "._LAST30DAYS." - $allmonthlinks<br />"
-    .""._SHOW.": <a href=\"modules.php?name=$titanium_module_name&amp;l_op=NewLinks&amp;newlinkshowdays=7\">"._1WEEK."</a> - <a href=\"modules.php?name=$titanium_module_name&amp;l_op=NewLinks&amp;newlinkshowdays=14\">"._2WEEKS."</a> - <a href=\"modules.php?name=$titanium_module_name&amp;l_op=NewLinks&amp;newlinkshowdays=30\">"._30DAYS."</a>"
+    .""._SHOW.": <a href=\"modules.php?name=$module_name&amp;l_op=NewLinks&amp;newlinkshowdays=7\">"._1WEEK."</a> - <a href=\"modules.php?name=$module_name&amp;l_op=NewLinks&amp;newlinkshowdays=14\">"._2WEEKS."</a> - <a href=\"modules.php?name=$module_name&amp;l_op=NewLinks&amp;newlinkshowdays=30\">"._30DAYS."</a>"
     ."</div><br />";
     
 	/* List Last VARIABLE Days of Links */
@@ -503,7 +512,7 @@ function NewLinks($newlinkshowdays)
        $newlinkday = date("d-M-Y", $newlinkdayRaw);
       $newlinkView = date("F d, Y", $newlinkdayRaw);
         $newlinkDB = Date("Y-m-d", $newlinkdayRaw);
-       $totallinks = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_links_links WHERE date LIKE '%$newlinkDB%'"));
+       $totallinks = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_links_links WHERE date LIKE '%$newlinkDB%'"));
     
 	$counter++;
      
@@ -527,7 +536,7 @@ function NewLinks($newlinkshowdays)
 
 function NewLinksDate($selectdate) 
 {
-    global $titanium_prefix, $titanium_db, $titanium_module_name, $admin, $titanium_user, $admin_file, $locale, $mainvotedecimal, $datetime;
+    global $prefix, $db, $module_name, $admin, $user, $admin_file, $locale, $mainvotedecimal, $datetime;
     $dateDB = (date("d-M-Y", $selectdate));
     $dateView = (date("F d, Y", $selectdate));
     include_once(NUKE_BASE_DIR.'header.php');
@@ -540,12 +549,12 @@ function NewLinksDate($selectdate)
     print '</div>'."\n";
 
     $newlinkDB = Date("Y-m-d", $selectdate);
-    $totallinks = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_links_links WHERE date LIKE '%$newlinkDB%'"));
+    $totallinks = $db->sql_numrows($db->sql_query("SELECT * FROM ".$prefix."_links_links WHERE date LIKE '%$newlinkDB%'"));
 
     echo "<div align=\"center\"><span class=\"option\"><strong><h1>$dateView - $totallinks "._NEWLINKS."</h1></strong></span></div>"
     ."<table width=\"100%\" cellspacing=\"0\" cellpadding=\"10\" border=\"0\"><tr><td><span class=\"content\">";
 
-    $result2 = $titanium_db->sql_query("SELECT `lid`, 
+    $result2 = $db->sql_query("SELECT `lid`, 
 	                                  `cid`, 
 									  `sid`, 
 									`title`, 
@@ -554,12 +563,12 @@ function NewLinksDate($selectdate)
 									 `hits`, 
 						`linkratingsummary`, 
 						       `totalvotes`, 
-							`totalcomments` FROM ".$titanium_prefix."_links_links 
+							`totalcomments` FROM ".$prefix."_links_links 
 							             WHERE date 
 										  LIKE '%$newlinkDB%' 
 										 ORDER by title ASC");
 
-    while ($row2 = $titanium_db->sql_fetchrow($result2)):
+    while ($row2 = $db->sql_fetchrow($result2)):
       $lid = intval($row2['lid']);
       $cid = intval($row2['cid']);
       $sid = intval($row2['sid']);
@@ -571,7 +580,7 @@ function NewLinksDate($selectdate)
       $totalvotes = intval($row2['totalvotes']);
       $totalcomments = $row2['totalcomments'];
       $linkratingsummary = number_format($linkratingsummary, $mainvotedecimal);
-      echo "<font size=\"4\"><i class=\"bi bi-link\"></i></font> <a href=\"modules.php?name=$titanium_module_name&amp;l_op=visit&amp;lid=$lid\" target=\"new\">$title</a>";
+      echo "<font size=\"4\"><i class=\"bi bi-link\"></i></font> <a href=\"modules.php?name=$module_name&amp;l_op=visit&amp;lid=$lid\" target=\"new\">$title</a>";
       newlinkgraphic($datetime, $time);
       popgraphic($hits);
       echo "<br /><i class=\"bi bi-info-square\"></i> $description<br />";
@@ -590,18 +599,18 @@ function NewLinksDate($selectdate)
         if ($linkratingsummary!="0" || $linkratingsummary!="0.0") 
         echo " "._RATING.": $linkratingsummary ($totalvotes $votestring)";
         echo "<br />";
-        if (is_mod_admin($titanium_module_name)) 
+        if (is_mod_admin($module_name)) 
         echo "<a href=\"".$admin_file.".php?op=LinksModLink&amp;lid=$lid\">"._EDIT."</a> | ";
-        echo "<a href=\"modules.php?name=$titanium_module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$transfertitle\">"._RATESITE."</a>";
+        echo "<a href=\"modules.php?name=$module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$transfertitle\">"._RATESITE."</a>";
         if (is_user()) 
-        echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=brokenlink&amp;lid=$lid\">"._REPORTBROKEN."</a>";
+        echo " | <a href=\"modules.php?name=$module_name&amp;l_op=brokenlink&amp;lid=$lid\">"._REPORTBROKEN."</a>";
         if ($totalvotes != 0) 
-        echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkdetails&amp;lid=$lid&amp;ttitle=$transfertitle\">"._DETAILS."</a>";
+        echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkdetails&amp;lid=$lid&amp;ttitle=$transfertitle\">"._DETAILS."</a>";
         if ($totalcomments != 0) 
-        echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkcomments&amp;lid=$lid&amp;ttitle=$transfertitle\">"._SCOMMENTS." ($totalcomments)</a>";
+        echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkcomments&amp;lid=$lid&amp;ttitle=$transfertitle\">"._SCOMMENTS." ($totalcomments)</a>";
 	  detecteditorial($lid, $transfertitle);
       echo "<br />";
-      $row3 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT title from ".$titanium_prefix."_links_categories where cid='$cid'"));
+      $row3 = $db->sql_fetchrow($db->sql_query("SELECT title from ".$prefix."_links_categories where cid='$cid'"));
       $ctitle = stripslashes(check_html($row3['title'], "nohtml"));
       $ctitle=weblinks_parent($cid,$ctitle);
       echo ""._CATEGORY.": $ctitle";
@@ -618,10 +627,10 @@ function NewLinksDate($selectdate)
 
 function TopRated($ratenum, $ratetype) 
 {
-    global $titanium_prefix, $titanium_db, $admin, $titanium_module_name, $titanium_user, $locale, $mainvotedecimal, $datetime;
+    global $prefix, $db, $admin, $module_name, $user, $locale, $mainvotedecimal, $datetime;
     
 	include_once(NUKE_BASE_DIR.'header.php');
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
 	menu(1);
     OpenTable();
 	
@@ -639,7 +648,7 @@ function TopRated($ratenum, $ratetype)
     endif;
     if($toplinkspercentrigger == 1):
         $toplinkspercent = $toplinks;
-        $totalratedlinks = $titanium_db->sql_numrows($titanium_db->sql_query("SELECT * from ".$titanium_prefix."_links_links where linkratingsummary != '0'"));
+        $totalratedlinks = $db->sql_numrows($db->sql_query("SELECT * from ".$prefix."_links_links where linkratingsummary != '0'"));
         $toplinks = $toplinks / 100;
         $toplinks = $totalratedlinks * $toplinks;
         $toplinks = round($toplinks);
@@ -652,14 +661,14 @@ function TopRated($ratenum, $ratetype)
     
     echo "</td></tr>"
     ."<tr><td><div align=\"center\">"._NOTE." $linkvotemin "._TVOTESREQ."<br />"
-    .""._SHOWTOP.":  [ <a href=\"modules.php?name=$titanium_module_name&amp;l_op=TopRated&amp;ratenum=10&amp;ratetype=num\">10</a> - "
-    ."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=TopRated&amp;ratenum=25&amp;ratetype=num\">25</a> - "
-        ."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=TopRated&amp;ratenum=50&amp;ratetype=num\">50</a> | "
-        ."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=TopRated&amp;ratenum=1&amp;ratetype=percent\">1%</a> - "
-        ."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=TopRated&amp;ratenum=5&amp;ratetype=percent\">5%</a> - "
-        ."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=TopRated&amp;ratenum=10&amp;ratetype=percent\">10%</a> ]</div><br /><br /></td></tr>";
+    .""._SHOWTOP.":  [ <a href=\"modules.php?name=$module_name&amp;l_op=TopRated&amp;ratenum=10&amp;ratetype=num\">10</a> - "
+    ."<a href=\"modules.php?name=$module_name&amp;l_op=TopRated&amp;ratenum=25&amp;ratetype=num\">25</a> - "
+        ."<a href=\"modules.php?name=$module_name&amp;l_op=TopRated&amp;ratenum=50&amp;ratetype=num\">50</a> | "
+        ."<a href=\"modules.php?name=$module_name&amp;l_op=TopRated&amp;ratenum=1&amp;ratetype=percent\">1%</a> - "
+        ."<a href=\"modules.php?name=$module_name&amp;l_op=TopRated&amp;ratenum=5&amp;ratetype=percent\">5%</a> - "
+        ."<a href=\"modules.php?name=$module_name&amp;l_op=TopRated&amp;ratenum=10&amp;ratetype=percent\">10%</a> ]</div><br /><br /></td></tr>";
     
-	$result = $titanium_db->sql_query("SELECT `lid`, 
+	$result = $db->sql_query("SELECT `lid`, 
 	                                 `cid`, 
 									 `sid`, 
 								   `title`, 
@@ -668,12 +677,12 @@ function TopRated($ratenum, $ratetype)
 									`hits`, 
 					   `linkratingsummary`, 
 					          `totalvotes`, 
-						   `totalcomments` FROM ".$titanium_prefix."_links_links 
+						   `totalcomments` FROM ".$prefix."_links_links 
 						   
 						   WHERE linkratingsummary !=0 AND totalvotes >=$linkvotemin ORDER by linkratingsummary DESC limit 0,$toplinks");
     echo "<tr><td>";
     
-	while($row = $titanium_db->sql_fetchrow($result)): 
+	while($row = $db->sql_fetchrow($result)): 
 	
       $lid = intval($row['lid']);
       $cid = intval($row['cid']);
@@ -686,7 +695,7 @@ function TopRated($ratenum, $ratetype)
       $totalvotes = intval($row['totalvotes']);
       $totalcomments = $row['totalcomments'];
       $linkratingsummary = number_format($linkratingsummary, $mainvotedecimal);
-      echo "<a href=\"modules.php?name=$titanium_module_name&amp;l_op=visit&amp;lid=$lid\" target=\"new\">$title</a>";
+      echo "<a href=\"modules.php?name=$module_name&amp;l_op=visit&amp;lid=$lid\" target=\"new\">$title</a>";
       newlinkgraphic($datetime, $time);
       popgraphic($hits);
       echo "<br />";
@@ -707,22 +716,22 @@ function TopRated($ratenum, $ratetype)
       if($linkratingsummary != "0" || $linkratingsummary != "0.0") 
       echo " "._RATING.": <strong> $linkratingsummary </strong> ($totalvotes $votestring)";
     
-      echo "<br /><a href=\"modules.php?name=$titanium_module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$transfertitle\">"._RATESITE."</a>";
+      echo "<br /><a href=\"modules.php?name=$module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$transfertitle\">"._RATESITE."</a>";
     
 	  if(is_user()) 
-      echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=brokenlink&amp;lid=$lid\">"._REPORTBROKEN."</a>";
+      echo " | <a href=\"modules.php?name=$module_name&amp;l_op=brokenlink&amp;lid=$lid\">"._REPORTBROKEN."</a>";
     
       if($totalvotes != 0) 
-      echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkdetails&amp;lid=$lid&amp;ttitle=$transfertitle\">"._DETAILS."</a>";
+      echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkdetails&amp;lid=$lid&amp;ttitle=$transfertitle\">"._DETAILS."</a>";
     
       if($totalcomments != 0) 
-      echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkcomments&amp;lid=$lid&amp;ttitle=$transfertitle\">"._SCOMMENTS." ($totalcomments)</a>";
+      echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkcomments&amp;lid=$lid&amp;ttitle=$transfertitle\">"._SCOMMENTS." ($totalcomments)</a>";
     
       detecteditorial($lid, $transfertitle);
     
 	  echo "<br />";
     
-	  $row2 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT title from ".$titanium_prefix."_links_categories where cid='$cid'"));
+	  $row2 = $db->sql_fetchrow($db->sql_query("SELECT title from ".$prefix."_links_categories where cid='$cid'"));
       $ctitle = $row2['title'];
       $ctitle = weblinks_parent($cid,$ctitle);
     
@@ -741,9 +750,9 @@ function TopRated($ratenum, $ratetype)
 
 function MostPopular($ratenum, $ratetype) 
 {
-    global $titanium_prefix, $titanium_db, $admin, $titanium_module_name, $titanium_user, $admin_file, $locale, $mainvotedecimal, $datetime;
+    global $prefix, $db, $admin, $module_name, $user, $admin_file, $locale, $mainvotedecimal, $datetime;
     include_once(NUKE_BASE_DIR.'header.php');
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     menu(1);
 
     OpenTable();
@@ -762,8 +771,8 @@ function MostPopular($ratenum, $ratetype)
 	
     if ($mostpoplinkspercentrigger == 1):
         $toplinkspercent = $mostpoplinks;
-        $result2 = $titanium_db->sql_query("SELECT * from ".$titanium_prefix."_links_links");
-        $totalmostpoplinks = $titanium_db->sql_numrows($result2);
+        $result2 = $db->sql_query("SELECT * from ".$prefix."_links_links");
+        $totalmostpoplinks = $db->sql_numrows($result2);
         $mostpoplinks = $mostpoplinks / 100;
         $mostpoplinks = $totalmostpoplinks * $mostpoplinks;
         $mostpoplinks = round($mostpoplinks);
@@ -774,17 +783,17 @@ function MostPopular($ratenum, $ratetype)
 	else 
     echo "<center><span class=\"option\"><strong><h1>"._MOSTPOPULAR." ".htmlentities($mostpoplinks)."</h1></strong></span></center>";
     
-	echo "<tr><td><center>"._SHOWTOP.": [ <a href=\"modules.php?name=$titanium_module_name&amp;l_op=MostPopular&amp;ratenum=10&amp;ratetype=num\">10</a> - "
-    ."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=MostPopular&amp;ratenum=25&amp;ratetype=num\">25</a> - "
-        ."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=MostPopular&amp;ratenum=50&amp;ratetype=num\">50</a> | "
-        ."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=MostPopular&amp;ratenum=1&amp;ratetype=percent\">1%</a> - "
-        ."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=MostPopular&amp;ratenum=5&amp;ratetype=percent\">5%</a> - "
-        ."<a href=\"modules.php?name=$titanium_module_name&amp;l_op=MostPopular&amp;ratenum=10&amp;ratetype=percent\">10%</a> ]</center><br /><br /></td></tr>";
+	echo "<tr><td><center>"._SHOWTOP.": [ <a href=\"modules.php?name=$module_name&amp;l_op=MostPopular&amp;ratenum=10&amp;ratetype=num\">10</a> - "
+    ."<a href=\"modules.php?name=$module_name&amp;l_op=MostPopular&amp;ratenum=25&amp;ratetype=num\">25</a> - "
+        ."<a href=\"modules.php?name=$module_name&amp;l_op=MostPopular&amp;ratenum=50&amp;ratetype=num\">50</a> | "
+        ."<a href=\"modules.php?name=$module_name&amp;l_op=MostPopular&amp;ratenum=1&amp;ratetype=percent\">1%</a> - "
+        ."<a href=\"modules.php?name=$module_name&amp;l_op=MostPopular&amp;ratenum=5&amp;ratetype=percent\">5%</a> - "
+        ."<a href=\"modules.php?name=$module_name&amp;l_op=MostPopular&amp;ratenum=10&amp;ratetype=percent\">10%</a> ]</center><br /><br /></td></tr>";
     
 	if(!is_numeric($mostpoplinks)) 
     $mostpoplinks=10;
     
-	$result3 = $titanium_db->sql_query("SELECT `lid`, 
+	$result3 = $db->sql_query("SELECT `lid`, 
 	                                  `cid`, 
 									  `sid`, 
 									`title`, 
@@ -793,14 +802,14 @@ function MostPopular($ratenum, $ratetype)
 									 `hits`, 
 						`linkratingsummary`, 
 						       `totalvotes`, 
-							`totalcomments` FROM ".$titanium_prefix."_links_links 
+							`totalcomments` FROM ".$prefix."_links_links 
 							             ORDER by hits 
 										  DESC limit 0,$mostpoplinks");
     echo "<tr><td>";
 	
     //print '<hr>'."\n";
 
-    while($row3 = $titanium_db->sql_fetchrow($result3)): 
+    while($row3 = $db->sql_fetchrow($result3)): 
 	
     $lid = intval($row3['lid']);
     $cid = intval($row3['cid']);
@@ -813,7 +822,7 @@ function MostPopular($ratenum, $ratetype)
     $totalvotes = intval($row3['totalvotes']);
     $totalcomments = $row3['totalcomments'];
     $linkratingsummary = number_format($linkratingsummary, $mainvotedecimal);
-    echo "<span class=\"content\"><font size=\"4\"><i class=\"bi bi-link-45deg\"></i></font> <a href=\"modules.php?name=$titanium_module_name&amp;l_op=visit&amp;lid=$lid\" target=\"new\">$title</a>";
+    echo "<span class=\"content\"><font size=\"4\"><i class=\"bi bi-link-45deg\"></i></font> <a href=\"modules.php?name=$module_name&amp;l_op=visit&amp;lid=$lid\" target=\"new\">$title</a>";
     newlinkgraphic($datetime, $time);
     popgraphic($hits);
     echo "<br />";
@@ -836,25 +845,25 @@ function MostPopular($ratenum, $ratetype)
     
     echo "<br />";
     
-	if (is_mod_admin($titanium_module_name)) 
+	if (is_mod_admin($module_name)) 
     echo "<a href=\"".$admin_file.".php?op=LinksModLink&amp;lid=$lid\">"._EDIT."</a> | ";
     
-    echo "<a href=\"modules.php?name=$titanium_module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$transfertitle\">"._RATESITE."</a>";
+    echo "<a href=\"modules.php?name=$module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$transfertitle\">"._RATESITE."</a>";
     
 	if (is_user()) 
-    echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=brokenlink&amp;lid=$lid\">"._REPORTBROKEN."</a>";
+    echo " | <a href=\"modules.php?name=$module_name&amp;l_op=brokenlink&amp;lid=$lid\">"._REPORTBROKEN."</a>";
     
     if ($totalvotes != 0) 
-    echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkdetails&amp;lid=$lid&amp;ttitle=$transfertitle\">"._DETAILS."</a>";
+    echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkdetails&amp;lid=$lid&amp;ttitle=$transfertitle\">"._DETAILS."</a>";
     
     if ($totalcomments != 0) 
-    echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkcomments&amp;lid=$lid&amp;ttitle=$transfertitle\">"._SCOMMENTS." ($totalcomments)</a>";
+    echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkcomments&amp;lid=$lid&amp;ttitle=$transfertitle\">"._SCOMMENTS." ($totalcomments)</a>";
     
     detecteditorial($lid, $transfertitle);
     
 	echo "<br />";
     
-	$row4 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT title from ".$titanium_prefix."_links_categories where cid='$cid'"));
+	$row4 = $db->sql_fetchrow($db->sql_query("SELECT title from ".$prefix."_links_categories where cid='$cid'"));
     $ctitle = stripslashes(check_html($row4['title'], "nohtml"));
     $ctitle=weblinks_parent($cid,$ctitle);
     
@@ -874,39 +883,47 @@ function MostPopular($ratenum, $ratetype)
 function RandomLink() 
 {
 /*  This is pure garabage!
-    global $titanium_prefix, $titanium_db;
-    $result = $titanium_db->sql_query("SELECT * from ".$titanium_prefix."_links_links");
-    $numrows = $titanium_db->sql_numrows($result);
+    global $prefix, $db;
+    $result = $db->sql_query("SELECT * from ".$prefix."_links_links");
+    $numrows = $db->sql_numrows($result);
     if ($numrows == 1) {
     $random = 1;
     } else {
-    srand((double)microtime()*1000000);
+  //srand((double)microtime()*1000000); <- this horse shit is dead and gone
+    mt_srand((double)microtime()*1_000_000); # <- this is the new horse shit
     $random = rand(1,$numrows);
         $random = intval($random);
     }
-    $row2 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT url from ".$titanium_prefix."_links_links where lid='$random'"));
+    $row2 = $db->sql_fetchrow($db->sql_query("SELECT url from ".$prefix."_links_links where lid='$random'"));
     $url = stripslashes($row2['url']);
-    $titanium_db->sql_query("update ".$titanium_prefix."_links_links set hits=hits+1 where lid='$random'");
-    redirect_titanium("$url");
+    $db->sql_query("update ".$prefix."_links_links set hits=hits+1 where lid='$random'");
+    redirect("$url");
 */
 }
 
 function viewlink($cid, $min, $orderby, $show) 
 {
-    global $titanium_prefix, $titanium_db, $admin, $perpage, $titanium_module_name, $titanium_user, $admin_file, $locale, $mainvotedecimal, $datetime;
+    global $prefix, $db, $admin, $perpage, $module_name, $user, $admin_file, $locale, $mainvotedecimal, $datetime;
     $show = intval($show);
 
     if (empty($show))
     $show = '';
-    if (!empty($orderby)) 
+    
+	if (!empty($orderby)) 
     $orderby = htmlspecialchars($orderby);
     
     include_once(NUKE_BASE_DIR.'header.php');
 
-    if (!isset($min)) 
+    if(empty($min))
+	$min = '';
+	
+    if(!isset($min)) 
 	$min=0;
     
-	if (!isset($max)) 
+	if(empty($max))
+	$max = '';
+	
+	if(!isset($max)) 
 	$max=$min+$perpage;
     
 	if(!empty($orderby)) 
@@ -914,7 +931,7 @@ function viewlink($cid, $min, $orderby, $show)
 	else 
     $orderby = "title ASC";
     
-	if (!empty($show)) 
+	if(!empty($show)) 
     $perpage = $show;
 	else 
     $show=$perpage;
@@ -928,42 +945,42 @@ function viewlink($cid, $min, $orderby, $show)
     print '</div>'."\n";
 
     $cid = intval($cid);
-    $row_two = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT title,parentid FROM ".$titanium_prefix."_links_categories WHERE cid='$cid'"));
+    $row_two = $db->sql_fetchrow($db->sql_query("SELECT title,parentid FROM ".$prefix."_links_categories WHERE cid='$cid'"));
     $title = stripslashes(check_html($row_two['title'], "nohtml"));
     $parentid = intval($row_two['parentid']);
     
 	$title=weblinks_parentlink($parentid,$title);
     
-	$title="<a href=modules.php?name=$titanium_module_name>"._MAIN."</a>/$title";
+	$title="<a href=modules.php?name=$module_name>"._MAIN."</a>/$title";
     echo "<center><span class=\"option\"><strong><h1>$title</h1></strong></span></center><br />";
     
 	echo "<table border=\"0\" cellspacing=\"10\" cellpadding=\"0\" align=\"center\"><tr>";
     $cid = intval($cid);
-    $result2 = $titanium_db->sql_query("SELECT cid, title, cdescription from ".$titanium_prefix."_links_categories where parentid='$cid' order by title");
+    $result2 = $db->sql_query("SELECT cid, title, cdescription from ".$prefix."_links_categories where parentid='$cid' order by title");
     $dum = 0;
     $count = 0;
     
-	while($row2 = $titanium_db->sql_fetchrow($result2)):
+	while($row2 = $db->sql_fetchrow($result2)):
         $cid2 = intval($row2['cid']);
         $title2 = stripslashes(check_html($row2['title'], "nohtml"));
         $cdescription2 = stripslashes($row2['cdescription']);
     echo "<td><span class=\"option\"><strong><big><i class=\"bi bi-arrow-return-right\"></i></big></strong> <a href=\"modules.php?name=Web_Links&amp;l_op=viewlink&amp;cid=$cid2\"><strong>$title2</strong></a></span>";
     categorynewlinkgraphic($cid2);
     
-	if ($description2) 
+	if (isset($description2)) 
     echo "<span class=\"content\">$cdescription2</span><br />";
     else 
     echo "<br />";
     
-    $result3 = $titanium_db->sql_query("SELECT cid, title from ".$titanium_prefix."_links_categories where parentid='$cid2' order by title limit 0,3");
+    $result3 = $db->sql_query("SELECT cid, title from ".$prefix."_links_categories where parentid='$cid2' order by title limit 0,3");
     $space = 0;
     
-	while($row3 = $titanium_db->sql_fetchrow($result3)):
+	while($row3 = $db->sql_fetchrow($result3)):
         $cid3 = intval($row3['cid']);
         $title3 = stripslashes(check_html($row3['title'], "nohtml"));
         if ($space>0) 
         echo ",&nbsp;";
-        echo "<span class=\"content\"><a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid3\">$title3</a></span>";
+        echo "<span class=\"content\"><a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid3\">$title3</a></span>";
         $space++;
     endwhile;
     
@@ -992,42 +1009,42 @@ function viewlink($cid, $min, $orderby, $show)
 	$orderbyTrans = convertorderbytrans($orderby);
     
 	echo "<center><span class=\"content\">"._SORTLINKSBY.": "
-        .""._TITLE." (<a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=titleA\">A</a>\<a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=titleD\">D</a>) "
-        .""._DATE." (<a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=dateA\">A</a>\<a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=dateD\">D</a>) "
-        .""._RATING." (<a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=ratingA\">A</a>\<a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=ratingD\">D</a>) "
-        .""._POPULARITY." (<a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=hitsA\">A</a>\<a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=hitsD\">D</a>)"
+        .""._TITLE." (<a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=titleA\">A</a>\<a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=titleD\">D</a>) "
+        .""._DATE." (<a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=dateA\">A</a>\<a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=dateD\">D</a>) "
+        .""._RATING." (<a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=ratingA\">A</a>\<a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=ratingD\">D</a>) "
+        .""._POPULARITY." (<a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=hitsA\">A</a>\<a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;orderby=hitsD\">D</a>)"
     ."<br /><strong>"._SITESSORTED.": $orderbyTrans</strong></span></center><br /><br />";
     
 	if(!is_numeric($min))
     $min=0;
     
-    $result4 = $titanium_db->sql_query("SELECT `lid`, 
+    $result4 = $db->sql_query("SELECT `lid`, 
 	                                `title`, 
 							  `description`, 
 							         `date`, 
 									 `hits`, 
 						`linkratingsummary`, 
 						       `totalvotes`, 
-							`totalcomments` FROM ".$titanium_prefix."_links_links 
+							`totalcomments` FROM ".$prefix."_links_links 
 							             WHERE cid='$cid' 
 										 ORDER by $orderby limit $min,$perpage");
     
-	$fullcountresult = $titanium_db->sql_query("SELECT `lid`, 
+	$fullcountresult = $db->sql_query("SELECT `lid`, 
 	                                        `title`, 
 									  `description`, 
 									         `date`, 
 											 `hits`, 
 								`linkratingsummary`, 
 								       `totalvotes`, 
-									`totalcomments` FROM ".$titanium_prefix."_links_links 
+									`totalcomments` FROM ".$prefix."_links_links 
 									             WHERE cid='$cid'");
     
-	$totalselectedlinks = $titanium_db->sql_numrows($fullcountresult);
+	$totalselectedlinks = $db->sql_numrows($fullcountresult);
     
 	echo "<table width=\"100%\" cellspacing=\"0\" cellpadding=\"10\" border=\"0\"><tr><td><span class=\"content\">";
     $x=0;
     
-	while($row4 = $titanium_db->sql_fetchrow($result4)):
+	while($row4 = $db->sql_fetchrow($result4)):
         $lid = intval($row4['lid']);
         $title = stripslashes(check_html($row4['title'], "nohtml"));
         $description = stripslashes($row4['description']);
@@ -1037,7 +1054,7 @@ function viewlink($cid, $min, $orderby, $show)
         $totalvotes = intval($row4['totalvotes']);
         $totalcomments = intval($row4['totalcomments']);
     $linkratingsummary = number_format($linkratingsummary, $mainvotedecimal);
-        echo "<font size=\"4\"><i class=\"bi bi-link\"></i></font> <a href=\"modules.php?name=$titanium_module_name&amp;l_op=visit&amp;lid=$lid\" target=\"new\"><strong>$title</strong></a>";
+        echo "<font size=\"4\"><i class=\"bi bi-link\"></i></font> <a href=\"modules.php?name=$module_name&amp;l_op=visit&amp;lid=$lid\" target=\"new\"><strong>$title</strong></a>";
     newlinkgraphic($datetime, $time);
     popgraphic($hits);
     
@@ -1063,19 +1080,19 @@ function viewlink($cid, $min, $orderby, $show)
     
     echo "<br />";
     
-	if (is_mod_admin($titanium_module_name)) 
+	if (is_mod_admin($module_name)) 
     echo "<a href=\"".$admin_file.".php?op=LinksModLink&amp;lid=$lid\">"._EDIT."</a> | ";
     
-    echo "<a href=\"modules.php?name=$titanium_module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$transfertitle\">"._RATESITE."</a>";
+    echo "<a href=\"modules.php?name=$module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$transfertitle\">"._RATESITE."</a>";
     
 	if (is_user()) 
-    echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=brokenlink&amp;lid=$lid\">"._REPORTBROKEN."</a>";
+    echo " | <a href=\"modules.php?name=$module_name&amp;l_op=brokenlink&amp;lid=$lid\">"._REPORTBROKEN."</a>";
     
     if ($totalvotes != 0) 
-    echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkdetails&amp;lid=$lid&amp;ttitle=$transfertitle\">"._DETAILS."</a>";
+    echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkdetails&amp;lid=$lid&amp;ttitle=$transfertitle\">"._DETAILS."</a>";
     
     if ($totalcomments != 0) 
-    echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkcomments&amp;lid=$lid&amp;ttitle=$transfertitle\">"._SCOMMENTS." ($totalcomments)</a>";
+    echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkcomments&amp;lid=$lid&amp;ttitle=$transfertitle\">"._SCOMMENTS." ($totalcomments)</a>";
     
     detecteditorial($lid, $transfertitle);
     
@@ -1107,7 +1124,7 @@ function viewlink($cid, $min, $orderby, $show)
         $prev=$min-$perpage;
       
 	     if ($prev>=0): 
-            echo "&nbsp;&nbsp;<strong>[ <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;min=$prev&amp;orderby=$orderby&amp;show=$show\">";
+            echo "&nbsp;&nbsp;<strong>[ <a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;min=$prev&amp;orderby=$orderby&amp;show=$show\">";
             echo " &lt;&lt; "._PREVIOUS."</a> ]</strong> ";
          endif;
 		 
@@ -1120,14 +1137,14 @@ function viewlink($cid, $min, $orderby, $show)
  		      if ($counter == $currentpage) 
               echo "<strong>$counter</strong>&nbsp;";
 		      else 
-              echo "<a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;min=$mintemp&amp;orderby=$orderby&amp;show=$show\">$counter</a> ";
+              echo "<a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;min=$mintemp&amp;orderby=$orderby&amp;show=$show\">$counter</a> ";
               $counter++;
            endwhile;
          
 		 $next=$min+$perpage;
          
 		 if ($x>=$perpage):
-            echo "&nbsp;&nbsp;<strong>[ <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid&amp;min=$max&amp;orderby=$orderby&amp;show=$show\">";
+            echo "&nbsp;&nbsp;<strong>[ <a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid&amp;min=$max&amp;orderby=$orderby&amp;show=$show\">";
             echo " "._NEXT." &gt;&gt;</a> ]</strong> ";
          endif;
 		 
@@ -1146,13 +1163,13 @@ function viewlink($cid, $min, $orderby, $show)
 
 function newlinkgraphic($datetime, $time) 
 {
-    global $titanium_module_name, $locale;
+    global $module_name, $locale;
 
     echo "&nbsp;";
 
     setlocale (LC_TIME, $locale);
     preg_match ("/([0-9]{4})\-([0-9]{1,2})\-([0-9]{1,2}) ([0-9]{1,2})\:([0-9]{1,2})\:([0-9]{1,2})/", $time, $datetime);
-    $datetime = strftime(""._LINKSDATESTRING."", mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]));
+    $datetime = strftime(""._LINKSDATESTRING."", mktime(isset($datetime[4]),isset($datetime[5]),isset($datetime[6]),isset($datetime[2]),isset($datetime[3]),isset($datetime[1])));
     $datetime = ucfirst($datetime);
     $startdate = time();
     $count = 0;
@@ -1161,11 +1178,11 @@ function newlinkgraphic($datetime, $time)
     $daysold = date("d-M-Y", $startdate);
         if ("$daysold" == "$datetime"): 
             if ($count<=1) 
-              echo "<img src=\"modules/$titanium_module_name/images/new_01.png\" alt=\""._NEWTODAY."\">";
+              echo "<img src=\"modules/$module_name/images/new_01.png\" alt=\""._NEWTODAY."\">";
             if ($count<=3 && $count>1) 
-               echo "<img src=\"modules/$titanium_module_name/images/new_03.png\" alt=\""._NEWLAST3DAYS."\">";
+               echo "<img src=\"modules/$module_name/images/new_03.png\" alt=\""._NEWLAST3DAYS."\">";
             if ($count<=7 && $count>3) 
-              echo "<img src=\"modules/$titanium_module_name/images/new_07.png\" alt=\""._NEWTHISWEEK."\">";
+              echo "<img src=\"modules/$module_name/images/new_07.png\" alt=\""._NEWTHISWEEK."\">";
        endif;
         $count++;
         $startdate = (time()-(86400 * $count));
@@ -1174,16 +1191,19 @@ function newlinkgraphic($datetime, $time)
 
 function categorynewlinkgraphic($cat) 
 {
-    global $titanium_prefix, $titanium_db, $titanium_module_name, $locale;
-    $cat = intval(trim($cat));
-    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT date from ".$titanium_prefix."_links_links where cid='$cat' order by date desc limit 1"));
-    $time = $row['date'];
-
+    global $prefix, $db, $module_name, $locale;
+    $cat = intval(trim((string) $cat));
+    $row = $db->sql_fetchrow($db->sql_query("SELECT `date` FROM ".$prefix."_links_links WHERE cid='$cat' ORDER by date desc limit 1"));
+    
+	if(!isset($row['date']))
+	$row['date'] = '';
+	
+	$time = $row['date'];
+    
     echo "&nbsp;";
-
     setlocale (LC_TIME, $locale);
-    preg_match ("/([0-9]{4})\-([0-9]{1,2})\-([0-9]{1,2}) ([0-9]{1,2})\:([0-9]{1,2})\:([0-9]{1,2})/", $time, $datetime);
-    $datetime = strftime(""._LINKSDATESTRING."", mktime($datetime[4],$datetime[5],$datetime[6],$datetime[2],$datetime[3],$datetime[1]));
+    preg_match ("/([0-9]{4})\-([0-9]{1,2})\-([0-9]{1,2}) ([0-9]{1,2})\:([0-9]{1,2})\:([0-9]{1,2})/", (string) $time, $datetime);
+    $datetime = strftime(""._LINKSDATESTRING."", mktime(isset($datetime[4]),isset($datetime[5]),isset($datetime[6]),isset($datetime[2]),isset($datetime[3]),isset($datetime[1])));
     $datetime = ucfirst($datetime);
     $startdate = time();
     $count = 0;
@@ -1192,11 +1212,11 @@ function categorynewlinkgraphic($cat)
     $daysold = date("d-M-Y", $startdate);
         if ("$daysold" == "$datetime"):
         if ($count<=1) 
-        echo "<img src=\"modules/$titanium_module_name/images/new_01.png\" alt=\""._CATNEWTODAY."\">";
+        echo "<img src=\"modules/$module_name/images/new_01.png\" alt=\""._CATNEWTODAY."\">";
         if ($count<=3 && $count>1) 
-        echo "<img src=\"modules/$titanium_module_name/images/new_03.png\" alt=\""._CATLAST3DAYS."\">";
+        echo "<img src=\"modules/$module_name/images/new_03.png\" alt=\""._CATLAST3DAYS."\">";
         if ($count<=7 && $count>3) 
-        echo "<img src=\"modules/$titanium_module_name/images/new_07.png\" alt=\""._CATTHISWEEK."\">";
+        echo "<img src=\"modules/$module_name/images/new_07.png\" alt=\""._CATTHISWEEK."\">";
     endif;
         $count++;
         $startdate = (time()-(86400 * $count));
@@ -1205,10 +1225,10 @@ function categorynewlinkgraphic($cat)
 
 function popgraphic($hits) 
 {
-    global $titanium_module_name;
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    global $module_name;
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     if ($hits>=$popular) 
-    echo "&nbsp;<img src=\"modules/$titanium_module_name/images/pop.gif\" alt=\""._POPULAR."\">";
+    echo "&nbsp;<img src=\"modules/$module_name/images/pop.gif\" alt=\""._POPULAR."\">";
 }
 
 function convertorderbyin($orderby) 
@@ -1222,7 +1242,7 @@ function convertorderbyin($orderby)
 				 != "hitsD" AND $orderby 
 				 != "ratingD") 
 	{
-        redirect_titanium("index.php");
+        redirect("index.php");
         exit;
     }
     if ($orderby == "titleA")    
@@ -1255,7 +1275,7 @@ function convertorderbytrans($orderby)
 				 != "linkratingsummary ASC" AND $orderby 
 				 != "linkratingsummary DESC") 
 	{
-        redirect_titanium("index.php");
+        redirect("index.php");
         exit;
     }
     if ($orderby == "hits ASC")            
@@ -1288,7 +1308,7 @@ function convertorderbyout($orderby)
 				 != "hits DESC" AND $orderby 
 				 != "linkratingsummary DESC") 
 	{
-        redirect_titanium("index.php");
+        redirect("index.php");
         exit;
     }
     if ($orderby == "title ASC")        
@@ -1312,18 +1332,18 @@ function convertorderbyout($orderby)
 
 function visit($lid) 
 {
-    global $titanium_prefix, $titanium_db;
+    global $prefix, $db;
     $lid = intval($lid);
-    $titanium_db->sql_query("update ".$titanium_prefix."_links_links set hits=hits+1 where lid='$lid'");
-    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `url` FROM ".$titanium_prefix."_links_links WHERE lid='$lid'"));
+    $db->sql_query("update ".$prefix."_links_links set hits=hits+1 where lid='$lid'");
+    $row = $db->sql_fetchrow($db->sql_query("SELECT `url` FROM ".$prefix."_links_links WHERE lid='$lid'"));
     $url = stripslashes($row['url']);
-    redirect_titanium("$url");
+    redirect("$url");
 }
 
 function search($query, $min, $orderby, $show) 
 {
-    global $titanium_prefix, $titanium_db, $admin, $bgcolor2, $titanium_module_name, $locale, $mainvotedecimal, $datetime;
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    global $prefix, $db, $admin, $bgcolor2, $module_name, $locale, $mainvotedecimal, $datetime;
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     include_once(NUKE_BASE_DIR.'header.php');
 
     if (!isset($min)) 
@@ -1346,7 +1366,7 @@ function search($query, $min, $orderby, $show)
     if(!is_numeric($linksresults) AND $linksresults==0)
     $linksresults=10;
 
-    $result = $titanium_db->sql_query("SELECT `lid`, 
+    $result = $db->sql_query("SELECT `lid`, 
 	                                 `cid`, 
 									 `sid`, 
 								   `title`, 
@@ -1356,7 +1376,7 @@ function search($query, $min, $orderby, $show)
 									`hits`, 
 					   `linkratingsummary`, 
 					          `totalvotes`, 
-						   `totalcomments` FROM ".$titanium_prefix."_links_links 
+						   `totalcomments` FROM ".$prefix."_links_links 
 						                WHERE title 
 										 LIKE '%$query%' 
 										   OR description 
@@ -1364,21 +1384,21 @@ function search($query, $min, $orderby, $show)
 										ORDER BY $orderby 
 										LIMIT ".intval($min).",$linksresults");
     
-	$fullcountresult = $titanium_db->sql_query("SELECT `lid`, 
+	$fullcountresult = $db->sql_query("SELECT `lid`, 
 	                                        `title`, 
 									  `description`, 
 									         `date`, 
 											 `hits`, 
 							    `linkratingsummary`, 
 								       `totalvotes`, 
-									`totalcomments` FROM ".$titanium_prefix."_links_links 
+									`totalcomments` FROM ".$prefix."_links_links 
 									             WHERE title 
 												  LIKE '%$query%' 
 												    OR description 
 												  LIKE '%$query%'");
     
-	$totalselectedlinks = $titanium_db->sql_numrows($fullcountresult);
-    $nrows = $titanium_db->sql_numrows($result);
+	$totalselectedlinks = $db->sql_numrows($fullcountresult);
+    $nrows = $db->sql_numrows($result);
     $x=0;
     $the_query = stripslashes($query);
     $the_query = str_replace("\'", "'", $the_query);
@@ -1391,32 +1411,32 @@ function search($query, $min, $orderby, $show)
 		echo "<span class=\"option\">"._SEARCHRESULTS4.": <strong>$the_query</strong></span><br /><br />"
             ."<table width=\"100%\" bgcolor=\"$bgcolor2\"><tr><td><span class=\"option\"><strong>"._USUBCATEGORIES."</strong></span></td></tr></table>";
             
-			$result2 = $titanium_db->sql_query("SELECT `cid`, `title` FROM ".$titanium_prefix."_links_categories WHERE title LIKE '%$query%' ORDER BY title DESC");
+			$result2 = $db->sql_query("SELECT `cid`, `title` FROM ".$prefix."_links_categories WHERE title LIKE '%$query%' ORDER BY title DESC");
             
-			while ($row2 = $titanium_db->sql_fetchrow($result2)):
+			while ($row2 = $db->sql_fetchrow($result2)):
             $cid = intval($row2['cid']);
             $stitle = stripslashes(check_html($row2['title'], "nohtml"));
-            $res = $titanium_db->sql_query("SELECT * from ".$titanium_prefix."_links_links where cid='$cid'");
-            $numrows = $titanium_db->sql_numrows($res);
-                $row3 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT cid,title,parentid from ".$titanium_prefix."_links_categories where cid='$cid'"));
+            $res = $db->sql_query("SELECT * from ".$prefix."_links_links where cid='$cid'");
+            $numrows = $db->sql_numrows($res);
+                $row3 = $db->sql_fetchrow($db->sql_query("SELECT cid,title,parentid from ".$prefix."_links_categories where cid='$cid'"));
                 $cid3 = intval($row3['cid']);
                 $title3 = stripslashes(check_html($row3['title'], "nohtml"));
                 $parentid3 = intval($row3['parentid']);
             if ($parentid3>0) $title3 = weblinks_parent($parentid3,$title3);
             $title3 = str_replace($query, "<strong>$query</strong>", $title3);
-            echo "<strong><big>&middot;</big></strong>&nbsp;<a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlink&amp;cid=$cid\">$title3</a> ($numrows)<br />";
+            echo "<strong><big>&middot;</big></strong>&nbsp;<a href=\"modules.php?name=$module_name&amp;l_op=viewlink&amp;cid=$cid\">$title3</a> ($numrows)<br />";
         endwhile;
     
 	    echo "<br /><table width=\"100%\" bgcolor=\"$bgcolor2\"><tr><td><span class=\"option\"><strong>"._LINKS."</strong></span></td></tr></table>";
         $orderbyTrans = convertorderbytrans($orderby);
         echo "<br /><span class=\"content\">"._SORTLINKSBY.": "
-            .""._TITLE." (<a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=titleA\">A</a>\<a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=titleD\">D</a>)"
-            .""._DATE." (<a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=dateA\">A</a>\<a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=dateD\">D</a>)"
-            .""._RATING." (<a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=ratingA\">A</a>\<a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=ratingD\">D</a>)"
-            .""._POPULARITY." (<a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=hitsA\">A</a>\<a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=hitsD\">D</a>)"
+            .""._TITLE." (<a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=titleA\">A</a>\<a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=titleD\">D</a>)"
+            .""._DATE." (<a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=dateA\">A</a>\<a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=dateD\">D</a>)"
+            .""._RATING." (<a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=ratingA\">A</a>\<a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=ratingD\">D</a>)"
+            .""._POPULARITY." (<a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=hitsA\">A</a>\<a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;orderby=hitsD\">D</a>)"
             ."<br />"._SITESSORTED.": $orderbyTrans<br /><br />";
         
-		while($row = $titanium_db->sql_fetchrow($result)):
+		while($row = $db->sql_fetchrow($result)):
                 $lid = intval($row['lid']);
                 $cid = intval($row['cid']);
                 $sid = intval($row['sid']);
@@ -1433,7 +1453,7 @@ function search($query, $min, $orderby, $show)
         $transfertitle = str_replace (" ", "_", $title);
         $title = str_replace($query, "<strong>$query</strong>", $title);
         
-		echo "<a href=\"modules.php?name=$titanium_module_name&amp;l_op=visit&amp;lid=$lid\" target=\"new\">$title</a>";
+		echo "<a href=\"modules.php?name=$module_name&amp;l_op=visit&amp;lid=$lid\" target=\"new\">$title</a>";
         
 		newlinkgraphic($datetime, $time);
             popgraphic($hits);
@@ -1459,19 +1479,19 @@ function search($query, $min, $orderby, $show)
         if ($linkratingsummary!="0" || $linkratingsummary!="0.0") 
         echo " "._RATING.": $linkratingsummary ($totalvotes $votestring)";
         
-        echo "<br /><a href=\"modules.php?name=$titanium_module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$transfertitle\">"._RATESITE."</a>";
+        echo "<br /><a href=\"modules.php?name=$module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$transfertitle\">"._RATESITE."</a>";
         
 		if ($totalvotes != 0) 
-        echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkdetails&amp;lid=$lid&amp;ttitle=$transfertitle\">"._DETAILS."</a>";
+        echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkdetails&amp;lid=$lid&amp;ttitle=$transfertitle\">"._DETAILS."</a>";
         
         if ($totalcomments != 0) 
-        echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkcomments&amp;lid=$lid&amp;ttitle=$transfertitle>"._SCOMMENTS." ($totalcomments)</a>";
+        echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkcomments&amp;lid=$lid&amp;ttitle=$transfertitle>"._SCOMMENTS." ($totalcomments)</a>";
         
         detecteditorial($lid, $transfertitle);
         
 		echo "<br />";
         
-		$row4 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT cid,title,parentid from ".$titanium_prefix."_links_categories where cid='$cid'"));
+		$row4 = $db->sql_fetchrow($db->sql_query("SELECT cid,title,parentid from ".$prefix."_links_categories where cid='$cid'"));
         $cid3 = intval($row4['cid']);
         $title3 = stripslashes(check_html($row4['title'], "nohtml"));
         $parentid3 = intval($row4['parentid']);
@@ -1509,7 +1529,7 @@ function search($query, $min, $orderby, $show)
         .""._SELECTPAGE.": ";
     $prev=$min-$linksresults;
     if ($prev>=0)
-            echo "&nbsp;&nbsp;<strong>[ <a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;min=$prev&amp;orderby=$orderby&amp;show=$show\">"
+            echo "&nbsp;&nbsp;<strong>[ <a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;min=$prev&amp;orderby=$orderby&amp;show=$show\">"
             ." &lt;&lt; "._PREVIOUS."</a> ]</strong> ";
           
     $counter = 1;
@@ -1521,14 +1541,14 @@ function search($query, $min, $orderby, $show)
          if ($counter == $currentpage) 
          echo "<strong>$counter</strong>&nbsp;";
          else 
-         echo "<a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;min=$mintemp&amp;orderby=$orderby&amp;show=$show\">$counter</a> ";
+         echo "<a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;min=$mintemp&amp;orderby=$orderby&amp;show=$show\">$counter</a> ";
          $counter++;
         endwhile;
 
         $next=$min+$linksresults;
 
         if ($x>=$perpage) 
-            echo "&nbsp;&nbsp;<strong>[ <a href=\"modules.php?name=$titanium_module_name&amp;l_op=search&amp;query=$the_query&amp;min=$max&amp;orderby=$orderby&amp;show=$show\">"
+            echo "&nbsp;&nbsp;<strong>[ <a href=\"modules.php?name=$module_name&amp;l_op=search&amp;query=$the_query&amp;min=$max&amp;orderby=$orderby&amp;show=$show\">"
             ." "._NEXT." &gt;&gt;</a> ]</strong>";
     endif;
 
@@ -1552,20 +1572,20 @@ function search($query, $min, $orderby, $show)
 
 function viewlinkeditorial($lid, $ttitle) 
 {
-    global $titanium_prefix, $titanium_db, $admin, $titanium_module_name;
+    global $prefix, $db, $admin, $module_name;
 
     include_once(NUKE_BASE_DIR.'header.php');
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     menu(1);
     $lid = intval(trim($lid));
     
-	$result = $titanium_db->sql_query("SELECT `adminid`, 
+	$result = $db->sql_query("SELECT `adminid`, 
 	                      `editorialtimestamp`, 
 						       `editorialtext`, 
-							  `editorialtitle` FROM ".$titanium_prefix."_links_editorials 
+							  `editorialtitle` FROM ".$prefix."_links_editorials 
 							                WHERE linkid = '".$lid."'");
     
-	$recordexist = $titanium_db->sql_numrows($result);
+	$recordexist = $db->sql_numrows($result);
     $ttitle = htmlentities($ttitle);
     $transfertitle = str_replace ("_", " ", $ttitle);
     $displaytitle = $transfertitle;
@@ -1581,7 +1601,7 @@ function viewlinkeditorial($lid, $ttitle)
     
 	if ($recordexist != 0):
     
-	while($row = $titanium_db->sql_fetchrow($result)):
+	while($row = $db->sql_fetchrow($result)):
         $adminid = $row['adminid']; // Fixed 5/6/2021 (Someone fucked this up setting as intval!)
         $editorialtimestamp = $row['editorialtimestamp'];
         $editorialtext = stripslashes($row['editorialtext']);
@@ -1618,34 +1638,34 @@ function viewlinkeditorial($lid, $ttitle)
 
 function detecteditorial($lid, $ttitle) 
 {
-    global $titanium_prefix, $titanium_db, $titanium_module_name;
+    global $prefix, $db, $module_name;
     $lid = intval($lid);
-    $resulted2 = $titanium_db->sql_query("SELECT adminid FROM ".$titanium_prefix."_links_editorials WHERE linkid='$lid'");
-    $recordexist = $titanium_db->sql_numrows($resulted2);
+    $resulted2 = $db->sql_query("SELECT adminid FROM ".$prefix."_links_editorials WHERE linkid='$lid'");
+    $recordexist = $db->sql_numrows($resulted2);
     
 	if ($recordexist != 0) 
-    echo " | <a href=\"modules.php?name=$titanium_module_name&amp;l_op=viewlinkeditorial&amp;lid=$lid&amp;ttitle=$ttitle\">"._EDITORIAL."</a>";
+    echo " | <a href=\"modules.php?name=$module_name&amp;l_op=viewlinkeditorial&amp;lid=$lid&amp;ttitle=$ttitle\">"._EDITORIAL."</a>";
     
 }
 
 function viewlinkcomments($lid, $ttitle) 
 {
-    global $titanium_prefix, $titanium_db, $admin, $bgcolor2, $titanium_module_name, $admin_file;
+    global $prefix, $db, $admin, $bgcolor2, $module_name, $admin_file;
     include_once(NUKE_BASE_DIR.'header.php');
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     menu(1);
     $lid = intval(trim($lid));
 
-    $result = $titanium_db->sql_query("SELECT `ratinguser`, 
+    $result = $db->sql_query("SELECT `ratinguser`, 
 	                                     `rating`, 
 							     `ratingcomments`, 
-								`ratingtimestamp` FROM ".$titanium_prefix."_links_votedata 
+								`ratingtimestamp` FROM ".$prefix."_links_votedata 
 								               WHERE ratinglid = '$lid' 
 											     AND ratingcomments != '' 
 											   ORDER by ratingtimestamp 
 											    DESC");
 												
-    $totalcomments = $titanium_db->sql_numrows($result);
+    $totalcomments = $db->sql_numrows($result);
     $ttitle = htmlentities($ttitle);
     $transfertitle = str_replace ("_", " ", $ttitle);
     $displaytitle = $transfertitle;
@@ -1664,7 +1684,7 @@ function viewlinkcomments($lid, $ttitle)
     ."<table align=\"center\" border=\"0\" cellspacing=\"0\" cellpadding=\"2\" width=\"450\">";
     $x=0;
     
-	while($row = $titanium_db->sql_fetchrow($result)):
+	while($row = $db->sql_fetchrow($result)):
 	 	
         $ratinguser = $row['ratinguser'];
         $rating = intval($row['rating']);
@@ -1677,16 +1697,16 @@ function viewlinkcomments($lid, $ttitle)
         $formatted_date = date("F j, Y", $timestamp);
         
 		/* Individual user information */
-        $result2 = $titanium_db->sql_query("SELECT `rating` FROM ".$titanium_prefix."_links_votedata WHERE ratinguser = '$ratinguser'");
-        $titanium_usertotalcomments = $titanium_db->sql_numrows($result2);
-        $titanium_useravgrating = 0;
+        $result2 = $db->sql_query("SELECT `rating` FROM ".$prefix."_links_votedata WHERE ratinguser = '$ratinguser'");
+        $usertotalcomments = $db->sql_numrows($result2);
+        $useravgrating = 0;
     
-	while($row2 = $titanium_db->sql_fetchrow($result2))
+	while($row2 = $db->sql_fetchrow($result2))
         
 		$rating2 = intval($row2['rating']);
-        $titanium_useravgrating = $titanium_useravgrating + $rating2;
-        $titanium_useravgrating = $titanium_useravgrating / $titanium_usertotalcomments;
-        $titanium_useravgrating = number_format($titanium_useravgrating, 1);
+        $useravgrating = $useravgrating + $rating2;
+        $useravgrating = $useravgrating / $usertotalcomments;
+        $useravgrating = number_format($useravgrating, 1);
         
 		echo "<tr><td bgcolor=\"$bgcolor2\">"
             ."<span class=\"content\"><strong> "._USER.": </strong><a href=\"$nukeurl/modules.php?name=Your_Account&amp;op=userinfo&amp;username=$ratinguser\">$ratinguser</a></span>"
@@ -1700,18 +1720,18 @@ function viewlinkcomments($lid, $ttitle)
             ."</tr>"
             ."<tr>"
             ."<td valign=\"top\">"
-            ."<span class=\"tiny\">"._USERAVGRATING.": $titanium_useravgrating</span>"
+            ."<span class=\"tiny\">"._USERAVGRATING.": $useravgrating</span>"
             ."</td>"
             ."<td valign=\"top\" colspan=\"2\">"
-            ."<span class=\"tiny\">"._NUMRATINGS.": $titanium_usertotalcomments</span>"
+            ."<span class=\"tiny\">"._NUMRATINGS.": $usertotalcomments</span>"
             ."</td>"
             ."</tr>"
             ."<tr>"
             ."<td colspan=\"3\">"
             ."<span class=\"content\">";
     
-	    if (is_mod_admin($titanium_module_name)) 
-        echo "<a href=\"".$admin_file.".php?op=LinksModLink&amp;lid=$lid\"><img src=\"modules/$titanium_module_name/images/editicon.gif\" border=\"0\" alt=\""._EDITTHISLINK."\"></a>";
+	    if (is_mod_admin($module_name)) 
+        echo "<a href=\"".$admin_file.".php?op=LinksModLink&amp;lid=$lid\"><img src=\"modules/$module_name/images/editicon.gif\" border=\"0\" alt=\""._EDITTHISLINK."\"></a>";
         
     echo " $ratingcomments</span>"
         ."<br /><br /><br /></td></tr>";
@@ -1736,16 +1756,16 @@ function viewlinkcomments($lid, $ttitle)
 
 function viewlinkdetails($lid, $ttitle) 
 {
-    global $titanium_prefix, $titanium_db, $admin, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $titanium_module_name, $anonymous;
+    global $prefix, $db, $admin, $bgcolor1, $bgcolor2, $bgcolor3, $bgcolor4, $module_name, $anonymous;
 
     include_once(NUKE_BASE_DIR.'header.php');
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
 
     menu(1);
 
     $lid = intval($lid);
-    $voteresult = $titanium_db->sql_query("SELECT `rating`, `ratinguser`, `ratingcomments` FROM ".$titanium_prefix."_links_votedata WHERE ratinglid = '$lid'");
-    $totalvotesDB = $titanium_db->sql_numrows($voteresult);
+    $voteresult = $db->sql_query("SELECT `rating`, `ratinguser`, `ratingcomments` FROM ".$prefix."_links_votedata WHERE ratinglid = '$lid'");
+    $totalvotesDB = $db->sql_numrows($voteresult);
     $anonvotes = 0;
     $anonvoteval = 0;
     $outsidevotes = 0;
@@ -1762,7 +1782,7 @@ function viewlinkdetails($lid, $ttitle)
     $ovv = array(0,0,0,0,0,0,0,0,0,0,0);
     $truecomments = $totalvotesDB;
 
-    while($row = $titanium_db->sql_fetchrow($voteresult)): 
+    while($row = $db->sql_fetchrow($voteresult)): 
 	
      $ratingDB = intval($row['rating']);
      $ratinguserDB = $row['ratinguser'];
@@ -2153,26 +2173,26 @@ endif;
 
 function linkfooter($lid,$ttitle) 
 {
-    global $titanium_module_name;
+    global $module_name;
 
-    echo "<span class=\"content\"> <i class=\"bi bi-globe2\"></i> <a href=\"modules.php?name=$titanium_module_name&amp;l_op=visit&amp;lid=$lid\" target=\"_blank\">"._VISITTHISSITE."</a>&nbsp;&nbsp;<i class=\"bi bi-check-square\"></i> <a href=\"modules.php?name=$titanium_module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$ttitle\">"._RATETHISSITE."</a> </span><br /><br />";
+    echo "<span class=\"content\"> <i class=\"bi bi-globe2\"></i> <a href=\"modules.php?name=$module_name&amp;l_op=visit&amp;lid=$lid\" target=\"_blank\">"._VISITTHISSITE."</a>&nbsp;&nbsp;<i class=\"bi bi-check-square\"></i> <a href=\"modules.php?name=$module_name&amp;l_op=ratelink&amp;lid=$lid&amp;ttitle=$ttitle\">"._RATETHISSITE."</a> </span><br /><br />";
 
     linkfooterchild($lid);
 }
 
 function linkfooterchild($lid) 
 {
-    global $titanium_module_name;
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    global $module_name;
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     if ($useoutsidevoting = 1) 
-    echo "<br /><span class=\"content\">"._ISTHISYOURSITE." <a href=\"modules.php?name=$titanium_module_name&amp;l_op=outsidelinksetup&amp;lid=$lid\">"._ALLOWTORATE."</a></span>";
+    echo "<br /><span class=\"content\">"._ISTHISYOURSITE." <a href=\"modules.php?name=$module_name&amp;l_op=outsidelinksetup&amp;lid=$lid\">"._ALLOWTORATE."</a></span>";
 }
 
 function outsidelinksetup($lid) 
 {
-    global $titanium_module_name, $sitename, $nukeurl;
+    global $module_name, $sitename, $nukeurl;
     include_once(NUKE_BASE_DIR.'header.php');
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     menu(1);
 
     OpenTable();
@@ -2189,15 +2209,15 @@ function outsidelinksetup($lid)
 
     echo ''._PROMOTE02.'<br /><br />';
 	
-	echo '<div align="center"><a href="'.$nukeurl.'/modules.php?name='.$titanium_module_name.'&amp;l_op=ratelink&amp;lid='.$lid.'">'._RATETHISSITE.' @ '.$sitename.'</a></div><br />';
+	echo '<div align="center"><a href="'.$nukeurl.'/modules.php?name='.$module_name.'&amp;l_op=ratelink&amp;lid='.$lid.'">'._RATETHISSITE.' @ '.$sitename.'</a></div><br />';
 
 
     echo '<div align="center">'._HTMLCODE1.'</div><br />';
 
-    echo '<div align="center"><textarea rows="4" cols="50"><a href="'.$nukeurl.'/modules.php?name='.$titanium_module_name.'&amp;l_op=ratelink&amp;lid='.$lid.'">'._RATETHISSITE.' @ '.$sitename.'</a></textarea></div><br /><hr>';
+    echo '<div align="center"><textarea rows="4" cols="50"><a href="'.$nukeurl.'/modules.php?name='.$module_name.'&amp;l_op=ratelink&amp;lid='.$lid.'">'._RATETHISSITE.' @ '.$sitename.'</a></textarea></div><br /><hr>';
 
     echo '<div align="center">
-    <form action="modules.php?name='.$titanium_module_name.'" method="post">
+    <form action="modules.php?name='.$module_name.'" method="post">
     <input type="hidden" name="lid" value="'.$lid.'">
     <input type="hidden" name="l_op" value="ratelink">
     <input type="submit" value="'._RATEIT.'">
@@ -2208,7 +2228,7 @@ function outsidelinksetup($lid)
 
 
     echo '<div align="center"><textarea rows="6" cols="56">
-    <form action="modules.php?name='.$titanium_module_name.'" method="post">
+    <form action="modules.php?name='.$module_name.'" method="post">
     <input type="hidden" name="lid" value="'.$lid.'">
     <input type="hidden" name="l_op" value="ratelink">
     <input type="submit" value="'._RATEIT.'">
@@ -2222,7 +2242,7 @@ function outsidelinksetup($lid)
     echo "<strong>3) "._REMOTEFORM."</strong><br /><br />"; 
 
     echo '<div align="center">';
-    echo '<form method="post" action="'.$nukeurl.'/modules.php?name='.$titanium_module_name.'">';
+    echo '<form method="post" action="'.$nukeurl.'/modules.php?name='.$module_name.'">';
     echo '<div align="center"><table align="center" border="0" width="175" cellspacing="0" cellpadding="0">';
     echo '<tr><td align="center"><strong>'._VOTE4THISSITE.'</strong></a></td></tr>';
     echo '<tr><td>';
@@ -2254,7 +2274,7 @@ function outsidelinksetup($lid)
  
     echo '<div align="center"><textarea rows="16" cols="56">';
     echo '<div align="center">';
-    echo '<form method="post" action="'.$nukeurl.'/modules.php?name='.$titanium_module_name.'">';
+    echo '<form method="post" action="'.$nukeurl.'/modules.php?name='.$module_name.'">';
     echo '<div align="center"><table align="center" border="0" width="175" cellspacing="0" cellpadding="0">';
     echo '<tr><td align="center"><strong>'._VOTE4THISSITE.'</strong></a></td></tr>';
     echo '<tr><td>';
@@ -2294,15 +2314,15 @@ function outsidelinksetup($lid)
 
 function brokenlink($lid) 
 {
-    global $titanium_prefix, $titanium_db, $titanium_user, $cookie, $titanium_module_name;
+    global $prefix, $db, $user, $cookie, $module_name;
 
     if (is_user()): 
     include_once(NUKE_BASE_DIR.'header.php');
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     $ratinguser = $cookie[1];
     menu(1);
     $lid = intval($lid);
-    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `cid`, `title`, `url`, `description` FROM ".$titanium_prefix."_links_links WHERE lid='$lid'"));
+    $row = $db->sql_fetchrow($db->sql_query("SELECT `cid`, `title`, `url`, `description` FROM ".$prefix."_links_links WHERE lid='$lid'"));
     $cid = intval($row['cid']);
     $title = stripslashes(check_html($row['title'], "nohtml"));
     $url = stripslashes($row['url']);
@@ -2315,7 +2335,7 @@ function brokenlink($lid)
     print '</div>'."\n";
 
     echo "<div align=\"center\"><span class=\"option\"><strong><h1>"._REPORTBROKEN."</h1></strong></span><br /><span class=\"content\">";
-    echo "<form action=\"modules.php?name=$titanium_module_name\" method=\"post\">";
+    echo "<form action=\"modules.php?name=$module_name\" method=\"post\">";
     echo "<input type=\"hidden\" name=\"lid\" value=\"$lid\">";
     echo "<input type=\"hidden\" name=\"cid\" value=\"$cid\">";
     echo "<input type=\"hidden\" name=\"title\" value=\"$title\">";
@@ -2333,23 +2353,23 @@ function brokenlink($lid)
     include_once(NUKE_BASE_DIR.'footer.php');
      
 	else: 
-    redirect_titanium("modules.php?name=$titanium_module_name");
+    redirect("modules.php?name=$module_name");
 	endif;
 }
 
 function brokenlinkS($lid,$cid, $title, $url, $description, $modifysubmitter) 
 {
 
-    global $titanium_prefix, $titanium_db, $titanium_user, $anonymous, $cookie, $titanium_module_name, $titanium_user, $cache;
+    global $prefix, $db, $user, $anonymous, $cookie, $module_name, $user, $cache;
 
     if (is_user()): 
 	
-        include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+        include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
         $ratinguser = $cookie[1];
         $lid = intval($lid);
         $cid = intval($cid);
         
-		$titanium_db->sql_query("INSERT INTO ".$titanium_prefix."_links_modrequest values (NULL, 
+		$db->sql_query("INSERT INTO ".$prefix."_links_modrequest values (NULL, 
 		                                                               '$lid', 
 																	   '$cid', 
 																	      '0', 
@@ -2383,15 +2403,15 @@ function brokenlinkS($lid,$cid, $title, $url, $description, $modifysubmitter)
 		CloseTable();
         include_once(NUKE_BASE_DIR.'footer.php');
     else:
-        redirect_titanium("modules.php?name=$titanium_module_name");
+        redirect("modules.php?name=$module_name");
     endif;
 }
 
 function modifylinkrequest($lid) 
 {
-    global $titanium_prefix, $titanium_db, $titanium_user, $titanium_module_name, $anonymous, $cookie;
+    global $prefix, $db, $user, $module_name, $anonymous, $cookie;
     include_once(NUKE_BASE_DIR.'header.php');
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
 
     if(is_user())
     $ratinguser = $cookie[1];
@@ -2415,11 +2435,11 @@ function modifylinkrequest($lid)
     
 	if ($blocknow != 1): 
 	
-        $result = $titanium_db->sql_query("SELECT `cid`, `sid`, `title`, `url`, `description` FROM ".$titanium_prefix."_links_links WHERE lid='$lid'");
+        $result = $db->sql_query("SELECT `cid`, `sid`, `title`, `url`, `description` FROM ".$prefix."_links_links WHERE lid='$lid'");
     
 	    echo "<div align=\"center\"><span class=\"option\"><strong><h1>"._REQUESTLINKMOD."</h1></strong></span></div><br /><span class=\"content\">";
     
-	    while($row = $titanium_db->sql_fetchrow($result)): 
+	    while($row = $db->sql_fetchrow($result)): 
 		
             $cid = intval($row['cid']);
             $sid = intval($row['sid']);
@@ -2427,7 +2447,7 @@ function modifylinkrequest($lid)
             $url = stripslashes($row['url']);
             $description = stripslashes($row['description']);
         
-		    echo "<form action=\"modules.php?name=$titanium_module_name\" method=\"post\">"
+		    echo "<form action=\"modules.php?name=$module_name\" method=\"post\">"
             .""._LINKID.": <strong>$lid</strong></center><br /><br />"
             .""._LINKTITLE.":<br /><input type=\"text\" name=\"title\" value=\"$title\" size=\"50\" maxlength=\"100\"><br /><br />"
             .""._URL.":<br /><input type=\"text\" name=\"url\" value=\"$url\" size=\"50\" maxlength=\"100\"><br /><br />"
@@ -2437,9 +2457,9 @@ function modifylinkrequest($lid)
         ."<input type=\"hidden\" name=\"modifysubmitter\" value=\"$ratinguser\">"
         .""._CATEGORY.": <select name=\"cat\">";
     
-	$result2 = $titanium_db->sql_query("SELECT `cid`, `title`, `parentid` FROM ".$titanium_prefix."_links_categories ORDER by title");
+	$result2 = $db->sql_query("SELECT `cid`, `title`, `parentid` FROM ".$prefix."_links_categories ORDER by title");
     
-	while($row2 = $titanium_db->sql_fetchrow($result2)): 
+	while($row2 = $db->sql_fetchrow($result2)): 
 	
         $cid2 = intval($row2['cid']);
         $ctitle2 = stripslashes(check_html($row2['title'], "nohtml"));
@@ -2471,8 +2491,8 @@ function modifylinkrequest($lid)
 
 function modifylinkrequestS($lid, $cat, $title, $url, $description, $modifysubmitter) 
 {
-    global $titanium_prefix, $titanium_db, $titanium_user, $titanium_module_name, $cookie, $cache;
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    global $prefix, $db, $user, $module_name, $cookie, $cache;
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
 
     if(is_user()) 
     $ratinguser = $cookie[1];
@@ -2517,7 +2537,7 @@ function modifylinkrequestS($lid, $cat, $title, $url, $description, $modifysubmi
         $cat[0] = intval($cat[0]);
         $cat[1] = intval($cat[1]);
         
-		$titanium_db->sql_query("INSERT INTO ".$titanium_prefix."_links_modrequest values (NULL, 
+		$db->sql_query("INSERT INTO ".$prefix."_links_modrequest values (NULL, 
 		                                                               '$lid', 
 																	'$cat[0]', 
 																	'$cat[1]', 
@@ -2559,20 +2579,20 @@ function modifylinkrequestS($lid, $cat, $title, $url, $description, $modifysubmi
 
 function rateinfo($lid) 
 {
-    global $titanium_prefix, $titanium_db;
+    global $prefix, $db;
     $lid = intval($lid);
-    $titanium_db->sql_query("UPDATE ".$titanium_prefix."_links_links set hits=hits+1 WHERE lid='$lid'");
-    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT url from ".$titanium_prefix."_links_links where lid='$lid'"));
+    $db->sql_query("UPDATE ".$prefix."_links_links set hits=hits+1 WHERE lid='$lid'");
+    $row = $db->sql_fetchrow($db->sql_query("SELECT url from ".$prefix."_links_links where lid='$lid'"));
     $url = stripslashes($row['url']);
-    redirect_titanium("$url");
+    redirect("$url");
 }
 
 function addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingcomments) 
 {
-    global $titanium_prefix, $titanium_db, $cookie, $titanium_user, $titanium_module_name, $anonymous;
+    global $prefix, $db, $cookie, $user, $module_name, $anonymous;
     $passtest = "yes";
     include_once(NUKE_BASE_DIR.'header.php');
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     $ratinglid = intval($ratinglid);
     completevoteheader();
 
@@ -2583,9 +2603,9 @@ function addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingco
     else 
     $ratinguser = $anonymous;
     
-    $result = $titanium_db->sql_query("SELECT title FROM ".$titanium_prefix."_links_links WHERE lid='$ratinglid'");
+    $result = $db->sql_query("SELECT title FROM ".$prefix."_links_links WHERE lid='$ratinglid'");
     
-	while ($row = $titanium_db->sql_fetchrow($result)):
+	while ($row = $db->sql_fetchrow($result)):
     $title = stripslashes(check_html($row['title'], "nohtml"));
     $ttitle = $title;
     
@@ -2601,8 +2621,8 @@ function addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingco
 	
     /* Check if Link POSTER is voting (UNLESS Anonymous users allowed to post) */
     if ($ratinguser != $anonymous && $ratinguser != "outside"): 
-      $result2 = $titanium_db->sql_query("SELECT submitter from ".$titanium_prefix."_links_links where lid='$ratinglid'");
-      while ($row2 = $titanium_db->sql_fetchrow($result2)):
+      $result2 = $db->sql_query("SELECT submitter from ".$prefix."_links_links where lid='$ratinglid'");
+      while ($row2 = $db->sql_fetchrow($result2)):
       $ratinguserDB = $row2['submitter'];
             if ($ratinguserDB == $ratinguser):
             $error = "postervote";
@@ -2615,9 +2635,9 @@ function addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingco
     /* Check if REG user is trying to vote twice. */
     if ($ratinguser!=$anonymous && $ratinguser != "outside"): 
 	
-      $result3 = $titanium_db->sql_query("SELECT ratinguser from ".$titanium_prefix."_links_votedata where ratinglid='$ratinglid'");
+      $result3 = $db->sql_query("SELECT ratinguser from ".$prefix."_links_votedata where ratinglid='$ratinglid'");
         
-		while ($row3 = $titanium_db->sql_fetchrow($result3)):
+		while ($row3 = $db->sql_fetchrow($result3)):
           $ratinguserDB = $row3['ratinguser'];
           if ($ratinguserDB==$ratinguser):
           $error = "regflood";
@@ -2632,13 +2652,13 @@ function addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingco
         $yesterdaytimestamp = (time()-(86400 * $anonwaitdays));
         $ytsDB = Date("Y-m-d H:i:s", $yesterdaytimestamp);
     
-	    $result4 = $titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_links_votedata 
+	    $result4 = $db->sql_query("SELECT * FROM ".$prefix."_links_votedata 
 		                                   WHERE ratinglid='$ratinglid' 
 										     AND ratinguser='$anonymous' 
 											 AND ratinghostname = '$ip' 
 											 AND TO_DAYS(NOW()) - TO_DAYS(ratingtimestamp) < '$anonwaitdays'");
 											 
-        $anonvotecount = $titanium_db->sql_numrows($result4);
+        $anonvotecount = $db->sql_numrows($result4);
 		
         if ($anonvotecount >= 1):
             $error = "anonflood";
@@ -2653,13 +2673,13 @@ function addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingco
         $yesterdaytimestamp = (time()-(86400 * $outsidewaitdays));
         $ytsDB = Date("Y-m-d H:i:s", $yesterdaytimestamp);
         
-		$result5 = $titanium_db->sql_query("SELECT * FROM ".$titanium_prefix."_links_votedata 
+		$result5 = $db->sql_query("SELECT * FROM ".$prefix."_links_votedata 
 		                                   WHERE ratinglid='$ratinglid' 
 										     AND ratinguser='outside' 
 											 AND ratinghostname = '$ip' 
 											 AND TO_DAYS(NOW()) - TO_DAYS(ratingtimestamp) < '$outsidewaitdays'");
 											 
-        $outsidevotecount = $titanium_db->sql_numrows($result5);
+        $outsidevotecount = $db->sql_numrows($result5);
         
 		if ($outsidevotecount >= 1):
             $error = "outsideflood";
@@ -2680,19 +2700,19 @@ function addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingco
         $rating = intval($rating);
     
 	    if ($rating > 10 || $rating < 1):
-          redirect_titanium("modules.php?name=$titanium_module_name&d_op=ratedownload&lid=$ratinglid");
+          redirect("modules.php?name=$module_name&d_op=ratedownload&lid=$ratinglid");
           exit;
         endif;
 		
-          $titanium_db->sql_query("INSERT into ".$titanium_prefix."_links_votedata values (NULL,'$ratinglid', '$ratinguser', '$rating', '$ip', '$ratingcomments', now())");
+          $db->sql_query("INSERT into ".$prefix."_links_votedata values (NULL,'$ratinglid', '$ratinguser', '$rating', '$ip', '$ratingcomments', now())");
           /* All is well.  Calculate Score & Add to Summary (for quick retrieval & sorting) to DB. */
           /* NOTE: If weight is modified, ALL links need to be refreshed with new weight. */
           /*     Running a SQL statement with your modded calc for ALL links will accomplish this. */
-          $voteresult = $titanium_db->sql_query("SELECT rating, ratinguser, ratingcomments FROM ".$titanium_prefix."_links_votedata WHERE ratinglid = '$ratinglid'");
-          $totalvotesDB = $titanium_db->sql_numrows($voteresult);
-          include(NUKE_MODULES_DIR.$titanium_module_name.'/voteinclude.php');
+          $voteresult = $db->sql_query("SELECT rating, ratinguser, ratingcomments FROM ".$prefix."_links_votedata WHERE ratinglid = '$ratinglid'");
+          $totalvotesDB = $db->sql_numrows($voteresult);
+          include(NUKE_MODULES_DIR.$module_name.'/voteinclude.php');
           $lid = intval($lid);
-          $titanium_db->sql_query("UPDATE ".$titanium_prefix."_links_links SET linkratingsummary='$finalrating',totalvotes='$totalvotesDB',totalcomments='$truecomments' WHERE lid = '$ratinglid'");
+          $db->sql_query("UPDATE ".$prefix."_links_links SET linkratingsummary='$finalrating',totalvotes='$totalvotesDB',totalcomments='$truecomments' WHERE lid = '$ratinglid'");
           $error = "none";
           completevote($error);
         endif;
@@ -2714,19 +2734,19 @@ function completevoteheader(){
 
 function completevotefooter($lid, $ttitle, $ratinguser) 
 {
-    global $titanium_prefix, $titanium_db, $sitename, $titanium_module_name;
+    global $prefix, $db, $sitename, $module_name;
     
-	include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+	include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     
 	$lid = intval($lid);
-    $row = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT `url` FROM ".$titanium_prefix."_links_links WHERE lid='$lid'"));
+    $row = $db->sql_fetchrow($db->sql_query("SELECT `url` FROM ".$prefix."_links_links WHERE lid='$lid'"));
     $url = stripslashes($row['url']);
 
     echo "<span class=\"content\">"._THANKSTOTAKETIME." $sitename. "._LETSDECIDE."</span><br /><br /><br />";
 
     if ($ratinguser=="outside"): 
 	    echo "<div align=\"center\"><span class=\"content\">".WEAPPREACIATE." $sitename!<br /><a href=\"$url\">"._RETURNTO." $ttitle</a></span></div><br /><br />";
-        $row2 = $titanium_db->sql_fetchrow($titanium_db->sql_query("SELECT title FROM ".$titanium_prefix."_links_links where lid='$lid'"));
+        $row2 = $db->sql_fetchrow($db->sql_query("SELECT title FROM ".$prefix."_links_links where lid='$lid'"));
         $title = stripslashes(check_html($row2['title'], "nohtml"));
         $ttitle = str_replace (" ", "_", $title);
     endif;
@@ -2744,8 +2764,8 @@ function completevotefooter($lid, $ttitle, $ratinguser)
 
 function completevote($error) 
 {
-    global $titanium_module_name;
-    include(NUKE_MODULES_DIR.$titanium_module_name.'/l_config.php');
+    global $module_name;
+    include(NUKE_MODULES_DIR.$module_name.'/l_config.php');
     if ($error == "none") 
 	echo "<div align=\"center\"><span class=\"content\"><strong><h1>"._COMPLETEVOTE1."</h1></strong></span></div>";
     if ($error == "anonflood") 
@@ -2760,9 +2780,9 @@ function completevote($error)
 	echo "<div align=\"center\"><span class=\"option\"><strong><h1>"._COMPLETEVOTE6."</h1></strong></span></div><br />";
 }
 
-function ratelink($lid, $titanium_user, $ttitle) 
+function ratelink($lid, $user, $ttitle) 
 {
-    global $titanium_prefix, $cookie, $datetime, $titanium_module_name, $identify;
+    global $prefix, $cookie, $datetime, $module_name, $identify;
     include_once(NUKE_BASE_DIR.'header.php');
     menu(1);
 
@@ -2796,7 +2816,7 @@ function ratelink($lid, $titanium_user, $ttitle)
     endif;
     
     echo "</ul>"
-        ."<br /><form method=\"post\" action=\"modules.php?name=$titanium_module_name\">"
+        ."<br /><form method=\"post\" action=\"modules.php?name=$module_name\">"
         ."<table border=\"0\" cellpadding=\"1\" cellspacing=\"0\" width=\"100%\">"
         ."<tr><td width=\"25\" nowrap></td>"
         ."<tr><td width=\"25\" nowrap></td><td width=\"550\">"
@@ -2909,13 +2929,13 @@ switch($l_op):
     search($query, $min, $orderby, $show);
     break;
     case "rateinfo":
-    rateinfo($lid, $titanium_user, $title);
+    rateinfo($lid, $user, $title);
     break;
     case "ratelink":
-    ratelink($lid, $titanium_user, $ttitle);
+    ratelink($lid, $user, $ttitle);
     break;
     case "addrating":
-    addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingcomments, $titanium_user);
+    addrating($ratinglid, $ratinguser, $rating, $ratinghost_name, $ratingcomments, $user);
     break;
     case "viewlinkcomments":
     viewlinkcomments($lid, $ttitle);

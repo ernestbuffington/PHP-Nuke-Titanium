@@ -33,25 +33,34 @@
  ************************************************************************/
 
 define('HOME_FILE', true);
+
 define('MODULE_FILE', true);
+
 $_SERVER['PHP_SELF'] = 'modules.php';
 
-require_once(dirname(__FILE__).'/mainfile.php');
+require_once(__DIR__.'/mainfile.php');
 
 /*****[BEGIN]******************************************
  [ Mod:    Banner Ads                          v1.0.0 ]
  ******************************************************/
-global $titanium_prefix, $titanium_db, $admin_file, $httpref, $httprefmax;
-if (isset($_GET['op'])):
+global $prefix, $db, $admin_file, $httpref, $httprefmax, $module_name;
+
+if (isset($_GET['op']) && $_GET['op'] == 'ad_click'):
+
 	if($_GET['op'] == 'ad_click' && isset($_GET['bid'])):
         $bid = intval($_GET['bid']);
-        list($clickurl) = $titanium_db->sql_ufetchrow("SELECT `clickurl` FROM `".$titanium_prefix."_banner` WHERE `bid`='$bid'", SQL_NUM);
-        if(!is_admin())
-        $titanium_db->sql_query("UPDATE `".$titanium_prefix."_banner` SET `clicks`=clicks+1 WHERE `bid`='$bid'");
-        redirect_titanium($clickurl);
+        
+        [$clickurl] = $db->sql_ufetchrow("SELECT `clickurl` FROM `".$prefix."_banner` WHERE `bid`='$bid'", SQL_NUM);
+
+        if(!is_admin()):
+        $db->sql_query("UPDATE `".$prefix."_banner` SET `clicks`=clicks+1 WHERE `bid`='$bid'");
+		endif;
+
+        redirect($clickurl);
 	else: 
         exit('Illegal Operation');
     endif;
+	
 endif;
 /*****[END]********************************************
  [ Mod:    Banner Ads                          v1.0.0 ]
@@ -60,17 +69,24 @@ endif;
 /*****[BEGIN]**************************************************
  [ Mod:    Network Banner Ads                          v1.0.0 ]#### 3/19/2021
  **************************************************************/
-global $network_prefix, $titanium_db2;
-if (isset($_GET['op'])):
-    if($_GET['op'] == 'ad_network_click' && isset($_GET['bid'])):
+global $dbhost2, $dbname2, $dbuname2, $db2, $network_prefix; 
+
+if (isset($_GET['op']) && $_GET['op'] == 'ad_network_click'):
+    
+	if($_GET['op'] == 'ad_network_click' && isset($_GET['bid'])):
         $bid = intval($_GET['bid']);
-        list($clickurl) = $titanium_db2->sql_ufetchrow("SELECT `clickurl` FROM `".$network_prefix."_banner` WHERE `bid`='$bid'", SQL_NUM);
-        if(!is_admin())
-        $titanium_db2->sql_query("UPDATE `".$network_prefix."_banner` SET `clicks`=clicks+1 WHERE `bid`='$bid'");
-        redirect_titanium($clickurl);
+    
+	    [$clickurl] = $db2->sql_ufetchrow("SELECT `clickurl` FROM `".$network_prefix."_banner` WHERE `bid`='$bid'", SQL_NUM);
+    
+	    if(!is_admin()):
+          $db2->sql_query("UPDATE `".$network_prefix."_banner` SET `clicks`=clicks+1 WHERE `bid`='$bid'");
+		endif;
+        redirect($clickurl);
+		
 	else: 
         exit('Illegal Operation');
     endif;
+	
 endif;
 /*****[END]****************************************************
  [ Mod:    Network Banner Ads                          v1.0.0 ]#### 3/19/2021
@@ -84,23 +100,21 @@ $arcade = get_query_var('act', 'get');
 $newscore = get_query_var('do', 'get');
 
 if($arcade == 'Arcade' && $newscore='newscore'):
-     $gamename = str_replace("\'","''",$HTTP_POST_VARS['gname']);
-     $gamename = preg_replace(array('#&(?!(\#[0-9]+;))#', '#<#', '#>#'), array('&amp;', '&lt;', '&gt;'),$gamename);
-     $gamescore = intval($HTTP_POST_VARS['gscore']);
-
+	 $gamename = str_replace("\'","''",$_POST['gname']);
+     $gamename = preg_replace(['#&(?!(\#[0-9]+;))#', '#<#', '#>#'], ['&amp;', '&lt;', '&gt;'],$gamename);
+     $gamescore = intval($_POST['gscore']);
       //Get Game ID
-      $row = $titanium_db->sql_ufetchrow("SELECT game_id FROM ".$titanium_prefix."_bbgames WHERE game_scorevar='$gamename'");
+      $row = $db->sql_ufetchrow("SELECT `game_id` FROM `".$prefix."_bbgames` WHERE `game_scorevar`='$gamename'");
       $gid = intval($row['game_id']);
 
       $ThemeSel = get_theme();
-
-      print '<link rel="StyleSheet" href="themes/"'.$ThemeSel.'"/style/style.css" type="text/css">'."\n";
+      print '<link rel="StyleSheet" href="themes/"'.$ThemeSel.'"/style/style.css">'."\n";
       print '<form method="post" name="ibpro_score" action="modules.php?name=Forums&amp;file=proarcade&amp;valid=X&amp;gpaver=GFARV2">'."\n";
       print '<input type=hidden name="vscore" value="'.$gamescore.'">'."\n";
       print '<input type=hidden name="gid" value="'.$gid.'">'."\n";
       print '</form>'."\n";
 
-      print '<script type="text/javascript">'."\n";
+      print '<script>'."\n";
       print 'window.onload = function(){document.forms["ibpro_score"].submit()}'."\n";
       print '</script>'."\n";
 exit;
@@ -110,17 +124,19 @@ endif;
  [ Mod:     Arcade                             v3.0.2 ]
  ******************************************************/
  
-if (isset($_GET['url']) && is_admin())
-redirect_titanium($_GET['url']);
+if (isset($_GET['url']) && is_admin()):
+  redirect($_GET['url']);
+endif;
 
-$titanium_module_name = main_module_titanium();
+$module_name = main_module();
 
 /*****[BEGIN]******************************************
  [ Mod:     Lock Modules                       v1.0.0 ]
  ******************************************************/
-global $lock_titanium_modules;
-if(($lock_titanium_modules && $titanium_module_name != 'Your_Account') && !is_admin() && !is_user()) 
-include(NUKE_MODULES_DIR.'Your_Account/index.php');
+global $lock_modules;
+if(($lock_modules && $module_name != 'Your_Account') && !is_admin() && !is_user()): 
+  include(NUKE_MODULES_DIR.'Your_Account/index.php');
+endif;
 /*****[END]********************************************
  [ Mod:     Lock Modules                       v1.0.0 ]
  ******************************************************/
@@ -129,10 +145,11 @@ $mop = (!isset($mop)) ? 'modload' : trim($mop);
 $mod_file = (!isset($mod_file)) ? 'index' : trim($mod_file);
 $file = (isset($_REQUEST['file'])) ? trim($_REQUEST['file']) : 'index';
 
-if (!isset($modpath)) 
-$modpath = ''; 
+if(!isset($modpath)): 
+  $modpath = ''; 
+endif;
 
-if (stristr($file,"..") || stristr($mod_file,"..") || stristr($mop,"..")):
+if(stristr($file,"..") || stristr($mod_file,"..") || stristr($mop,"..")):
 /*****[BEGIN]******************************************
  [ Base:     Evolution Functions               v1.5.0 ]
  ******************************************************/
@@ -142,13 +159,16 @@ if (stristr($file,"..") || stristr($mod_file,"..") || stristr($mop,"..")):
  ******************************************************/
     die("You are so cool...");
 else:
-    $titanium_module = $titanium_db->sql_ufetchrow('SELECT `blocks` FROM `'.$titanium_prefix.'_modules` WHERE `title`="'.$titanium_module_name.'"');
-	$modpath = NUKE_MODULES_DIR.$titanium_module_name."/$file.php";
+    $module = $db->sql_ufetchrow('SELECT `blocks` FROM `'.$prefix.'_modules` WHERE `title`="'.$module_name.'"');
+	$modpath = NUKE_MODULES_DIR.$module_name."/$file.php";
+	
 	if (file_exists($modpath)):
-		$showblocks = $titanium_module['blocks'];
-		unset($titanium_module, $error);
+	
+		$showblocks = $module['blocks'];
+		unset($module, $error);
 		require($modpath);
-    else:
+    
+	else:
         DisplayError((is_admin()) ? "<strong>"._HOMEPROBLEM."</strong><br /><br />[ <a href=\"".$admin_file.".php?op=modules\">"._ADDAHOME."</a> ]" : _HOMEPROBLEMUSER);
     endif;
 endif;

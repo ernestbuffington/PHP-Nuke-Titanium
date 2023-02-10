@@ -1,5 +1,5 @@
 ##########################################################################
-# PHP- Titanium v4.0.2 : Enhanced PHP-Nuke Web Portal System             #
+# PHP- Titanium v3.0.0 : Enhanced PHP-Nuke Web Portal System             #
 ##########################################################################
 
 # ------------------------------------------- 
@@ -18,6 +18,7 @@ DirectoryIndex index.php index.html
 Options +FollowSymlinks
 <IfModule mod_rewrite.c> 
 RewriteEngine on
+AddHandler application/wasm-wasm .wasm
 
 ##################################################################################################
 # Force SSL - no insecure data connections!                                                      ##### Added By Ernest Allen Buffington 08/05/2019
@@ -27,6 +28,9 @@ RewriteCond %{HTTPS} off
 RewriteCond %{REQUEST_URI} !^/[0-9]+\..+\.cpaneldcv$
 RewriteCond %{REQUEST_URI} !^/\.well-known/pki-validation/[A-F0-9]{32}\.txt(?:\ Comodo\ DCV)?$
 RewriteRule (.*) https://%{HTTP_HOST}:443%{REQUEST_URI}
+
+# Use HTTP Strict Transport Security to force client to use secure connections only Header 
+Header always set Strict-Transport-Security "max-age=63072000; includeSubdomains; preload"
 
 ##################################################################################################
 # Force WWW - this is only needed for root domains...                                            ##### Added By Ernest Allen Buffington 03/16/2021
@@ -40,18 +44,8 @@ RewriteRule ^ http%1://www.%{HTTP_HOST}%{REQUEST_URI} [R=301,L]
 # -------------------------------------------
 # Security Rewrites
 # -------------------------------------------
+#Redirect /proarcade.php /modules.php?name=Forums&file=proarcade
 
-RewriteCond %{THE_REQUEST} (\?act\=) [NC,OR]
-RewriteCond %{THE_REQUEST} (sql_login) [NC,OR]
-RewriteCond %{THE_REQUEST} (basepath) [OR]
-RewriteCond %{THE_REQUEST} (libpath) [OR]
-RewriteCond %{THE_REQUEST} (absolute_path) [OR]
-RewriteCond %{THE_REQUEST} (vwar_root) [OR]
-RewriteCond %{THE_REQUEST} (includedir) [OR]
-RewriteCond %{THE_REQUEST} (file=http:\/\/) [OR]
-RewriteCond %{THE_REQUEST} (name=http:\/\/) [OR]
-RewriteCond %{THE_REQUEST} (phpbb_root_path)
-RewriteRule ^.*$ http://127.0.0.1/ [R=301,L]
 # -------------------------------------------
 # Lazy Google Tap
 # -------------------------------------------
@@ -116,20 +110,19 @@ RewriteRule ^.*$ http://127.0.0.1 [R,L]
     Satisfy All
 </files>
 
-
-# vimeo SDK API version 3.4
+# Vimeo
 # Disable vconfig.php viewing from browser
 <files ~ "\vconfig.php$">
     deny from all
 </files>
 
-# Network Titanium SDK v5
-# Disable fbconfig.php viewing from browser
+# 86it Network Config
+# Disable nconfig.php viewing from browser
 <files ~ "\nconfig.php$">
     deny from all
 </files>
 
-# facebook Titanium SDK v5
+# facebook Config
 # Disable fbconfig.php viewing from browser
 <files ~ "\fbconfig.php$">
     deny from all
@@ -185,10 +178,39 @@ Header append Cache-Control "public"
 
 # Banned Bad Bots
 
+# BEGIN cPanel-generated php ini directives, do not edit
+# Manual editing of this file may result in unexpected behavior.
+# To make changes to this file, use the cPanel MultiPHP INI Editor (Home >> Software >> MultiPHP INI Editor)
+# For more information, read our documentation (https://go.cpanel.net/EA4ModifyINI)
+<IfModule php8_module>
+   php_flag display_errors On
+   php_value max_execution_time 5000
+   php_value max_input_time 5000
+   php_value max_input_vars 1000
+   php_value memory_limit 128M
+   php_value post_max_size 750M
+   php_value session.gc_maxlifetime 1440
+   php_value session.save_path "/var/cpanel/php/sessions/ea-php81"
+   php_value upload_max_filesize 750M
+   php_flag zlib.output_compression Off
+</IfModule>
+<IfModule lsapi_module>
+   php_flag display_errors On
+   php_value max_execution_time 5000
+   php_value max_input_time 5000
+   php_value max_input_vars 1000
+   php_value memory_limit 128M
+   php_value post_max_size 750M
+   php_value session.gc_maxlifetime 1440
+   php_value session.save_path "/var/cpanel/php/sessions/ea-php81"
+   php_value upload_max_filesize 750M
+   php_flag zlib.output_compression Off
+</IfModule>
+# END cPanel-generated php ini directives, do not edit
+
 # php -- BEGIN cPanel-generated handler, do not edit
-# Set the “ea-php74” package as the default “PHP” programming language.
+# Set the “ea-php81” package as the default “PHP” programming language.
 <IfModule mime_module>
-  AddHandler application/x-httpd-ea-php74 .php .php7 .phtml
+  AddHandler application/x-httpd-ea-php81 .php .php8 .phtml
 </IfModule>
 # php -- END cPanel-generated handler, do not edit
-AddHandler application/x-wasm .wasm

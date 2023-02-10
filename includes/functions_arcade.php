@@ -3,7 +3,6 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-
 /***************************************************************************
  *                           functions_arcade.php
  *                            -------------------
@@ -13,9 +12,9 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB2'))
+if (!defined('IN_PHPBB'))
 {
-    die('ACCESS DENIED');
+    die('Hacking attempt');
 }
 
 if ( file_exists('arcade_install.'.$phpEx) AND ($userdata['user_level'] == ADMIN))
@@ -24,65 +23,65 @@ $message = "Only the Administrator will see this message. <br /><br /> You MUST 
 message_die(GENERAL_ERROR, $message);
 }
 
-$titanium_language = $phpbb2_board_config['default_lang'];
-if ( !file_exists($phpbb2_root_path . 'language/lang_' . $titanium_language . '/lang_main_arcade.'.$phpEx) )
+$language = $board_config['default_lang'];
+if ( !file_exists($phpbb_root_path . 'language/lang_' . $language . '/lang_main_arcade.'.$phpEx) )
 {
-    $titanium_language = 'english';
+    $language = 'english';
 }
 
-include($phpbb2_root_path . 'language/lang_' . $titanium_language . '/lang_main_arcade.' . $phpEx);
+include($phpbb_root_path . 'language/lang_' . $language . '/lang_main_arcade.' . $phpEx);
 
 function read_arcade_config() {
-        global $titanium_db;
+        global $db;
 
         $arcade_config = array();
         $sql = "SELECT * FROM " . ARCADE_TABLE;
 
-        if(!($result = $titanium_db->sql_query($sql))) {
+        if(!($result = $db->sql_query($sql))) {
                 message_die(CRITICAL_ERROR, "Could not query arcade config information", "", __LINE__, __FILE__, $sql);
         }
 
-        while ($row = $titanium_db->sql_fetchrow($result)) {
+        while ($row = $db->sql_fetchrow($result)) {
                 $arcade_config[$row['arcade_name']] = $row['arcade_value'];
         }
 
         return $arcade_config;
 }
 
-function get_arcade_categories($titanium_user_id, $titanium_user_level, $mode) {
-        global $titanium_db;
+function get_arcade_categories($user_id, $user_level, $mode) {
+        global $db;
         $liste_cat = '';
         $nbcat = 0;
 
         switch ($mode) {
                 case 'view':
                     $liste_auth = "0,1,3,5";
-                    $liste_auth .= ($titanium_user_level == ADMIN) ? ',2,4,6' : (( $titanium_user_level == MOD) ? ',4' : '');
+                    $liste_auth .= ($user_level == ADMIN) ? ',2,4,6' : (( $user_level == MOD) ? ',4' : '');
                     break;
 
                 case 'play':
                     $liste_auth = "0";
-                    $liste_auth .= ($titanium_user_level == ADMIN) ? ',1,2,3,4,5,6' : (( $titanium_user_level == MOD) ? ',3,4' : '');
+                    $liste_auth .= ($user_level == ADMIN) ? ',1,2,3,4,5,6' : (( $user_level == MOD) ? ',3,4' : '');
                     break;
         }
 
         $sql = "SELECT arcade_catid FROM " . ARCADE_CATEGORIES_TABLE . " WHERE arcade_catauth IN ($liste_auth)";
 
-        if (!($result = $titanium_db->sql_query($sql))) {
+        if (!($result = $db->sql_query($sql))) {
                 message_die(GENERAL_ERROR, 'Could not select info FROM arcade_categories table', '', __LINE__, __FILE__, $sql);
         }
 
-        while($row = $titanium_db->sql_fetchrow($result)) {
+        while($row = $db->sql_fetchrow($result)) {
                 $liste_cat .= (empty($liste_cat)) ? $row['arcade_catid'] : ',' . $row['arcade_catid'];
         }
 
-          $sql = "SELECT aa.arcade_catid FROM " . AUTH_ARCADE_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $titanium_user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id ";
+          $sql = "SELECT aa.arcade_catid FROM " . AUTH_ARCADE_ACCESS_TABLE . " aa, " . USER_GROUP_TABLE . " ug, " . GROUPS_TABLE. " g WHERE ug.user_id = $user_id AND g.group_id = ug.group_id AND aa.group_id = ug.group_id ";
 
-        if (!($result = $titanium_db->sql_query($sql))) {
+        if (!($result = $db->sql_query($sql))) {
                 message_die(GENERAL_ERROR, 'Could not select info FROM user/user_group table', '', __LINE__, __FILE__, $sql);
         }
 
-        while($row = $titanium_db->sql_fetchrow($result)) {
+        while($row = $db->sql_fetchrow($result)) {
                 $liste_cat .= (empty($liste_cat)) ? $row['arcade_catid'] : ',' . $row['arcade_catid'];
         }
 
@@ -91,66 +90,69 @@ function get_arcade_categories($titanium_user_id, $titanium_user_level, $mode) {
 
 //Function to convert time to hours, minutes and seconds.
 function sec2hms ($secs)
-  {
+{
 
     $hms = "";
 
-$days = intval(intval($secs) / 86400);
-    if($days != 0)
+    $days = (int) ((int) $secs / 86400);
+	
+	if($days != 0)
     {
-    $secs = $secs - ($days * 86400);
+	  $secs -= $days * 86400;
 
-    if($days == 1)
-    {
+      if($days == 1)
+      {
         $hms .= " ".$days. " day";
-    }
-    else
-    {
+      }
+      else
+      {
         $hms .= " ".$days. " days";
+      }
     }
-    }
 
-
-
-    $hours = intval(intval($secs) / 3600);
+	$hours = (int) ((int) $secs / 3600);
+	
     if($hours != 0)
     {
-    if($hours == 1)
-    {
+      if($hours == 1)
+      {
         $hms .= " ".$hours. " hour";
-    }
-    else
-    {
+      }
+      else
+      {
         $hms .= " ".$hours. " hours";
-    }
+      }
     }
 
-    $minutes = intval(($secs / 60) % 60);
+	$minutes = ((int) $secs) % 60;
+	
     if($minutes != 0)
     {
-    if($minutes == 1)
-    {
+      if($minutes == 1)
+      {
         $hms .= " ".$minutes. " min";
-    }
-    else
-    {
+      }
+      else
+      {
         $hms .= " ".$minutes. " mins";
-    }
+      }
     }
 
-    $seconds = intval($secs % 60);
+	$seconds = (int) ($secs % 60);
+
     if($seconds != 0)
     {
-    if($seconds == 1)
-    {
+      if($seconds == 1)
+      {
         $hms .= " ".$seconds. " sec";
-    }
-    else
-    {
+      }
+      else
+      {
         $hms .= " ".$seconds. " secs";
+      }
     }
-     }
-    return $hms;
+    
+	return $hms;
 
   }
 

@@ -26,8 +26,8 @@ if (!defined('ADMIN_FILE')) {
 }
 
 global $admin_file;
-$titanium_module_name = basename(dirname(dirname(__FILE__)));
-get_lang($titanium_module_name);
+$module_name = basename(dirname(dirname(__FILE__)));
+get_lang($module_name);
 adminmenu($admin_file.'.php?op=Links', _WEBLINKS, 'weblinks.png');
 
 ?>

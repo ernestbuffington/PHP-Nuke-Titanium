@@ -1,5 +1,4 @@
-<script language="JavaScript" type="text/javascript">
-<!--
+<script>
 function toggle_check_all()
 {
     var archive_text = "archive_id";
@@ -7,9 +6,9 @@ function toggle_check_all()
     for (var i=0; i < document.msgrow_values.elements.length; i++)
     {
         var checkbox_element = document.msgrow_values.elements[i];
-        if ((checkbox_element.name != 'check_all_del_box') && (checkbox_element.name != 'check_all_arch_box') && (checkbox_element.type == 'checkbox'))
+        if ((checkbox_element.name !== 'check_all_del_box') && (checkbox_element.name !== 'check_all_arch_box') && (checkbox_element.type === 'checkbox'))
         {
-            if (checkbox_element.name.search("archive_id") != -1)
+            if (checkbox_element.name.search("archive_id") !== -1)
             {        
                 checkbox_element.checked = document.msgrow_values.check_all_arch_box.checked;
             }
@@ -20,7 +19,6 @@ function toggle_check_all()
         }
     }
 }
--->
 </script>
 <!-- BEGIN statusrow -->
 <table width="100%" cellspacing="2" cellpadding="2" border="1" align="center">
@@ -48,10 +46,10 @@ function toggle_check_all()
         <td align="right" nowrap="nowrap"><span class="genmed">{L_FILTER_BY}:&nbsp;{S_PMTYPE_SELECT}</span><br /><br /><span class="genmed">{L_SELECT_SORT_METHOD}:&nbsp;{S_MODE_SELECT}&nbsp;&nbsp;{L_ORDER}&nbsp;{S_ORDER_SELECT}</span>
         <br /><br /><span class="genmed">{L_TO}:&nbsp;<input type="text" class="post" size="10" maxlength="32" name="filter_to" value="{S_FILTER_TO}">&nbsp;&nbsp;{L_FROM}:&nbsp;<input type="text" class="post" size="10" maxlength="32" name="filter_from" value="{S_FILTER_FROM}"></span>
         </td>
-        <td align="center" valign="middle" rowspan="2"><input type="submit" name="submit" value="{L_SORT}" class="titaniumbutton"></td>
-    </tr><tr>      <input type="hidden" name="mode" value="{S_MODE}"><td>&nbsp;</td>
+        <td align="center" valign="middle" rowspan="2"><input type="submit" name="submit" value="{L_SORT}" class="liteoption"></td>
+    </tr><tr>      <td><input type="hidden" name="mode" value="{S_MODE}">&nbsp;</td>
     <td align="right" valign="top" nowrap="nowrap">
-        </span></td>
+        </td>
     </tr>
   </table></form>
 {PM_MESSAGE}
@@ -65,7 +63,7 @@ function toggle_check_all()
 
 <table width="100%" cellpadding="3" cellspacing="1" border="0" class="forumline">
   <tr> 
-    <td style="height:@ 30px; width: 5%; text-align: center" class="catHead">{L_DELETE}<br /><input type="checkbox" name="check_all_del_box" onClick="JavaScript:{JS_ARCHIVE_COMMENT_1}check_all_arch_box.checked = false;{JS_ARCHIVE_COMMENT_2} toggle_check_all();"></td>
+    <td style="height: 30px; width: 5%; text-align: center" class="catHead">{L_DELETE}<br /><input type="checkbox" name="check_all_del_box" onClick="JavaScript:{JS_ARCHIVE_COMMENT_1}check_all_arch_box.checked = false;{JS_ARCHIVE_COMMENT_2} toggle_check_all();"></td>
 <!-- BEGIN archive_avail_switch -->
       <td class="catHead" width="5%">{L_ARCHIVE}<br /><input type="checkbox" name="check_all_arch_box" onClick="JavaScript:check_all_del_box.checked = false; toggle_check_all();"></td>
 <!-- END archive_avail_switch -->
@@ -96,7 +94,7 @@ function toggle_check_all()
       <input type="hidden" name="mode" value="{S_MODE}">
       <input type="submit" value="{L_SUBMIT}" class="mainoption">
       &nbsp;&nbsp;
-      <input type="reset" value="{L_RESET}" class="titaniumbutton"></td>
+      <input type="reset" value="{L_RESET}" class="liteoption"></td>
     </tr>
   </table>
 

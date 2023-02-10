@@ -29,10 +29,10 @@ CREATE TABLE `nuke_authors` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `nuke_autonews`
+-- Table structure for table `nuke_blogs_autoblog`
 --
 
-CREATE TABLE `nuke_autonews` (
+CREATE TABLE `nuke_blogs_autoblog` (
   `anid` int(10) UNSIGNED NOT NULL AUTO_INCREMENT,
   `catid` int(11) NOT NULL DEFAULT '0',
   `aid` varchar(30) NOT NULL,
@@ -2619,7 +2619,7 @@ CREATE TABLE `nuke_config` (
 --
 
 INSERT INTO `nuke_config` (`sitename`, `nukeurl`, `site_logo`, `slogan`, `startdate`, `adminmail`, `anonpost`, `default_Theme`, `foot1`, `foot2`, `foot3`, `commentlimit`, `anonymous`, `minpass`, `pollcomm`, `articlecomm`, `broadcast_msg`, `my_headlines`, `top`, `storyhome`, `user_news`, `oldnum`, `ultramode`, `banners`, `backend_title`, `backend_language`, `language`, `locale`, `multilingual`, `useflags`, `notify`, `notify_email`, `notify_subject`, `notify_message`, `notify_from`, `moderate`, `admingraphic`, `httpref`, `httprefmax`, `CensorMode`, `CensorReplace`, `copyright`, `Version_Num`, `admin_pos`, `admin_log_lines`, `error_log_lines`, `cache_data`) VALUES
-('My Site', 'http://-------------.---', 'logo.png', 'Your Slogan here', 'December 2018', 'Webmaster@MySite.com', 0, 'XtremeV3', '<a href=\"modules.php?name=Spambot_Killer\" target=\"_blank\">Spambot Killer</a> | <a href=\"modules.php?name=Site_Map\" target=\"_blank\">Site Map</a><br />', '<a href=\"rss.php?feed=news\" target=\"_blank\"><img border=\"0\" src=\"images/powered/feed_20_news.png\" width=\"94\" height=\"15\" alt=\"[News Feed]\" title=\"News Feed\" /></a> <a href=\"rss.php?feed=forums\" target=\"_blank\"><img border=\"0\" src=\"images/powered/feed_20_forums.png\" width=\"94\" height=\"15\" alt=\"[Forums Feed]\" title=\"Forums Feed\" /></a> <a href=\"rss.php?feed=downloads\" target=\"_blank\" /><img border=\"0\" src=\"images/powered/feed_20_down.png\" width=\"94\" height=\"15\" alt=\"[Downloads Feed]\" title=\"Downloads Feed\" /></a> <a href=\"rss.php?feed=weblinks\" target=\"_blank\"><img border=\"0\" src=\"images/powered/feed_20_links.png\" width=\"94\" height=\"15\" alt=\"[Web Links Feed]\" title=\"Web Links Feed\" /></a> <a href=\"http://htmlpurifier.org/\"><img src=\"images/powered/html_purifier_powered.png\" alt=\"Powered by HTML Purifier\" border=\"0\" /></a> <a href=\"http://tool.motoricerca.info/robots-checker.phtml?checkreferer=1\" target=\"_blank\"><img border=\"0\" src=\"images/powered/valid-robots.png\" width=\"80\" height=\"15\" alt=\"[Validate robots.txt]\" title=\"Validate robots.txt\" /></a>', '', 4096, 'Anonymous', 5, 1, 1, 1, 1, 10, 10, 1, 30, 1, 0, 'Powered by Evolution Xtreme 2.0.9f', 'en-us', 'english', 'en_US', 1, 0, 0, 'webmaster@---------.---', 'NEWS for my site', 'Hey! You got a new submission for your site.', 'webmaster', 0, 1, 1, 1000, 3, '*****', 'PHP-Nuke Copyright &copy; 2006 by Francisco Burzi.<br>All logos, trademarks and posts in this site are property of their respective owners, all the rest &copy; 2006 by the site owner.<br>Powered by <a href=\"http://www.nuke-evolution.com\" target=\"_blank\">Nuke Evolution 2.0.7</a> - <a href=\"https://www.evolution-xtreme.com\" target=\"_blank\">Nuke-Evolution Xtreme 2.0.9f Edition</a>.<br>', '7.6.0', 1, 0, 0, '');
+('My Site', 'http://-------------.---', 'logo.png', 'Your Slogan here', 'December 2018', 'Webmaster@MySite.com', 0, 'Titanium_Core', '<a href=\"modules.php?name=Spambot_Killer\" target=\"_blank\">Spambot Killer</a> | <a href=\"modules.php?name=Site_Map\" target=\"_blank\">Site Map</a><br />', '<a href=\"rss.php?feed=news\" target=\"_blank\"><img border=\"0\" src=\"images/powered/feed_20_news.png\" width=\"94\" height=\"15\" alt=\"[News Feed]\" title=\"News Feed\" /></a> <a href=\"rss.php?feed=forums\" target=\"_blank\"><img border=\"0\" src=\"images/powered/feed_20_forums.png\" width=\"94\" height=\"15\" alt=\"[Forums Feed]\" title=\"Forums Feed\" /></a> <a href=\"rss.php?feed=downloads\" target=\"_blank\" /><img border=\"0\" src=\"images/powered/feed_20_down.png\" width=\"94\" height=\"15\" alt=\"[Downloads Feed]\" title=\"Downloads Feed\" /></a> <a href=\"rss.php?feed=weblinks\" target=\"_blank\"><img border=\"0\" src=\"images/powered/feed_20_links.png\" width=\"94\" height=\"15\" alt=\"[Web Links Feed]\" title=\"Web Links Feed\" /></a> <a href=\"http://htmlpurifier.org/\"><img src=\"images/powered/html_purifier_powered.png\" alt=\"Powered by HTML Purifier\" border=\"0\" /></a> <a href=\"http://tool.motoricerca.info/robots-checker.phtml?checkreferer=1\" target=\"_blank\"><img border=\"0\" src=\"images/powered/valid-robots.png\" width=\"80\" height=\"15\" alt=\"[Validate robots.txt]\" title=\"Validate robots.txt\" /></a>', '', 4096, 'Anonymous', 5, 1, 1, 1, 1, 10, 10, 1, 30, 1, 0, 'Powered by Evolution Xtreme 2.0.9f', 'en-us', 'english', 'en_US', 1, 0, 0, 'webmaster@---------.---', 'NEWS for my site', 'Hey! You got a new submission for your site.', 'webmaster', 0, 1, 1, 1000, 3, '*****', 'PHP-Nuke Copyright &copy; 2006 by Francisco Burzi.<br>All logos, trademarks and posts in this site are property of their respective owners, all the rest &copy; 2022 by the site owner.<br>Powered by <a href=\"http://www.php-nuke-titanium.86it.us\" target=\"_blank\">Nuke Evolution 2.0.7</a> - <a href=\"https://www.evolution-xtreme.com\" target=\"_blank\">Nuke-Evolution Xtreme 2.0.9f Edition</a>.<br>', '7.6.0', 1, 0, 0, '');
 
 -- --------------------------------------------------------
 
@@ -3123,7 +3123,7 @@ CREATE TABLE `nuke_file_repository_themes` (
 --
 
 INSERT INTO `nuke_file_repository_themes` (`theme_name`, `cell`, `head`, `per_row`, `show_left`) VALUES
-('XtremeV3', 0, 0, 2, 0);
+('Titanium_Core', 0, 0, 2, 0);
 
 -- --------------------------------------------------------
 
@@ -3845,20 +3845,20 @@ INSERT INTO `nuke_nsncb_config` (`cgid`, `enabled`, `height`, `count`) VALUES (4
 -- --------------------------------------------------------
 
 --
--- Table structure for table `nuke_nsnne_config`
+-- Table structure for table `nuke_blogs_config`
 --
 
-CREATE TABLE `nuke_nsnne_config` (
+CREATE TABLE `nuke_blogs_config` (
   `config_name` varchar(255) NOT NULL DEFAULT '',
   `config_value` longtext NOT NULL,
   UNIQUE KEY `config_name` (`config_name`)
 ) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `nuke_nsnne_config`
+-- Dumping data for table `nuke_blogs_config`
 --
 
-INSERT INTO `nuke_nsnne_config` (`config_name`, `config_value`) VALUES
+INSERT INTO `nuke_blogs_config` (`config_name`, `config_value`) VALUES
 ('columns', '0'),
 ('readmore', '0'),
 ('texttype', '0'),
@@ -6157,10 +6157,10 @@ CREATE TABLE `nuke_stats_hour` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `nuke_stories`
+-- Table structure for table `nuke_blogs`
 --
 
-CREATE TABLE `nuke_stories` (
+CREATE TABLE `nuke_blogs` (
   `sid` int(11) NOT NULL AUTO_INCREMENT,
   `catid` int(11) NOT NULL DEFAULT '0',
   `aid` varchar(25) NOT NULL DEFAULT '',
@@ -6190,10 +6190,10 @@ CREATE TABLE `nuke_stories` (
 ) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `nuke_stories`
+-- Dumping data for table `nuke_blogs`
 --
 
-INSERT INTO `nuke_stories` (`sid`, `catid`, `aid`, `title`, `time`, `hometext`, `bodytext`, `comments`, `counter`, `topic`, `informant`, `notes`, `ihome`, `alanguage`, `acomm`, `haspoll`, `pollID`, `score`, `ratings`, `associated`, `ticon`, `writes`) VALUES
+INSERT INTO `nuke_blogs` (`sid`, `catid`, `aid`, `title`, `time`, `hometext`, `bodytext`, `comments`, `counter`, `topic`, `informant`, `notes`, `ihome`, `alanguage`, `acomm`, `haspoll`, `pollID`, `score`, `ratings`, `associated`, `ticon`, `writes`) VALUES
 (1, 0, 'admin', 'Welcome to Nuke Evolution Xtreme 2.0.9F', '2018-11-03 05:56:20', 'Thank you for choosing nuke evolution, we hope you enjoy using our cms and we appreciate feedback and donations.
 
 [b]NOTE:[/b] Your admin and user accounts have already been logged in for you so please visit [url=admin.php]this link[/url] to get started. 
@@ -6203,10 +6203,10 @@ You can remove this new story by going into the News Administration or by clicki
 -- --------------------------------------------------------
 
 --
--- Table structure for table `nuke_stories_cat`
+-- Table structure for table `nuke_blogs_cat`
 --
 
-CREATE TABLE `nuke_stories_cat` (
+CREATE TABLE `nuke_blogs_cat` (
   `catid` int(11) NOT NULL AUTO_INCREMENT,
   `title` varchar(20) NOT NULL DEFAULT '',
   `counter` int(11) NOT NULL DEFAULT '0',
@@ -6247,7 +6247,7 @@ CREATE TABLE `nuke_themes` (
 --
 
 INSERT INTO `nuke_themes` (`theme_name`, `groups`, `permissions`, `custom_name`, `active`, `theme_info`) VALUES
-('XtremeV3', '', 1, 'XtremeV3', 1, '1368:::#454545:::#383838:::#383838:::#383838:::#ccc:::#ccc:::Go to Theme Options to Edit Footer Message Line 1:::Go to Theme Options to Edit Footer Message Line 2:::#f5a405:::dark');
+('Titanium_Core', '', 1, 'Titanium_Core', 1, '1368:::#454545:::#383838:::#383838:::#383838:::#ccc:::#ccc:::Go to Theme Options to Edit Footer Message Line 1:::Go to Theme Options to Edit Footer Message Line 2:::#f5a405:::dark');
 
 -- --------------------------------------------------------
 
@@ -6388,7 +6388,7 @@ CREATE TABLE `nuke_users` (
 --
 
 INSERT INTO `nuke_users` (`user_id`, `name`, `username`, `user_email`, `femail`, `user_website`, `user_avatar`, `user_regdate`, `user_occ`, `user_from`, `user_from_flag`, `user_interests`, `user_sig`, `user_viewemail`, `user_theme`, `user_facebook`, `user_password`, `storynum`, `umode`, `uorder`, `thold`, `noscore`, `bio`, `ublockon`, `ublock`, `theme`, `commentmax`, `counter`, `newsletter`, `user_posts`, `user_attachsig`, `user_rank`, `user_level`, `broadcast`, `popmeson`, `user_active`, `user_session_time`, `user_session_page`, `user_lastvisit`, `user_timezone`, `user_style`, `user_lang`, `user_dateformat`, `user_new_privmsg`, `user_unread_privmsg`, `user_last_privmsg`, `user_emailtime`, `user_allowhtml`, `user_allowbbcode`, `user_allowsmile`, `user_allowavatar`, `user_allow_pm`, `user_allow_mass_pm`, `user_allow_viewonline`, `user_notify`, `user_notify_pm`, `user_popup_pm`, `user_avatar_type`, `user_sig_bbcode_uid`, `user_actkey`, `user_newpasswd`, `points`, `last_ip`, `user_wordwrap`, `agreedtos`, `user_allowsignature`, `user_report_optout`, `user_show_quickreply`, `user_quickreply_mode`, `user_color_gc`, `user_color_gi`, `user_showavatars`, `user_showsignatures`, `user_time_mode`, `user_dst_time_lag`, `user_pc_timeOffsets`, `user_view_log`, `user_glance_show`, `user_hide_images`, `user_open_quickreply`, `sceditor_in_source`, `xdata_bbcode`, `user_ftr`, `user_ftr_time`, `user_rank2`, `user_rank3`, `user_rank4`, `user_rank5`, `user_gender`, `user_birthday`, `user_birthday2`, `birthday_display`, `birthday_greeting`, `user_next_birthday`, `user_reputation`, `user_rep_last_time`, `user_admin_notes`, `user_allow_arcadepm`) VALUES
-(1, '', 'Anonymous', '', '', '', 'blank.gif', 'Nov 03, 2018', '', '', NULL, '', '', 0, 0, NULL, '', 10, '', 0, 0, 0, '', 0, '', '', 4096, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, '10.00', NULL, 'english', 'D M d, Y g:i a', 0, 0, 0, NULL, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 3, NULL, NULL, NULL, 0, '0', 70, 0, 0, 0, 0, 0, '', '', 1, 1, 6, 60, '0', 0, '1', 0, 1, 0, '', 0, 0, -1, -2, -2, -2, 0, 0, NULL, 0, 0, 0, 43.2825, 1243272322, '', 1);
+(1, '', 'Anonymous', '', '', '', 'blank.png', 'Nov 03, 2018', '', '', NULL, '', '', 0, 0, NULL, '', 10, '', 0, 0, 0, '', 0, '', '', 4096, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0, '10.00', NULL, 'english', 'D M d, Y g:i a', 0, 0, 0, NULL, 1, 1, 1, 1, 1, 0, 1, 1, 0, 0, 3, NULL, NULL, NULL, 0, '0', 70, 0, 0, 0, 0, 0, '', '', 1, 1, 6, 60, '0', 0, '1', 0, 1, 0, '', 0, 0, -1, -2, -2, -2, 0, 0, NULL, 0, 0, 0, 43.2825, 1243272322, '', 1);
 
 --
 -- Table structure for table `nuke_users_countries`

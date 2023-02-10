@@ -3,7 +3,6 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-
 /***************************************************************************
  *                            admin_arcade_checking.php
  *                            -------------------------
@@ -15,24 +14,25 @@
  * 
  ***************************************************************************/
 
-define('IN_PHPBB2', 1);
+if (!defined('IN_PHPBB')) define('IN_PHPBB', true);
 
 if( !empty($setmodules) )
 {
-    $file = basename(__FILE__);
-    $titanium_module['Arcade_Admin']['Settings_check'] = $file;
-    return;
+  $file = basename(__FILE__);
+  $module['Arcade_Admin']['Settings_check'] = $file;
+  return;
 }
 
 $root_path = "./../../../";
-$phpbb2_root_path = "./../";
-require($phpbb2_root_path . 'extension.inc');
-require('./pagestart.' . $phpEx);
+$phpbb_root_path = "./../";
 
+require($phpbb_root_path . 'extension.inc');
+require('./pagestart.' . $phpEx);
 
 $problemcount=0;
 $tableproblem=0;
 $fileuploadproblem=0;
+
 echo "<div><h1>Arcade Checking</h1>\n"
     ."<p>This function will search and check for frequent errors during Arcade Mod V3+ Installation.</p>"
     ."</div>";
@@ -45,9 +45,8 @@ echo "<table cellpadding=\"4\" align=\"center\" border=\"1\">";
 $filechecklist=array(
                 "arcade.php",
                 "blocks/block-Arcade.php",
-                "blocks/block-Arcade_Center.php",
-                "blocks/block-Random_Games.php",
-                "images/arcadelogo.gif",
+                "blocks/block-Titanium_Arcade_Center.php",
+                "images/arcade_mod/arcade_logo.png",
                 "includes/functions_arcade.php",
                 "modules/Forums/arcade.php",
                 "modules/Forums/arcade_search.php",
@@ -161,7 +160,7 @@ $tablecheck=array(GAMES_TABLE,SCORES_TABLE,GAMEHASH_TABLE,ARCADE_CATEGORIES_TABL
 foreach($tablecheck as $tablename){
     echo "<tr><td>$tablename</td>";
     $SQL="SELECT COUNT(*) FROM $tablename";
-    $result=$titanium_db->sql_query($SQL);
+    $result=$db->sql_query($SQL);
     if ($result) 
         echo "<td align=\"center\"> OK</td>";
     else {
@@ -183,29 +182,29 @@ echo "    <tr>\n"
     ."    <tr>\n"
     ."        <td align=\"center\" width=\"150\"><strong>Name</strong></td><td align=\"center\"><strong>Status</strong></td>\n"
     ."    </tr>\n";
-echo "<tr><td>phpBB Pref - Script Path:<br />\"<strong>".$phpbb2_board_config['script_path']."</strong>\"</td>";
-echo "<td align=\"center\">".($phpbb2_board_config['script_path']=="/modules/Forums/"?" OK":"<strong>Potential problem</strong>:<br />\"/modules/Forums/\" expected")."</td></tr>";
+echo "<tr><td>phpBB Pref - Script Path:<br />\"<strong>".$board_config['script_path']."</strong>\"</td>";
+echo "<td align=\"center\">".($board_config['script_path']=="/modules/Forums/"?" OK":"<strong>Potential problem</strong>:<br />\"/modules/Forums/\" expected")."</td></tr>";
 
-echo "<tr><td>phpBB Pref - Server Name:<br />\"<strong>".$phpbb2_board_config['server_name']."</strong>\"</td>";
+echo "<tr><td>phpBB Pref - Server Name:<br />\"<strong>".$board_config['server_name']."</strong>\"</td>";
 
 //
 echo "<td align=\"center\">";
-if (preg_match("@http:\/\/@i",$phpbb2_board_config['server_name'])) {
+if (preg_match("@http:\/\/@i",$board_config['server_name'])) {
     echo "<strong>*</strong>Server name should not contain \"http://\" prefix.";
 } else {
     echo " OK";
 }
 echo "</td>";
 
-echo "<tr><td>phpBB Pref - Cookie Domain:<br />\"<strong>".$phpbb2_board_config['cookie_domain']."</strong>\"</td>";
-echo "<td align=\"center\">".(($phpbb2_board_config['cookie_domain']=="" or $phpbb2_board_config['cookie_domain']==$phpbb2_board_config['server_name'])?" OK":"<strong>Failed</strong> Empty value or <strong>".$phpbb2_board_config['server_name']."</strong> expected.")."</td></tr>";
-if ($phpbb2_board_config['cookie_domain']=="" or $phpbb2_board_config['cookie_domain']==$phpbb2_board_config['server_name']) {
+echo "<tr><td>phpBB Pref - Cookie Domain:<br />\"<strong>".$board_config['cookie_domain']."</strong>\"</td>";
+echo "<td align=\"center\">".(($board_config['cookie_domain']=="" or $board_config['cookie_domain']==$board_config['server_name'])?" OK":"<strong>Failed</strong> Empty value or <strong>".$board_config['server_name']."</strong> expected.")."</td></tr>";
+if ($board_config['cookie_domain']=="" or $board_config['cookie_domain']==$board_config['server_name']) {
     
 }else {$problemcount++;}
 
-echo "<tr><td>phpBB Pref - Cookie Path:<br />\"<strong>".$phpbb2_board_config['cookie_path']."</strong>\"</td>";
-echo "<td align=\"center\">".($phpbb2_board_config['cookie_path']=="/" ?" OK":"<strong>Failed</strong> \"<strong>/</strong>\" expected.")."</td></tr>";
-if (!$phpbb2_board_config['cookie_path']=="/") {
+echo "<tr><td>phpBB Pref - Cookie Path:<br />\"<strong>".$board_config['cookie_path']."</strong>\"</td>";
+echo "<td align=\"center\">".($board_config['cookie_path']=="/" ?" OK":"<strong>Failed</strong> \"<strong>/</strong>\" expected.")."</td></tr>";
+if (!$board_config['cookie_path']=="/") {
     $problemcount++;    
 }
 echo "    <tr>\n"
@@ -216,7 +215,7 @@ echo "    <tr>\n"
     ."    </tr>\n";
 
 $sql = "SELECT user_level FROM " . USERS_TABLE . " WHERE user_id = 2";
-$row = $titanium_db->sql_fetchrow($titanium_db->sql_query($sql));
+$row = $db->sql_fetchrow($db->sql_query($sql));
 if (empty($row))
 {
 echo "<tr><td>Admin User ID Check</td>";
@@ -242,5 +241,4 @@ echo "    <tr>\n"
 echo "</table>";
 
 include('./page_footer_admin.'.$phpEx);
-
 ?>

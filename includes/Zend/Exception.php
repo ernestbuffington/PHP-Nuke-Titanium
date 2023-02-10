@@ -1,6 +1,6 @@
 <?php
 /**
- * Zend Framework
+ * Zend Framework Modified for PHP-Nuke Titanium
  *
  * LICENSE
  *
@@ -12,16 +12,17 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
+ * @category   Zend for PHP-Nuke Titanium
  * @package    Zend
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
+ * @version    $Id$
  */
 
 /**
-* @category   Zend
+* @category   Zend for PHP-Nuke Titanium
 * @package    Zend
-* @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+* @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
 * @license    http://framework.zend.com/license/new-bsd     New BSD License
 */
 class Zend_Exception extends Exception
@@ -39,7 +40,7 @@ class Zend_Exception extends Exception
      * @param  Exception $previous
      * @return void
      */
-    public function __construct($msg = '', $code = 0, Exception $previous = null)
+    public function __construct($msg = '', $code = 0, \Throwable $previous = null)
     {
         if (version_compare(PHP_VERSION, '5.3.0', '<')) {
             parent::__construct($msg, (int) $code);
@@ -47,23 +48,6 @@ class Zend_Exception extends Exception
         } else {
             parent::__construct($msg, (int) $code, $previous);
         }
-    }
-
-    /**
-     * Overloading
-     *
-     * For PHP < 5.3.0, provides access to the getPrevious() method.
-     * 
-     * @param  string $method 
-     * @param  array $args 
-     * @return mixed
-     */
-    public function __call($method, array $args)
-    {
-        if ('getprevious' == strtolower($method)) {
-            return $this->_getPrevious();
-        }
-        return null;
     }
 
     /**
@@ -75,8 +59,8 @@ class Zend_Exception extends Exception
     {
         if (version_compare(PHP_VERSION, '5.3.0', '<')) {
             if (null !== ($e = $this->getPrevious())) {
-                return $e->__toString() 
-                       . "\n\nNext " 
+                return $e->__toString()
+                       . "\n\nNext "
                        . parent::__toString();
             }
         }

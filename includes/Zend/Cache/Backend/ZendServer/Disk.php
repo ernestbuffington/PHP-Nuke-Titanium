@@ -1,6 +1,6 @@
 <?php
 /**
- * Zend Framework
+ * Zend Framework Modified for PHP-Nuke Titanium
  *
  * LICENSE
  *
@@ -12,26 +12,26 @@
  * obtain it through the world-wide-web, please send an email
  * to license@zend.com so we can send you a copy immediately.
  *
- * @category   Zend
+ * @category   Zend for PHP-Nuke Titanium
  * @package    Zend_Cache
  * @subpackage Zend_Cache_Backend
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id: Disk.php 16 2010-02-12 00:38:19Z Technocrat $
+ * @version    $Id$
  */
 
 
 /** @see Zend_Cache_Backend_Interface */
-require_once(NUKE_ZEND_DIR.'Cache/Backend/Interface.php');
+require_once NUKE_ZEND_DIR.'Cache/Backend/Interface.php';
 
 /** @see Zend_Cache_Backend_ZendServer */
-require_once(NUKE_ZEND_DIR.'Cache/Backend/ZendServer.php');
+require_once NUKE_ZEND_DIR.'Cache/Backend/ZendServer.php';
 
 
 /**
  * @package    Zend_Cache
  * @subpackage Zend_Cache_Backend
- * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
+ * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
 class Zend_Cache_Backend_ZendServer_Disk extends Zend_Cache_Backend_ZendServer implements Zend_Cache_Backend_Interface
@@ -42,7 +42,7 @@ class Zend_Cache_Backend_ZendServer_Disk extends Zend_Cache_Backend_ZendServer i
      * @param  array $options associative array of options
      * @throws Zend_Cache_Exception
      */
-    public function __construct(array $options = array())
+    public function __construct(array $options = [])
     {
         if (!function_exists('zend_disk_cache_store')) {
             Zend_Cache::throwException('Zend_Cache_ZendServer_Disk backend has to be used within Zend Server environment.');
@@ -72,7 +72,8 @@ class Zend_Cache_Backend_ZendServer_Disk extends Zend_Cache_Backend_ZendServer i
     /**
      * Fetch data
      *
-     * @param string $id          Cache id
+     * @param string $id Cache id
+     * @return mixed|null
      */
     protected function _fetch($id)
     {
@@ -87,7 +88,7 @@ class Zend_Cache_Backend_ZendServer_Disk extends Zend_Cache_Backend_ZendServer i
      */
     protected function _unset($id)
     {
-        return zend_disk_titanium_cache_delete($this->_options['namespace'] . '::' . $id);
+        return zend_disk_cache_delete($this->_options['namespace'] . '::' . $id);
     }
 
     /**
@@ -95,6 +96,6 @@ class Zend_Cache_Backend_ZendServer_Disk extends Zend_Cache_Backend_ZendServer i
      */
     protected function _clear()
     {
-        zend_disk_titanium_cache_clear($this->_options['namespace']);
+        zend_disk_cache_clear($this->_options['namespace']);
     }
 }

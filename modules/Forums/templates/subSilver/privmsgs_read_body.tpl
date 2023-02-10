@@ -53,7 +53,7 @@
         <table style="height: 18px; border:0px; padding: 0px; border-spacing: 0px;">
           <tr> 
             <td valign="middle" nowrap="nowrap">{PROFILE_IMG} {PM_IMG} {EMAIL_IMG} 
-              {WWW_IMG} {AIM_IMG} {YIM_IMG} {MSN_IMG}</td><td>&nbsp;</td><td valign="top" nowrap="nowrap"><script language="JavaScript" type="text/javascript"><!-- 
+              {WWW_IMG} {AIM_IMG} {YIM_IMG} {MSN_IMG}</td><td>&nbsp;</td><td valign="top" nowrap="nowrap"><script><!-- 
 
         if ( navigator.userAgent.toLowerCase().indexOf('mozilla') != -1 && navigator.userAgent.indexOf('5.') == -1 )
             document.write('{ICQ_IMG}');
@@ -67,12 +67,12 @@
     </tr>
     <tr>
       <td class="catBottom" colspan="3" height="28" align="right"> {S_HIDDEN_FIELDS} 
-        <input type="submit" name="save" value="{L_SAVE_MSG}" class="titaniumbutton" />
+        <input type="submit" name="save" value="{L_SAVE_MSG}" class="liteoption" />
         &nbsp; 
-        <input type="submit" name="delete" value="{L_DELETE_MSG}" class="titaniumbutton" />
+        <input type="submit" name="delete" value="{L_DELETE_MSG}" class="liteoption" />
         <!-- BEGIN switch_attachments -->
         &nbsp; 
-        <input type="submit" name="pm_delete_attach" value="{L_DELETE_ATTACHMENTS}" class="titaniumbutton" />
+        <input type="submit" name="pm_delete_attach" value="{L_DELETE_ATTACHMENTS}" class="liteoption" />
         <!-- END switch_attachments -->
       </td>
     </tr>

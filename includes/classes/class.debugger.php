@@ -3,10 +3,12 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-
-if (realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])) {
-    exit('Access Denied');
-}
+/*======================================================================= 
+  Last Modified: 12/05/2022 2:12 am Ernest Allen Buffington
+ =======================================================================*/
+if(realpath(__FILE__) == realpath($_SERVER['SCRIPT_FILENAME'])):
+  exit('Access Denied');
+endif;
 
 class error_handler {
 
@@ -15,7 +17,7 @@ class error_handler {
     var $file;
     var $line;
 
-    function error_handler($debug=false) {
+    function __construct($debug=false) {
         if (!is_bool($debug) && $debug == 'full') {
             if(is_admin()) {
                 error_reporting(E_ALL); # report all errors

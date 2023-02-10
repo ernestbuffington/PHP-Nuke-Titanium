@@ -69,9 +69,9 @@
       Custom mass PM                           v1.4.7       07/04/2005
  ************************************************************************/
 
-if (!defined('IN_PHPBB2'))
+if (!defined('IN_PHPBB'))
 {
-    die('ACCESS DENIED');
+    die('Hacking attempt');
 }
 
 //
@@ -81,102 +81,101 @@ if (!defined('IN_PHPBB2'))
 //
 class emailer
 {
-        var $msg, $subject, $extra_headers;
-        var $addresses, $reply_to, $from;
-        var $use_smtp;
+        public $msg, $subject, $extra_headers;
+        public $addresses, $reply_to, $from;
+		public $use_smtp;
 
-        var $tpl_msg = array();
+        public $tpl_msg = [];
 
         function __construct($use_smtp)
         {
-                $this->reset();
-                $this->use_smtp = $use_smtp;
-        $this->reply_to = $this->from = '';
-    }
+           $this->reset();
+           $this->reply_to = $this->from = '';
+        }
 
     // Resets all the data (address, template file, etc etc to default
     function reset()
     {
-        $this->addresses = array();
+        $this->addresses = [];
         $this->vars = $this->msg = $this->extra_headers = '';
     }
 
     // Sets an email address to send to
     function email_address($address)
     {
-        $this->addresses['to'] = trim($address);
+        $this->addresses['to'] = trim((string) $address);
     }
 
     function cc($address)
     {
-        $this->addresses['cc'][] = trim($address);
+        $this->addresses['cc'][] = trim((string) $address);
     }
 
     function bcc($address)
     {
-        $this->addresses['bcc'][] = trim($address);
+        $this->addresses['bcc'][] = trim((string) $address);
     }
 
     function replyto($address)
     {
-        $this->reply_to = trim($address);
+        $this->reply_to = trim((string) $address);
         }
 
         function from($address)
         {
-                $this->from = trim($address);
+                $this->from = trim((string) $address);
         }
 
         // set up subject for mail
         function set_subject($subject = '')
         {
-                $this->subject = trim(preg_replace('#[\n\r]+#s', '', $subject));
+                $this->subject = trim(preg_replace('#[\n\r]+#s', '', (string) $subject));
         }
 
         // set up extra mail headers
         function extra_headers($headers)
         {
-                $this->extra_headers .= trim($headers) . "\n";
+                $this->extra_headers .= trim((string) $headers) . "\n";
         }
 
-        function use_template($phpbb2_template_file, $phpbb2_template_lang = '')
+        function use_template($template_file, $template_lang = '')
         {
-                global $phpbb2_board_config, $phpbb2_root_path;
+                global $board_config, $phpbb_root_path;
 
-                if (trim($phpbb2_template_file) == '')
+                if (trim((string) $template_file) == '')
                 {
                         message_die(GENERAL_ERROR, 'No template file set', '', __LINE__, __FILE__);
                 }
 
-                if (trim($phpbb2_template_lang) == '')
+                if (trim((string) $template_lang) == '')
                 {
-                        $phpbb2_template_lang = $phpbb2_board_config['default_lang'];
+                        $template_lang = $board_config['default_lang'];
                 }
 
-                if (empty($this->tpl_msg[$phpbb2_template_lang . $phpbb2_template_file]))
+                if (empty($this->tpl_msg[$template_lang . $template_file]))
                 {
-                        $tpl_file = $phpbb2_root_path . 'language/lang_' . $phpbb2_template_lang . '/email/' . $phpbb2_template_file . '.tpl';
+                        $tpl_file = $phpbb_root_path . 'language/lang_' . $template_lang . '/email/' . $template_file . '.tpl';
 
-                        if (!@file_exists(@phpbb_realpath($tpl_file)))
+                        if (!file_exists(phpbb_realpath($tpl_file)))
                         {
-                                $tpl_file = $phpbb2_root_path . 'language/lang_' . $phpbb2_board_config['default_lang'] . '/email/' . $phpbb2_template_file . '.tpl';
+                                $tpl_file = $phpbb_root_path . 'language/lang_' . $board_config['default_lang'] . '/email/' . $template_file . '.tpl';
 
-                                if (!@file_exists(@phpbb_realpath($tpl_file)))
+                                if (!file_exists(phpbb_realpath($tpl_file)))
                                 {
-                                        message_die(GENERAL_ERROR, 'Could not find email template file :: ' . $phpbb2_template_file, '', __LINE__, __FILE__);
+                                        message_die(GENERAL_ERROR, 'Could not find email template file :: ' . $template_file, '', __LINE__, __FILE__);
                                 }
                         }
 
-                        if (!($fd = @fopen($tpl_file, 'r')))
+                        if (!($fd = fopen($tpl_file, 'r')))
                         {
                                 message_die(GENERAL_ERROR, 'Failed opening template file :: ' . $tpl_file, '', __LINE__, __FILE__);
                         }
 
-                        $this->tpl_msg[$phpbb2_template_lang . $phpbb2_template_file] = fread($fd, filesize($tpl_file));
+                        $this->tpl_msg[$template_lang . $template_file] = fread($fd, filesize($tpl_file));
                         fclose($fd);
                 }
 
-                $this->msg = $this->tpl_msg[$phpbb2_template_lang . $phpbb2_template_file];
+                $this->msg = $this->tpl_msg[$template_lang . $template_file];
 
                 return true;
         }
@@ -196,32 +195,34 @@ class emailer
  [ Mod:     Custom mass PM                     v1.4.7 ]
  ******************************************************/
         {
-                global $phpbb2_board_config, $titanium_lang, $phpEx, $phpbb2_root_path, $titanium_db, $cache;
+                global $board_config, $lang, $phpEx, $phpbb_root_path, $db, $cache;
 
             // Escape all quotes, else the eval will fail.
-                $this->msg = str_replace ("'", "\'", $this->msg);
+                $this->msg = str_replace ("'", "\'", (string) $this->msg);
                 $this->msg = preg_replace('#\{([a-z0-9\-_]*?)\}#is', "' . $\\1 . '", $this->msg);
 
                 // Set vars
                 reset ($this->vars);
-                while (list($key, $val) = each($this->vars))
+                //while (list($key, $val) = each($this->vars))
+				foreach ($this->vars as $key => $val)
                 {
-                        $$key = $val;
+                        ${$key} = $val;
                 }
 
                 eval("\$this->msg = '$this->msg';");
 
                 // Clear vars
                 reset ($this->vars);
-                while (list($key, $val) = each($this->vars))
+                //while (list($key, $val) = each($this->vars))
+				foreach ($this->vars as $key => $val)
                 {
-                        unset($$key);
+                        unset(${$key});
                 }
 
                 // We now try and pull a subject from the email body ... if it exists,
                 // do this here because the subject may contain a variable
                 $drop_header = '';
-                $match = array();
+                $match = [];
                 if (preg_match('#^(Subject:(.*?))$#m', $this->msg, $match))
                 {
                         $this->subject = (trim($match[2]) != '') ? trim($match[2]) : (($this->subject != '') ? $this->subject : 'No Subject');
@@ -234,12 +235,12 @@ class emailer
 
                 if (preg_match('#^(Charset:(.*?))$#m', $this->msg, $match))
                 {
-                        $this->encoding = (trim($match[2]) != '') ? trim($match[2]) : trim($titanium_lang['ENCODING']);
+                        $this->encoding = (trim($match[2]) != '') ? trim($match[2]) : trim((string) $lang['ENCODING']);
                         $drop_header .= '[\r\n]*?' . preg_quote($match[1], '#');
                 }
                 else
                 {
-                        $this->encoding = trim($titanium_lang['ENCODING']);
+                        $this->encoding = trim((string) $lang['ENCODING']);
                 }
 
                 if ($drop_header != '')
@@ -248,8 +249,20 @@ class emailer
                 }
 
         $to = $this->addresses['to'];
-        
-        if ( is_array( $this->addresses['cc'] ) ) 
+
+        if(!isset($this->addresses['cc']))
+		$this->addresses['cc'] = '';
+
+        if(!isset($cc))
+		$cc = '';
+
+        if(!isset($this->addresses['bcc']))
+		$this->addresses['bcc'] = '';
+
+        if(!isset($bcc))
+		$bcc = '';
+		
+		if ( is_array( $this->addresses['cc'] ) ) 
             $cc = (count($this->addresses['cc'])) ? implode(', ', $this->addresses['cc']) : '';
         else
             $cc = '';
@@ -260,14 +273,14 @@ class emailer
             $bcc = '';
 
         // Build header
-        $this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $phpbb2_board_config['board_email'] . "\n") . "Return-Path: " . $phpbb2_board_config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $phpbb2_board_config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By phpBB2\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : '');
+        $this->extra_headers = (($this->reply_to != '') ? "Reply-to: $this->reply_to\n" : '') . (($this->from != '') ? "From: $this->from\n" : "From: " . $board_config['board_email'] . "\n") . "Return-Path: " . $board_config['board_email'] . "\nMessage-ID: <" . md5(uniqid(time())) . "@" . $board_config['server_name'] . ">\nMIME-Version: 1.0\nContent-type: text/plain; charset=" . $this->encoding . "\nContent-transfer-encoding: 8bit\nDate: " . date('r', time()) . "\nX-Priority: 3\nX-MSMail-Priority: Normal\nX-Mailer: PHP\nX-MimeOLE: Produced By phpBB2\n" . $this->extra_headers . (($cc != '') ? "Cc: $cc\n" : '')  . (($bcc != '') ? "Bcc: $bcc\n" : '');
 
                 // Send message ... removed $this->encode() from subject for time being
                 if ( $this->use_smtp )
                 {
                         if ( !defined('SMTP_INCLUDED') )
                         {
-                                include(dirname(__FILE__)."/smtp.php");
+                                include(__DIR__."/smtp.php");
                         }
 
                         $result = smtpmail($to, $this->subject, $this->msg, $this->extra_headers);
@@ -275,17 +288,17 @@ class emailer
                 else
                 {
             $empty_to_header = ($to == '') ? TRUE : FALSE;
-            $to = ($to == '') ? (($phpbb2_board_config['sendmail_fix']) ? ' ' : 'Undisclosed-recipients:;') : $to;
-                        $result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers);
+            $to = ($to == '') ? (($board_config['sendmail_fix']) ? ' ' : 'Undisclosed-recipients:;') : $to;
+                        $result = mail((string) $to, (string) $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers);
 
-                        if (!$result && !$phpbb2_board_config['sendmail_fix'] && $empty_to_header)
+                        if (!$result && !$board_config['sendmail_fix'] && $empty_to_header)
                         {
                                 $to = ' ';
 
                                 $sql = "UPDATE " . CONFIG_TABLE . "
                                         SET config_value = '1'
                                         WHERE config_name = 'sendmail_fix'";
-                                if (!$titanium_db->sql_query($sql))
+                                if (!$db->sql_query($sql))
                                 {
                                         message_die(GENERAL_ERROR, 'Unable to update config table', '', __LINE__, __FILE__, $sql);
                                 }
@@ -296,8 +309,8 @@ class emailer
 /*****['END']********************************************
  [ Base:    Caching System                     v3.0.0 ]
  ******************************************************/
-                                $phpbb2_board_config['sendmail_fix'] = 1;
-                                $result = @mail($to, $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers);
+                                $board_config['sendmail_fix'] = 1;
+                                $result = mail($to, (string) $this->subject, preg_replace("#(?<!\r)\n#s", "\n", $this->msg), $this->extra_headers);
                         }
                 }
 
@@ -334,32 +347,34 @@ class emailer
                 }
 
                 // define start delimimter, end delimiter and spacer
-                $phpbb2_end = "?=";
-                $phpbb2_start = "=?$this->encoding?B?";
-                $spacer = "$phpbb2_end\r\n $phpbb2_start";
+                $end = "?=";
+                $start = "=?$this->encoding?B?";
+                $spacer = "$end\r\n $start";
 
                 // determine length of encoded text within chunks and ensure length is even
-                $length = 75 - strlen($phpbb2_start) - strlen($phpbb2_end);
+                $length = 75 - strlen($start) - strlen($end);
                 $length = floor($length / 2) * 2;
 
                 // encode the string and split it into chunks with spacers after each chunk
-                $str = chunk_split(base64_encode($str), $length, $spacer);
+                $str = chunk_split(base64_encode((string) $str), $length, $spacer);
 
                 // remove trailing spacer and add start and end delimiters
                 $str = preg_replace('#' . preg_quote($spacer, '#') . '$#', '', $str);
 
-                return $phpbb2_start . $str . $phpbb2_end;
+                return $start . $str . $end;
         }
 
         //
         // Attach files via MIME.
         //
-        function attachFile($filename, $mimetype = "application/octet-stream", $szFromAddress, $szFilenameToDisplay)
+        function attachFile($filename, $szFilenameToDisplay, $mimetype = "application/octet-stream", $szFromAddress = '')
         {
-                global $titanium_lang;
+                $mime_filename = null;
+                $out = null;
+                global $lang;
                 $mime_boundary = "--==================_846811060==_";
 
-                $this->msg = '--' . $mime_boundary . "\nContent-Type: text/plain;\n\tcharset=\"" . $titanium_lang['ENCODING'] . "\"\n\n" . $this->msg;
+                $this->msg = '--' . $mime_boundary . "\nContent-Type: text/plain;\n\tcharset=\"" . $lang['ENCODING'] . "\"\n\n" . $this->msg;
 
                 if ($mime_filename)
                 {
@@ -416,15 +431,15 @@ class emailer
         function myChunkSplit($str)
         {
                 $stmp = $str;
-                $len = strlen($stmp);
+                $len = strlen((string) $stmp);
                 $out = "";
 
                 while ($len > 0)
                 {
                         if ($len >= 76)
                         {
-                                $out .= substr($stmp, 0, 76) . "\r\n";
-                                $stmp = substr($stmp, 76);
+                                $out .= substr((string) $stmp, 0, 76) . "\r\n";
+                                $stmp = substr((string) $stmp, 76);
                                 $len = $len - 76;
                         }
                         else
@@ -442,6 +457,7 @@ class emailer
         //
         function encode_file($sourcefile)
         {
+                $encoded = null;
                 if (is_readable(phpbb_realpath($sourcefile)))
                 {
                         $fd = fopen($sourcefile, "r");

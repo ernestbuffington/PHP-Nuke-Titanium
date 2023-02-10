@@ -23,7 +23,7 @@ CarryMenu();
 blockedrangemenu();
 CloseMenu();
 CloseTable();
-echo '<br />'."\n";
+
 OpenTable();
 echo '<form action="'.$admin_file.'.php" method="post">'."\n";
 echo '<input type="hidden" name="op" value="ABBlockedRangeAddSave" />'."\n";
@@ -53,15 +53,15 @@ echo '</select><br />'."\n";
 echo _AB_EXPIRESINS.'</td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'" valign="top"><strong>'._AB_NOTES.':</strong></td><td><textarea name="xnotes" rows="10" cols="60">'._AB_ADDBY.' '.$aid.'</textarea></td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'"><strong>'._AB_REASON.':</strong></td><td><select name="xreason">'."\n";
-$result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_blockers` ORDER BY `block_name`");
-while($blockerrow = $titanium_db->sql_fetchrow($result)) {
+$result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_blockers` ORDER BY `block_name`");
+while($blockerrow = $db->sql_fetchrow($result)) {
   echo '<option value="'.$blockerrow['blocker'].'">'.$blockerrow['reason'].'</option>'."\n";
 }
 echo '</select></td></tr>'."\n";
 echo '<tr><td bgcolor="'.$bgcolor2.'"><strong>'._AB_COUNTRY.':</strong></td>'."\n";
 echo '<td><select name="xc2c">'."\n";
-$result = $titanium_db->sql_query("SELECT * FROM `".$titanium_prefix."_nsnst_countries` ORDER BY `c2c`");
-while($countryrow = $titanium_db->sql_fetchrow($result)) {
+$result = $db->sql_query("SELECT * FROM `".$prefix."_nsnst_countries` ORDER BY `c2c`");
+while($countryrow = $db->sql_fetchrow($result)) {
   echo '<option value="'.$countryrow['c2c'].'"';
   if(isset($tc2c) AND $tc2c == strtolower($countryrow['c2c'])) { echo ' selected="selected"'; }
   echo '>'.strtoupper($countryrow['c2c']).' - '.$countryrow['country'].'</option>'."\n";

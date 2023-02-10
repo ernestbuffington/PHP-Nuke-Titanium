@@ -3,7 +3,6 @@
   PHP-Nuke Titanium | Nuke-Evolution Xtreme : PHP-Nuke Web Portal System
  =======================================================================*/
 
-
 /***************************************************************************
  *                               extension.inc
  *                            -------------------
@@ -55,16 +54,14 @@
  *
  ***************************************************************************/
 
-if (!defined('IN_PHPBB2'))
+if (!defined('IN_PHPBB'))
 {
-    die('ACCESS DENIED');
+    die('Hacking attempt');
 }
 
 //
 // Change this if your extension is not .php!
 //
 $phpEx = "php";
+$starttime = 0;
 
-$phpbb2_starttime = 0;
-
-?>

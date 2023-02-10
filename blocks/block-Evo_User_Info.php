@@ -23,27 +23,29 @@ if(!defined('NUKE_EVO')) exit;
 
 include_once(NUKE_MODULES_DIR .'Evo_UserBlock/addons/core.php');
 
-global $titanium_lang_evo_userblock;
+global $lang_evo_userblock;
 
 function evouserinfo_block_getactive() 
 {
-    global $titanium_prefix, $titanium_db, $titanium_lang_evo_userblock, $cache;
+    global $prefix, $db, $lang_evo_userblock, $cache;
 
-    if(isset($active) && is_array($active)) return $active;
+    if(isset($active) && is_array($active)) 
+	return $active;
     
-    if ((($active = $cache->load('active', 'evouserinfo')) === false) || !isset($active)) 
+    if ((($active = $cache->load('active', 'titanium_evouserinfo')) === false) || !isset($active)) 
 	{
-        $sql = 'SELECT * FROM '.$titanium_prefix.'_evo_userinfo WHERE active=1 ORDER BY position ASC';
-        $result = $titanium_db->sql_query($sql);
+        $active = [];
+		$sql = 'SELECT * FROM '.$prefix.'_evo_userinfo WHERE active=1 ORDER BY position ASC';
+        $result = $db->sql_query($sql);
 
-        while($row = $titanium_db->sql_fetchrow($result)) 
+        while($row = $db->sql_fetchrow($result)) 
 		{
             $active[] = $row;
         }
         
-		$titanium_db->sql_freeresult($result);
+		$db->sql_freeresult($result);
         
-		$cache->save('active', 'evouserinfo', $active);
+		$cache->save('active', 'titanium_evouserinfo', $active);
     }
     
 	return $active;
@@ -53,7 +55,7 @@ function evouserinfo_block_display()
 {
     define('EVO_BLOCK', true);
 
-    global $titanium_lang_evo_userblock;
+    global $lang_evo_userblock;
 
     $active = evouserinfo_block_getactive();
     $content = "";
@@ -67,7 +69,14 @@ function evouserinfo_block_display()
 			{
                 include_once(NUKE_MODULES_DIR .'Evo_UserBlock/addons/'.$element['filename'].'.php');
                 $output = 'evouserinfo_'.$element['filename'];
-                $content .= $$output;
+                
+				if(!isset($content))
+				$content ='';
+				
+				if(!isset($$output))
+				$$output = '';
+				
+				$content .= $$output;
             
 			    if(isset($$output) && !empty($$output)) 
 				{

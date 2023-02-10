@@ -1,8 +1,8 @@
 {
-    "require": {
-        "vimeo/vimeo-api": "^3.0",
-        "facebook/php-sdk": "^3.2",
-        "facebook/graph-sdk": "^5.7",
-        "google/apiclient": "^2.12"
+    "require": { 
+        "phpunit/phpunit": "^9.5"
+     },
+    "require-dev": {
+        "rector/rector": "^0.15.0"
     }
 }
